@@ -1,0 +1,11 @@
+{
+  "clientName": "Thunder Client",
+  "environmentName": "DFC Local Dev",
+  "dateExported": "2026-06-01T06:33:00.000Z",
+  "variables": [
+    {
+      "name": "BASE_URL",
+      "value": "http://127.0.0.1:5001/dfc-local-dev/australia-southeast1/adminApi"
+    }
+  ]
+}

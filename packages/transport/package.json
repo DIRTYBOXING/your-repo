@@ -1,0 +1,7 @@
+{
+  "name": "@dfc/transport",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/transport_factory.ts"
+}

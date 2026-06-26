@@ -1,0 +1,53 @@
+{
+  "eventId": "ppv-brisbane-bonanza",
+  "title": "BRISBANE BOXING BONANZA",
+  "subtitle": "Queensland's Night of Champions",
+  "date": "2026-04-04",
+  "time": "18:00 AEST",
+  "price": "24.99",
+  "promoter": "Brisbane Boxing Promotions",
+  "sport": "Boxing",
+  "venue": "Brisbane Convention Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["DFC"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Super Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Super Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Super Middleweight",
+      "rounds": 10,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Welterweight",
+      "rounds": 8
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Lightweight",
+      "rounds": 6
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

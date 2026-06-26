@@ -1,0 +1,56 @@
+{
+  "eventId": "ppv-bkfc-townsville-hepi",
+  "title": "BKFC FIGHT NIGHT AUSTRALIA: HEPI EDITION",
+  "subtitle": "Hepi vs Wisniewski II — Heavyweight Rematch",
+  "date": "2026-04-18",
+  "time": "19:00 AEST",
+  "price": "29.99",
+  "promoter": "BKFC",
+  "sport": "BKFC",
+  "venue": "Townsville Entertainment Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["BKFC App"],
+  "fighters": [
+    {
+      "name": "Haze Hepi",
+      "nickname": "The Huntsman",
+      "record": "3-1-0 BK",
+      "weightClass": "Heavyweight",
+      "corner": "left"
+    },
+    {
+      "name": "Krzysztof Wisniewski",
+      "nickname": "The Big Man",
+      "record": "3-0-0 BK",
+      "weightClass": "Heavyweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Haze Hepi",
+      "fighter2": "Krzysztof Wisniewski",
+      "weightClass": "Heavyweight",
+      "rounds": 5,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "Mark Flanagan",
+      "fighter2": "TBA",
+      "weightClass": "Cruiserweight",
+      "rounds": 5
+    },
+    {
+      "fighter1": "Sam Soliman",
+      "fighter2": "TBA",
+      "weightClass": "Middleweight",
+      "rounds": 5
+    },
+    {
+      "fighter1": "BK Bau",
+      "fighter2": "TBA",
+      "weightClass": "Heavyweight",
+      "rounds": 5
+    }
+  ]
+}

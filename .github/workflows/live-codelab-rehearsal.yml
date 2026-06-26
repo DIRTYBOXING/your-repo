@@ -1,0 +1,50 @@
+name: Live Codelab Rehearsal
+
+"on":
+  workflow_dispatch:
+    inputs:
+      project:
+        description: GCP project id override
+        required: false
+      region:
+        description: GCP region override
+        required: false
+        default: us-central1
+      event:
+        description: Event id for rehearsal path
+        required: false
+        default: champions-collide-2026
+      bucket:
+        description: GCS bucket override
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  codelab-rehearsal:
+    runs-on: [self-hosted, linux]
+    continue-on-error: true
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Run codelab dry-run preflight
+        env:
+          PROJECT: ${{ github.event.inputs.project }}
+          REGION: ${{ github.event.inputs.region || 'us-central1' }}
+          EVENT: ${{ github.event.inputs.event || 'champions-collide-2026' }}
+          BUCKET: ${{ github.event.inputs.bucket }}
+        run: |
+          chmod +x ops/gcp_live_codelab.sh
+          bash ops/gcp_live_codelab.sh --dry-run
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "Non-blocking rehearsal completed (continue-on-error=true)."
+          echo "Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

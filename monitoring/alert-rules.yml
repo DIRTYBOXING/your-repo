@@ -1,0 +1,122 @@
+groups:
+  - name: dfc_platform
+    interval: 30s
+    rules:
+
+      # Service Health
+      - alert: ServiceDown
+        expr: up{job=~"ingest|predictor|entitlements|redis|postgres"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: "{{ $labels.job }}"
+        annotations:
+          summary: "{{ $labels.job }} is down"
+          description: "Service {{ $labels.job }} has been down for more than 2 minutes"
+
+      - alert: ServiceDegraded
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+          component: "{{ $labels.job }}"
+        annotations:
+          summary: "{{ $labels.job }} error rate elevated"
+          description: "Error rate > 1% on {{ $labels.job }}"
+
+      # Database Health
+      - alert: HighDatabaseConnections
+        expr: pg_stat_activity_count > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connection pool near capacity"
+          description: "Database has {{ $value }} active connections (limit: 100)"
+
+      - alert: DatabaseReplicationLag
+        expr: pg_replication_lag_seconds > 10
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database replication lag detected"
+          description: "Replication lag is {{ $value }}s (threshold: 10s)"
+
+      # API Performance
+      - alert: HighAPILatency
+        expr: histogram_quantile(0.95, http_request_duration_seconds_bucket) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency on {{ $labels.job }}"
+          description: "P95 latency is {{ $value }}s"
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on {{ $labels.job }}"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+
+      # Resource Usage
+      - alert: HighMemoryUsage
+        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage: {{ $labels.container_name }}"
+          description: "Memory usage is {{ $value | humanizePercentage }}"
+
+      - alert: HighCPUUsage
+        expr: rate(container_cpu_usage_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage: {{ $labels.container_name }}"
+          description: "CPU usage is {{ $value | humanizePercentage }}"
+
+      # Cache Health
+      - alert: RedisCacheHitLow
+        expr: redis_keyspace_hits_total / (redis_keyspace_hits_total + redis_keyspace_misses_total) < 0.7
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis cache hit ratio low"
+          description: "Cache hit ratio is {{ $value | humanizePercentage }} (target: >70%)"
+
+      # Prediction Model Health
+      - alert: PredictionAccuracyDegraded
+        expr: prediction_accuracy < 0.70
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Prediction accuracy below threshold"
+          description: "Model accuracy is {{ $value | humanizePercentage }}"
+
+      # Revenue/Billing
+      - alert: FailedStripeCharges
+        expr: rate(stripe_charge_failed_total[5m]) > 0.001
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High rate of failed Stripe charges"
+          description: "{{ $value | humanizePercentage }} of charges failing"
+
+      # Disk Space
+      - alert: HighDiskUsage
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Only {{ $value | humanizePercentage }} disk space remaining"

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- ═══════════════════════════════════════════════════════════════
+       DATA FIGHT CENTRAL — Sitemap Index
+       #1 AI Combat Sports & Humanitarian Platform
+       Aggregates all sitemaps for Google, Bing, Yandex, Baidu & all crawlers
+       We are not just fighting — we are the fight.
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <!-- Main sitemap — 100+ routes covering every feature & page -->
+  <sitemap>
+    <loc>https://datafightcentral.com/sitemap.xml</loc>
+    <lastmod>2026-03-07</lastmod>
+  </sitemap>
+
+  <!-- Google News sitemap — Combat sports news verticals -->
+  <sitemap>
+    <loc>https://datafightcentral.com/sitemap-news.xml</loc>
+    <lastmod>2026-03-07</lastmod>
+  </sitemap>
+
+  <!-- Google Video sitemap — YouTube & fight video content -->
+  <sitemap>
+    <loc>https://datafightcentral.com/sitemap-video.xml</loc>
+    <lastmod>2026-03-07</lastmod>
+  </sitemap>
+
+  <!-- Google Images sitemap — Platform imagery & icons -->
+  <sitemap>
+    <loc>https://datafightcentral.com/sitemap-images.xml</loc>
+    <lastmod>2026-03-07</lastmod>
+  </sitemap>
+</sitemapindex>

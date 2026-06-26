@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "neon_arena",
+      "name": "Neon Arena",
+      "description": "High-contrast cyan and magenta for mainstream MMA showcases.",
+      "primaryHex": "#00F5FF",
+      "secondaryHex": "#FF00FF",
+      "backgroundHex": "#0A1628",
+      "responsiveLayouts": ["desktop", "tablet", "mobile"],
+      "slots": ["fighterPrimary", "fighterSecondary", "sponsorBadge", "ctaRail"],
+      "suggestedImageKeywords": ["arena lights", "fight poster", "cinematic smoke"]
+    },
+    {
+      "id": "mono_impact",
+      "name": "Mono Impact",
+      "description": "Monochrome, editorial poster style tuned for boxing cards.",
+      "primaryHex": "#E7EDF5",
+      "secondaryHex": "#9AA8BA",
+      "backgroundHex": "#111722",
+      "responsiveLayouts": ["desktop", "tablet", "mobile"],
+      "slots": ["fighterPortrait", "eventHeadline", "venueMeta", "sponsorBadge"],
+      "suggestedImageKeywords": ["editorial portrait", "championship belt", "studio grain"]
+    },
+    {
+      "id": "velocity_stripes",
+      "name": "Velocity Stripes",
+      "description": "Diagonal motion language for kickboxing and Muay Thai promotions.",
+      "primaryHex": "#00FF88",
+      "secondaryHex": "#FFB800",
+      "backgroundHex": "#0D1B2A",
+      "responsiveLayouts": ["desktop", "tablet", "mobile"],
+      "slots": ["heroAngle", "fightStats", "ticketBadge", "ctaRail"],
+      "suggestedImageKeywords": ["speed lines", "impact trail", "striking pose"]
+    },
+    {
+      "id": "grit_duotone",
+      "name": "Grit Duotone",
+      "description": "Rugged amber and red layout for bare-knuckle events.",
+      "primaryHex": "#FFC977",
+      "secondaryHex": "#FF3366",
+      "backgroundHex": "#101A27",
+      "responsiveLayouts": ["desktop", "tablet", "mobile"],
+      "slots": ["duotonePortrait", "eventStamp", "warningBadge", "ctaRail"],
+      "suggestedImageKeywords": ["grit texture", "sweat spray", "warehouse spotlight"]
+    },
+    {
+      "id": "legacy_gold",
+      "name": "Legacy Gold",
+      "description": "Collector-focused premium treatment for limited edition drops.",
+      "primaryHex": "#FFD700",
+      "secondaryHex": "#B9C7DA",
+      "backgroundHex": "#162234",
+      "responsiveLayouts": ["desktop", "tablet", "mobile"],
+      "slots": ["foilHeadline", "collectorBadge", "signatureStrip", "ctaRail"],
+      "suggestedImageKeywords": ["gold foil", "premium memorabilia", "signature card"]
+    }
+  ]
+}

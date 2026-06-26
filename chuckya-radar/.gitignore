@@ -1,0 +1,10 @@
+# CHUCKYA Radar — keep evidence out of version control
+ops-audit/*.log
+ops-audit/R-*/
+!ops-audit/.gitkeep
+node_modules/
+
+# Environment files with secrets
+.env
+.env.local
+.env.production

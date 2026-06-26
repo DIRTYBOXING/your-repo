@@ -1,0 +1,152 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: observability
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: alertmanager-secrets
+  namespace: observability
+type: Opaque
+stringData:
+  SLACK_WEBHOOK_TOKEN: "<SLACK_WEBHOOK_TOKEN>"
+  PAGERDUTY_INTEGRATION_KEY: "<PAGERDUTY_INTEGRATION_KEY>"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: observability
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+
+    route:
+      receiver: "slack-default"
+      group_by: ['alertname', 'pipeline_stage', 'sourceId']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 1h
+      routes:
+        - match:
+            severity: "page"
+          receiver: "pagerduty-oncall"
+          continue: false
+        - match:
+            severity: "ticket"
+          receiver: "slack-ops"
+          continue: false
+        - match_re:
+            alertname: "Canary.*"
+          receiver: "pagerduty-oncall"
+          continue: false
+
+    receivers:
+      - name: "pagerduty-oncall"
+        pagerduty_configs:
+          - service_key: "$(PAGERDUTY_INTEGRATION_KEY)"
+            severity: "{{ .CommonLabels.severity | default \"critical\" }}"
+            description: "{{ .CommonAnnotations.summary }}\n\n{{ .CommonAnnotations.description }}"
+            details:
+              alert: "{{ .CommonLabels.alertname }}"
+              pipeline_stage: "{{ .CommonLabels.pipeline_stage }}"
+              sourceId: "{{ .CommonLabels.sourceId }}"
+              runbook: "{{ .CommonAnnotations.runbook | default \"none\" }}"
+
+      - name: "slack-ops"
+        slack_configs:
+          - api_url: "https://hooks.slack.com/services/$(SLACK_WEBHOOK_TOKEN)"
+            channel: "#ops-alerts"
+            title: "{{ .CommonAnnotations.summary }}"
+            text: |
+              *Alert:* {{ .CommonLabels.alertname }}
+              *Severity:* {{ .CommonLabels.severity }}
+              *Pipeline:* {{ .CommonLabels.pipeline_stage }}
+              *Source:* {{ .CommonLabels.sourceId }}
+              *Summary:* {{ .CommonAnnotations.summary }}
+              *Details:* {{ .CommonAnnotations.description }}
+              *Runbook:* {{ .CommonAnnotations.runbook | default \"See runbooks\" }}
+            footer: "Alertmanager"
+
+      - name: "slack-default"
+        slack_configs:
+          - api_url: "https://hooks.slack.com/services/$(SLACK_WEBHOOK_TOKEN)"
+            channel: "#alerts"
+            title: "{{ .CommonAnnotations.summary }}"
+            text: "{{ .CommonAnnotations.description }}"
+
+    inhibit_rules:
+      - source_match:
+          severity: "page"
+        target_match:
+          severity: "ticket"
+        equal: ["pipeline_stage", "sourceId"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-templates
+  namespace: observability
+data:
+  runbook.tmpl: |
+    {{ define "runbook" }}
+    Runbook: {{ .CommonAnnotations.runbook | default "See docs/runbooks/feed-runbook.md" }}
+    {{ end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: observability
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      serviceAccountName: alertmanager-sa
+      containers:
+        - name: alertmanager
+          image: prom/alertmanager:v0.26.0
+          args:
+            - "--config.file=/etc/alertmanager/alertmanager.yml"
+            - "--storage.path=/alertmanager"
+            - "--web.listen-address=0.0.0.0:9093"
+          ports:
+            - containerPort: 9093
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alertmanager
+            - name: templates
+              mountPath: /etc/alertmanager/templates
+            - name: secrets
+              mountPath: /etc/alertmanager/secrets
+      volumes:
+        - name: config
+          configMap:
+            name: alertmanager-config
+        - name: templates
+          configMap:
+            name: alertmanager-templates
+        - name: secrets
+          secret:
+            secretName: alertmanager-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager
+  namespace: observability
+spec:
+  selector:
+    app: alertmanager
+  ports:
+    - name: web
+      port: 9093
+      targetPort: 9093

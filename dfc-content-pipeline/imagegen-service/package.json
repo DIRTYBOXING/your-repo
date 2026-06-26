@@ -1,0 +1,21 @@
+{
+  "name": "dfc-imagegen-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DFC image generation — social cards, hero images, promo posters",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "firebase-admin": "^12.6.0",
+    "bullmq": "^5.20.0",
+    "ioredis": "^5.4.1",
+    "canvas": "^2.11.2",
+    "sharp": "^0.33.5",
+    "uuid": "^10.0.0"
+  }
+}

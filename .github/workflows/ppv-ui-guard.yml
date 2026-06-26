@@ -1,0 +1,44 @@
+name: ppv-ui-guard
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "lib/features/ppv/**"
+      - "lib/shared/models/ppv_model.dart"
+      - "lib/shared/models/ppv_presentation_model.dart"
+      - "lib/shared/services/ppv_service.dart"
+      - "test/**"
+      - "tools/check_poster_heuristics.sh"
+      - ".github/workflows/ppv-ui-guard.yml"
+      - ".github/pull_request_template.md"
+
+jobs:
+  ppv-ui-guard:
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+
+      - name: Ensure CI-only env asset exists
+        run: |
+          mkdir -p assets
+          test -f assets/.env || echo "# CI placeholder" > assets/.env
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check poster heuristics
+        run: |
+          chmod +x tools/check_poster_heuristics.sh
+          ./tools/check_poster_heuristics.sh
+
+      - name: Run PPV presentation tests
+        run: flutter test test/ppv_presentation_model_test.dart

@@ -1,0 +1,114 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — SECURITY AND COMPLIANCE CHECKLIST                   ║
+║  DataFightCentral Ops / Security / Legal                       ║
+║  Version: 1.0   Date: 2026-03-28                               ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+1. KEY MANAGEMENT
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Device keypairs generated in hardware-backed keystore
+      (Android Keystore StrongBox / iOS Secure Enclave)
+  [ ] No private keys stored on bracelet — phone signs all payloads
+  [ ] Server export key stored in GCP Secret Manager
+  [ ] Key rotation schedule defined (quarterly recommended)
+  [ ] Public keys registered via TLS-only endpoint
+  [ ] Attestation tokens from secure element validated on ingest
+
+═══════════════════════════════════════════════════════════════════
+2. TRANSPORT SECURITY
+═══════════════════════════════════════════════════════════════════
+
+  [ ] All API endpoints served over TLS 1.2+ (HTTPS only)
+  [ ] BLE connections use LE Secure Connections with LESC
+  [ ] MITM protection enabled (Numeric Comparison / Passkey)
+  [ ] WebSocket connections authenticated with JWT (short TTL)
+  [ ] mTLS between internal services where feasible
+  [ ] No cleartext traffic flag set in AndroidManifest.xml
+
+═══════════════════════════════════════════════════════════════════
+3. AUTHENTICATION AND AUTHORIZATION
+═══════════════════════════════════════════════════════════════════
+
+  [ ] JWT tokens issued with short TTL (15 min recommended)
+  [ ] Admin endpoints require Bearer token with rotation
+  [ ] Cloud Run services set --no-allow-unauthenticated
+  [ ] roles/run.invoker granted only to known service accounts
+  [ ] Two-person approval enforced for evidence export
+  [ ] RBAC defined: Ops (request), Legal (approve), Admin (manage)
+
+═══════════════════════════════════════════════════════════════════
+4. DATA PRIVACY
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Default PII minimization — no GPS/IMEI without explicit consent
+  [ ] Consent checkboxes required before first use (immutably stored)
+  [ ] Consent record includes timestamp, appInstanceId, app version
+  [ ] GPS and IMEI fields null unless consent flags are true
+  [ ] Civilians see only proximity distance + direction (no coordinates)
+  [ ] Retention policy defined (e.g., 90 days, then purge)
+  [ ] Deletion workflow tested (user can request data removal)
+
+═══════════════════════════════════════════════════════════════════
+5. AUDIT AND CHAIN OF CUSTODY
+═══════════════════════════════════════════════════════════════════
+
+  [ ] All audit artifacts are append-only and immutable
+  [ ] chain_of_custody.json includes SHA256 for every file
+  [ ] Export manifest signed by server export key
+  [ ] Evidence zip integrity verifiable with OpenSSL one-liner
+  [ ] Audit store uses object versioning (GCS or equivalent)
+  [ ] Nonce replay protection via Redis with TTL enforcement
+
+═══════════════════════════════════════════════════════════════════
+6. INPUT VALIDATION AND REPLAY PROTECTION
+═══════════════════════════════════════════════════════════════════
+
+  [ ] All payloads validated against schema before processing
+  [ ] Unique nonce per device per event (UUID v4)
+  [ ] TTL enforcement: reject events older than 5 minutes
+  [ ] Redis nonce store with automatic expiry
+  [ ] Signature verification before any processing or storage
+  [ ] Request body size limited (5MB max)
+  [ ] Rate limiting on API (30 req/s) and WS (10 conn/s)
+
+═══════════════════════════════════════════════════════════════════
+7. INFRASTRUCTURE SECURITY
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Docker images use non-root USER directive
+  [ ] Base images pinned to specific versions (node:18-alpine)
+  [ ] Security headers set in nginx (X-Frame-Options, CSP, etc.)
+  [ ] Dependency scanning enabled (npm audit, Snyk, or Trivy)
+  [ ] Secret scanning enabled in GitHub repository
+  [ ] Container image scanning in CI pipeline
+  [ ] Network policies restrict pod-to-pod traffic in K8s
+
+═══════════════════════════════════════════════════════════════════
+8. LEGAL AND COMPLIANCE
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Evidence export workflow pre-approved with police liaison
+  [ ] Legal counsel reviewed consent model and retention policy
+  [ ] Privacy policy published and accessible in-app
+  [ ] Terms of service cover data collection and sharing scope
+  [ ] Incident response plan documented and tested
+  [ ] GDPR / Australian Privacy Act compliance reviewed
+  [ ] Two-person approval audit trail retained for 7 years
+
+═══════════════════════════════════════════════════════════════════
+9. PRE-PILOT GATES
+═══════════════════════════════════════════════════════════════════
+
+  [ ] External penetration test scheduled and completed
+  [ ] Load test passed (Artillery, sustained 50 req/s + spike 100/s)
+  [ ] End-to-end drill completed with positive signoff
+  [ ] All items above checked and signed off by:
+
+  Security Lead:   ________________  Date: ________
+  Legal Counsel:   ________________  Date: ________
+  Tech Lead:       ________________  Date: ________
+  Ops Lead:        ________________  Date: ________
+
+═══════════════════════════════════════════════════════════════════

@@ -1,0 +1,411 @@
+{
+  "id": "dfc-wipeout-v2",
+  "name": "DFC Wipeout: Firestore → 9 Platforms via Blotato (v2)",
+  "nodes": [
+    {
+      "parameters": {
+        "projectId": "datafightcentral",
+        "collection": "ppv_events",
+        "events": ["document.create", "document.update"],
+        "options": {
+          "filter": "status == 'onSale' || status == 'announced'"
+        }
+      },
+      "id": "firestore-trigger",
+      "name": "Firestore PPV Trigger",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestoreTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "credentials": {
+        "googleApi": {
+          "id": "wHl6zJAv1Hjm1Kfa",
+          "name": "Google Service Account account"
+        }
+      },
+      "notes": "Fires when a PPV event is created or updated with status onSale or announced. Replaces the old webhook trigger."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"TITLE\": $json.title,\n  \"MEDIA_URL\": $json.posterUrl,\n  \"CAPTION\": `🔥 ${$json.title}\\n🥊 ${$json.sport || 'Combat Sports'}\\n💰 $${($json.standardPriceCents / 100).toFixed(2)} AUD\\n📅 ${$json.eventDate ? new Date($json.eventDate).toLocaleDateString('en-AU', {weekday:'long', month:'long', day:'numeric'}) : 'TBA'}\\n\\n🎟️ BUY NOW → https://datafightcentral.com/ppv/${$json.id}\\n\\n#DFC #FightNight #PPV #${($json.sport || 'MMA').replace(/\\s/g,'')}`,\n  \"STATUS\": \"Ready to Post\",\n  \"FIGHT_ID\": $json.id,\n  \"PRICE_CENTS\": $json.standardPriceCents,\n  \"PRICE_DISPLAY\": `$${($json.standardPriceCents / 100).toFixed(2)}`,\n  \"BUY_LINK\": `https://datafightcentral.com/ppv/${$json.id}`,\n  \"PROMOTER\": $json.promotion || 'DFC',\n  \"SPORT\": $json.sport || 'MMA',\n  \"DESCRIPTION\": $json.description || '',\n  \"EVENT_DATE\": $json.eventDate || '',\n  \"SOCIAL_POST_ID\": `social_${$json.id}_${Date.now()}`\n} }}"
+      },
+      "id": "map-fields-v2",
+      "name": "Map PPV → Blotato (Unified Model)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [470, 300],
+      "notes": "Dynamic metadata injection using unified model fields: title, standardPriceCents (divided by 100 for display), posterUrl, sport, promotion. Generates the DFC buy link and auto-formats the caption."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloudinary.com/v1_1/datafightcentral/image/upload",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "file", "value": "={{ $json.MEDIA_URL }}" },
+            { "name": "upload_preset", "value": "dfc_poster_stamp" },
+            {
+              "name": "transformation",
+              "value": "l_text:Montserrat_72_bold:{{ $json.TITLE }},co_rgb:00E5FF,g_south,y_120/l_text:Montserrat_40_bold:{{ $json.PRICE_DISPLAY }}%20AUD%20•%20BUY%20NOW,co_rgb:FF6B35,g_south,y_50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cloudinary-stamp",
+      "name": "Cloudinary: Stamp Poster",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [690, 180],
+      "notes": "Stamps the poster with event title and price overlay. Uses Cloudinary text overlays. Replace upload_preset with your actual preset name."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nPostBack",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ eventId: $('Map PPV → Blotato (Unified Model)').item.json.FIGHT_ID, socialPostId: $('Map PPV → Blotato (Unified Model)').item.json.SOCIAL_POST_ID, status: 'seeding_started' }) }}",
+        "options": {}
+      },
+      "id": "firebase-status-start",
+      "name": "Firebase: Mark Seeding Started",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [690, 420],
+      "notes": "Notifies Firebase that seeding has begun so the admin dashboard can show 'Seeding...' status."
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "upload",
+        "url": "={{ $('Cloudinary: Stamp Poster').item.json.secure_url || $('Map PPV → Blotato (Unified Model)').item.json.MEDIA_URL }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "blotato-upload-v2",
+      "name": "Blotato: Upload Stamped Poster",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 300],
+      "credentials": {
+        "blotatoApi": {
+          "id": "11",
+          "name": "Blotato Pro"
+        }
+      },
+      "notes": "Uploads the Cloudinary-stamped poster (with price/title overlay) to Blotato for distribution. Falls back to raw posterUrl if Cloudinary fails."
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "instagram",
+        "accountId": "38499",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-instagram",
+      "name": "Post → Instagram",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 60],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "tiktok",
+        "accountId": "BLOTATO_TIKTOK_ACCOUNT_ID",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-tiktok",
+      "name": "Post → TikTok",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 160],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "youtube_shorts",
+        "accountId": "32047",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-youtube",
+      "name": "Post → YouTube Shorts",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 260],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "facebook",
+        "accountId": "25105",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-facebook",
+      "name": "Post → Facebook",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 360],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "x",
+        "accountId": "BLOTATO_X_ACCOUNT_ID",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-x",
+      "name": "Post → X (Twitter)",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 460],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "threads",
+        "accountId": "BLOTATO_THREADS_ACCOUNT_ID",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-threads",
+      "name": "Post → Threads",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 560],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "linkedin",
+        "accountId": "BLOTATO_LINKEDIN_ACCOUNT_ID",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-linkedin",
+      "name": "Post → LinkedIn",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1380, 60],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "bluesky",
+        "accountId": "BLOTATO_BLUESKY_ACCOUNT_ID",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-bluesky",
+      "name": "Post → Bluesky",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1380, 160],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "pinterest",
+        "accountId": "BLOTATO_PINTEREST_ACCOUNT_ID",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map PPV → Blotato (Unified Model)').item.json.CAPTION }}"
+      },
+      "id": "post-pinterest",
+      "name": "Post → Pinterest",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1380, 260],
+      "credentials": { "blotatoApi": { "id": "11", "name": "Blotato Pro" } }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"eventId\": $('Map PPV → Blotato (Unified Model)').item.json.FIGHT_ID,\n  \"socialPostId\": $('Map PPV → Blotato (Unified Model)').item.json.SOCIAL_POST_ID,\n  \"status\": \"posted\",\n  \"platforms\": {\n    \"instagram\": $('Post → Instagram').item.json.postUrl || '',\n    \"tiktok\": $('Post → TikTok').item.json.postUrl || '',\n    \"youtube_shorts\": $('Post → YouTube Shorts').item.json.postUrl || '',\n    \"facebook\": $('Post → Facebook').item.json.postUrl || '',\n    \"x\": $('Post → X (Twitter)').item.json.postUrl || '',\n    \"threads\": $('Post → Threads').item.json.postUrl || '',\n    \"linkedin\": $('Post → LinkedIn').item.json.postUrl || '',\n    \"bluesky\": $('Post → Bluesky').item.json.postUrl || '',\n    \"pinterest\": $('Post → Pinterest').item.json.postUrl || ''\n  }\n} }}"
+      },
+      "id": "build-postback-v2",
+      "name": "Build Post-Back Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1600, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nPostBack",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "postback-firebase-v2",
+      "name": "Post-Back to Firebase (Close Loop)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1820, 300],
+      "notes": "Calls n8nPostBack Cloud Function to update ppv_events and social_posts with all live platform URLs. Closes the Firestore ↔ n8n feedback loop."
+    }
+  ],
+  "connections": {
+    "Firestore PPV Trigger": {
+      "main": [
+        [
+          {
+            "node": "Map PPV → Blotato (Unified Model)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map PPV → Blotato (Unified Model)": {
+      "main": [
+        [
+          { "node": "Cloudinary: Stamp Poster", "type": "main", "index": 0 },
+          {
+            "node": "Firebase: Mark Seeding Started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cloudinary: Stamp Poster": {
+      "main": [
+        [
+          {
+            "node": "Blotato: Upload Stamped Poster",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blotato: Upload Stamped Poster": {
+      "main": [
+        [
+          { "node": "Post → Instagram", "type": "main", "index": 0 },
+          { "node": "Post → TikTok", "type": "main", "index": 0 },
+          { "node": "Post → YouTube Shorts", "type": "main", "index": 0 },
+          { "node": "Post → Facebook", "type": "main", "index": 0 },
+          { "node": "Post → X (Twitter)", "type": "main", "index": 0 },
+          { "node": "Post → Threads", "type": "main", "index": 0 },
+          { "node": "Post → LinkedIn", "type": "main", "index": 0 },
+          { "node": "Post → Bluesky", "type": "main", "index": 0 },
+          { "node": "Post → Pinterest", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Post → Instagram": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → TikTok": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → YouTube Shorts": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Facebook": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → X (Twitter)": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Threads": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → LinkedIn": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Bluesky": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Pinterest": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Post-Back Payload": {
+      "main": [
+        [
+          {
+            "node": "Post-Back to Firebase (Close Loop)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "datafightcentral"
+  },
+  "tags": [
+    { "name": "DFC", "id": "1" },
+    { "name": "wipeout-v2", "id": "5" },
+    { "name": "firestore-trigger", "id": "6" },
+    { "name": "auto-seeder", "id": "2" },
+    { "name": "social-media", "id": "3" },
+    { "name": "ppv", "id": "4" }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "name": "datafightcentral-genkit",
+  "version": "2.0.0",
+  "description": "SamurAI - The World's Most Intelligent Fight & Wellness AI Engine",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node lib/index.js",
+    "dev": "npx genkit start -- npx tsx --watch ai-flows.ts",
+    "genkit:dev": "genkit start",
+    "samurai:start": "npx tsx samurai-engine.ts",
+    "deploy": "firebase deploy --only functions"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@genkit-ai/googleai": "^1.0.0",
+    "@anthropic-ai/sdk": "^0.30.0",
+    "openai": "^4.70.0",
+    "replicate": "^0.32.0",
+    "@google-cloud/storage": "7.18.0",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "genkit": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "genkit-cli": "^1.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  },
+  "keywords": [
+    "genkit",
+    "firebase",
+    "ai",
+    "combat-sports",
+    "health-intelligence"
+  ],
+  "author": "DataFightCentral",
+  "license": "UNLICENSED",
+  "private": true
+}

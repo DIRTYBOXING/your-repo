@@ -1,0 +1,76 @@
+{
+  "day": "Tomorrow",
+  "objectives": [
+    "Produce 20 Instagram Reels",
+    "Produce 10 TikTok videos",
+    "Prepare 90-minute YouTube premiere"
+  ],
+  "instagram_reels": [
+    "Launch trailer: DFC in 20 seconds",
+    "Feature spotlight: fighter analytics",
+    "Feature spotlight: event discovery",
+    "Feature spotlight: partner profiles",
+    "Glass feed visual teaser",
+    "LIVE badge motion teaser",
+    "Fighter stat comparison format",
+    "Top 3 mistakes fighters make with data",
+    "Coach workflow in 30 seconds",
+    "Promoter workflow in 30 seconds",
+    "Before vs after using DFC",
+    "Weekly fight map by city",
+    "How gyms get featured",
+    "How athletes build visibility",
+    "Comment-driven Q&A answer #1",
+    "Comment-driven Q&A answer #2",
+    "Community highlight montage",
+    "Founder direct message clip",
+    "Partner shoutout format",
+    "Call to action: join this week"
+  ],
+  "tiktok_videos": [
+    "Fast hook: this is not another fight page",
+    "Top 5 data signals before a matchup",
+    "How to get your gym discovered",
+    "What promoters can do in one dashboard",
+    "Underrated fighter growth metrics",
+    "Live event pulse concept",
+    "Myth vs fact: combat sports analytics",
+    "60-second platform walkthrough",
+    "Reaction format with trend audio",
+    "Final CTA: partner onboarding"
+  ],
+  "youtube_premiere_90_min": {
+    "segments": [
+      { "start": "00:00", "end": "07:00", "title": "Opening + Vision" },
+      {
+        "start": "07:00",
+        "end": "22:00",
+        "title": "Platform Full Walkthrough"
+      },
+      { "start": "22:00", "end": "35:00", "title": "Fighter Analytics Demo" },
+      {
+        "start": "35:00",
+        "end": "48:00",
+        "title": "Gym + Promoter Activation"
+      },
+      {
+        "start": "48:00",
+        "end": "58:00",
+        "title": "Content + Distribution Engine"
+      },
+      { "start": "58:00", "end": "75:00", "title": "Live Q&A" },
+      {
+        "start": "75:00",
+        "end": "86:00",
+        "title": "Partnership Offer + Next 7 Days"
+      },
+      { "start": "86:00", "end": "90:00", "title": "Closing CTA" }
+    ],
+    "cta": [
+      "Join as gym partner",
+      "Join as promoter partner",
+      "Create fighter profile",
+      "Subscribe for daily breakdowns"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+# infra/auto_feed_scheduler.yaml
+# Cloud Scheduler job to trigger the intake service every 30 minutes
+apiVersion: scheduler.cnrm.cloud.google.com/v1beta1
+kind: SchedulerJob
+metadata:
+  name: auto-feed-intake
+spec:
+  schedule: "*/30 * * * *" # every 30 minutes
+  timeZone: "UTC"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: intake
+              image: gcr.io/YOUR_PROJECT/data-fight-central-intake:latest
+              env:
+                - name: DATABASE_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: dfc-db-url
+                      key: url
+                - name: YOUTUBE_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: youtube-api-key
+                      key: key
+          restartPolicy: Never

@@ -1,0 +1,89 @@
+name: PPV Synthetic Monitor
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ppv-synthetic-monitor
+  cancel-in-progress: true
+
+jobs:
+  synthetic-monitor:
+    name: PPV DRM synthetic monitor
+    runs-on: ubuntu-latest
+    env:
+      FUNCTIONS_BASE_URL: ${{ secrets.PPV_FUNCTIONS_BASE_URL }}
+      TEST_ENTITLEMENT_TOKEN: ${{ secrets.TEST_ENTITLEMENT_TOKEN }}
+      EVENT_ID: ${{ secrets.PPV_CANARY_EVENT_ID }}
+      MANIFEST_URL: ${{ secrets.PPV_CANARY_MANIFEST_URL }}
+      CDN_ASSET_URL: ${{ secrets.PPV_CANARY_POSTER_URL }}
+      LICENSE_PROBE_URL: ${{ secrets.PPV_CANARY_LICENSE_PROBE_URL }}
+      LICENSE_PROBE_METHOD: ${{ secrets.PPV_CANARY_LICENSE_PROBE_METHOD }}
+      LICENSE_PROBE_CONTENT_TYPE: ${{ secrets.PPV_CANARY_LICENSE_PROBE_CONTENT_TYPE }}
+      LICENSE_PROBE_BODY_BASE64: ${{ secrets.PPV_CANARY_LICENSE_PROBE_BODY_BASE64 }}
+      LICENSE_PROBE_ACCEPT_STATUSES: ${{ secrets.PPV_CANARY_LICENSE_PROBE_ACCEPT_STATUSES }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_PROJECT_STAGING: ${{ secrets.FIREBASE_PROJECT_STAGING }}
+      PPV_AUTO_REMEDIATE_REDEPLOY: ${{ secrets.PPV_AUTO_REMEDIATE_REDEPLOY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Verify synthetic prerequisites
+        id: gate
+        shell: bash
+        run: |
+          if [ -z "${FUNCTIONS_BASE_URL}" ] || [ -z "${TEST_ENTITLEMENT_TOKEN}" ] || [ -z "${EVENT_ID}" ] || [ -z "${MANIFEST_URL}" ]; then
+            echo "can_run=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_run=1" >> "$GITHUB_OUTPUT"
+          fi
+          mkdir -p synthetics/results
+
+      - name: Run PPV DRM synthetic monitor
+        if: steps.gate.outputs.can_run == '1'
+        run: node synthetics/ppv_drm_check.mjs
+
+      - name: Install pinned Firebase CLI
+        if: failure() && steps.gate.outputs.can_run == '1' && env.PPV_AUTO_REMEDIATE_REDEPLOY == '1' && env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_STAGING != ''
+        run: npm install -g firebase-tools@13.35.1 --ignore-scripts
+
+      - name: Auto-remediate by redeploying PPV security slice
+        if: failure() && steps.gate.outputs.can_run == '1' && env.PPV_AUTO_REMEDIATE_REDEPLOY == '1' && env.FIREBASE_TOKEN != '' && env.FIREBASE_PROJECT_STAGING != ''
+        working-directory: functions
+        run: |
+          firebase deploy \
+            --only functions:drmTokenApi,functions:cdnTokenApi,functions:getPosterSignedUrl \
+            --project "${FIREBASE_PROJECT_STAGING}" \
+            --token "${FIREBASE_TOKEN}"
+
+      - name: Upload synthetic artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppv-synthetic-monitor-${{ github.run_id }}
+          path: synthetics/results
+          if-no-files-found: ignore
+
+      - name: Skip synthetic notice
+        if: steps.gate.outputs.can_run != '1'
+        run: echo "::notice::Skipping PPV synthetic monitor because one or more required secrets are missing"
+
+      - name: Notify Slack on failure
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          message: |
+            :rotating_light: PPV synthetic monitor FAILED and remediation path was evaluated.
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

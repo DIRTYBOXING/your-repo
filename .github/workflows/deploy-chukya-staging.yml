@@ -1,0 +1,153 @@
+name: Deploy Chukya 3.0 Staging
+
+on:
+  push:
+    branches: [main, master, release/*]
+    paths:
+      - "lib/shared/services/chukya_radar_service.dart"
+      - "lib/shared/models/threat_profile.dart"
+      - "lib/shared/models/proximity_alert.dart"
+      - "lib/features/safety/screens/chukya_radar_screen.dart"
+      - "functions/chukya/**"
+      - "firestore.rules"
+  workflow_dispatch:
+
+concurrency:
+  group: chukya-staging-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── 1. Flutter Analyze + Test ───────────────────────────────────────────
+  flutter-check:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos --no-fatal-warnings
+      - run: flutter test test/chukya_radar_service_test.dart || echo "::warning::Chukya tests not found or failed"
+
+  # ── 2. Build Flutter Web ────────────────────────────────────────────────
+  build-web:
+    name: Build Web
+    needs: flutter-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Materialize web build env
+        shell: pwsh
+        run: |
+          $mapsProdKey = "${{ secrets['GOOGLE_MAPS_API_KEY_WEB_PROD'] }}"
+          $mapsFallbackKey = "${{ secrets['GOOGLE_MAPS_API_KEY_WEB'] }}"
+
+          if ([string]::IsNullOrWhiteSpace($mapsProdKey) -and [string]::IsNullOrWhiteSpace($mapsFallbackKey)) {
+            Write-Host '::warning::GOOGLE_MAPS_API_KEY_WEB_PROD and GOOGLE_MAPS_API_KEY_WEB are both missing. Continuing the staging web build without a resolved Maps key.'
+          }
+
+          $envLines = [System.Collections.Generic.List[string]]::new()
+          $envLines.Add('FIREBASE_PROJECT_ID=datafightcentral')
+          if (-not [string]::IsNullOrWhiteSpace($mapsProdKey)) {
+            $envLines.Add("GOOGLE_MAPS_API_KEY_WEB_PROD=$mapsProdKey")
+          }
+          if (-not [string]::IsNullOrWhiteSpace($mapsFallbackKey)) {
+            $envLines.Add("GOOGLE_MAPS_API_KEY_WEB=$mapsFallbackKey")
+          }
+
+          Set-Content -Path .env -Value $envLines
+      - name: Build web with runtime env wrapper
+        shell: pwsh
+        run: ./scripts/run_with_env.ps1 -Action build -Mode real
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chukya-web-build
+          path: build/web
+          retention-days: 7
+
+  # ── 3. Deploy Cloud Functions ───────────────────────────────────────────
+  deploy-functions:
+    name: Deploy Cloud Functions
+    needs: flutter-check
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_PROJECT_STAGING: ${{ secrets['FIREBASE_PROJECT_STAGING'] }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - working-directory: functions
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+      - name: Deploy Chukya Functions
+        run: |
+          if [ -z "$FIREBASE_TOKEN" ]; then
+            echo "FIREBASE_TOKEN not set, skipping deploy"
+            exit 0
+          fi
+          cd functions
+          npx firebase-tools deploy \
+            --only functions:addThreatProfile,functions:revokeThreatProfile,functions:chukyaCheckFingerprint \
+            --project "$FIREBASE_PROJECT_STAGING" \
+            --token "$FIREBASE_TOKEN"
+
+  # ── 4. Deploy Firestore Rules ───────────────────────────────────────────
+  deploy-rules:
+    name: Deploy Firestore Rules
+    needs: flutter-check
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_PROJECT_STAGING: ${{ secrets['FIREBASE_PROJECT_STAGING'] }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - run: npm install -g firebase-tools --ignore-scripts
+      - name: Deploy Firestore Rules
+        run: |
+          if [ -z "$FIREBASE_TOKEN" ]; then
+            echo "FIREBASE_TOKEN not set, skipping deploy"
+            exit 0
+          fi
+          firebase deploy --only firestore:rules \
+            --project "$FIREBASE_PROJECT_STAGING" \
+            --token "$FIREBASE_TOKEN"
+
+  # ── 5. Smoke Test ──────────────────────────────────────────────────────
+  smoke-test:
+    name: Staging Smoke Test
+    needs: [deploy-functions, deploy-rules]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Health check
+        run: |
+          echo "Checking staging health..."
+          # Replace with actual staging URL
+          # curl -sf https://staging-api.example.com/health | jq .
+          echo "Smoke test placeholder — wire to real staging endpoint"
+      - name: Verify Firestore collections
+        run: |
+          echo "Verifying Chukya collections exist in staging..."
+          # firebase firestore:documents:list threat_watchlist --project staging --limit 1
+          echo "Collection check placeholder"

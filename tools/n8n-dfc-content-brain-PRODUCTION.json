@@ -1,0 +1,714 @@
+{
+  "name": "DFC Content Brain: AI Fight Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dfc-content-brain",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "cb-webhook-main",
+      "name": "Content Brain Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-752, 80],
+      "webhookId": "dfc-content-brain-main",
+      "notes": "MAIN ENTRY POINT — receives content requests from DFC Cloud Functions.\nURL: https://datafightcentral.app.n8n.cloud/webhook/dfc-content-brain\n\nExpected payload:\n{\n  \"webInput\": \"topic or event description\",\n  \"platform\": \"all\",\n  \"postType\": \"text\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": \"general\",\n  \"objective\": \"engagement\",\n  \"eventData\": {},\n  \"callbackUrl\": \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": \"brain_xxx\"\n}"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ppv-event-created",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "19bfc021-3c1a-4cbe-a391-9354ff6fb7a6",
+      "name": "PPV Event Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-752, 496],
+      "webhookId": "26dd3cac-31e7-4558-b5fa-076713db0710"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "post-fight-results",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "f7c67bf3-7a3c-42f7-a974-b1fa3d97e299",
+      "name": "Post-Fight Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [-752, 688],
+      "webhookId": "7e431e06-3481-4403-9a7f-1d3252362d41"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "34ce3491-2427-4a2e-a6ea-42015857905a",
+      "name": "Countdown T-24h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [-1200, 304],
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "notes": "Hourly scheduled trigger — checks for events at T-24h, T-6h, T-10min windows"
+    },
+    {
+      "parameters": {
+        "url": "https://firestore.googleapis.com/v1/projects/datafightcentral/databases/(default)/documents/ppv_events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "options": {}
+      },
+      "id": "df331187-da31-474d-8a7d-78c0a773fecc",
+      "name": "Fetch Upcoming Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [-976, 304],
+      "credentials": {
+        "googleApi": {
+          "id": "wHl6zJAv1Hjm1Kfa",
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter events happening in 24h, 6h, or 10min\nconst now = new Date();\nconst events = $input.all()[0].json.events || [];\n\nconst filtered = events.map(event => {\n  const eventTime = new Date(event.eventDate);\n  const diffMs = eventTime - now;\n  const diffHours = diffMs / (1000 * 60 * 60);\n  const diffMinutes = diffMs / (1000 * 60);\n\n  let countdownType = null;\n  if (diffHours >= 23.5 && diffHours <= 24.5) countdownType = 'T-24h';\n  else if (diffHours >= 5.5 && diffHours <= 6.5) countdownType = 'T-6h';\n  else if (diffMinutes >= 9 && diffMinutes <= 11) countdownType = 'T-10min';\n\n  if (countdownType) {\n    return { ...event, countdownType, timeRemaining: diffHours > 1 ? `${Math.round(diffHours)}h` : `${Math.round(diffMinutes)}min` };\n  }\n  return null;\n}).filter(e => e !== null);\n\nreturn filtered.map(e => ({ json: e }));"
+      },
+      "id": "f6c2ffcd-3599-4698-9970-434554a6e779",
+      "name": "Check Event Time",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-752, 304]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": `${$json.countdownType} until ${$json.eventName}! ${$json.fighters.join(' vs ')}`,\n  \"platform\": \"all\",\n  \"postType\": \"text\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": \"general\",\n  \"objective\": \"engagement\",\n  \"eventData\": $json,\n  \"callbackUrl\": \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": `countdown_${$json.eventId}_${Date.now()}`\n} }}",
+        "options": {}
+      },
+      "id": "808047be-c63c-4127-8beb-14e743aec8f2",
+      "name": "Generate Countdown Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-528, 304]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": `New PPV Event: ${$json.body.eventName} on ${$json.body.eventDate}. Fighters: ${$json.body.fighters.join(' vs ')}`,\n  \"platform\": \"all\",\n  \"postType\": \"image\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": \"general\",\n  \"objective\": \"awareness\",\n  \"eventData\": $json.body,\n  \"callbackUrl\": $json.body.callbackUrl || \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": `ppv_${$json.body.eventId}_${Date.now()}`\n} }}",
+        "options": {}
+      },
+      "id": "d89b3486-3680-4deb-b9de-95f09658546c",
+      "name": "Parse PPV Event",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-528, 496]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": `${$json.body.winner} wins by ${$json.body.method} in round ${$json.body.round}!`,\n  \"platform\": \"all\",\n  \"postType\": \"video\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": \"general\",\n  \"objective\": \"engagement\",\n  \"eventData\": $json.body,\n  \"callbackUrl\": $json.body.callbackUrl || \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": `postfight_${$json.body.eventId}_${Date.now()}`\n} }}",
+        "options": {}
+      },
+      "id": "e342b21a-c17b-4bb1-9b8a-e475d0b38096",
+      "name": "Format Post-Fight Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-528, 688]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": $json.webInput || $json.body?.webInput || \"\",\n  \"platform\": $json.platform || $json.body?.platform || \"all\",\n  \"postType\": $json.postType || $json.body?.postType || \"text\",\n  \"brandTone\": $json.brandTone || $json.body?.brandTone || \"hype\",\n  \"audienceType\": $json.audienceType || $json.body?.audienceType || \"fans\",\n  \"niche\": $json.niche || $json.body?.niche || \"general\",\n  \"objective\": $json.objective || $json.body?.objective || \"engagement\",\n  \"eventData\": $json.eventData || $json.body?.eventData || {},\n  \"callbackUrl\": $json.callbackUrl || $json.body?.callbackUrl || \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": $json.requestId || $json.body?.requestId || `req_${Date.now()}`\n} }}",
+        "options": {}
+      },
+      "id": "23c2123c-9bc0-4fa4-9d20-a855ac6944a4",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-304, 496],
+      "notes": "Normalize all 4 entry points into a common format.\nHandles both $json.body (webhooks) and $json direct (countdown/internal)."
+    },
+    {
+      "parameters": {
+        "dataToSave": {
+          "values": [
+            {
+              "key": "requestId",
+              "value": "={{ $json.requestId }}"
+            },
+            {
+              "key": "platform",
+              "value": "={{ $json.platform }}"
+            },
+            {
+              "key": "brandTone",
+              "value": "={{ $json.brandTone }}"
+            },
+            {
+              "key": "niche",
+              "value": "={{ $json.niche }}"
+            }
+          ]
+        }
+      },
+      "id": "exec-data-tag",
+      "name": "Tag Execution",
+      "type": "n8n-nodes-base.executionData",
+      "typeVersion": 1,
+      "position": [-192, 496],
+      "notes": "Saves requestId, platform, brandTone, niche as searchable execution metadata."
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a content metadata extractor for a combat sports platform called Data Fight Central (DFC). Extract structured fields from the user's content request. Return JSON only.\n\nExtract:\n- platform: target social platform (instagram, linkedin, x, tiktok, threads, facebook, youtube, bluesky, pinterest, all)\n- niche: combat sport niche (mma, boxing, muay_thai, kickboxing, bare_knuckle, bkfc, general)\n- postType: content format (text, image, video, carousel, reel, story, short)\n- brandTone: voice (hype, analytical, motivational, news, edgy, underground)\n- audienceType: target audience (fighters, fans, promoters, casual, coaches, all)\n- objective: goal (engagement, traffic, awareness, conversion, community)\n- topicSummary: 1-sentence summary of the content topic\n- fighters: array of fighter names mentioned (empty array if none)\n- eventName: event name if mentioned (null if none)\n- urgency: low | medium | high (based on time-sensitivity)",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.webInput }}\n\nProvided context:\nPlatform: {{ $json.platform }}\nPost Type: {{ $json.postType }}\nBrand Tone: {{ $json.brandTone }}\nAudience: {{ $json.audienceType }}\nNiche: {{ $json.niche }}\nObjective: {{ $json.objective }}\nEvent Data: {{ JSON.stringify($json.eventData) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.4
+        }
+      },
+      "id": "6eb8c19a-deda-45ff-bb28-caf366c1ebf9",
+      "name": "Information Extractor",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [-80, 496],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account 2"
+        }
+      },
+      "notes": "GPT-4.1-Mini at 0.4 temp — cost-effective extraction.\nExtracts: Platform, Niche, Post Type, Brand Tone, Audience Type, Objective, Topic Summary, Fighters, Event Name, Urgency."
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a combat sports content strategist for Data Fight Central (DFC), the world's first AI-powered fight platform.\n\nYour role: Generate INTENT — the strategic purpose behind this content.\n\nGiven the extracted metadata, determine:\n1. primary_intent: What is this content trying to achieve? (inform, hype, convert, educate, provoke, celebrate, mourn, predict)\n2. content_angle: The specific angle to take (e.g., 'underdog story', 'knockout prediction', 'behind-the-scenes', 'controversy take', 'statistical breakdown', 'legacy comparison')\n3. hook_type: What hook pattern works best? (question, statistic, bold_claim, controversy, nostalgia, prediction, challenge, revelation)\n4. cta_type: What call to action? (watch_live, buy_ppv, follow, share, comment, sign_up, download_app, visit_link, none)\n5. content_pillars: Array of 2-3 thematic pillars to build around (e.g., ['warrior mentality', 'underdog narrative', 'technical excellence'])\n6. controversy_safe: boolean — is this topic safe to be edgy about, or should we stay neutral?\n7. viral_potential: 1-10 score of how shareable this content could be\n\nReturn JSON only.",
+              "role": "system"
+            },
+            {
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "c68c6d98-164b-431b-8a5e-735791d7c1a8",
+      "name": "Generate Intent",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [272, 496],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account 2"
+        }
+      },
+      "notes": "GPT-4.1 at 0.2 temp — high-accuracy intent reasoning.\nStructured Output Parser extracts intent, angle, hook type, CTA, viral potential."
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a combat sports content strategist for Data Fight Central.\n\nDevelop STRATEGY for the content piece. Think like a fight promoter who understands social media.\n\nKey questions to address:\n1. belief_to_address: What belief or pain point does the audience hold about this topic?\n2. myth_to_challenge: What common misconception can we bust? (null if not applicable)\n3. takeaway: What should the reader walk away thinking/feeling/doing?\n4. mindset_shift: What perspective change are we creating?\n5. tension_point: What creates dramatic tension in this content? Every great fight story has tension.\n6. stakes: What are the stakes? (career, legacy, money, pride, history)\n7. narrative_device: Which storytelling device? (comparison, timeline, what-if, origin-story, countdown, versus, transformation)\n\nReturn JSON only.",
+              "role": "system"
+            },
+            {
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "id": "293e172e-0499-4cb0-b79d-5a57ae11243d",
+      "name": "Strategy",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [624, 496],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account 2"
+        }
+      },
+      "notes": "GPT-4.1 at 0.6 temp — balanced reasoning for strategy.\nOutputs: belief, myth, takeaway, mindset shift, tension, stakes, narrative device."
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an emotional intelligence engine for Data Fight Central content.\n\nYour job: Frame the emotional arc of this content piece.\n\nCombat sports content MUST hit emotionally — neutral content dies on every platform.\n\nOutput:\n1. core_emotion: The primary emotion to evoke (awe, anger, excitement, respect, fear, pride, nostalgia, curiosity, defiance)\n2. emotional_arc: Array of 3-5 emotions in sequence (e.g., ['curiosity', 'tension', 'shock', 'awe'])\n3. tone_modifiers: Array of adjective modifiers for the writing (e.g., ['raw', 'visceral', 'unapologetic', 'electric'])\n4. charged_phrases: Array of 5-8 emotionally loaded phrases specific to this topic (e.g., ['left it all in the cage', 'nobody gave him a chance', 'rewriting the record books'])\n5. energy_level: 1-10 — how amped should this content feel?\n6. vulnerability_moment: One sentence describing a moment of human vulnerability to include (makes content relatable)\n\nReturn JSON only.",
+              "role": "system"
+            },
+            {
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "72d598b7-f31c-4d25-9df4-c6a33f99ef95",
+      "name": "Emotional Framing",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [976, 496],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account 2"
+        }
+      },
+      "notes": "GPT-4.1 at 0.3 temp — consistent emotional framing.\nOutputs: core emotion, emotional arc, tone modifiers, charged phrases, energy level."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"extractedMeta\": $('Information Extractor').item.json,\n  \"intent\": $('Generate Intent').item.json,\n  \"strategy\": $('Strategy').item.json,\n  \"emotionalFrame\": $('Emotional Framing').item.json,\n  \"originalRequest\": $('Edit Fields').item.json\n} }}",
+        "options": {}
+      },
+      "id": "d60a6ff0-dac8-4262-88d7-9aefed8e0a14",
+      "name": "Format Emotional Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1328, 496],
+      "notes": "Merge all upstream AI outputs into a single context object for the outline step."
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a content architect for Data Fight Central.\n\nCreate a STRUCTURAL OUTLINE for the content piece. This is NOT the final content — it's the blueprint.\n\nOutput (JSON):\n1. hook_idea: The attention-grabbing opener (1-2 sentences max, designed to stop scrolling)\n2. story_or_idea_summary: The main content body guide (3-5 bullet points of what to cover)\n3. pivot_or_punchline: The key insight, stat, or twist that makes this memorable\n4. cta_idea: The engagement driver — what the reader should do next\n5. hashtag_strategy: Object with { primary: [3-5 core hashtags], trending: [2-3 piggyback hashtags], branded: ['#DFC', '#DataFightCentral', plus 1-2 sport-specific] }\n6. platform_notes: Object with specific formatting notes per platform (character limits, carousel slide count, reel duration, etc.)\n7. media_suggestion: What visual/media should accompany this? (poster, fight clip, stat graphic, meme, photo, none)\n\nReturn JSON only.",
+              "role": "system"
+            },
+            {
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "a3054c9e-2b81-48f2-a971-6be4866450b5",
+      "name": "Outline",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1552, 496],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account 2"
+        }
+      },
+      "notes": "GPT-4.1 at 0.7 temp — creative structure.\nOutputs: hook, story guide, punchline, CTA, hashtag strategy, platform notes, media suggestion."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"allContext\": {\n    \"originalRequest\": $('Edit Fields').item.json,\n    \"extractedMeta\": $('Information Extractor').item.json,\n    \"intent\": $('Generate Intent').item.json,\n    \"strategy\": $('Strategy').item.json,\n    \"emotionalFrame\": $('Emotional Framing').item.json,\n    \"outline\": $('Outline').item.json\n  }\n} }}",
+        "options": {}
+      },
+      "id": "e5584bfe-3eff-4b38-9650-8e9290f6f421",
+      "name": "Format Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1904, 496],
+      "notes": "Consolidate ALL upstream context into a single payload for the final generation step."
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are the content engine for Data Fight Central (DFC) — the world's first AI-powered combat sports platform.\n\nYou have been given:\n- Extracted metadata (topic, platform, niche, audience)\n- Strategic intent (angle, hook type, CTA)\n- Content strategy (belief to address, myth to bust, narrative device)\n- Emotional framing (arc, tone modifiers, charged phrases)\n- Structural outline (hook, body guide, punchline, CTA)\n\nNow CREATE THE FINAL CONTENT. This is the polished, ready-to-publish output.\n\nRules:\n1. Match the platform's native format and character limits exactly\n2. Use the emotional arc — start where it says, end where it says\n3. Incorporate at least 3 of the charged phrases naturally\n4. The hook MUST stop a scroller in under 2 seconds\n5. Never use generic filler ('In the world of MMA...', 'Combat sports fans know...')\n6. Write like a fight insider, not a marketing department\n7. Include hashtags from the hashtag strategy\n8. If multiple platforms, generate SEPARATE versions optimized for each\n\nOutput JSON:\n{\n  \"posts\": [\n    {\n      \"platform\": \"instagram\",\n      \"postType\": \"text|carousel|reel|story\",\n      \"caption\": \"the full post text with hashtags\",\n      \"slides\": [\"slide 1 text\", ...],\n      \"alt_text\": \"accessibility description\",\n      \"best_time_to_post\": \"e.g., Tuesday 7pm AEST\"\n    }\n  ],\n  \"headline\": \"1-line headline for internal feed\",\n  \"summary\": \"2-3 sentence summary for DFC social feed\",\n  \"suggestedMedia\": \"description of ideal visual\",\n  \"viralScore\": 1-10,\n  \"toneSummary\": \"how this content feels in 3 words\"\n}",
+              "role": "system"
+            },
+            {
+              "content": "={{ JSON.stringify($json.allContext) }}"
+            }
+          ]
+        },
+        "options": {
+          "frequency_penalty": 0.3,
+          "presence_penalty": 0.6,
+          "temperature": 0.9
+        }
+      },
+      "id": "370e63c3-be1d-42b6-8f74-0d3bd64e338c",
+      "name": "Generate Content",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [2128, 496],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account 2"
+        }
+      },
+      "notes": "GPT-4o at 0.9 temp — premium model for final creative output.\nFrequency penalty 0.3, presence penalty 0.6 for variety.\nGenerates platform-specific posts ready to publish."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse the AI output and structure for DFC pipeline\nconst input = $input.all();\nconst aiOutput = input[0].json;\nconst originalRequest = $('Edit Fields').item.json;\n\n// Parse the AI response (may be nested in message.content)\nlet content;\ntry {\n  content = typeof aiOutput === 'string' ? JSON.parse(aiOutput) : aiOutput;\n  if (content.message && content.message.content) {\n    content = JSON.parse(content.message.content);\n  }\n} catch (e) {\n  content = { posts: [], headline: 'Generation failed', summary: '', viralScore: 0 };\n}\n\n// Build DFC pipeline payload\nconst output = {\n  requestId: originalRequest.requestId,\n  callbackUrl: originalRequest.callbackUrl,\n  source: 'n8n_content_brain',\n  generatedAt: new Date().toISOString(),\n  platform: originalRequest.platform,\n  postType: originalRequest.postType,\n  brandTone: originalRequest.brandTone,\n  niche: originalRequest.niche,\n  objective: originalRequest.objective,\n  \n  // AI-generated content\n  posts: content.posts || [],\n  headline: content.headline || '',\n  summary: content.summary || '',\n  suggestedMedia: content.suggestedMedia || '',\n  viralScore: content.viralScore || 0,\n  toneSummary: content.toneSummary || '',\n  \n  // Pipeline metadata\n  pipeline: {\n    extractedMeta: $('Information Extractor').item.json,\n    intent: $('Generate Intent').item.json,\n    strategy: $('Strategy').item.json,\n    emotionalFrame: $('Emotional Framing').item.json,\n    outline: $('Outline').item.json\n  }\n};\n\nreturn [{ json: output }];"
+      },
+      "id": "b7d06539-8ea1-45c0-9b78-bf57735cc2f1",
+      "name": "stringifyJSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2480, 496],
+      "notes": "Parse AI output and structure the final DFC pipeline payload with all context."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "4331a467-24ea-497e-9edc-ba8d0194fe9b",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [2704, 496],
+      "notes": "Return the full generated content back to the DFC Cloud Function caller."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.callbackUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "41cfa217-43f4-4fda-8a29-4cc398bf6db6",
+      "name": "Send to Callback",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [2928, 496],
+      "notes": "POST generated content back to DFC Cloud Function callback.\nURL: https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback"
+    },
+    {
+      "parameters": {
+        "content": "## DFC Content Brain — Production Pipeline\n\n**4 Entry Points:**\n1. Content Brain Webhook → `/dfc-content-brain` (Cloud Functions)\n2. PPV Event Webhook → `/ppv-event-created` (Event Seeder)\n3. Post-Fight Trigger → `/post-fight-results` (Post-Event)\n4. Countdown T-24h → Scheduled hourly (Drip Scheduler)\n\n**6-Stage AI Pipeline:**\nExtract → Intent → Strategy → Emotion → Outline → Generate\n\n**Models:**\n- Information Extractor: GPT-4.1-Mini (0.4 temp)\n- Generate Intent: GPT-4.1 (0.2 temp)\n- Strategy: GPT-4.1 (0.6 temp)\n- Emotional Framing: GPT-4.1 (0.3 temp)\n- Outline: GPT-4.1 (0.7 temp)\n- Generate Content: GPT-4o (0.9 temp)\n\n**Output → Respond to Webhook + Callback to Cloud Function**\n→ Firestore: ai_generated_content\n→ Auto-publish: social_posts\n→ Auto-distribute: social_engine_posts → Blotato 9-platform",
+        "height": 420,
+        "width": 380,
+        "color": 5
+      },
+      "id": "sticky-production-info",
+      "name": "Pipeline Info",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-1200, -200]
+    }
+  ],
+  "connections": {
+    "Content Brain Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PPV Event Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse PPV Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-Fight Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Post-Fight Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Countdown T-24h": {
+      "main": [
+        [
+          {
+            "node": "Fetch Upcoming Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Upcoming Events": {
+      "main": [
+        [
+          {
+            "node": "Check Event Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Event Time": {
+      "main": [
+        [
+          {
+            "node": "Generate Countdown Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Countdown Content": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse PPV Event": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post-Fight Content": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Tag Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tag Execution": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Generate Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Intent": {
+      "main": [
+        [
+          {
+            "node": "Strategy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strategy": {
+      "main": [
+        [
+          {
+            "node": "Emotional Framing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emotional Framing": {
+      "main": [
+        [
+          {
+            "node": "Format Emotional Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Emotional Data": {
+      "main": [
+        [
+          {
+            "node": "Outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outline": {
+      "main": [
+        [
+          {
+            "node": "Format Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Input": {
+      "main": [
+        [
+          {
+            "node": "Generate Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Content": {
+      "main": [
+        [
+          {
+            "node": "stringifyJSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "stringifyJSON": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send to Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3e289b1190425b761f77556cbbcbfc5d5a4ce1d5614d5318dcfd3c833b95fb68"
+  }
+}

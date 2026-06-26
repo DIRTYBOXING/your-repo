@@ -1,0 +1,985 @@
+[
+  {
+    "id": "post1",
+    "type": "gold_mentor",
+    "author": "Coach Gold",
+    "content": "Gold Mentor: Book a 1-on-1 session for advanced fight strategy.",
+    "location": {
+      "latitude": 37.7749,
+      "longitude": -122.4194,
+      "name": "Downtown Fight Gym"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "embedHtml": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png"
+  },
+  {
+    "id": "post2",
+    "type": "pink_shield",
+    "author": "Pink Shield Appeal",
+    "content": "Support our Pink Shield campaign for women's self-defense classes!",
+    "location": {
+      "latitude": 34.0522,
+      "longitude": -118.2437,
+      "name": "LA Women’s Center"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "embedHtml": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png"
+  },
+  {
+    "id": "post3",
+    "type": "event",
+    "author": "Fight Night Promotions",
+    "content": "Live MMA event this Friday! Tickets available now.",
+    "location": {
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "name": "NYC Arena"
+    },
+    "promoted": false,
+    "shareUrl": "",
+    "embedHtml": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png"
+  },
+  {
+    "id": "post4",
+    "type": "gym_advertising",
+    "author": "Eastside Boxing Gym",
+    "content": "Join Eastside Gym for free sparring sessions every weekend!",
+    "location": {
+      "latitude": 41.8781,
+      "longitude": -87.6298,
+      "name": "Eastside Boxing Gym"
+    },
+    "promoted": false,
+    "shareUrl": "",
+    "embedHtml": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png"
+  },
+  {
+    "id": "post5",
+    "type": "mentor_advertising",
+    "author": "Coach Rivera",
+    "content": "Mentor available for youth and amateur fighters. Book now!",
+    "location": {
+      "latitude": 29.7604,
+      "longitude": -95.3698,
+      "name": "Houston Fight Club"
+    },
+    "promoted": false,
+    "shareUrl": "",
+    "embedHtml": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png"
+  },
+  {
+    "id": "ultimate-legends-apr-2026",
+    "type": "event",
+    "author": "Ultimate Legends Promotions",
+    "content": "🔥 ULTIMATE LEGENDS FIGHT NIGHT — WBC Silver Australian Title 🔥\n\nApril 24, 2026 • Melbourne Pavilion\nMain Event: Jordan Roesler — WBC Silver Australian Title\nFather James Roesler in the corner\n\nPromoted by John Scida & Joey Demicoli\nEst. 1992 — 30+ years of Melbourne combat sports\n\nPro Boxing | K1 | Kickboxing | Muay Thai\nLive on Live Combat Sports\n\n#UltimateLegends #WBC #JordanRoesler #Melbourne",
+    "location": {
+      "latitude": -37.7876,
+      "longitude": 144.9278,
+      "name": "Melbourne Pavilion, Kensington VIC"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.ultimatelegends.com.au/contact",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#UltimateLegends",
+      "#WBC",
+      "#JordanRoesler",
+      "#JohnScida",
+      "#JoeyDemicoli",
+      "#Melbourne",
+      "#Boxing",
+      "#K1",
+      "#MuayThai",
+      "#Kickboxing",
+      "#ThaiVsAussie",
+      "#PPV",
+      "#LiveCombatSports",
+      "#DataFightCentral",
+      "#DFC",
+      "#CombatSports",
+      "#AustralianFighting",
+      "#ProFighting",
+      "#FightNight"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/ultimatelegendsau",
+      "instagram": "https://www.instagram.com/ultimatelegendspromotions/"
+    },
+    "distributionRegions": ["AU", "TH", "IN", "NZ", "PH"]
+  },
+  {
+    "id": "roesler-father-son-legacy",
+    "type": "event",
+    "author": "Ultimate Legends Promotions",
+    "content": "🏆 FATHER & SON LEGACY — The Roesler Family 🏆\n\nJordan Roesler headlines the WBC Silver Australian Title at Melbourne Pavilion. His father James Roesler has been in the corner since day one. Trained under Sensei John Scida since the Ultimate Muay Thai era. Joey Demicoli co-promoting.\n\nThis is what a real combat sports family looks like.\n\n#FatherAndSon #UltimateLegends #CombatSportsFamily",
+    "location": {
+      "latitude": -37.7876,
+      "longitude": 144.9278,
+      "name": "Melbourne Pavilion, Kensington VIC"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.ultimatelegends.com.au/contact",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#FatherAndSon",
+      "#UltimateLegends",
+      "#CombatSportsFamily",
+      "#JordanRoesler",
+      "#JamesRoesler",
+      "#JohnScida",
+      "#JoeyDemicoli",
+      "#Melbourne",
+      "#WBC",
+      "#Boxing",
+      "#MuayThai",
+      "#DataFightCentral",
+      "#DFC",
+      "#LiveCombatSports"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/ultimatelegendsau",
+      "instagram": "https://www.instagram.com/ultimatelegendspromotions/"
+    },
+    "distributionRegions": ["AU", "TH", "IN", "NZ"]
+  },
+
+  {
+    "id": "ufc-308-main-event",
+    "type": "event",
+    "author": "UFC",
+    "content": "🔥 UFC 308 — ILIA TOPURIA vs MAX HOLLOWAY 🔥\n\nFeatherweight Title on the line at Etihad Arena, Abu Dhabi.\nMain Card starts 10am AEST / 7pm ET.\n\nTopuria (16-0) vs Holloway (26-7) — undefeated KO power meets BMF legend.\n\nDistributed globally by DFC — The Promoter of Promoters.\n\n#UFC308 #Topuria #Holloway #MMA #AbuDhabi",
+    "location": {
+      "latitude": 24.5374,
+      "longitude": 54.4349,
+      "name": "Etihad Arena, Abu Dhabi UAE"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.ufc.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#UFC308",
+      "#Topuria",
+      "#Holloway",
+      "#MMA",
+      "#UFC",
+      "#AbuDhabi",
+      "#Featherweight",
+      "#TitleFight",
+      "#BMF",
+      "#DataFightCentral",
+      "#DFC",
+      "#PromoterOfPromoters"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/UFC",
+      "instagram": "https://www.instagram.com/ufc/"
+    },
+    "distributionRegions": ["US", "AU", "AE", "GB", "CA", "NZ", "BR", "MX"]
+  },
+  {
+    "id": "one-championship-168",
+    "type": "event",
+    "author": "ONE Championship",
+    "content": "👊 ONE 168 — DENVER LIVE 👊\n\nONE Championship makes its US debut in Denver, Colorado.\nSuperlek vs Tawanchai — Muay Thai superbout.\nStamp Fairtex headlines the atomweight grand prix final.\n\n🌏 Distributed by DFC — connecting 40+ countries.\n\n#ONEChampionship #ONE168 #MuayThai #MMA #Denver",
+    "location": {
+      "latitude": 39.7392,
+      "longitude": -104.9903,
+      "name": "Ball Arena, Denver CO"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.onefc.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#ONEChampionship",
+      "#ONE168",
+      "#Superlek",
+      "#Tawanchai",
+      "#StampFairtex",
+      "#MuayThai",
+      "#MMA",
+      "#Denver",
+      "#DataFightCentral",
+      "#DFC",
+      "#GlobalDistribution"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/ONEChampionship",
+      "instagram": "https://www.instagram.com/onechampionship/"
+    },
+    "distributionRegions": ["US", "TH", "SG", "PH", "JP", "AU", "GB", "IN"]
+  },
+  {
+    "id": "bkfc-rising-star-alert",
+    "type": "talent_discovery",
+    "author": "DFC Talent Scout",
+    "content": "🚨 DFC TALENT ALERT — RISING STAR DISCOVERED 🚨\n\nMike Perry just crossed 2.1M Instagram followers.\n580K YouTube subscribers. 12-fight BKFC win streak.\n\nDFC Breakout Score: 94/100\nMarketability Index: 0.97\nSocial Reach: TOP 1% combat athletes globally\n\nThis is how DFC finds the next big thing — we track social signals, fight records, and fan engagement across every platform.\n\n#TalentDiscovery #BKFC #MikePerry #RisingStar #DFC",
+    "location": {
+      "latitude": 28.5383,
+      "longitude": -81.3792,
+      "name": "BKFC HQ, Orlando FL"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.bareknuckle.tv",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#BKFC",
+      "#BareKnuckle",
+      "#MikePerry",
+      "#TalentDiscovery",
+      "#RisingStar",
+      "#BreakoutScore",
+      "#SocialMedia",
+      "#DataFightCentral",
+      "#DFC",
+      "#NextBigThing"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/bareknucklefc",
+      "instagram": "https://www.instagram.com/bareknucklefc/"
+    },
+    "distributionRegions": ["US", "GB", "AU", "CA", "MX", "BR"]
+  },
+  {
+    "id": "dfc-small-promoter-spotlight",
+    "type": "promoter_spotlight",
+    "author": "DFC Distribution Network",
+    "content": "📡 DFC PROMOTER SPOTLIGHT — SMALL GYM, GLOBAL REACH 📡\n\nBefore DFC: Eastside Boxing Gym in Chicago ran local smoker shows for 80 people.\n\nAfter DFC: Their last card was streamed to 14 countries with 4,200 concurrent viewers.\n\nWe amplified their social media from 340 followers to 8,700+ across Facebook, Instagram & TikTok.\n\nDFC doesn't compete with promoters — we MAGNIFY them. Every small show deserves a global stage.\n\n#PromoterOfPromoters #SmallGymBigDreams #DFC",
+    "location": {
+      "latitude": 41.8781,
+      "longitude": -87.6298,
+      "name": "Eastside Boxing, Chicago IL"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#PromoterOfPromoters",
+      "#SmallGymBigDreams",
+      "#GlobalReach",
+      "#Streaming",
+      "#CombatSports",
+      "#Boxing",
+      "#Chicago",
+      "#DataFightCentral",
+      "#DFC",
+      "#Amplify"
+    ],
+    "socialLinks": {},
+    "distributionRegions": ["US", "AU", "GB", "CA", "MX", "NZ"]
+  },
+  {
+    "id": "jake-paul-phenomenon-analysis",
+    "type": "talent_discovery",
+    "author": "DFC Analytics Engine",
+    "content": "📊 THE JAKE PAUL EFFECT — DFC DATA DEEP DIVE 📊\n\nHow one social media creator disrupted boxing:\n\n📱 Instagram: 21.5M followers\n🎬 YouTube: 20.8M subscribers\n💰 PPV buys: 1.5M+ (Tyson fight)\n🥊 Record: 11-1 (7 KOs)\n\nDFC Marketability: 0.99/1.0\nDFC Breakout Score: 100/100\nCrossover Impact: LEGENDARY\n\nThis is why DFC scouts social media giants — the next main event ticket seller could be on TikTok RIGHT NOW with 500K followers and no promoter.\n\nWe find them. We connect them. We distribute them globally.\n\n#JakePaul #MostValuablePromoters #SocialMediaFighter #DFC",
+    "location": {
+      "latitude": 33.4484,
+      "longitude": -112.074,
+      "name": "Most Valuable Promotions, Scottsdale AZ"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#JakePaul",
+      "#MVP",
+      "#Boxing",
+      "#SocialMediaFighter",
+      "#TalentDiscovery",
+      "#CrossoverBoxing",
+      "#PPV",
+      "#DataFightCentral",
+      "#DFC",
+      "#BreakoutScore",
+      "#Analytics"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "US",
+      "GB",
+      "AU",
+      "CA",
+      "MX",
+      "BR",
+      "AE",
+      "SA",
+      "JP"
+    ]
+  },
+  {
+    "id": "dazn-global-boxing",
+    "type": "event",
+    "author": "DAZN Boxing",
+    "content": "🥊 DAZN FIGHT NIGHT — GLOBAL CARD 🥊\n\nDAZN x Matchroom Boxing — Riyadh Season continues.\n\nLive from Kingdom Arena, Saudi Arabia.\n12-fight undercard featuring fighters from 9 countries.\n\nDistributed by DFC to 190+ territories.\nStream on DAZN. Find it on DFC.\n\n#DAZN #Matchroom #RiyadhSeason #Boxing",
+    "location": {
+      "latitude": 24.7136,
+      "longitude": 46.6753,
+      "name": "Kingdom Arena, Riyadh SA"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.dazn.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#DAZN",
+      "#Matchroom",
+      "#RiyadhSeason",
+      "#Boxing",
+      "#SaudiArabia",
+      "#GlobalBoxing",
+      "#PPV",
+      "#DataFightCentral",
+      "#DFC",
+      "#PromoterOfPromoters"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/DAZN",
+      "instagram": "https://www.instagram.com/daborskis/"
+    },
+    "distributionRegions": [
+      "SA",
+      "GB",
+      "US",
+      "AU",
+      "MX",
+      "JP",
+      "DE",
+      "ES",
+      "IT"
+    ]
+  },
+  {
+    "id": "hex-fight-series-27",
+    "type": "event",
+    "author": "Hex Fight Series",
+    "content": "🏆 HEX FIGHT SERIES 27 — WAR ON THE SHORE 🏆\n\nMelbourne Pavilion, Kensington VIC\n12-bout card — Live on UFC Fight Pass.\n\nAustralia's best MMA talent under one roof.\nFair fighter purses. Professional production.\n\nFighter applications STILL OPEN for undercard.\n\nDFC amplifying to global MMA audience.\n\n#HexFightSeries #MMA #Melbourne #UFCFightPass",
+    "location": {
+      "latitude": -37.7876,
+      "longitude": 144.9278,
+      "name": "Melbourne Pavilion, Kensington VIC"
+    },
+    "promoted": false,
+    "shareUrl": "https://hexfs.com.au",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#HexFightSeries",
+      "#MMA",
+      "#Melbourne",
+      "#UFCFightPass",
+      "#AustralianMMA",
+      "#WarOnTheShore",
+      "#CombatSports",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/HexFightSeries",
+      "instagram": "https://www.instagram.com/hexfightseries/"
+    },
+    "distributionRegions": ["AU", "NZ", "US", "GB", "TH"]
+  },
+  {
+    "id": "tiktok-fighter-discovery",
+    "type": "talent_discovery",
+    "author": "DFC Social Scanner",
+    "content": "🔍 DFC SOCIAL SCANNER — TIKTOK COMBAT TALENT 🔍\n\nOur AI scanned 12,000+ combat sport TikTok accounts this week.\n\n🏆 TOP DISCOVERIES:\n• @shadowboxer_kai — 890K followers, 23M total views, amateur boxer from Detroit. Zero management. Zero promoter.\n• @muaythai_princess — 1.2M followers, Lumpinee stadium champion, no international exposure.\n• @brawlking_405 — 670K followers, bare knuckle content creator, ready to fight.\n\nDFC reaches out. DFC connects them with promoters. DFC distributes their fights globally.\n\nYOUR next headliner might be scrolling TikTok right now.\n\n#TalentDiscovery #TikTok #CombatSports #DFC",
+    "location": {
+      "latitude": 37.7749,
+      "longitude": -122.4194,
+      "name": "DFC HQ — Global Operations"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#TikTok",
+      "#TalentDiscovery",
+      "#SocialScanner",
+      "#AI",
+      "#Boxing",
+      "#MuayThai",
+      "#BareKnuckle",
+      "#BKFC",
+      "#DataFightCentral",
+      "#DFC",
+      "#NextBigThing",
+      "#Viral"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "US",
+      "TH",
+      "AU",
+      "GB",
+      "MX",
+      "BR",
+      "PH",
+      "JP",
+      "DE"
+    ]
+  },
+  {
+    "id": "triller-fight-club",
+    "type": "event",
+    "author": "TrillerTV+",
+    "content": "🎬 TRILLERTV+ FIGHT NIGHT 🎬\n\nCrossover boxing meets real combat sports.\nLive from Crypto.com Arena, Los Angeles.\n\nTrillerTV+ brings the entertainment. DFC brings the global audience.\n\nAvailable on TrillerTV+ and distributed via DFC.\n\n#TrillerTV #Boxing #Crossover #LA",
+    "location": {
+      "latitude": 34.043,
+      "longitude": -118.2673,
+      "name": "Crypto.com Arena, Los Angeles CA"
+    },
+    "promoted": false,
+    "shareUrl": "https://www.trillertv.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#TrillerTV",
+      "#Boxing",
+      "#CrossoverBoxing",
+      "#LosAngeles",
+      "#Entertainment",
+      "#PPV",
+      "#Combat",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/traborskis",
+      "instagram": "https://www.instagram.com/trillerfightclub/"
+    },
+    "distributionRegions": ["US", "CA", "GB", "AU", "MX"]
+  },
+  {
+    "id": "dfc-email-outreach-pipeline",
+    "type": "platform_feature",
+    "author": "DFC Outreach Engine",
+    "content": "📧 DFC OUTREACH PIPELINE — ACTIVE 📧\n\nHow DFC connects with talent and promoters:\n\n1️⃣ DISCOVER — AI scans social media (TikTok, Instagram, YouTube, Facebook) for rising combat athletes\n2️⃣ ANALYZE — Breakout Score, Marketability Index, Social Reach calculated\n3️⃣ REACH OUT — Automated email campaigns via SendGrid + DFC Messenger + Facebook/Instagram DM pipelines\n4️⃣ ONBOARD — One-click promoter or fighter profile setup\n5️⃣ AMPLIFY — Global distribution across DFC's 19 streaming platforms\n\n🔗 Pipelines: Email | Facebook Messenger | Instagram DM | In-App DFC Messenger | Push Notifications\n\nEvery fighter and promoter is one message away from global exposure.\n\n#OutreachPipeline #TalentDiscovery #DFC #Automation",
+    "location": {
+      "latitude": -37.8136,
+      "longitude": 144.9631,
+      "name": "DFC Operations — Melbourne AU"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#OutreachPipeline",
+      "#TalentDiscovery",
+      "#Automation",
+      "#Email",
+      "#Messenger",
+      "#SocialMedia",
+      "#GlobalExposure",
+      "#DataFightCentral",
+      "#DFC",
+      "#PromoterOfPromoters"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "AU",
+      "US",
+      "GB",
+      "TH",
+      "PH",
+      "JP",
+      "NZ",
+      "CA",
+      "MX",
+      "BR",
+      "DE",
+      "AE"
+    ]
+  },
+  {
+    "id": "eternal-mma-42",
+    "type": "event",
+    "author": "Eternal MMA",
+    "content": "⚔️ ETERNAL MMA 42 — BRISBANE ⚔️\n\n14 bouts featuring Queensland, NSW, and international fighters.\nLive on UFC Fight Pass.\n\nOne of Australia's top regional MMA promotions — now amplified globally by DFC.\n\nLocal show. Global audience. That's the DFC difference.\n\n#EternalMMA #MMA #Brisbane #UFCFightPass",
+    "location": {
+      "latitude": -27.4698,
+      "longitude": 153.0251,
+      "name": "Fortitude Music Hall, Brisbane QLD"
+    },
+    "promoted": false,
+    "shareUrl": "https://www.eternalmma.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#EternalMMA",
+      "#MMA",
+      "#Brisbane",
+      "#Queensland",
+      "#UFCFightPass",
+      "#AustralianMMA",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/EternalMMA",
+      "instagram": "https://www.instagram.com/eternalmma/"
+    },
+    "distributionRegions": ["AU", "NZ", "US", "GB"]
+  },
+  {
+    "id": "youtube-fighter-breakout",
+    "type": "talent_discovery",
+    "author": "DFC Breakout Tracker",
+    "content": "📈 DFC BREAKOUT TRACKER — YOUTUBE COMBAT CREATORS 📈\n\nTop YouTube combat sport accounts trending this week:\n\n🥇 Hard2Hurt — 2.3M subs, self-defense + real fighting analysis\n🥈 The Fight Library — 890K subs, deep dive combat history\n🥉 Muay Thai Scholar — 450K subs, technique breakdowns going viral\n\nDFC is reaching out to all three with distribution partnership offers.\n\nEmail pipeline: ACTIVE ✅\nFacebook Messenger: ACTIVE ✅\nInstagram DM: ACTIVE ✅\nIn-App DFC Message: ACTIVE ✅\n\nWho's next? DFC's AI never stops scanning.\n\n#YouTube #CombatCreators #TalentDiscovery #DFC",
+    "location": {
+      "latitude": 34.0522,
+      "longitude": -118.2437,
+      "name": "DFC Content Operations — Global"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#YouTube",
+      "#CombatCreators",
+      "#ContentCreator",
+      "#TalentDiscovery",
+      "#Breakout",
+      "#Trending",
+      "#DataFightCentral",
+      "#DFC",
+      "#DistributionPartnership"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "US",
+      "GB",
+      "AU",
+      "CA",
+      "NZ",
+      "DE",
+      "FR",
+      "JP",
+      "BR"
+    ]
+  },
+  {
+    "id": "bellator-pfl-merger",
+    "type": "event",
+    "author": "PFL (Professional Fighters League)",
+    "content": "💥 PFL SUPER FIGHTS — BELLATOR CHAMPIONS SERIES 💥\n\nThe merger that shook MMA. Bellator champions vs PFL champions.\nLive from Wembley Arena, London.\n\nPFL brings the tournament format. DFC brings global distribution.\n\n#PFL #Bellator #MMA #London #SuperFights",
+    "location": {
+      "latitude": 51.556,
+      "longitude": -0.2795,
+      "name": "OVO Arena Wembley, London UK"
+    },
+    "promoted": false,
+    "shareUrl": "https://www.pflmma.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#PFL",
+      "#Bellator",
+      "#MMA",
+      "#London",
+      "#Wembley",
+      "#SuperFights",
+      "#ChampVsChamp",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/PFLmma",
+      "instagram": "https://www.instagram.com/pflmma/"
+    },
+    "distributionRegions": ["GB", "US", "AU", "CA", "BR", "IE", "DE", "FR"]
+  },
+  {
+    "id": "dfc-messenger-pipeline-live",
+    "type": "platform_feature",
+    "author": "DFC Messenger System",
+    "content": "💬 DFC MESSENGER PIPELINES — ALL CHANNELS LIVE 💬\n\nHow we reach fighters, promoters, gyms & creators:\n\n📧 EMAIL — SendGrid-powered campaigns. Event promos, talent spotlights, weekly digests, flash sales, welcome series, re-engagement.\n\n💬 FACEBOOK MESSENGER — Direct outreach to promotion pages and fighter accounts. Partnership proposals delivered instantly.\n\n📱 INSTAGRAM DM — Connect with talent where they live. 80% of combat athletes are most active on IG.\n\n🔔 PUSH NOTIFICATIONS — 11 notification types. Fight alerts, PPV reminders, talent alerts. Quiet hours respected.\n\n📨 DFC IN-APP MESSENGER — Real-time Socket.io chat. Group chats (3-50 members). Moderated fan-to-fighter Q&A.\n\nEvery channel flows through DFC's trust & safety pipeline before delivery.\n\n#Messenger #Outreach #Pipeline #DFC",
+    "location": {
+      "latitude": -37.8136,
+      "longitude": 144.9631,
+      "name": "DFC Global Comms — Melbourne AU"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#Messenger",
+      "#Email",
+      "#Facebook",
+      "#Instagram",
+      "#PushNotifications",
+      "#Outreach",
+      "#Pipeline",
+      "#DataFightCentral",
+      "#DFC",
+      "#PromoterOfPromoters"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "AU",
+      "US",
+      "GB",
+      "TH",
+      "NZ",
+      "CA",
+      "PH",
+      "JP",
+      "MX",
+      "BR"
+    ]
+  },
+
+  {
+    "id": "brave-cf-pakistan-rising",
+    "type": "event",
+    "author": "BRAVE Combat Federation",
+    "content": "🇵🇰 BRAVE CF — PAKISTAN RISING 🇵🇰\n\nBRAVE Combat Federation returns to Islamabad with a stacked card.\nPakistani MMA is exploding — Ahmed Mujtaba leads the charge.\n\nLive on PTV Sports & Tapmad in Pakistan.\nGlobal stream via BRAVE CF App + DFC.\n\nPakistan's combat sports scene is REAL. DFC is here to amplify it.\n\n#BRAVECF #PakistanMMA #AhmedMujtaba #Islamabad",
+    "location": {
+      "latitude": 33.6844,
+      "longitude": 73.0479,
+      "name": "Liaquat Gymnasium, Islamabad PK"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.bravecf.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#BRAVECF",
+      "#PakistanMMA",
+      "#AhmedMujtaba",
+      "#Islamabad",
+      "#PTVSports",
+      "#Tapmad",
+      "#SouthAsianMMA",
+      "#DataFightCentral",
+      "#DFC",
+      "#PromoterOfPromoters"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/BraveCombatFederation",
+      "instagram": "https://www.instagram.com/baborskicf/"
+    },
+    "distributionRegions": ["PK", "IN", "AE", "BH", "SA", "GB", "AU", "US"]
+  },
+  {
+    "id": "super-fight-league-india",
+    "type": "event",
+    "author": "Super Fight League",
+    "content": "🇮🇳 SUPER FIGHT LEAGUE — INDIA'S MMA BATTLEGROUND 🇮🇳\n\nIndia's premier MMA promotion returns to Mumbai.\n8-fight card featuring India's best mixed martial artists.\n\nLive on Sony LIV & JioCinema across India.\nGlobal distribution via DFC to 40+ countries.\n\n1.4 billion people. Rising combat culture. DFC connects India to the world.\n\n#SuperFightLeague #SFL #IndiaMMA #Mumbai #SonyLIV",
+    "location": {
+      "latitude": 19.076,
+      "longitude": 72.8777,
+      "name": "NSCI Dome, Mumbai IN"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.superfightleague.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#SuperFightLeague",
+      "#SFL",
+      "#IndiaMMA",
+      "#Mumbai",
+      "#SonyLIV",
+      "#JioCinema",
+      "#Hotstar",
+      "#SouthAsianMMA",
+      "#DataFightCentral",
+      "#DFC",
+      "#GlobalDistribution"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/superfightleague",
+      "instagram": "https://www.instagram.com/superfightleague/"
+    },
+    "distributionRegions": ["IN", "PK", "AE", "GB", "AU", "US", "CA", "SG"]
+  },
+  {
+    "id": "matrix-fight-night-delhi",
+    "type": "event",
+    "author": "Matrix Fight Night",
+    "content": "💥 MATRIX FIGHT NIGHT — NEW DELHI 💥\n\nIndia's fastest-growing MMA promotion hits the capital.\nFeaturing fighters from India, Nepal, Sri Lanka, and Bangladesh.\n\nLive on FanCode & Star Sports.\nDFC amplifying across South Asia and globally.\n\nSouth Asian MMA is coming. The world needs to see it.\n\n#MatrixFightNight #IndiaMMA #NewDelhi #FanCode",
+    "location": {
+      "latitude": 28.6139,
+      "longitude": 77.209,
+      "name": "Indira Gandhi Arena, New Delhi IN"
+    },
+    "promoted": true,
+    "shareUrl": "https://matrixfightnight.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#MatrixFightNight",
+      "#IndiaMMA",
+      "#NewDelhi",
+      "#FanCode",
+      "#StarSports",
+      "#SouthAsia",
+      "#MixedMartialArts",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {},
+    "distributionRegions": ["IN", "PK", "NP", "LK", "BD", "AE", "GB", "AU"]
+  },
+  {
+    "id": "rizin-ff-japan",
+    "type": "event",
+    "author": "RIZIN Fighting Federation",
+    "content": "🇯🇵 RIZIN FF — SAITAMA SUPER ARENA 🇯🇵\n\nJapan's biggest MMA promotion returns to the legendary arena.\nRIZIN carries the spirit of PRIDE FC — where legends are made.\n\nLive on ABEMA & U-NEXT in Japan.\nGlobal stream via DFC.\n\nJapanese MMA built this sport. DFC honours that legacy.\n\n#RIZIN #Japan #MMA #Saitama #ABEMA",
+    "location": {
+      "latitude": 35.8948,
+      "longitude": 139.6326,
+      "name": "Saitama Super Arena, Saitama JP"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.rizinff.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#RIZIN",
+      "#RizinFF",
+      "#JapaneseMMA",
+      "#Saitama",
+      "#ABEMA",
+      "#UNEXT",
+      "#PRIDEFC",
+      "#MMA",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "instagram": "https://www.instagram.com/rizin_pr/"
+    },
+    "distributionRegions": ["JP", "US", "AU", "GB", "TH", "KR", "SG"]
+  },
+  {
+    "id": "efc-worldwide-south-africa",
+    "type": "event",
+    "author": "EFC Worldwide",
+    "content": "🇿🇦 EFC WORLDWIDE — AFRICA'S PREMIER MMA 🇿🇦\n\nEFC returns to Carnival City, Johannesburg.\n12-fight card. Africa's best fighters under one roof.\n\nLive on SuperSport across Africa.\nGlobal distribution via DFC.\n\nAfrican combat sports are underrated. DFC is changing that.\n\n#EFC #AfricanMMA #Johannesburg #SuperSport",
+    "location": {
+      "latitude": -26.2041,
+      "longitude": 28.0473,
+      "name": "Carnival City, Johannesburg ZA"
+    },
+    "promoted": true,
+    "shareUrl": "https://efcworldwide.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#EFC",
+      "#EFCWorldwide",
+      "#AfricanMMA",
+      "#Johannesburg",
+      "#SuperSport",
+      "#SouthAfrica",
+      "#MMA",
+      "#DataFightCentral",
+      "#DFC",
+      "#PromoterOfPromoters"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/EFCworldwide",
+      "instagram": "https://www.instagram.com/efcworldwide/"
+    },
+    "distributionRegions": ["ZA", "KE", "NG", "GH", "GB", "AU", "US"]
+  },
+  {
+    "id": "combate-global-mexico",
+    "type": "event",
+    "author": "Combate Global",
+    "content": "🇲🇽 COMBATE GLOBAL — MEXICO CITY 🇲🇽\n\nLatin America's biggest MMA promotion — live from Arena CDMX.\nSpanish-language combat sports for 400M+ Spanish speakers worldwide.\n\nLive on ESPN Deportes & TV Azteca.\nDFC distributing to all Latin American markets + US Hispanic audience.\n\n#CombateGlobal #MMA #Mexico #ESPNDeportes #TVAzteca",
+    "location": {
+      "latitude": 19.4326,
+      "longitude": -99.1332,
+      "name": "Arena CDMX, Mexico City MX"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.combateglobal.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#CombateGlobal",
+      "#MexicanMMA",
+      "#CDMX",
+      "#ESPNDeportes",
+      "#TVAzteca",
+      "#LatinAmerica",
+      "#MMA",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "facebook": "https://www.facebook.com/CombateGlobal",
+      "instagram": "https://www.instagram.com/combateglobal/"
+    },
+    "distributionRegions": ["MX", "BR", "AR", "CO", "CL", "PE", "US", "ES"]
+  },
+  {
+    "id": "riyadh-season-boxing-mega",
+    "type": "event",
+    "author": "Riyadh Season Boxing",
+    "content": "🇸🇦 RIYADH SEASON — MEGA BOXING CARD 🇸🇦\n\nThe Kingdom Arena hosts another blockbuster.\nMatchroom x Queensberry — 5 world title fights on one card.\n\nLive on beIN Sports (MENA), DAZN (Global), MBC Action (SA).\nDFC distributing event info and where-to-watch across all regions.\n\nSaudi Arabia is the new capital of boxing. DFC connects the global audience.\n\n#RiyadhSeason #Boxing #SaudiArabia #DAZN #beINSports",
+    "location": {
+      "latitude": 24.7136,
+      "longitude": 46.6753,
+      "name": "Kingdom Arena, Riyadh SA"
+    },
+    "promoted": true,
+    "shareUrl": "https://riyadhseason.sa",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#RiyadhSeason",
+      "#Boxing",
+      "#SaudiArabia",
+      "#DAZN",
+      "#beINSports",
+      "#MBCAction",
+      "#Matchroom",
+      "#Queensberry",
+      "#DataFightCentral",
+      "#DFC",
+      "#WorldTitleFight"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "SA",
+      "AE",
+      "QA",
+      "EG",
+      "GB",
+      "US",
+      "AU",
+      "JP",
+      "MX"
+    ]
+  },
+  {
+    "id": "pakistan-boxing-karachi",
+    "type": "event",
+    "author": "Pakistan Boxing Council",
+    "content": "🥊 PAKISTAN BOXING — KARACHI FIGHT NIGHT 🥊\n\nProfessional boxing returns to Karachi.\nPakistan's boxing talent deserves a global stage — DFC provides it.\n\nLive on Geo Super & PTV Sports.\nDFC amplifying to diaspora communities in UK, UAE, US, AU.\n\n200 million people. Untapped combat sports market. DFC is in.\n\n#PakistanBoxing #Karachi #GeoSuper #PTVSports",
+    "location": {
+      "latitude": 24.8607,
+      "longitude": 67.0011,
+      "name": "Abdul Nasser Auditorium, Karachi PK"
+    },
+    "promoted": true,
+    "shareUrl": "",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#PakistanBoxing",
+      "#Karachi",
+      "#GeoSuper",
+      "#PTVSports",
+      "#PakistanSports",
+      "#Boxing",
+      "#SouthAsia",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {},
+    "distributionRegions": ["PK", "AE", "GB", "US", "AU", "SA", "CA"]
+  },
+  {
+    "id": "one-friday-fights-thailand",
+    "type": "event",
+    "author": "ONE Championship",
+    "content": "🇹🇭 ONE FRIDAY FIGHTS — LUMPINEE STADIUM 🇹🇭\n\nWeekly Muay Thai from the most legendary stadium in combat sports.\nLumpinee Stadium, Bangkok — where champions are born.\n\nLive on ONE App & TrueVisions (Thailand).\nGlobal stream via DFC.\n\nMuay Thai is the art of eight limbs. DFC brings it to the world.\n\n#ONEFridayFights #MuayThai #Lumpinee #Bangkok",
+    "location": {
+      "latitude": 13.7563,
+      "longitude": 100.5018,
+      "name": "Lumpinee Stadium, Bangkok TH"
+    },
+    "promoted": true,
+    "shareUrl": "https://www.onefc.com/events",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#ONEFridayFights",
+      "#MuayThai",
+      "#Lumpinee",
+      "#Bangkok",
+      "#Thailand",
+      "#ONEChampionship",
+      "#ArtOfEightLimbs",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {
+      "instagram": "https://www.instagram.com/onechampionship/"
+    },
+    "distributionRegions": [
+      "TH",
+      "SG",
+      "PH",
+      "IN",
+      "PK",
+      "JP",
+      "AU",
+      "US",
+      "GB"
+    ]
+  },
+  {
+    "id": "road-fc-korea",
+    "type": "event",
+    "author": "Road FC",
+    "content": "🇰🇷 ROAD FC — SEOUL FIGHT NIGHT 🇰🇷\n\nSouth Korea's top MMA promotion — Road FC from Olympic Gymnasium.\nKorean fighters stepping onto the global stage.\n\nLive on TVING (Korea).\nDFC distributing to Asian and global markets.\n\n#RoadFC #KoreanMMA #Seoul #MMA",
+    "location": {
+      "latitude": 37.5665,
+      "longitude": 126.978,
+      "name": "Olympic Gymnasium, Seoul KR"
+    },
+    "promoted": false,
+    "shareUrl": "https://www.roadfc.com",
+    "imageUrl": "assets/dfc_backgrounds/dfc2_image_.png",
+    "hashtags": [
+      "#RoadFC",
+      "#KoreanMMA",
+      "#Seoul",
+      "#TVING",
+      "#MMA",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {},
+    "distributionRegions": ["KR", "JP", "CN", "US", "AU"]
+  },
+  {
+    "id": "dfc-global-expansion-map",
+    "type": "platform_feature",
+    "author": "DFC Global Operations",
+    "content": "🌏 DFC GLOBAL EXPANSION — NOW COVERING 15+ MARKETS 🌏\n\n🇦🇺 Australia — Kayo, Main Event, Thrillx, Paramount+\n🇺🇸 USA — ESPN+, DAZN, UFC Fight Pass, Prime Video\n🇬🇧 UK/EU — TNT Sports, Sky Sports, DAZN, VIAPLAY, Canal+\n🇮🇳 India — Sony LIV, JioCinema, Star Sports, Hotstar, FanCode\n🇵🇰 Pakistan — PTV Sports, Ten Sports, ARY Digital, Geo Super, Tapmad\n🇦🇪 MENA — MBC Action, Abu Dhabi Sports, beIN Sports, Shahid\n🇹🇭 SE Asia — ONE App, TrueVisions, Vidio, iQIYI\n🇯🇵 Japan — ABEMA, U-NEXT, DAZN\n🇰🇷 Korea — TVING\n🇿🇦 Africa — SuperSport, Showmax, StarTimes\n🇧🇷 Latin America — ESPN Deportes, Combate Global, TV Azteca, Globo\n🇷🇺 Russia — Match TV\n🇨🇳 China — Migu Sports\n\n70+ streaming platforms. 15+ regions. 1 platform.\nDFC — The Promoter of Promoters. Globally connected.\n\n#DFCGlobal #PromoterOfPromoters #CombatSportsWorldwide",
+    "location": {
+      "latitude": -37.8136,
+      "longitude": 144.9631,
+      "name": "DFC Global HQ — Melbourne AU"
+    },
+    "promoted": true,
+    "shareUrl": "https://datafightcentral.web.app",
+    "imageUrl": "assets/dfc_backgrounds/dfc_and_back_ground.png",
+    "hashtags": [
+      "#DFCGlobal",
+      "#PromoterOfPromoters",
+      "#CombatSportsWorldwide",
+      "#StreamingPlatforms",
+      "#GlobalExpansion",
+      "#70Platforms",
+      "#DataFightCentral",
+      "#DFC"
+    ],
+    "socialLinks": {},
+    "distributionRegions": [
+      "AU",
+      "US",
+      "GB",
+      "IN",
+      "PK",
+      "AE",
+      "SA",
+      "TH",
+      "JP",
+      "KR",
+      "ZA",
+      "MX",
+      "BR"
+    ]
+  }
+]

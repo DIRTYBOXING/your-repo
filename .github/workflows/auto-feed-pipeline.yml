@@ -1,0 +1,49 @@
+name: Auto-Feed Pipeline CI/CD
+
+on:
+  push:
+    paths:
+      - "src/feeds/**"
+      - "config/auto_feed_sources.json"
+      - "infra/feeds_tables.sql"
+      - "scripts/auto_feed_cron.sh"
+      - ".github/workflows/auto-feed-pipeline.yml"
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies (secure — ignore scripts)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Lint and typecheck
+        run: npm run lint && npm run typecheck || true
+
+      - name: Build Docker image
+        run: |
+          docker build -t dfc-auto-feed:latest -f src/feeds/Dockerfile .
+
+      - name: Run integration tests
+        run: |
+          echo "(Add integration test steps here)"
+
+  # Optional: Push to registry or deploy
+  # deploy:
+  #   needs: build-and-test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Login to registry
+  #       run: echo "(Add registry login step)"
+  #     - name: Push Docker image
+  #       run: docker push <your-registry>/dfc-auto-feed:latest

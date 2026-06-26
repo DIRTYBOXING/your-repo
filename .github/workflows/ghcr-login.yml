@@ -1,0 +1,56 @@
+name: GHCR Login & Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      push:
+        description: 'Push image to GHCR (true/false)'
+        required: false
+        default: 'false'
+      image:
+        description: 'Image name with optional tag (e.g. entitlements-service:latest)'
+        required: false
+        default: 'entitlements-service:latest'
+
+jobs:
+  login-and-build:
+    name: Login to GHCR and build image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        run: |
+          if [ -n "${{ secrets.GHCR_PAT }}" ]; then
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          else
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          fi
+
+      - name: Build image
+        id: build
+        run: |
+          IMAGE_IN="${{ github.event.inputs.image }}"
+          NAME="$(echo "$IMAGE_IN" | sed 's/:.*//')"
+          TAG="$(echo "$IMAGE_IN" | sed -n 's/.*:\(.*\)/\1/p')"
+          if [ -z "$TAG" ]; then TAG=latest; fi
+          FULL=ghcr.io/${{ github.repository_owner }}/$NAME:$TAG
+          echo "Building $FULL"
+          docker build -t $FULL ${NAME}
+
+      - name: Push image (if requested)
+        if: ${{ github.event.inputs.push == 'true' }}
+        run: |
+          IMAGE_IN="${{ github.event.inputs.image }}"
+          NAME="$(echo "$IMAGE_IN" | sed 's/:.*//')"
+          TAG="$(echo "$IMAGE_IN" | sed -n 's/.*:\(.*\)/\1/p')"
+          if [ -z "$TAG" ]; then TAG=latest; fi
+          FULL=ghcr.io/${{ github.repository_owner }}/$NAME:$TAG
+          echo "Pushing $FULL"
+          docker push $FULL

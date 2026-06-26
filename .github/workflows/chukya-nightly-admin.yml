@@ -1,0 +1,48 @@
+name: Chukya Nightly Tests Workload Identity
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  run-admin-tests:
+    runs-on: ubuntu-latest
+    env:
+      API_BASE: ${{ secrets.CHUKYA_API_BASE }}
+      TEST_TOKEN: ${{ secrets.CHUKYA_TEST_TOKEN }}
+      FIREBASE_PROJECT: ${{ secrets.GCP_PROJECT }}
+      GITHUB_REPO: ${{ secrets.GITHUB_REPO }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install deps (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Authenticate to GCP using Workload Identity Federation
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/${{ secrets.GCP_PROJECT }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"
+          service_account: "chukya-test-runner@${{ secrets.GCP_PROJECT }}.iam.gserviceaccount.com"
+
+      - name: Run asserting script
+        run: |
+          node tools/inject_chukya_assert_admin.js 2>&1 | tee inject-admin.log
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chukya-admin-inject-logs-${{ github.run_id }}
+          path: inject-admin.log

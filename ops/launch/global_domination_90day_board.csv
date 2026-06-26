@@ -1,0 +1,46 @@
+Phase,Week,Task,Owner,Status,Priority,Platform,Region,Notes
+Foundation,W1,Create admin@datafightcentral.com + enable 2FA,Tech Lead,Not Started,P0,All,Global,Non-negotiable: org identity
+Foundation,W1,Create Meta Business Account and verify domain,Marketing,Not Started,P0,Meta,Global,Required for ads and Pixel
+Foundation,W1,Claim Facebook Page and install Meta Pixel,Marketing,Not Started,P0,Meta,Global,Pixel fires on site + WebXR teaser
+Foundation,W1,Register Meta Developer account and create app,Tech Lead,Not Started,P0,Meta,Global,Store secrets in vault
+Foundation,W1,Install GA4 on site and set conversion events,Tech Lead,Not Started,P0,Google,Global,Track signups/donations/volunteers
+Foundation,W1,Deploy WebXR teaser page (web/webxr/index.html),Tech Lead,Done,P0,WebXR,Global,A-Frame arena with Pixel + GA4 hooks
+Foundation,W1,Publish YouTube channel with DFC branding,Marketing,Not Started,P0,YouTube,Global,Chapters and translated metadata
+Foundation,W1,Create TikTok and Instagram business profiles,Marketing,Not Started,P0,TikTok/Instagram,Global,Consistent branding across platforms
+Foundation,W2,Register org accounts on ShareChat Moj Chingari Josh Roposo,Marketing,Not Started,P0,Regional,India,Use admin@datafightcentral.com
+Foundation,W2,Create Telegram channels for Pakistan and Africa,Marketing,Not Started,P1,Telegram,Pakistan/Africa,Event coordination and VIP community
+Foundation,W2,Set up WhatsApp Business catalogues,Marketing,Not Started,P1,WhatsApp,Africa,Ticketing and local promoter outreach
+Foundation,W2,Draft and publish Code of Conduct (5 languages),Ops,Not Started,P0,All,Global,English Punjabi Hindi Urdu Swahili
+Foundation,W2,Recruit 3 regional moderators (India Pakistan Kenya),Ops,Not Started,P1,All,India/Pakistan/Africa,24/7 coverage for live events
+Creator Seeding,W2,Identify 10 Punjabi/Indian creators,Marketing,Not Started,P0,ShareChat/Moj/Instagram,India,Use creator outreach pack template
+Creator Seeding,W2,Identify 8 Pakistani creators,Marketing,Not Started,P0,TikTok/YouTube,Pakistan,Fighters trainers journalists
+Creator Seeding,W2,Identify 10 African creators,Marketing,Not Started,P1,WhatsApp/TikTok/Instagram,Africa,Boxing MMA self-defense instructors
+Creator Seeding,W3,Send cold DM/email batch 1 (20 creators),Marketing,Not Started,P0,All,Multi-region,Follow-up in 3 days if no reply
+Creator Seeding,W3,Send cold DM/email batch 2 (20 creators),Marketing,Not Started,P0,All,Multi-region,Follow-up in 3 days if no reply
+Creator Seeding,W3,Onboard first 5 confirmed creators,Marketing,Not Started,P0,All,Multi-region,Send creative brief within 24h
+Content Production,W3,Produce 6 short vertical clips (Punjabi + English),Content,Not Started,P0,TikTok/Moj/Reels/Shorts,India/Global,15-60s fight highlights + DFC walkthrough
+Content Production,W3,Produce 2 longform videos (YouTube),Content,Not Started,P1,YouTube,Global,Training sessions + analytics demo + captions
+Content Production,W4,Produce 60s metaverse teaser video,Content,Not Started,P0,All,Global,WebXR arena footage for social distribution
+Content Production,W4,Translate and subtitle all content (5 languages),Content,Not Started,P1,All,Global,Punjabi Hindi Urdu Swahili English
+Metaverse Build,W3,Draft Horizon/Roblox world concept doc,Design,Not Started,P1,Horizon/Roblox,Global,Welcome plaza + demo zone + event stage
+Metaverse Build,W3,Create asset list for 3D artist,Design,Not Started,P1,Horizon/Roblox,Global,Octagon arena neon branding info panels
+Metaverse Build,W4,Assign 3D artist and begin world build,Design,Not Started,P1,Horizon/Roblox,Global,4-week build target
+Paid Amplification,W4,Set up Meta ad campaigns (India + Pakistan),Marketing,Not Started,P1,Meta,India/Pakistan,Hyper-localized sports fan targeting
+Paid Amplification,W4,Set up YouTube pre-roll ads (2 regions),Marketing,Not Started,P2,YouTube,India/Pakistan,Combat sports and fitness audiences
+Build Alpha,W5,Horizon/Roblox world alpha playable,Design,Not Started,P0,Horizon/Roblox,Global,10-min flagship demo
+Build Alpha,W5,WebXR parity demo live,Tech Lead,Not Started,P0,WebXR,Global,Browser fallback mirrors flagship
+Build Alpha,W5,Run first paid campaigns in India and Pakistan,Marketing,Not Started,P0,Meta/YouTube,India/Pakistan,Track CPA and engagement
+Build Alpha,W6,Produce 10 more localized short videos,Content,Not Started,P0,All,Multi-region,Weekly cadence established
+Build Alpha,W6,Train moderators and run internal dress rehearsal,Ops,Not Started,P0,All,Global,Simulate live event with escalation
+Build Alpha,W7,Produce 10 more localized short videos,Content,Not Started,P0,All,Multi-region,20 total + 4 longform
+Build Alpha,W7,Recruit 3 NGO/women's group partners,Partnerships,Not Started,P1,All,India/Africa,Co-design safety content
+Build Alpha,W8,Run second paid campaign wave (Africa),Marketing,Not Started,P1,Meta/WhatsApp,Africa,Expand to Kenya Nigeria South Africa
+Launch Prep,W9,Finalize press kit and influencer briefing,Marketing,Not Started,P0,All,Global,One-pager + media assets + key stats
+Launch Prep,W9,Prepare launch event run-of-show,Ops,Not Started,P0,All,Global,Simultaneous metaverse + WebXR + social
+Launch Prep,W10,Internal launch rehearsal,Ops,Not Started,P0,All,Global,Full dress rehearsal with moderators
+Public Launch,W11,LAUNCH DAY: metaverse opening + WebXR open day,All Teams,Not Started,P0,All,Global,Single hashtag synchronized push
+Public Launch,W11,Coordinated social push across all platforms,Marketing,Not Started,P0,All,Global,50+ creators post simultaneously
+Public Launch,W11,Press kit distribution to regional media,Marketing,Not Started,P0,All,Multi-region,Embargoed until launch hour
+Public Launch,W12,Influencer amplification wave 2,Marketing,Not Started,P1,All,Global,Boost top-performing launch content
+Measure,W12,Compile KPI dashboard (reach engagement conversion safety),Analytics,Not Started,P0,All,Global,Weekly automated reporting
+Measure,W13,90-day retrospective and iterate,All Teams,Not Started,P0,All,Global,What worked / what to double down on

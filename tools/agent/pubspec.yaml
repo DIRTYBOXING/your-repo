@@ -1,0 +1,11 @@
+name: dfc_observability_agent
+description: Agent to deploy, smoke test, verify, and cleanup observability stack.
+environment:
+  sdk: ">=2.18.0 <4.0.0"
+dependencies:
+  http: ^0.13.0
+  args: ^2.0.0
+  yaml: ^3.1.0
+  retry: ^3.0.0
+dev_dependencies:
+  pedantic: ^1.11.0

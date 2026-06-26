@@ -1,0 +1,257 @@
+{
+  "community_guidelines": {
+    "version": "2.0",
+    "effective_date": "2026-03-04",
+    "enforcement_level": "STANDARD",
+    "appeal_process": "72-hour review by moderation team",
+
+    "core_values": [
+      "Athlete Safety & Longevity",
+      "Professional Integrity",
+      "Inclusive Community",
+      "Data Privacy & Security",
+      "Innovation & Excellence"
+    ],
+
+    "prohibited_content": {
+      "level_1_instant_removal": [
+        "Harassment or personal attacks on individuals",
+        "Hate speech targeting protected groups",
+        "Non-consensual intimate content",
+        "Threats of violence or self-harm",
+        "Child exploitation or abuse material",
+        "Explicit illegal activity guidance"
+      ],
+
+      "level_2_warning_then_removal": [
+        "Spam or repetitive promotional posts",
+        "Stock market manipulation or financial scams",
+        "Misinformation about athlete health/safety",
+        "Competitor disparagement without factual basis",
+        "Excessive self-promotion (>20% of content)",
+        "Unauthorized commercial solicitation"
+      ],
+
+      "level_3_moderation_review": [
+        "Conspiracy theories unrelated to combat sports",
+        "Political divisiveness (off-topic)",
+        "Religious proselytizing",
+        "Adult content (permitted if educational, flagged as mature)",
+        "Unverified performance claims"
+      ]
+    },
+
+    "approved_content_categories": {
+      "athlete_content": [
+        "Performance metrics & analytics",
+        "Training routines & camp updates",
+        "Injury recovery strategies",
+        "Nutrition & wellness tips",
+        "Fight preparation content",
+        "Career milestone celebrations"
+      ],
+
+      "promoter_content": [
+        "Event announcements & promotion",
+        "Ticket sales & exclusive offers",
+        "Behind-the-scenes event coverage",
+        "Venue spotlights",
+        "Fighter/matchup analysis",
+        "Rankings & seeding updates"
+      ],
+
+      "community_content": [
+        "Combat sports news & highlights",
+        "Technical analysis & breakdowns",
+        "Fan engagement & discussion",
+        "Local event discovery",
+        "Supporter shoutouts",
+        "Educational content"
+      ],
+
+      "business_content": [
+        "Industry insights & market analysis",
+        "Platform feature announcements",
+        "Partnership highlights",
+        "Investor updates",
+        "Health-tech innovation",
+        "Alternative medicine integration stories"
+      ]
+    },
+
+    "engagement_standards": {
+      "comment_moderation": {
+        "response_time": "24 hours for verified accounts",
+        "approval_threshold": "All comments pre-approved before display on official posts",
+        "removal_criteria": [
+          "Hateful or abusive language",
+          "Off-topic spam",
+          "Direct promotional links (without context)",
+          "Leaking private user data",
+          "Impersonation attempts"
+        ]
+      },
+
+      "post_tagging": {
+        "max_tags_per_post": 25,
+        "inappropriate_tags": [
+          "Non-existent users",
+          "Spam tag chains (>5 tags per sentence)",
+          "Competitor mentions for trashing"
+        ],
+        "verification": "Verify tagged accounts are legitimate before engagement"
+      },
+
+      "sharing_policy": {
+        "native_sharing": "Encouraged within DFC ecosystem",
+        "external_sharing": "Allowed; link back to DFC platform",
+        "reposting": "Credit original creator; avoid plagiarism",
+        "content_ownership": "Users retain rights; DFC gets usage license"
+      }
+    },
+
+    "misinformation_protocol": {
+      "health_claims": {
+        "rule": "Any medical/health claims must cite peer-reviewed sources or licensed professionals",
+        "flag_threshold": "Posts claiming to cure injuries or diseases without evidence",
+        "action": "Labeled as 'unverified' or removed if false"
+      },
+
+      "fighter_statistics": {
+        "rule": "Record stats pulled from official sanctioning bodies or verified databases",
+        "flag_threshold": "Claims that contradict official records",
+        "action": "Fact-checked against: UFC.com, BoxRec, Sherdog, OneFC official records"
+      },
+
+      "event_information": {
+        "rule": "Event dates, venues, and ticket links must match official promoter announcements",
+        "flag_threshold": "Conflicting dates or fraudulent ticket links",
+        "action": "Removed; user warned; repeated violations = account suspension"
+      }
+    },
+
+    "verification_system": {
+      "blue_checkmark": {
+        "requirements": [
+          "Legitimate fighter/coach verified by record",
+          "Official promoter/organization",
+          "Verified media outlet or journalist",
+          "Official brand/sponsor account"
+        ],
+        "process": "Submit credentials + video confirmation"
+      },
+
+      "gold_checkmark": {
+        "tier_1": "Top-ranked fighters (ranked in major promotions)",
+        "tier_2": "High-profile promoters (UFC, PFL, Bellator, major boxing orgs)",
+        "tier_3": "Institutional investors/advisors"
+      }
+    },
+
+    "user_appeal_process": {
+      "step_1": "User receives removal/suspension notice with specific reason",
+      "step_2": "User submits appeal via help center within 72 hours",
+      "step_3": "Moderation review team assesses (48-hour response)",
+      "step_4": "Decision communicated with transparency note",
+      "step_5": "Escalation available for disputed decisions"
+    },
+
+    "moderation_team": {
+      "structure": [
+        "Community Manager (oversees policy)",
+        "3x Full-Time Moderators (24/7 coverage)",
+        "2x Part-Time Community Specialists (peak hours)",
+        "AI-assisted flagging (auto-remove level 1 violations)"
+      ],
+      "training": "Monthly training on combat sports knowledge, sensitivity, bias detection"
+    },
+
+    "transparency_reports": {
+      "frequency": "Monthly public reports (first of each month)",
+      "includes": [
+        "Removals by category (health, spam, harassment, etc.)",
+        "Appeals processed & outcomes",
+        "User suspensions (anonymized)",
+        "Policy violations by top infringements"
+      ],
+      "published_location": "Community Guidelines > Transparency"
+    },
+
+    "special_policies": {
+      "promotion_rules": {
+        "self_promotion": {
+          "limit": "Maximum 1 promotional post per 5 regular posts",
+          "definition": "Content primarily designed to sell/direct users away from platform",
+          "exception": "Official DFC announcements (unlimited)"
+        },
+
+        "affiliate_linking": {
+          "requirement": "Disclose affiliate relationships with '#ad' or '#sponsored' tags",
+          "penalty": "Removal without disclosure + warning"
+        },
+
+        "multi_level_marketing": {
+          "policy": "MLM and pyramid scheme promotion prohibited"
+        }
+      },
+
+      "alternative_medicine": {
+        "stance": "Supported as complementary health approach (NOT replacement for medical care)",
+        "requirements": [
+          "Clear disclaimer: 'Consult licensed healthcare provider'",
+          "Citation of practitioners' credentials",
+          "No guaranteed cure claims",
+          "Respect informed consent"
+        ],
+        "example_approved": "Ice bath recovery protocols from recovery specialists"
+      },
+
+      "athlete_mental_health": {
+        "vigilance": "Posts discussing depression/anxiety flagged for support resources",
+        "resources": "Crisis hotlines available in DFC help center",
+        "supportive_content": "Encouraged; promotes athlete welfare"
+      }
+    },
+
+    "enforcement_actions": {
+      "first_violation": "Warning + 24-hour cooldown",
+      "second_violation": "48-hour temporary suspension + mandatory guidelines review",
+      "third_violation": "7-day suspension + ban from official posts/tagging",
+      "fourth_violation": "30-day suspension + permanent content history review",
+      "fifth_violation": "Permanent account termination"
+    },
+
+    "special_cases": {
+      "news_outlets": "Hold to higher accuracy standards; auto-suspend on repeated misinformation",
+      "combat_athletes": "Protected category; harassment/abuse receives enhanced penalties",
+      "minors": "Content not indexed in public search; private messaging limited",
+      "verified_medical_professionals": "Can post health content with minimal moderation (source verification only)"
+    },
+
+    "data_privacy_in_posts": {
+      "prohibition": [
+        "Publishing others' medical records without consent",
+        "Sharing contact info (phone, address, email)",
+        "Unblurred identification of minors",
+        "Leaked training data or fight strategy"
+      ],
+      "penalty": "Immediate removal + 7-day suspension"
+    },
+
+    "live_event_engagement": {
+      "during_events": "Real-time updates encouraged; moderation in peak mode",
+      "spoiler_policy": "Live results marked with 'SPOILER: [EVENT NAME]' for first 24 hours",
+      "harassment_during_events": "Zero tolerance; instant 30-day suspension"
+    }
+  },
+
+  "fightier_centric_protections": {
+    "rank_manipulation": "Posts falsely claiming fighter ranking improvement → removed + warning",
+    "record_inflation": "Claiming unverified fight record → fact-checked against official databases",
+    "career_defamation": "Malicious false claims about fighter history → removed + potential legal referral"
+  },
+
+  "approved_for_posting_now": {
+    "status": "✅ ALL GUIDELINES ACTIVE"
+  }
+}

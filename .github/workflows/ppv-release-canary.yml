@@ -1,0 +1,240 @@
+name: PPV Release Canary
+
+on:
+  push:
+    branches: [master, main, staging]
+    paths:
+      - "functions/drm/**"
+      - "functions/ppv/**"
+      - "lib/features/ppv/**"
+      - "lib/shared/models/ppv_model.dart"
+      - "web/index.html"
+      - "web/dfc_shaka_player.js"
+      - "load/**"
+      - ".github/workflows/ppv-release-canary.yml"
+  workflow_dispatch:
+    inputs:
+      event_id:
+        description: Event id for canary verification
+        required: false
+        default: bkfc-newcastle-2026
+      manifest_url:
+        description: Manifest URL for playback startup test
+        required: false
+        default: ""
+
+concurrency:
+  group: ppv-release-canary-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  EVENT_ID: ${{ github.event.inputs.event_id || 'bkfc-newcastle-2026' }}
+  MANIFEST_URL: ${{ github.event.inputs.manifest_url || secrets.PPV_CANARY_MANIFEST_URL }}
+
+jobs:
+  verify-slice:
+    name: Verify PPV slice
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get --enforce-lockfile
+
+      - name: Analyze touched PPV DRM files
+        run: |
+          dart analyze \
+            lib/shared/models/ppv_model.dart \
+            lib/features/ppv/services/ppv_access_service.dart \
+            lib/features/ppv/screens/ppv_live_watch_screen.dart \
+            lib/features/ppv/widgets/dfc_video_player.dart \
+            lib/features/ppv/widgets/dfc_shaka_player_web.dart \
+            lib/features/ppv/widgets/dfc_shaka_player_stub.dart
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install function dependencies
+        working-directory: functions
+        run: npm ci --ignore-scripts
+
+      - name: Syntax check PPV DRM functions
+        working-directory: functions
+        run: |
+          node --check drm/token_issuance.js
+          node --check drm/signed_urls.js
+          node -e "require('./index')"
+
+  deploy-canary:
+    name: Deploy PPV canary functions
+    runs-on: ubuntu-latest
+    needs: verify-slice
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_PROJECT_CANARY: ${{ secrets.FIREBASE_PROJECT_STAGING }}
+    outputs:
+      can_deploy: ${{ steps.gate.outputs.can_deploy }}
+      functions_base_url: ${{ steps.gate.outputs.functions_base_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+
+      - name: Install function dependencies
+        working-directory: functions
+        run: npm ci --ignore-scripts
+
+      - name: Gate deploy prerequisites
+        id: gate
+        shell: bash
+        run: |
+          if [ -n "${FIREBASE_TOKEN}" ] && [ -n "${FIREBASE_PROJECT_CANARY}" ]; then
+            echo "can_deploy=1" >> "$GITHUB_OUTPUT"
+            echo "functions_base_url=https://australia-southeast1-${FIREBASE_PROJECT_CANARY}.cloudfunctions.net" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_deploy=0" >> "$GITHUB_OUTPUT"
+            echo "functions_base_url=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install pinned Firebase CLI
+        if: steps.gate.outputs.can_deploy == '1'
+        run: npm install -g firebase-tools@13.35.1 --ignore-scripts
+
+      - name: Deploy PPV security slice
+        if: steps.gate.outputs.can_deploy == '1'
+        working-directory: functions
+        run: |
+          firebase deploy \
+            --only functions:drmTokenApi,functions:cdnTokenApi,functions:getPosterSignedUrl \
+            --project "${FIREBASE_PROJECT_CANARY}" \
+            --token "${FIREBASE_TOKEN}"
+
+      - name: Skip deploy notice
+        if: steps.gate.outputs.can_deploy != '1'
+        run: echo "::notice::Skipping PPV canary deploy because FIREBASE_TOKEN or FIREBASE_PROJECT_STAGING is missing"
+
+  smoke-and-canary:
+    name: Smoke and canary
+    runs-on: ubuntu-latest
+    needs: deploy-canary
+    if: always()
+    env:
+      FUNCTIONS_BASE_URL: ${{ needs.deploy-canary.outputs.functions_base_url }}
+      FIREBASE_ID_TOKEN: ${{ secrets.TEST_ENTITLEMENT_TOKEN }}
+      EVENT_ID: ${{ env.EVENT_ID }}
+      MANIFEST_URL: ${{ env.MANIFEST_URL }}
+      CDN_ASSET_URL: ${{ secrets.PPV_CANARY_POSTER_URL }}
+      STOREFRONT_URL: ${{ secrets.PPV_STOREFRONT_URL }}
+      LICENSE_PROBE_URL: ${{ secrets.PPV_CANARY_LICENSE_PROBE_URL }}
+      LICENSE_PROBE_METHOD: ${{ secrets.PPV_CANARY_LICENSE_PROBE_METHOD }}
+      LICENSE_PROBE_CONTENT_TYPE: ${{ secrets.PPV_CANARY_LICENSE_PROBE_CONTENT_TYPE }}
+      LICENSE_PROBE_BODY_BASE64: ${{ secrets.PPV_CANARY_LICENSE_PROBE_BODY_BASE64 }}
+      LICENSE_PROBE_ACCEPT_STATUSES: ${{ secrets.PPV_CANARY_LICENSE_PROBE_ACCEPT_STATUSES }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Run readiness check
+        run: node scripts/ppv_runtime_readiness_check.mjs
+
+      - name: Verify manual smoke inputs
+        id: smoke_gate
+        shell: bash
+        run: |
+          if [ -z "${FUNCTIONS_BASE_URL}" ] || [ -z "${FIREBASE_ID_TOKEN}" ] || [ -z "${MANIFEST_URL}" ]; then
+            echo "can_smoke=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_smoke=1" >> "$GITHUB_OUTPUT"
+          fi
+          mkdir -p load/results synthetics/results
+
+      - name: Run PPV DRM synthetic check
+        if: steps.smoke_gate.outputs.can_smoke == '1'
+        run: node synthetics/ppv_drm_check.mjs
+
+      - name: Setup k6
+        if: steps.smoke_gate.outputs.can_smoke == '1'
+        uses: grafana/setup-k6-action@v1
+
+      - name: DRM + CDN token canary
+        if: steps.smoke_gate.outputs.can_smoke == '1'
+        run: k6 run --vus 20 --duration 45s load/checkout_and_token.js
+
+      - name: Assert DRM + CDN token canary thresholds
+        if: steps.smoke_gate.outputs.can_smoke == '1'
+        run: |
+          node scripts/assert_k6_summary.mjs \
+            --label checkout_and_token \
+            --file load/results/checkout_token_summary.json \
+            --rule http_req_failed:rate:<:0.02 \
+            --rule token_issue_duration:p95:<:700 \
+            --rule cdn_token_duration:p95:<:700 \
+            --rule token_issue_failed:rate:<:0.01 \
+            --rule cdn_token_failed:rate:<:0.01 \
+            --rule store_request_failed:rate:<:0.02
+
+      - name: Playback startup canary
+        if: steps.smoke_gate.outputs.can_smoke == '1'
+        run: k6 run --vus 15 --duration 45s load/playback_startup.js
+
+      - name: Assert playback startup canary thresholds
+        if: steps.smoke_gate.outputs.can_smoke == '1'
+        run: |
+          node scripts/assert_k6_summary.mjs \
+            --label playback_startup \
+            --file load/results/playback_startup_summary.json \
+            --rule playback_startup_ms:p95:<:3000 \
+            --rule http_req_failed:rate:<:0.01 \
+            --rule buffering_events:rate:<:0.02 \
+            --rule manifest_fetch_failed:rate:<:0.02 \
+            --rule drm_issue_failed:rate:<:0.01
+
+      - name: Skip smoke notice
+        if: steps.smoke_gate.outputs.can_smoke != '1'
+        run: echo "::notice::Skipping k6 canary because FUNCTIONS_BASE_URL, TEST_ENTITLEMENT_TOKEN, or PPV_CANARY_MANIFEST_URL is missing"
+
+      - name: Upload canary artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppv-release-canary-${{ github.run_id }}
+          path: |
+            load/results
+            synthetics/results
+          if-no-files-found: ignore
+
+      - name: Notify Slack on failure
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          message: |
+            :rotating_light: PPV Release Canary FAILED for commit ${{ github.sha }} on ${{ github.ref }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

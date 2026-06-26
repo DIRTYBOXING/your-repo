@@ -1,0 +1,54 @@
+{
+  "eventId": "ppv-adelaide-cs12",
+  "title": "ADELAIDE COMBAT SERIES 12",
+  "subtitle": "South Australia's Premier Combat Sports",
+  "date": "2026-05-23",
+  "time": "18:30 ACST",
+  "price": "19.99",
+  "promoter": "Adelaide Combat Series",
+  "sport": "MMA",
+  "venue": "Adelaide Entertainment Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["DFC"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Lightweight",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Lightweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Lightweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Middleweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Strawweight",
+      "rounds": 3
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

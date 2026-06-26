@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CHUCKYA Control Room — DFC Operations Center</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --bg-primary: #050a14;
+        --bg-secondary: #0a1628;
+        --bg-card: #0d1b2a;
+        --cyan: #00f5ff;
+        --magenta: #ff00ff;
+        --green: #00ff88;
+        --gold: #ffd700;
+        --red: #ff3366;
+        --text: #e0e0e0;
+        --text-dim: rgba(255, 255, 255, 0.35);
+        --border: rgba(255, 255, 255, 0.06);
+      }
+      body {
+        background: var(--bg-primary);
+        color: var(--text);
+        font-family: "Segoe UI", system-ui, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ===== HEADER ===== */
+      header {
+        background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 100%);
+        padding: 12px 20px;
+        border-bottom: 1px solid rgba(0, 245, 255, 0.15);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      header h1 {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: var(--cyan);
+        text-shadow: 0 0 12px rgba(0, 245, 255, 0.4);
+      }
+      .badge {
+        display: inline-block;
+        background: rgba(255, 0, 255, 0.15);
+        border: 1px solid rgba(255, 0, 255, 0.3);
+        color: var(--magenta);
+        font-size: 9px;
+        letter-spacing: 2px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        margin-left: 8px;
+        vertical-align: middle;
+      }
+      .hdr-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .hdr-btn {
+        background: rgba(0, 245, 255, 0.08);
+        border: 1px solid rgba(0, 245, 255, 0.2);
+        color: var(--cyan);
+        padding: 5px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: 11px;
+        transition: all 0.2s;
+      }
+      .hdr-btn:hover {
+        background: rgba(0, 245, 255, 0.18);
+        box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
+      }
+      .clock {
+        color: var(--text-dim);
+        font-size: 11px;
+        font-family: monospace;
+        letter-spacing: 1px;
+      }
+
+      /* ===== CODE BANNER ===== */
+      .code-banner {
+        display: none;
+        padding: 8px 20px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        font-size: 14px;
+        text-align: center;
+        animation: flash 1s infinite;
+      }
+      .code-banner.active {
+        display: block;
+      }
+      .code-banner.code_black {
+        background: #ff0000;
+        color: #fff;
+      }
+      .code-banner.code_red {
+        background: #ff4500;
+        color: #fff;
+      }
+      .code-banner.code_amber {
+        background: #ff8c00;
+        color: #fff;
+      }
+      .code-banner.code_yellow {
+        background: #ffd700;
+        color: #000;
+      }
+      @keyframes flash {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      /* ===== MAIN GRID ===== */
+      .main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 8px;
+        padding: 8px;
+        overflow: hidden;
+      }
+      @media (max-width: 1200px) {
+        .main {
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: auto;
+        }
+      }
+      @media (max-width: 768px) {
+        .main {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+      }
+
+      /* ===== PANEL ===== */
+      .panel {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-height: 0;
+      }
+      .panel-hdr {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .panel-title.cyan {
+        color: var(--cyan);
+      }
+      .panel-title.magenta {
+        color: var(--magenta);
+      }
+      .panel-title.green {
+        color: var(--green);
+      }
+      .panel-title.gold {
+        color: var(--gold);
+      }
+      .panel-title.red {
+        color: var(--red);
+      }
+      .panel-badge {
+        font-size: 9px;
+        background: rgba(0, 245, 255, 0.08);
+        border: 1px solid rgba(0, 245, 255, 0.15);
+        color: var(--cyan);
+        padding: 2px 8px;
+        border-radius: 10px;
+        letter-spacing: 1px;
+      }
+      .panel-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px 14px;
+      }
+      .panel-body::-webkit-scrollbar {
+        width: 4px;
+      }
+      .panel-body::-webkit-scrollbar-thumb {
+        background: rgba(0, 245, 255, 0.15);
+        border-radius: 2px;
+      }
+
+      /* ===== SHARED COMPONENTS ===== */
+      .alert-row {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 6px;
+        cursor: pointer;
+        transition: border-color 0.2s;
+      }
+      .alert-row:hover {
+        border-color: rgba(0, 245, 255, 0.25);
+      }
+      .alert-row.selected {
+        border-color: var(--cyan);
+        background: rgba(0, 245, 255, 0.04);
+      }
+      .alert-id {
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--cyan);
+        font-weight: 700;
+      }
+      .risk {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+      .risk-high {
+        background: rgba(255, 60, 60, 0.15);
+        color: #ff4444;
+        border: 1px solid rgba(255, 60, 60, 0.2);
+      }
+      .risk-med {
+        background: rgba(255, 165, 0, 0.12);
+        color: #ffa500;
+        border: 1px solid rgba(255, 165, 0, 0.2);
+      }
+      .risk-low {
+        background: rgba(0, 255, 136, 0.12);
+        color: var(--green);
+        border: 1px solid rgba(0, 255, 136, 0.2);
+      }
+      .meta {
+        font-size: 10px;
+        color: var(--text-dim);
+        margin-top: 3px;
+      }
+      .signal {
+        background: rgba(255, 0, 255, 0.08);
+        border: 1px solid rgba(255, 0, 255, 0.15);
+        color: var(--magenta);
+        font-size: 9px;
+        padding: 1px 6px;
+        border-radius: 10px;
+        letter-spacing: 0.5px;
+        display: inline-block;
+        margin: 2px 2px 0 0;
+      }
+      .mode-tag {
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        display: inline-block;
+        margin-right: 4px;
+      }
+      .mode-code_black {
+        background: rgba(255, 0, 0, 0.2);
+        color: #ff4444;
+        border: 1px solid rgba(255, 0, 0, 0.3);
+      }
+      .mode-code_red {
+        background: rgba(255, 69, 0, 0.2);
+        color: #ff6b35;
+        border: 1px solid rgba(255, 69, 0, 0.3);
+      }
+      .mode-code_amber {
+        background: rgba(255, 140, 0, 0.2);
+        color: #ffa500;
+        border: 1px solid rgba(255, 140, 0, 0.3);
+      }
+      .mode-code_yellow {
+        background: rgba(255, 215, 0, 0.2);
+        color: var(--gold);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+      }
+      .btn {
+        background: rgba(0, 245, 255, 0.08);
+        border: 1px solid rgba(0, 245, 255, 0.2);
+        color: var(--cyan);
+        padding: 4px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: 10px;
+        transition: all 0.2s;
+      }
+      .btn:hover {
+        background: rgba(0, 245, 255, 0.18);
+        box-shadow: 0 0 8px rgba(0, 245, 255, 0.15);
+      }
+      .btn-magenta {
+        background: rgba(255, 0, 255, 0.08);
+        border-color: rgba(255, 0, 255, 0.2);
+        color: var(--magenta);
+      }
+      .btn-magenta:hover {
+        background: rgba(255, 0, 255, 0.2);
+        box-shadow: 0 0 8px rgba(255, 0, 255, 0.15);
+      }
+      .btn-green {
+        background: rgba(0, 255, 136, 0.08);
+        border-color: rgba(0, 255, 136, 0.2);
+        color: var(--green);
+      }
+      .btn-green:hover {
+        background: rgba(0, 255, 136, 0.2);
+      }
+      .btn-red {
+        background: rgba(255, 51, 102, 0.08);
+        border-color: rgba(255, 51, 102, 0.2);
+        color: var(--red);
+      }
+      .btn-red:hover {
+        background: rgba(255, 51, 102, 0.2);
+      }
+      .empty-msg {
+        text-align: center;
+        padding: 30px 10px;
+        color: var(--text-dim);
+        font-size: 11px;
+        letter-spacing: 2px;
+      }
+
+      /* ===== RADAR RING ===== */
+      .radar-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1;
+        max-width: 280px;
+        margin: 0 auto;
+      }
+      .radar-ring {
+        position: absolute;
+        border: 1px solid rgba(0, 245, 255, 0.12);
+        border-radius: 50%;
+      }
+      .radar-ring.r1 {
+        inset: 0;
+      }
+      .radar-ring.r2 {
+        inset: 15%;
+      }
+      .radar-ring.r3 {
+        inset: 30%;
+      }
+      .radar-ring.r4 {
+        inset: 45%;
+      }
+      .radar-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        background: var(--cyan);
+        border-radius: 50%;
+        box-shadow: 0 0 12px var(--cyan);
+      }
+      .radar-blip {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.5s ease;
+      }
+      .radar-label {
+        position: absolute;
+        font-size: 8px;
+        color: var(--text-dim);
+        letter-spacing: 1px;
+      }
+      .radar-label.top {
+        top: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .radar-label.right {
+        right: 2px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .radar-label.bottom {
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .radar-label.left {
+        left: 2px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .sweep {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50%;
+        height: 2px;
+        transform-origin: left center;
+        background: linear-gradient(90deg, rgba(0, 245, 255, 0.4), transparent);
+        animation: sweep 4s linear infinite;
+      }
+      @keyframes sweep {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* ===== SPARKLINE ===== */
+      .spark-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .spark-label {
+        font-size: 10px;
+        color: var(--text-dim);
+        letter-spacing: 1px;
+        min-width: 140px;
+      }
+      .spark-value {
+        font-size: 13px;
+        font-weight: 800;
+        font-family: monospace;
+        min-width: 60px;
+        text-align: right;
+      }
+      .spark-bar {
+        flex: 1;
+        height: 20px;
+        margin: 0 10px;
+        position: relative;
+      }
+      .spark-bar canvas {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ===== DEVICE TABLE ===== */
+      .dev-row {
+        display: grid;
+        grid-template-columns: 1fr 80px 80px 60px;
+        gap: 6px;
+        padding: 6px 8px;
+        border-bottom: 1px solid var(--border);
+        font-size: 10px;
+        align-items: center;
+      }
+      .dev-row.hdr {
+        color: var(--text-dim);
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+      .dev-status {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 4px;
+      }
+      .dev-status.online {
+        background: var(--green);
+        box-shadow: 0 0 6px var(--green);
+      }
+      .dev-status.offline {
+        background: var(--red);
+        box-shadow: 0 0 6px var(--red);
+      }
+      .dev-status.stale {
+        background: var(--gold);
+        box-shadow: 0 0 6px var(--gold);
+      }
+
+      /* ===== APPROVAL TABLE ===== */
+      .appr-row {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 6px;
+      }
+      .appr-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      /* ===== FOOTER ===== */
+      footer {
+        text-align: center;
+        padding: 8px;
+        color: rgba(255, 255, 255, 0.08);
+        font-size: 9px;
+        letter-spacing: 2px;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== HEADER ===== -->
+    <header>
+      <div>
+        <h1>CHUCKYA CONTROL ROOM <span class="badge">DFC OPS CENTER</span></h1>
+      </div>
+      <div class="hdr-right">
+        <span class="clock" id="clock"></span>
+        <button class="hdr-btn" id="refreshAll">&#x21bb; REFRESH</button>
+        <span class="clock" id="alertCount"></span>
+      </div>
+    </header>
+
+    <!-- ===== CODE BANNER ===== -->
+    <div class="code-banner" id="codeBanner"></div>
+
+    <!-- ===== MAIN 6-PANEL GRID ===== -->
+    <div class="main">
+      <!-- ===== 1. SITUATIONAL OVERVIEW ===== -->
+      <div class="panel" id="panelSituation">
+        <div class="panel-hdr">
+          <span class="panel-title cyan">&#x1F5FA; SITUATIONAL OVERVIEW</span>
+          <span class="panel-badge" id="sitCount">0 ALERTS</span>
+        </div>
+        <div class="panel-body" id="sitBody">
+          <div class="empty-msg">Loading alerts...</div>
+        </div>
+      </div>
+
+      <!-- ===== 2. THREAT RADAR ===== -->
+      <div class="panel" id="panelRadar">
+        <div class="panel-hdr">
+          <span class="panel-title red">&#x1F534; THREAT RADAR</span>
+          <span class="panel-badge" id="radarStatus">SCANNING</span>
+        </div>
+        <div
+          class="panel-body"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <div class="radar-container" id="radarRing">
+            <div class="radar-ring r1"></div>
+            <div class="radar-ring r2"></div>
+            <div class="radar-ring r3"></div>
+            <div class="radar-ring r4"></div>
+            <div class="radar-center"></div>
+            <div class="sweep"></div>
+            <span class="radar-label top">N</span>
+            <span class="radar-label right">E</span>
+            <span class="radar-label bottom">S</span>
+            <span class="radar-label left">W</span>
+          </div>
+          <div
+            id="radarInfo"
+            style="
+              margin-top: 10px;
+              font-size: 10px;
+              color: var(--text-dim);
+              text-align: center;
+              letter-spacing: 1px;
+            "
+          >
+            No active proximity threats
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 3. EVIDENCE LOCKER ===== -->
+      <div class="panel" id="panelEvidence">
+        <div class="panel-hdr">
+          <span class="panel-title magenta">&#x1F512; EVIDENCE LOCKER</span>
+          <span class="panel-badge" id="evidCount">0 FILES</span>
+        </div>
+        <div class="panel-body" id="evidBody">
+          <div class="empty-msg">Select an alert to view evidence</div>
+        </div>
+      </div>
+
+      <!-- ===== 4. DEVICE FLEET ===== -->
+      <div class="panel" id="panelDevices">
+        <div class="panel-hdr">
+          <span class="panel-title green">&#x1F4F1; DEVICE FLEET</span>
+          <span class="panel-badge" id="devCount">0 DEVICES</span>
+        </div>
+        <div class="panel-body" id="devBody">
+          <div class="dev-row hdr">
+            <span>DEVICE ID</span><span>KEY STATUS</span><span>LAST SEEN</span
+            ><span>BATTERY</span>
+          </div>
+          <div id="devList">
+            <div class="empty-msg">No registered devices</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 5. APPROVAL CONSOLE ===== -->
+      <div class="panel" id="panelApproval">
+        <div class="panel-hdr">
+          <span class="panel-title gold">&#x2705; APPROVAL CONSOLE</span>
+          <span class="panel-badge" id="apprCount">0 PENDING</span>
+        </div>
+        <div class="panel-body" id="apprBody">
+          <div class="empty-msg">No pending export requests</div>
+        </div>
+      </div>
+
+      <!-- ===== 6. ANALYTICS MINI DASHBOARD ===== -->
+      <div class="panel" id="panelAnalytics">
+        <div class="panel-hdr">
+          <span class="panel-title cyan">&#x1F4CA; ANALYTICS</span>
+          <span class="panel-badge">LIVE</span>
+        </div>
+        <div class="panel-body" id="analyticsBody">
+          <div class="spark-row">
+            <span class="spark-label">ALERTS / MIN</span>
+            <div class="spark-bar"><canvas id="sparkAlerts"></canvas></div>
+            <span class="spark-value" id="valAlerts" style="color: var(--cyan)"
+              >0</span
+            >
+          </div>
+          <div class="spark-row">
+            <span class="spark-label">AVG INGEST LATENCY</span>
+            <div class="spark-bar"><canvas id="sparkLatency"></canvas></div>
+            <span
+              class="spark-value"
+              id="valLatency"
+              style="color: var(--green)"
+              >0ms</span
+            >
+          </div>
+          <div class="spark-row">
+            <span class="spark-label">SIG VERIFY RATE</span>
+            <div class="spark-bar"><canvas id="sparkVerify"></canvas></div>
+            <span class="spark-value" id="valVerify" style="color: var(--gold)"
+              >100%</span
+            >
+          </div>
+          <div class="spark-row">
+            <span class="spark-label">PII CONSENT RATE</span>
+            <div class="spark-bar"><canvas id="sparkPii"></canvas></div>
+            <span class="spark-value" id="valPii" style="color: var(--magenta)"
+              >0%</span
+            >
+          </div>
+          <div class="spark-row">
+            <span class="spark-label">FALSE POSITIVE</span>
+            <div class="spark-bar"><canvas id="sparkFp"></canvas></div>
+            <span class="spark-value" id="valFp" style="color: var(--red)"
+              >0%</span
+            >
+          </div>
+          <div class="spark-row">
+            <span class="spark-label">PENDING APPROVALS</span>
+            <div class="spark-bar"><canvas id="sparkAppr"></canvas></div>
+            <span class="spark-value" id="valAppr" style="color: var(--gold)"
+              >0</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      DATAFIGHTCENTRAL — CHUCKYA CONTROL ROOM — CLASSIFIED OPS CENTER — INTERNAL
+      USE ONLY
+    </footer>
+
+    <script>
+      "use strict";
+
+      // ===== API CONFIG =====
+      const API =
+        window.location.port === "8082"
+          ? `${window.location.protocol}//${window.location.hostname}:8081`
+          : "";
+
+      let allAlerts = [];
+      let selectedAlertId = null;
+      let approvalQueue = []; // simulated pending exports
+      let deviceMap = {}; // appInstanceId → device info
+      let analyticsHistory = {
+        alerts: [],
+        latency: [],
+        verify: [],
+        pii: [],
+        fp: [],
+        appr: [],
+      };
+      const HISTORY_LEN = 30;
+
+      // ===== UTILITIES =====
+      function esc(str) {
+        const d = document.createElement("div");
+        d.textContent = String(str || "");
+        return d.innerHTML;
+      }
+
+      function riskClass(score) {
+        return score >= 80
+          ? "risk-high"
+          : score >= 50
+            ? "risk-med"
+            : "risk-low";
+      }
+
+      function modeClass(mode) {
+        return ["code_black", "code_red", "code_amber", "code_yellow"].includes(
+          mode,
+        )
+          ? `mode-${mode}`
+          : "";
+      }
+
+      function timeAgo(iso) {
+        const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+        if (s < 60) return `${s}s ago`;
+        if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+        return `${Math.floor(s / 3600)}h ago`;
+      }
+
+      // ===== CLOCK =====
+      function updateClock() {
+        document.getElementById("clock").textContent =
+          new Date().toISOString().replace("T", " ").slice(0, 19) + " UTC";
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // ===== 1. SITUATIONAL OVERVIEW =====
+      function renderSituation() {
+        const el = document.getElementById("sitBody");
+        const cnt = document.getElementById("sitCount");
+        cnt.textContent = `${allAlerts.length} ALERT${allAlerts.length !== 1 ? "S" : ""}`;
+
+        if (!allAlerts.length) {
+          el.innerHTML =
+            '<div class="empty-msg">NO ALERTS — POST to /v1/radar/event to begin</div>';
+          return;
+        }
+
+        el.innerHTML = allAlerts
+          .map((a) => {
+            const rc = riskClass(a.riskScore);
+            const mc = modeClass(a.mode);
+            const signals = (a.topSignals || [])
+              .map((s) => `<span class="signal">${esc(s)}</span>`)
+              .join("");
+            const sel = a.alertId === selectedAlertId ? " selected" : "";
+            return `
+      <div class="alert-row${sel}" data-id="${esc(a.alertId)}" onclick="selectAlert('${esc(a.alertId)}')">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="alert-id">${esc(a.alertId)}</span>
+          <div>
+            ${mc ? `<span class="mode-tag ${mc}">${esc(a.mode || "").toUpperCase()}</span>` : ""}
+            <span class="risk ${rc}">RISK ${a.riskScore}</span>
+          </div>
+        </div>
+        <div class="meta">${esc(a.type || "unknown")} &middot; ${esc(a.appInstanceId || a.source || "unknown")} &middot; ${timeAgo(a.createdAt)}</div>
+        <div style="margin-top:4px">${signals}</div>
+      </div>`;
+          })
+          .join("");
+      }
+
+      // ===== 2. THREAT RADAR =====
+      function renderRadar() {
+        const container = document.getElementById("radarRing");
+        const info = document.getElementById("radarInfo");
+        const status = document.getElementById("radarStatus");
+
+        // Remove old blips
+        container.querySelectorAll(".radar-blip").forEach((b) => b.remove());
+
+        const proxAlerts = allAlerts.filter(
+          (a) => a.proximity && a.proximity.distance_m != null,
+        );
+        if (!proxAlerts.length) {
+          info.textContent = "No active proximity threats";
+          status.textContent = "SCANNING";
+          return;
+        }
+
+        status.textContent = `${proxAlerts.length} THREAT${proxAlerts.length > 1 ? "S" : ""}`;
+        const cw = container.offsetWidth || 280;
+        const ch = container.offsetHeight || 280;
+        const cx = cw / 2;
+        const cy = ch / 2;
+        const maxDist = 50; // max 50m maps to ring edge
+
+        proxAlerts.forEach((a) => {
+          const dist = Math.min(a.proximity.distance_m, maxDist);
+          const deg = a.proximity.direction_deg || 0;
+          const rad = ((deg - 90) * Math.PI) / 180;
+          const r = (dist / maxDist) * (cw / 2 - 10);
+          const x = cx + r * Math.cos(rad);
+          const y = cy + r * Math.sin(rad);
+
+          const blip = document.createElement("div");
+          blip.className = "radar-blip";
+          const color =
+            a.riskScore >= 80
+              ? "var(--red)"
+              : a.riskScore >= 50
+                ? "var(--gold)"
+                : "var(--green)";
+          blip.style.cssText = `left:${x}px;top:${y}px;background:${color};box-shadow:0 0 8px ${color}`;
+          blip.title = `${esc(a.alertId)}: ${a.proximity.distance_m}m @ ${a.proximity.direction_deg}°`;
+          container.appendChild(blip);
+        });
+
+        const nearest = proxAlerts.reduce((a, b) =>
+          a.proximity.distance_m < b.proximity.distance_m ? a : b,
+        );
+        info.innerHTML = `NEAREST: <span style="color:var(--red);font-weight:800">${nearest.proximity.distance_m}m</span> @ ${nearest.proximity.direction_deg}° &middot; ${esc(nearest.alertId)}`;
+      }
+
+      // ===== 3. EVIDENCE LOCKER =====
+      function selectAlert(id) {
+        selectedAlertId = id;
+        renderSituation();
+        renderEvidence();
+      }
+
+      function renderEvidence() {
+        const el = document.getElementById("evidBody");
+        const cnt = document.getElementById("evidCount");
+
+        if (!selectedAlertId) {
+          el.innerHTML =
+            '<div class="empty-msg">Select an alert to view evidence</div>';
+          cnt.textContent = "0 FILES";
+          return;
+        }
+
+        const a = allAlerts.find((x) => x.alertId === selectedAlertId);
+        if (!a) {
+          el.innerHTML = '<div class="empty-msg">Alert not found</div>';
+          return;
+        }
+
+        const mc = modeClass(a.mode);
+        el.innerHTML = `
+    <div style="margin-bottom:10px">
+      <span class="alert-id">${esc(a.alertId)}</span>
+      ${mc ? `<span class="mode-tag ${mc}">${esc(a.mode || "").toUpperCase()}</span>` : ""}
+      <span class="risk ${riskClass(a.riskScore)}">RISK ${a.riskScore}</span>
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:8px">
+      Created: ${esc(a.createdAt)}<br>
+      Device: ${esc(a.appInstanceId || a.source || "unknown")}<br>
+      Type: ${esc(a.type || "unknown")}<br>
+      ${a.signatureVerified ? '<span style="color:var(--green)">&#x2705; SIGNATURE VERIFIED</span>' : '<span style="color:var(--text-dim)">Signature: not verified</span>'}
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:8px">
+      <strong style="color:var(--text)">Signals:</strong>
+      ${(a.topSignals || []).map((s) => `<span class="signal">${esc(s)}</span>`).join(" ") || "none"}
+    </div>
+    ${
+      a.proximity
+        ? `
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:8px">
+      <strong style="color:var(--text)">Proximity:</strong> ${a.proximity.distance_m}m @ ${a.proximity.direction_deg}°
+    </div>`
+        : ""
+    }
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:10px">
+      <strong style="color:var(--text)">Evidence files:</strong><br>
+      &#x1F4C4; alert.json<br>
+      &#x1F4C4; payload.json<br>
+      &#x1F4C4; consent_record.json<br>
+      &#x1F4C4; chain_of_custody.json
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn btn-magenta" onclick="exportEvidence('${esc(a.alertId)}')">&#x1F4E6; EXPORT ZIP</button>
+      <button class="btn" onclick="policeExport('${esc(a.alertId)}')">&#x1F46E; POLICE EXPORT</button>
+      <button class="btn" onclick="requestExportApproval('${esc(a.alertId)}')">&#x1F4DD; REQUEST APPROVAL</button>
+    </div>`;
+        cnt.textContent = "4 FILES";
+      }
+
+      async function exportEvidence(id) {
+        try {
+          const res = await fetch(
+            `${API}/v1/radar/alerts/${encodeURIComponent(id)}/export`,
+            { method: "POST" },
+          );
+          if (!res.ok) {
+            alert("Export failed: " + res.statusText);
+            return;
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${id}_evidence.zip`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          alert("Export error: " + err.message);
+        }
+      }
+
+      async function policeExport(id) {
+        try {
+          const res = await fetch(
+            `${API}/v1/radar/alerts/${encodeURIComponent(id)}/police-export`,
+            {
+              method: "POST",
+              headers: {
+                "X-DFC-Approver": "ops_dashboard",
+                "Content-Type": "application/json",
+              },
+            },
+          );
+          if (!res.ok) {
+            alert("Police export failed: " + res.statusText);
+            return;
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${id}_police_evidence.zip`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          alert("Police export error: " + err.message);
+        }
+      }
+
+      function requestExportApproval(alertId) {
+        const existing = approvalQueue.find((q) => q.alertId === alertId);
+        if (existing) {
+          alert("Approval already pending for " + alertId);
+          return;
+        }
+        approvalQueue.push({
+          id: "EXP-" + Date.now(),
+          alertId,
+          requestedBy: "ops_dashboard",
+          requestedAt: new Date().toISOString(),
+          status: "pending",
+        });
+        renderApprovals();
+      }
+
+      // ===== 4. DEVICE FLEET =====
+      function renderDevices() {
+        const el = document.getElementById("devList");
+        const cnt = document.getElementById("devCount");
+
+        // Extract unique devices from alerts
+        allAlerts.forEach((a) => {
+          const did = a.appInstanceId || a.source;
+          if (!did || deviceMap[did]) return;
+          deviceMap[did] = {
+            id: did,
+            keyStatus: a.signatureVerified ? "verified" : "registered",
+            lastSeen: a.createdAt,
+            battery: Math.floor(Math.random() * 60 + 40) + "%", // simulated
+          };
+        });
+
+        const devices = Object.values(deviceMap);
+        cnt.textContent = `${devices.length} DEVICE${devices.length !== 1 ? "S" : ""}`;
+
+        if (!devices.length) {
+          el.innerHTML = '<div class="empty-msg">No registered devices</div>';
+          return;
+        }
+
+        el.innerHTML = devices
+          .map((d) => {
+            const age = (Date.now() - new Date(d.lastSeen).getTime()) / 1000;
+            const statusClass =
+              age < 60 ? "online" : age < 300 ? "stale" : "offline";
+            return `
+      <div class="dev-row">
+        <span><span class="dev-status ${statusClass}"></span>${esc(d.id)}</span>
+        <span style="color:${d.keyStatus === "verified" ? "var(--green)" : "var(--gold)"}">${esc(d.keyStatus)}</span>
+        <span style="color:var(--text-dim)">${timeAgo(d.lastSeen)}</span>
+        <span style="color:var(--text-dim)">${esc(d.battery)}</span>
+      </div>`;
+          })
+          .join("");
+      }
+
+      // ===== 5. APPROVAL CONSOLE =====
+      function renderApprovals() {
+        const el = document.getElementById("apprBody");
+        const cnt = document.getElementById("apprCount");
+        const pending = approvalQueue.filter((q) => q.status === "pending");
+        cnt.textContent = `${pending.length} PENDING`;
+
+        if (!approvalQueue.length) {
+          el.innerHTML =
+            '<div class="empty-msg">No pending export requests</div>';
+          return;
+        }
+
+        el.innerHTML = approvalQueue
+          .map((q) => {
+            const isPending = q.status === "pending";
+            return `
+      <div class="appr-row">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:monospace;font-size:11px;color:var(--gold)">${esc(q.id)}</span>
+          <span style="font-size:10px;color:${isPending ? "var(--gold)" : "var(--green)"};font-weight:800">${q.status.toUpperCase()}</span>
+        </div>
+        <div class="meta">Alert: ${esc(q.alertId)} &middot; By: ${esc(q.requestedBy)} &middot; ${timeAgo(q.requestedAt)}</div>
+        ${
+          isPending
+            ? `
+        <div class="appr-actions">
+          <button class="btn btn-green" onclick="approveExport('${esc(q.id)}')">&#x2705; APPROVE (Legal)</button>
+          <button class="btn btn-red" onclick="rejectExport('${esc(q.id)}')">&#x274C; REJECT</button>
+        </div>`
+            : `
+        <div class="meta" style="margin-top:4px">${q.approvedBy ? "Approved by: " + esc(q.approvedBy) : "Rejected by: " + esc(q.rejectedBy)} &middot; ${timeAgo(q.resolvedAt)}</div>`
+        }
+      </div>`;
+          })
+          .join("");
+      }
+
+      function approveExport(expId) {
+        const q = approvalQueue.find((x) => x.id === expId);
+        if (!q) return;
+        q.status = "approved";
+        q.approvedBy = "legal_dashboard";
+        q.resolvedAt = new Date().toISOString();
+        renderApprovals();
+        // Trigger the actual export
+        exportEvidence(q.alertId);
+      }
+
+      function rejectExport(expId) {
+        const q = approvalQueue.find((x) => x.id === expId);
+        if (!q) return;
+        q.status = "rejected";
+        q.rejectedBy = "legal_dashboard";
+        q.resolvedAt = new Date().toISOString();
+        renderApprovals();
+      }
+
+      // ===== 6. ANALYTICS SPARKLINES =====
+      function pushHistory(key, value) {
+        analyticsHistory[key].push(value);
+        if (analyticsHistory[key].length > HISTORY_LEN)
+          analyticsHistory[key].shift();
+      }
+
+      function drawSparkline(canvasId, data, color) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        const w = (canvas.width = canvas.offsetWidth * 2);
+        const h = (canvas.height = canvas.offsetHeight * 2);
+        ctx.clearRect(0, 0, w, h);
+        if (data.length < 2) return;
+
+        const max = Math.max(...data, 1);
+        const step = w / (HISTORY_LEN - 1);
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        data.forEach((v, i) => {
+          const x = i * step;
+          const y = h - (v / max) * (h - 4) - 2;
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        // Fill under curve
+        ctx.lineTo((data.length - 1) * step, h);
+        ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fillStyle = color.replace(")", ",.08)").replace("rgb", "rgba");
+        ctx.fill();
+      }
+
+      function updateAnalytics() {
+        const now = Date.now();
+        // Count alerts in last 60s
+        const recentAlerts = allAlerts.filter(
+          (a) => now - new Date(a.createdAt).getTime() < 60000,
+        ).length;
+        pushHistory("alerts", recentAlerts);
+        document.getElementById("valAlerts").textContent = recentAlerts;
+        drawSparkline("sparkAlerts", analyticsHistory.alerts, "rgb(0,245,255)");
+
+        // Simulated latency (random for demo; replace with real metric endpoint)
+        const lat = Math.floor(Math.random() * 80 + 20);
+        pushHistory("latency", lat);
+        document.getElementById("valLatency").textContent = lat + "ms";
+        drawSparkline(
+          "sparkLatency",
+          analyticsHistory.latency,
+          "rgb(0,255,136)",
+        );
+
+        // Sig verify rate
+        const verified = allAlerts.filter((a) => a.signatureVerified).length;
+        const verifyRate = allAlerts.length
+          ? Math.round((verified / allAlerts.length) * 100)
+          : 100;
+        pushHistory("verify", verifyRate);
+        document.getElementById("valVerify").textContent = verifyRate + "%";
+        drawSparkline("sparkVerify", analyticsHistory.verify, "rgb(255,215,0)");
+
+        // PII consent rate (simulated)
+        const piiRate = Math.floor(Math.random() * 30 + 10);
+        pushHistory("pii", piiRate);
+        document.getElementById("valPii").textContent = piiRate + "%";
+        drawSparkline("sparkPii", analyticsHistory.pii, "rgb(255,0,255)");
+
+        // False positive (simulated)
+        const fpRate = Math.floor(Math.random() * 8);
+        pushHistory("fp", fpRate);
+        document.getElementById("valFp").textContent = fpRate + "%";
+        drawSparkline("sparkFp", analyticsHistory.fp, "rgb(255,51,102)");
+
+        // Pending approvals
+        const pending = approvalQueue.filter(
+          (q) => q.status === "pending",
+        ).length;
+        pushHistory("appr", pending);
+        document.getElementById("valAppr").textContent = pending;
+        drawSparkline("sparkAppr", analyticsHistory.appr, "rgb(255,215,0)");
+      }
+
+      // ===== CODE BANNER =====
+      function updateBanner() {
+        const banner = document.getElementById("codeBanner");
+        const active = allAlerts.find(
+          (a) => a.mode === "code_black" && a.status === "open",
+        );
+        if (active) {
+          banner.className = "code-banner active code_black";
+          banner.textContent =
+            "&#x26A0; CODE BLACK — LIFE-THREATENING INCIDENT — " +
+            active.alertId;
+          banner.innerHTML =
+            "&#x26A0; CODE BLACK — LIFE-THREATENING INCIDENT — " +
+            esc(active.alertId);
+          return;
+        }
+        const red = allAlerts.find(
+          (a) => a.mode === "code_red" && a.status === "open",
+        );
+        if (red) {
+          banner.className = "code-banner active code_red";
+          banner.innerHTML =
+            "&#x26A0; CODE RED — HIGH RISK — " + esc(red.alertId);
+          return;
+        }
+        const amber = allAlerts.find(
+          (a) => a.mode === "code_amber" && a.status === "open",
+        );
+        if (amber) {
+          banner.className = "code-banner active code_amber";
+          banner.innerHTML =
+            "&#x26A0; CODE AMBER — NEARBY THREAT — " + esc(amber.alertId);
+          return;
+        }
+        banner.className = "code-banner";
+      }
+
+      // ===== MAIN REFRESH =====
+      async function refreshAll() {
+        try {
+          const res = await fetch(`${API}/v1/radar/alerts`);
+          if (!res.ok) throw new Error(res.statusText);
+          allAlerts = await res.json();
+        } catch {
+          allAlerts = [];
+        }
+
+        document.getElementById("alertCount").textContent =
+          `${allAlerts.length} TOTAL`;
+        updateBanner();
+        renderSituation();
+        renderRadar();
+        renderEvidence();
+        renderDevices();
+        renderApprovals();
+        updateAnalytics();
+      }
+
+      // ===== INIT =====
+      document.getElementById("refreshAll").onclick = refreshAll;
+      refreshAll();
+      setInterval(refreshAll, 5000); // 5s auto-refresh for <2s latency goal
+    </script>
+  </body>
+</html>

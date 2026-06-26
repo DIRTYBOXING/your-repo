@@ -1,0 +1,50 @@
+{
+  "eventId": "ppv-bkfc-72",
+  "title": "BKFC 72: BARE KNUCKLE WORLD TITLE",
+  "subtitle": "Perry vs Mundell — Cruiserweight",
+  "date": "2026-04-05",
+  "time": "21:00 ET",
+  "price": "39.99",
+  "promoter": "BKFC",
+  "sport": "BKFC",
+  "venue": "Hard Rock Live, Hollywood FL",
+  "currency": "USD",
+  "streamPlatforms": ["BKFC App"],
+  "fighters": [
+    {
+      "name": "Mike Perry",
+      "nickname": "Platinum",
+      "record": "5-0-0 BK",
+      "weightClass": "Cruiserweight",
+      "corner": "left"
+    },
+    {
+      "name": "Luke Mundell",
+      "record": "3-1-0 BK",
+      "weightClass": "Cruiserweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Mike Perry",
+      "fighter2": "Luke Mundell",
+      "weightClass": "Cruiserweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Lorenzo Hunt",
+      "fighter2": "Alan Belcher",
+      "weightClass": "Heavyweight",
+      "rounds": 5
+    },
+    {
+      "fighter1": "Christine Ferea",
+      "fighter2": "Britain Hart Beltran",
+      "weightClass": "Flyweight",
+      "rounds": 5
+    }
+  ]
+}

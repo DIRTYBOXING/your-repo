@@ -1,0 +1,54 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Chukya 3.0 — systemd service unit for VM deployments
+# ═══════════════════════════════════════════════════════════════════════════
+# Install:
+#   sudo cp infrastructure/systemd/chukya-safety.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now chukya-safety
+#
+# Logs:   journalctl -u chukya-safety -f
+# Status: systemctl status chukya-safety
+
+[Unit]
+Description=Chukya 3.0 Pink Shield Safety Backend
+Documentation=https://github.com/DIRTYBOXING/Data-Fight-Central
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=chukya
+Group=chukya
+
+# Runtime config and secrets
+EnvironmentFile=-/etc/chukya/chukya.env
+ExecStart=/usr/local/bin/chukya-safety --config /etc/chukya/config.yaml
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/log/chukya
+ReadOnlyPaths=/etc/chukya
+
+# Restart policy
+Restart=on-failure
+RestartSec=10s
+TimeoutStartSec=30s
+TimeoutStopSec=30s
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=512M
+CPUQuota=100%
+
+# Logging
+StandardOutput=append:/var/log/chukya/chukya-safety.log
+StandardError=append:/var/log/chukya/chukya-safety-error.log
+SyslogIdentifier=chukya-safety
+
+[Install]
+WantedBy=multi-user.target

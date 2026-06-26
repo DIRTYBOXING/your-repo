@@ -1,0 +1,102 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — VERIFICATION CLI QUICK REFERENCE                    ║
+║  One-liner commands for demos, police handover, and audit      ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+AUTOMATED SCRIPT
+═══════════════════════════════════════════════════════════════════
+
+  Run the all-in-one verifier on an evidence directory:
+
+    bash scripts/verify_evidence.sh /path/to/evidence
+
+  Output: signature status, SHA256 hash, chain of custody check.
+
+═══════════════════════════════════════════════════════════════════
+MANUAL ONE-LINERS (for live demos)
+═══════════════════════════════════════════════════════════════════
+
+  1. CANONICALIZE PAYLOAD (deterministic JSON sort):
+
+     jq -S . payload.json > payload.canon
+
+  2. EXTRACT SIGNATURE from signed payload:
+
+     jq -r '.signatureBase64' signed_payload.json | base64 -d > sig.bin
+
+  3. VERIFY SIGNATURE with OpenSSL:
+
+     openssl dgst -sha256 -verify public.pem -signature sig.bin payload.canon
+
+     Expected output: "Verified OK"
+
+  4. COMPUTE SHA256 for chain of custody:
+
+     sha256sum payload.canon
+
+  5. COMBINED ONE-LINER (canonicalize + extract + verify + hash):
+
+     jq -S . payload.json > payload.canon && \
+     jq -r '.signatureBase64' signed_payload.json | base64 -d > sig.bin && \
+     openssl dgst -sha256 -verify public.pem -signature sig.bin payload.canon && \
+     sha256sum payload.canon
+
+═══════════════════════════════════════════════════════════════════
+CLOUD RUN DEPLOYMENT (device-verifier service)
+═══════════════════════════════════════════════════════════════════
+
+  Build and push:
+
+    docker build -t gcr.io/datafightcentral/device-verifier:latest \
+      ./device-verifier
+    docker push gcr.io/datafightcentral/device-verifier:latest
+
+  Deploy:
+
+    gcloud run deploy dfc-device-verifier \
+      --image gcr.io/datafightcentral/device-verifier:latest \
+      --region=us-central1 \
+      --platform=managed \
+      --allow-unauthenticated=false \
+      --set-env-vars=REDIS_URL=redis://REDIS_HOST:6379,AUDIT_DIR=/data/ops-audit
+
+  Grant invoker role (frontend service account only):
+
+    gcloud run services add-iam-policy-binding dfc-device-verifier \
+      --region=us-central1 \
+      --member="serviceAccount:frontend-sa@datafightcentral.iam.gserviceaccount.com" \
+      --role="roles/run.invoker"
+
+═══════════════════════════════════════════════════════════════════
+GENERATE TEST KEYPAIR (for demos without real device)
+═══════════════════════════════════════════════════════════════════
+
+  Generate ECDSA P-256 keypair:
+
+    openssl ecparam -genkey -name prime256v1 -noout -out private.pem
+    openssl ec -in private.pem -pubout -out public.pem
+
+  Sign a test payload:
+
+    jq -S . test_payload.json > test.canon
+    openssl dgst -sha256 -sign private.pem -out test_sig.bin test.canon
+    base64 < test_sig.bin > test_sig.b64
+
+  Verify:
+
+    openssl dgst -sha256 -verify public.pem -signature test_sig.bin test.canon
+
+═══════════════════════════════════════════════════════════════════
+EVIDENCE ZIP CONTENTS (expected layout)
+═══════════════════════════════════════════════════════════════════
+
+  evidence_<alertId>.zip
+  ├── payload.json              — canonical alert payload
+  ├── signed_payload.json       — payload + signatureBase64 field
+  ├── alert.json                — scored alert (riskScore, mode)
+  ├── chain_of_custody.json     — SHA256 hashes + timestamps
+  ├── consent_record.json       — user consent flags + timestamp
+  └── public.pem                — device public key (PEM format)
+
+═══════════════════════════════════════════════════════════════════

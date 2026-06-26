@@ -1,0 +1,399 @@
+============================================================
+ DATA FIGHT CENTRAL — ELITE UPGRADE PLAYBOOK
+ Version 3.0 | March 2026
+ Classification: INTERNAL — Strategy & Ops
+============================================================
+
+THREE-PILLAR ARCHITECTURE
+-------------------------
+| Pillar               | Core Purpose                                    | Key Deliverables                                  | Primary Metrics                                    |
+|----------------------|-------------------------------------------------|---------------------------------------------------|----------------------------------------------------|
+| Survival Stack       | Real-world safety: wearable + mobile + verified  | CHUCKYA firmware hardening; Android companion;     | Pairing success >=98%; export audit 100%;          |
+|                      | export                                           | signing keys in vault; two-person export UI;       | false positive rate down                           |
+|                      |                                                  | field test kit                                     |                                                    |
+| Flagship Immersive   | Mission storytelling and pressable metaverse     | DFC Rescue Plaza; WebXR parity build;              | Metaverse dwell >=6 min; WebXR dwell >60s;        |
+|                      | presence                                         | 3-5 min hero demo; event stage                     | event attendance                                   |
+| Creator & Growth     | Scale reach, localization, and sustained         | Tiered creator program; daily localized short      | MAU growth; creator onboarding rate;               |
+| Engine               | engagement                                       | videos; viral mini-game; regional hubs             | conversion to paid supporters                      |
+
+PURPOSE
+-------
+Turn DFC's technical foundation and fightpipe into a scalable,
+global ecosystem across social, regional, and metaverse platforms.
+Survival tech + Flagship immersive demo + Universal WebXR access.
+
+============================================================
+ PRODUCT & EXPERIENCE (what makes DFC irresistible)
+============================================================
+
+• Polished flagship demo: 3-5 min metaverse hero (DFC Rescue
+  Plaza) — mission story, fightpipe demo, clear CTA
+• WebXR parity: every immersive world has a browser fallback
+• Localized UX: UI, captions, voiceovers in Punjabi, Hindi,
+  Urdu, Swahili, Arabic, French, English
+• Mobile-first safety: CHUCKYA privacy defaults, two-person
+  export, replay protection front and center
+• Content cadence: daily short clips + weekly longform +
+  monthly live metaverse event
+
+============================================================
+ GROWTH & DISTRIBUTION (how to scale fast)
+============================================================
+
+• Creator seeding: 50 micro-influencers in month 1 across
+  target regions — Punjabi creators, female fighters, local
+  sports promoters (see creator_outreach_pack.txt)
+• Synchronized launch: single day across Meta, YouTube,
+  regional apps, and WebXR with unified hashtag + watch party
+• Paid amplification: hyper-localized Meta/YouTube ad buys
+  for sports fans, parents, safety advocates
+• Community hubs: city/region Facebook + WhatsApp groups
+  with local moderators and weekly events
+• Viral mechanics: challenges, UGC highlight reels,
+  "build your pipeline" mini-game on Roblox/WebXR
+
+============================================================
+ MONETIZATION & SUSTAINABILITY
+============================================================
+
+• Membership tiers: free community + paid supporter with
+  exclusive metaverse rooms and events
+• Sponsorships: local brands, safety tech, sports gear —
+  branded arenas, event sponsorships, co-produced content
+• Merch & ticketing: regionally priced merchandise and
+  paid virtual event tickets
+• Creator revenue share: incentivize with splits for
+  ticketed events and merch referrals
+
+============================================================
+ RELATED ARTIFACTS
+============================================================
+
+• Creator outreach pack: ops/launch/creator_outreach_pack.txt
+• 90-day project board:  ops/launch/global_domination_90day_board.csv
+• WebXR teaser:          web/webxr/index.html
+• Platform constants:    lib/core/constants/app_constants.dart
+
+============================================================
+ REGIONAL PLATFORM MATRIX
+============================================================
+
+INDIA & SOUTH ASIA
+  Platforms: ShareChat, Moj, Josh, Chingari, Koo, Roposo
+  Languages: Hindi, Punjabi, Urdu, Tamil, Telugu, Bengali
+  Strategy : Vernacular short video, local micro-influencers
+  Action   : Register org accounts, recruit 5 Punjabi creators,
+             produce 6 localized clips (Punjabi + English caps)
+
+PAKISTAN
+  Platforms: TikTok, YouTube, Facebook, Instagram, Telegram
+  Languages: Urdu, Punjabi, English
+  Strategy : TikTok highlights, YouTube longform, Telegram community
+  Action   : Short highlights + culturally resonant music,
+             Telegram channel for event coordination
+
+AFRICA
+  Platforms: WhatsApp, Facebook, Instagram, TikTok, Telegram, YouTube
+  Languages: Swahili, Hausa, Yoruba, Amharic, English, French
+  Strategy : WhatsApp broadcast + Facebook Groups, TikTok viral
+  Action   : Business catalogues for ticketing, city/region groups,
+             local moderators in Kenya, Nigeria, South Africa
+
+GLOBAL METAVERSE
+  Platforms: Meta Horizon Worlds, Roblox, Decentraland, The Sandbox,
+             VRChat, WebXR (A-Frame / Babylon.js)
+  Strategy : Flagship immersive world + WebXR browser fallback
+  Action   : 3-5 min hero demo, branded octagon arena, live events
+
+============================================================
+ CONTENT FORMATS BY PLATFORM
+============================================================
+
+SHORT VIDEO (15-60s)
+  Fight highlights, training tips, ring-girl spotlights
+  → TikTok, Moj, ShareChat, Instagram Reels, YouTube Shorts
+
+LONG VIDEO (5-15 min)
+  Full highlights, interviews, safety training
+  → YouTube, Facebook Watch, Decentraland event recordings
+
+LIVE STREAM
+  Events, AMAs, training workshops, watch parties
+  → YouTube Live, Facebook Live, Twitch, Horizon Worlds
+
+INTERACTIVE XR
+  WebXR/Roblox mini-game showing fightpipe concept
+  → Flagship metaverse demo, WebXR fallback
+
+COMMUNITY CHANNELS
+  Groups, broadcast lists, event coordination, ticketing
+  → WhatsApp, Telegram, Facebook Groups, Signal
+
+AR ACTIVATION
+  Mobile AR filters and on-site experiences
+  → Instagram, Snapchat, custom WebAR
+
+============================================================
+ 30 / 60 / 90 DAY ROLLOUT
+============================================================
+
+DAY 0-30: FOUNDATIONS
+  [ ] Create admin@datafightcentral.com + 2FA
+  [ ] Create Meta Business Account, verify domain, claim Page
+  [ ] Install Meta Pixel + GA4 on site, set conversion events
+  [ ] Publish WebXR teaser page (web/webxr/index.html) with Pixel hooks
+  [ ] Register org accounts: ShareChat, Moj, Chingari, Josh, Roposo
+  [ ] Create YouTube channel + TikTok/Instagram business profiles
+  [ ] Onboard 3 regional partners (India, Pakistan, Kenya/Nigeria)
+  [ ] Produce 6 short vertical clips (Punjabi + English captions)
+
+DAY 31-60: BUILD
+  [ ] Flagship alpha: Horizon/Roblox world + WebXR parity demo
+  [ ] Content pipeline: 8 localized short videos + 2 hero pieces
+  [ ] Recruit and train regional moderators
+  [ ] Publish Code of Conduct in local languages
+  [ ] Set up WhatsApp Business catalogues for local promoters
+  [ ] Create 60s metaverse teaser video for social distribution
+
+DAY 61-90: LAUNCH
+  [ ] Public launch event: metaverse + WebXR open day + social campaign
+  [ ] Coordinated press/influencer push to regional creators
+  [ ] Run hashtag challenge across platforms
+  [ ] Evaluate KPIs and iterate
+
+============================================================
+ KEY METRICS
+============================================================
+
+REACH       : followers, unique visitors, metaverse attendees
+ENGAGEMENT  : watch time, dwell time in world, event attendance
+CONVERSION  : signups, donations, volunteer inquiries
+SAFETY      : moderation incidents, takedowns, false positives
+RETENTION   : repeat visitors, community growth rate
+
+============================================================
+ PLATFORM COMPARISON MATRIX (v3 — Reach vs Control)
+============================================================
+
+| Platform                    | Reach          | Control     | Best Use                                    |
+|-----------------------------|----------------|-------------|---------------------------------------------|
+| Roblox / Fortnite Creative  | Very high youth | Medium      | Viral mini-games, youth onboarding          |
+| Meta Horizon Worlds          | High social     | Medium-High | Branded immersive events, social promotion  |
+| Decentraland / The Sandbox   | Niche crypto    | High        | Branded land, NFT experiences, collectors   |
+| WebXR (A-Frame / Babylon.js) | Universal       | Very High   | Browser fallback, pressable demo, access    |
+| TikTok + regional short-vid  | Viral youth     | Low         | 15-60s highlights, challenges, creator collab|
+| YouTube                      | Massive global  | Medium      | Full fights, highlights, interviews, live   |
+| Meta (FB / IG / WhatsApp)    | Very large      | Medium      | Reels, Groups, Events, community broadcasts |
+| WhatsApp / Telegram          | High engagement | Low         | Community coordination, ticketing, VIP      |
+
+============================================================
+ IMMEDIATE PRIORITIES (next 72 hours)
+============================================================
+
+1. LOCK ORG OWNERSHIP
+   - Create admin@datafightcentral.com on domain
+   - Enable 2FA (authenticator app)
+   - Store credentials in team vault (1Password/Bitwarden)
+   - Ensure this email owns every social, dev, and metaverse account
+
+2. MOVE SIGNING KEYS TO VAULT
+   - Scan: git grep -n "PRIVATE" || true
+   - Remove any dev private keys from repo
+   - Rotate and store new keys in secrets manager
+   - Enforce two-person export via secret policy
+
+3. RUN E2E SMOKE TEST
+   - chmod +x tools/e2e_test.sh
+   - VERIFIER_URL=http://localhost:8081 PUBLIC_PEM=public.pem ./tools/e2e_test.sh
+   - Expect: "Signature verified OK"
+   - Archive: ops-audit/<test-id>/verifier.log
+
+4. DEPLOY WEBXR TEASER
+   - File: web/webxr/index.html (already built — A-Frame 1.5)
+   - Verify Meta Pixel + GA4 events firing in devtools
+   - Pin link in all social bios
+
+5. SEND CREATOR OUTREACH
+   - Target: 10 regional creators (Punjabi, Pakistan, Kenya/Nigeria)
+   - Template: see ops/launch/creator_outreach_pack.txt
+   - Offer: paid co-creation + early metaverse access
+
+6. BUG FIXES (code-level, already applied in this session)
+   - Explore search: case-insensitive queries + demo fallback
+   - Sign In button: demo mode goes to /home, label says "Explore App"
+   - TBD opponent: changed to "LOCAL PROSPECT — Opponent TBA"
+
+============================================================
+ ELITE PRODUCT FEATURES
+============================================================
+
+RESCUE PIPELINE DEMO (Hero Experience)
+  Interactive 3-5 min demo: CHUCKYA -> verifier -> ops -> rescue loop
+  Ends with CTA: join WebXR + pair mobile companion
+  Load target: <12s desktop; simplified mobile fallback
+
+SURVIVAL MODE
+  Low-latency wearable alerts, one-touch panic
+  Verified chain-of-custody export with two-person approval
+  Signed CBOR payloads, BLE GATT on nRF52840
+
+LOCALIZED LIVE HUBS
+  Region channels (Punjabi, Hindi, Urdu, Swahili)
+  Creator-led events with local moderators
+  WhatsApp Business catalogues for ticketing
+
+PLAYABLE PIPELINE MINI-GAME
+  Roblox/WebXR interactive safety education
+  Seeds viral sharing and youth onboarding
+
+============================================================
+ TECH & INFRASTRUCTURE UPGRADES
+============================================================
+
+SCALABLE BACKEND
+  K8s autoscaling for verifier, ws-server, radar-server
+  HPA tuned to p95 latency <1s
+  Target: 200 concurrent ingest events, no dropped messages
+
+OBSERVABILITY
+  Unified: Pixel/GA4 + Prometheus + Grafana
+  Tracks: metaverse dwell, ingest latency, moderation incidents, exports
+  Alerts: threshold-based for all critical metrics
+
+CONTENT CI/CD
+  Asset pipeline: LOD generation, texture compression
+  Automated WebXR deploys and content versioning
+  Visual regression checks on new assets
+
+SECURITY
+  Signing keys in vault (never in repo)
+  Two-person export enforced in UI and audit logs
+  Key rotation schedule; dev keys removed
+
+============================================================
+ CREATOR & GROWTH ENGINE
+============================================================
+
+CREATOR TIERS
+  Micro  : paid promo, early access, featured placement
+  Mid    : co-create content, revenue share on events
+  Marquee: event headliners, exclusive merch collab
+
+CONTENT CADENCE
+  Daily  : 3 short vertical clips per region (local language)
+  Weekly : 1 longform highlight/interview
+  Monthly: 1 flagship metaverse event
+
+VIRAL HOOKS
+  Pipeline mini-game (Roblox/WebXR)
+  Hashtag challenges across platforms
+  User highlight contests with prizes + featured placement
+
+DISTRIBUTION
+  Synchronized launch across Meta, YouTube, regional apps, WebXR
+  Single canonical link; cross-platform referral tracking
+
+============================================================
+ MONETIZATION MIX
+============================================================
+
+• Free community + paid supporter tier (exclusive rooms/events)
+• Ticketed metaverse events (regionally priced)
+• Sponsorship packages: branded arenas, co-produced content
+• Merch with local fulfillment partners
+• Creator revenue share on ticketed events and merch referrals
+• Target: 10k paid members within 12 months
+
+============================================================
+ KEY METRICS TO OBSESS OVER
+============================================================
+
+SAFETY      : zero unauthorized exports; moderation SLA <30 min
+ENGAGEMENT  : metaverse dwell >=6 min; WebXR dwell >60s
+GROWTH      : creator onboarding rate; regional MAU; conversion to paid
+RELIABILITY : p95 ingest latency <1s under load
+RETENTION   : repeat visitors; community growth rate
+
+============================================================
+ PARTNERSHIPS
+============================================================
+
+LOCAL PROMOTERS & GYMS
+  Co-host events, recruit fighters, co-branded content
+  Target: 3 signed partnerships per region in 60 days
+
+REGIONAL NGOS & WOMEN'S GROUPS
+  Co-design safety and empowerment content
+
+MICRO-INFLUENCERS
+  Punjabi, Hindi, Urdu, Swahili creators for authentic reach
+  Target: 50 micro + 10 mid creators in 30 days
+
+PLATFORM PARTNERS
+  Apply for creator/partner programs on Roblox, Meta, YouTube
+  Reserve/rent space in Decentraland/Sandbox if pursuing web3
+  Target: 2+ platform partnerships pre-launch
+
+============================================================
+ SAFETY, MODERATION & GOVERNANCE (NON-NEGOTIABLE)
+============================================================
+
+• Code of Conduct published on every platform and metaverse world
+• Regional moderators with escalation to Ops; 24/7 for live events
+• Age gating and explicit opt-in for data collection; under-18 protections
+• EXPORT_POLICY.md and two-person approval for any PII sharing
+• Rapid takedown, evidence preservation, and legal handover SOP
+• All accounts/worlds owned by DFC Business Account, never personal
+• Respectful portrayal of athletes — no sexualized or exploitative framing
+• Business Verification for Meta and platform partner programs
+• Local counsel review for paid events and data collection
+
+============================================================
+ 90-DAY EXECUTION ROADMAP
+============================================================
+
+DAY 0-7: LOCK & LAUNCH
+  [x] Deploy WebXR teaser (web/webxr/index.html) with Pixel + GA4
+  [x] Fix top 3 product bugs (search, sign-in, TBD opponent)
+  [ ] Create admin@datafightcentral.com + 2FA
+  [ ] Move signing keys to vault; remove from repo
+  [ ] Run tools/e2e_test.sh and archive ops-audit artifacts
+  [ ] Send creator outreach to 10 regional creators
+  [ ] Produce 6 short vertical clips (Punjabi + English caps)
+
+DAY 8-30: BUILD & SEED
+  [ ] Commission DFC Rescue Plaza 3D assets
+  [ ] Build WebXR parity interactions
+  [ ] Onboard 50 micro creators
+  [ ] Recruit and train regional moderators
+  [ ] Publish Code of Conduct in local languages
+  [ ] Run small paid tests in 2 regions (Meta/YouTube)
+  [ ] Set up WhatsApp Business catalogues for promoters
+
+DAY 31-60: ALPHA & HARDEN
+  [ ] Alpha metaverse launch with invited creators
+  [ ] Harden K8s autoscaling and observability
+  [ ] Scale paid tests based on conversion data
+  [ ] Content pipeline: 8 localized short videos + 2 hero pieces
+  [ ] Create 60s metaverse teaser video for social distribution
+
+DAY 61-90: PUBLIC LAUNCH
+  [ ] Public launch event: metaverse + WebXR + social campaign
+  [ ] Coordinated press/influencer push to regional creators
+  [ ] Scale creator roster, ad spend, and moderation coverage
+  [ ] Run hashtag challenge across platforms
+  [ ] Evaluate KPIs and iterate weekly
+
+============================================================
+ RELATED ARTIFACTS
+============================================================
+
+• Creator outreach pack: ops/launch/creator_outreach_pack.txt
+• 90-day project board:  ops/launch/global_domination_90day_board.csv
+• WebXR teaser:          web/webxr/index.html
+• Platform constants:    lib/core/constants/app_constants.dart
+• Pilot licence check:   ops/launch/pilot_licence_checklist.txt
+
+============================================================
+ END OF PLAYBOOK v3.0
+============================================================

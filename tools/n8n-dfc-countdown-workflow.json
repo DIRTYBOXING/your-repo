@@ -1,0 +1,367 @@
+{
+  "name": "DFC Drip-Feed Countdown → 9 Platforms via Blotato",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dfc-event-seed",
+        "responseMode": "onReceived",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "DFC Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "dfc-event-seed"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isDrip }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "is-drip-check",
+      "name": "Is Drip Post?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"TITLE\": $json.title,\n  \"MEDIA_URL\": $json.posterUrl,\n  \"CAPTION\": $json.caption,\n  \"STATUS\": \"Ready to Post\",\n  \"FIGHT_ID\": $json.eventId,\n  \"BUY_LINK\": $json.buyLink,\n  \"DRIP_TYPE\": $json.dripType,\n  \"SOCIAL_POST_ID\": $json.socialPostId,\n  \"IS_DRIP\": true\n} }}"
+      },
+      "id": "map-drip-fields",
+      "name": "Map Drip to Blotato",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [690, 200]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"TITLE\": $json.title,\n  \"MEDIA_URL\": $json.posterUrl,\n  \"CAPTION\": $json.caption,\n  \"STATUS\": \"Ready to Post\",\n  \"FIGHT_ID\": $json.eventId,\n  \"PRICE\": $json.price,\n  \"BUY_LINK\": $json.buyLink,\n  \"PROMOTER\": $json.promoterName,\n  \"DESCRIPTION\": $json.description,\n  \"EVENT_DATE\": $json.eventDate,\n  \"SOCIAL_POST_ID\": $json.socialPostId,\n  \"IS_DRIP\": false\n} }}"
+      },
+      "id": "map-initial-fields",
+      "name": "Map Initial to Blotato",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [690, 420]
+    },
+    {
+      "parameters": {},
+      "id": "merge-streams",
+      "name": "Merge Streams",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "upload",
+        "mediaUrl": "={{ $json.MEDIA_URL }}",
+        "options": {}
+      },
+      "id": "upload-media",
+      "name": "Upload Media to Blotato",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1130, 300],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["instagram"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-instagram",
+      "name": "Post → Instagram",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1350, 60],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["tiktok"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-tiktok",
+      "name": "Post → TikTok",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1350, 160],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["youtube"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": { "isShort": true }
+      },
+      "id": "post-youtube-shorts",
+      "name": "Post → YouTube Shorts",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1350, 260],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["facebook"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-facebook",
+      "name": "Post → Facebook",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1350, 360],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["twitter"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-x",
+      "name": "Post → X (Twitter)",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1350, 460],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["threads"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-threads",
+      "name": "Post → Threads",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1350, 560],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["linkedin"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-linkedin",
+      "name": "Post → LinkedIn",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1560, 60],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["bluesky"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-bluesky",
+      "name": "Post → Bluesky",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1560, 160],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platforms": ["pinterest"],
+        "content": "={{ $('Merge Streams').item.json.CAPTION }}",
+        "mediaId": "={{ $json.mediaId }}",
+        "options": {}
+      },
+      "id": "post-pinterest",
+      "name": "Post → Pinterest",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1560, 260],
+      "credentials": {
+        "blotatoApi": {
+          "id": "BLOTATO_CRED_ID",
+          "name": "Blotato API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nPostBack",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "data",
+              "value": "={{ JSON.stringify({\n  eventId: $('Merge Streams').item.json.FIGHT_ID,\n  socialPostId: $('Merge Streams').item.json.SOCIAL_POST_ID,\n  status: 'posted',\n  platforms: {\n    instagram: $('Post → Instagram').item.json.postUrl || '',\n    tiktok: $('Post → TikTok').item.json.postUrl || '',\n    youtube_shorts: $('Post → YouTube Shorts').item.json.postUrl || '',\n    facebook: $('Post → Facebook').item.json.postUrl || '',\n    x: $('Post → X (Twitter)').item.json.postUrl || '',\n    threads: $('Post → Threads').item.json.postUrl || '',\n    linkedin: $('Post → LinkedIn').item.json.postUrl || '',\n    bluesky: $('Post → Bluesky').item.json.postUrl || '',\n    pinterest: $('Post → Pinterest').item.json.postUrl || ''\n  }\n}) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "postback-firebase",
+      "name": "Post-Back to DFC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1780, 300]
+    }
+  ],
+  "connections": {
+    "DFC Webhook Trigger": {
+      "main": [[{ "node": "Is Drip Post?", "type": "main", "index": 0 }]]
+    },
+    "Is Drip Post?": {
+      "main": [
+        [{ "node": "Map Drip to Blotato", "type": "main", "index": 0 }],
+        [{ "node": "Map Initial to Blotato", "type": "main", "index": 0 }]
+      ]
+    },
+    "Map Drip to Blotato": {
+      "main": [[{ "node": "Merge Streams", "type": "main", "index": 0 }]]
+    },
+    "Map Initial to Blotato": {
+      "main": [[{ "node": "Merge Streams", "type": "main", "index": 1 }]]
+    },
+    "Merge Streams": {
+      "main": [
+        [{ "node": "Upload Media to Blotato", "type": "main", "index": 0 }]
+      ]
+    },
+    "Upload Media to Blotato": {
+      "main": [
+        [
+          { "node": "Post → Instagram", "type": "main", "index": 0 },
+          { "node": "Post → TikTok", "type": "main", "index": 0 },
+          { "node": "Post → YouTube Shorts", "type": "main", "index": 0 },
+          { "node": "Post → Facebook", "type": "main", "index": 0 },
+          { "node": "Post → X (Twitter)", "type": "main", "index": 0 },
+          { "node": "Post → Threads", "type": "main", "index": 0 },
+          { "node": "Post → LinkedIn", "type": "main", "index": 0 },
+          { "node": "Post → Bluesky", "type": "main", "index": 0 },
+          { "node": "Post → Pinterest", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Post → Instagram": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → TikTok": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → YouTube Shorts": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → Facebook": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → X (Twitter)": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → Threads": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → LinkedIn": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → Bluesky": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    },
+    "Post → Pinterest": {
+      "main": [[{ "node": "Post-Back to DFC", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "instanceId": "dfc-production",
+    "templateId": "dfc-drip-countdown-v1"
+  }
+}

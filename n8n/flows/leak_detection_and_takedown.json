@@ -1,0 +1,134 @@
+{
+  "name": "DFC Leak Detection and Takedown",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook/leak-detected"
+      },
+      "name": "Webhook LeakDetected",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const leak = items[0].json;\nconst severity = (leak.matchConfidence || 0) > 0.9 ? 'CRITICAL' : (leak.matchConfidence || 0) > 0.7 ? 'HIGH' : 'MEDIUM';\nreturn [{ json: {\n  watermarkId: leak.watermarkId,\n  buyerId: leak.buyerId,\n  eventId: leak.eventId,\n  platform: leak.platform,\n  leakUrl: leak.leakUrl,\n  matchConfidence: leak.matchConfidence,\n  severity,\n  detectedAt: new Date().toISOString()\n}}];"
+      },
+      "name": "Classify Leak Severity",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BACKEND_URL || 'http://localhost:4000'}}/api/leaks",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={{ JSON.stringify($json) }}"
+      },
+      "name": "Record Leak in DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.severity}}",
+              "operation": "equals",
+              "value2": "CRITICAL"
+            }
+          ]
+        }
+      },
+      "name": "Is Critical?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BACKEND_URL || 'http://localhost:4000'}}/api/entitlements/revoke",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"buyerId\": \"{{$json.buyerId}}\", \"reason\": \"leak_detected\", \"watermarkId\": \"{{$json.watermarkId}}\" }"
+      },
+      "name": "Revoke Buyer Entitlement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1080, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "const leak = items[0].json;\nconst dmcaBody = {\n  infringing_url: leak.leakUrl,\n  original_work: `PPV Event ${leak.eventId}`,\n  description: `Unauthorized redistribution detected via forensic watermark ${leak.watermarkId}. Confidence: ${leak.matchConfidence}. Platform: ${leak.platform}.`,\n  contact_email: process.env.LEGAL_EMAIL || 'legal@datafightcentral.com',\n  timestamp: leak.detectedAt\n};\nreturn [{ json: { ...leak, dmcaBody } }];"
+      },
+      "name": "Build DMCA Takedown",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1080, 400]
+    },
+    {
+      "parameters": {
+        "url": "={{$env.BACKEND_URL || 'http://localhost:4000'}}/api/takedowns",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={{ JSON.stringify($json.dmcaBody) }}"
+      },
+      "name": "File Takedown Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1300, 400]
+    },
+    {
+      "parameters": {
+        "channel": "#legal-alerts",
+        "text": "=:rotating_light: LEAK DETECTED\nSeverity: {{$json.severity}}\nPlatform: {{$json.platform}}\nEvent: {{$json.eventId}}\nBuyer: {{$json.buyerId}}\nConfidence: {{$json.matchConfidence}}\nURL: {{$json.leakUrl}}",
+        "otherOptions": {}
+      },
+      "name": "Alert Legal Team (Slack)",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [1300, 600]
+    }
+  ],
+  "connections": {
+    "Webhook LeakDetected": {
+      "main": [
+        [{ "node": "Classify Leak Severity", "type": "main", "index": 0 }]
+      ]
+    },
+    "Classify Leak Severity": {
+      "main": [[{ "node": "Record Leak in DB", "type": "main", "index": 0 }]]
+    },
+    "Record Leak in DB": {
+      "main": [[{ "node": "Is Critical?", "type": "main", "index": 0 }]]
+    },
+    "Is Critical?": {
+      "main": [
+        [
+          { "node": "Revoke Buyer Entitlement", "type": "main", "index": 0 },
+          { "node": "Build DMCA Takedown", "type": "main", "index": 0 }
+        ],
+        [{ "node": "Build DMCA Takedown", "type": "main", "index": 0 }]
+      ]
+    },
+    "Revoke Buyer Entitlement": {
+      "main": [
+        [{ "node": "Alert Legal Team (Slack)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build DMCA Takedown": {
+      "main": [
+        [{ "node": "File Takedown Request", "type": "main", "index": 0 }]
+      ]
+    },
+    "File Takedown Request": {
+      "main": [
+        [{ "node": "Alert Legal Team (Slack)", "type": "main", "index": 0 }]
+      ]
+    }
+  }
+}

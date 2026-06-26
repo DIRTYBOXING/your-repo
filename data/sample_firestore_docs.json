@@ -1,0 +1,43 @@
+{
+  "events": [
+    {
+      "id": "EVENT_DFC_FIGHT_NIGHT_12",
+      "title": "DFC Fight Night 12",
+      "name": "DFC Fight Night 12",
+      "date": "2026-05-18T19:00:00Z",
+      "venue": "Logan Metro Sports Centre",
+      "city": "Logan",
+      "country": "Australia",
+      "latitude": -27.649,
+      "longitude": 153.109,
+      "posterUrl": "https://firebasestorage.googleapis.com/example/poster.jpg",
+      "promoterId": "PROMOTER_001",
+      "price": 29.99,
+      "platform": "PPV",
+      "status": "upcoming"
+    }
+  ],
+  "posts": [
+    {
+      "id": "POST_DFC_SAMPLE_001",
+      "authorId": "PROMOTER_001",
+      "userId": "PROMOTER_001",
+      "content": "Fight card announced! DFC Fight Night 12 is live.",
+      "createdAt": "2026-04-30T12:00:00Z",
+      "date": "2026-04-30T12:00:00Z",
+      "publishedAt": "2026-04-30T12:00:00Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "MSG_SAMPLE_001",
+      "senderId": "USER_123",
+      "senderName": "User 123",
+      "receiverId": "PROMOTER_001",
+      "receiverName": "Promoter One",
+      "text": "Hey, is ringside still available?",
+      "sentAt": "2026-04-30T13:00:00Z",
+      "read": false
+    }
+  ]
+}

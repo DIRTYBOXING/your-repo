@@ -1,0 +1,175 @@
+{
+  "name": "Clip to Social and Attribution",
+  "nodes": [
+    {
+      "parameters": { "httpMethod": "POST", "path": "webhook/clip-created" },
+      "name": "Webhook ClipCreated",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const c = items[0].json; return [{ json: { clipId: c.clipId, s3Url: c.s3Url, title: c.title, creatorId: c.creatorId } }];"
+      },
+      "name": "Extract Clip",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const title = $json.title || 'Watch this highlight'; const prompt = `Write a short punchy caption for social: ${title}. Include 1 hashtag and a CTA.`; return [{ json: { prompt } }];"
+      },
+      "name": "Build LLM Prompt",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.prompt}}",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"prompt\": $json.prompt, \"max_tokens\": 60 }"
+      },
+      "name": "LLM Caption",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const caption = items[0].json.text || items[0].json.caption || 'Watch the highlight'; return [{ json: { caption } }];"
+      },
+      "name": "Normalize Caption",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1080, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.s3Url}}",
+        "method": "GET",
+        "responseFormat": "file"
+      },
+      "name": "Download Clip",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [420, 480]
+    },
+    {
+      "parameters": {
+        "url": "https://your-shortlink-service.example/shorten",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"url\": $json.permalink_url || $json.s3Url, \"utm_source\": \"social\", \"utm_medium\": \"reel\", \"utm_campaign\": $json.clipId }"
+      },
+      "name": "Create Short Link",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1320, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://your-backend.example/api/attribution",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"clipId\": $json.clipId, \"platform\": \"instagram\", \"postUrl\": $json.permalink_url, \"shortUrl\": $json.shortUrl, \"creatorId\": $json.creatorId }"
+      },
+      "name": "Record Attribution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1540, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/{{ $credentials.igUserId }}/media",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"media_type\": \"REELS\", \"video_url\": $json.s3Url, \"caption\": $json.caption }"
+      },
+      "name": "Create IG Media",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1320, 480]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/{{ $credentials.igUserId }}/media_publish",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"creation_id\": $json.id }"
+      },
+      "name": "Publish Reel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1540, 480]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: { platform: 'messenger', message: `Thanks! Watch your clip: ${$json.shortUrl}` } }];"
+      },
+      "name": "Build Messenger Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1320, 660]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v18.0/me/messages",
+        "method": "POST",
+        "jsonParameters": true,
+        "bodyParametersJson": "={ \"recipient\": { \"id\": $json.creatorId }, \"message\": { \"text\": $json.message } }"
+      },
+      "name": "Send Messenger DM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1540, 660]
+    }
+  ],
+  "connections": {
+    "Webhook ClipCreated": {
+      "main": [[{ "node": "Extract Clip", "type": "main", "index": 0 }]]
+    },
+    "Extract Clip": {
+      "main": [
+        [
+          { "node": "Build LLM Prompt", "type": "main", "index": 0 },
+          { "node": "Download Clip", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build LLM Prompt": {
+      "main": [[{ "node": "LLM Caption", "type": "main", "index": 0 }]]
+    },
+    "LLM Caption": {
+      "main": [[{ "node": "Normalize Caption", "type": "main", "index": 0 }]]
+    },
+    "Normalize Caption": {
+      "main": [
+        [
+          { "node": "Create IG Media", "type": "main", "index": 0 },
+          { "node": "Create Short Link", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Create IG Media": {
+      "main": [[{ "node": "Publish Reel", "type": "main", "index": 0 }]]
+    },
+    "Publish Reel": {
+      "main": [[{ "node": "Create Short Link", "type": "main", "index": 0 }]]
+    },
+    "Create Short Link": {
+      "main": [
+        [
+          { "node": "Record Attribution", "type": "main", "index": 0 },
+          { "node": "Build Messenger Message", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Build Messenger Message": {
+      "main": [[{ "node": "Send Messenger DM", "type": "main", "index": 0 }]]
+    }
+  }
+}

@@ -1,0 +1,219 @@
+============================================================
+ DATA FIGHT CENTRAL — IP PROTECTION PLAN
+ Sole Trader / ABN Structure (Zero-Budget Path)
+ Date: 28 March 2026
+ Classification: CONFIDENTIAL
+============================================================
+
+NOTE: This plan is tailored for a sole trader operating under
+an ABN (no Pty Ltd company). All IP is owned by the individual
+until a company entity is formed. Adjust when structure changes.
+
+============================================================
+ 1. BUSINESS REGISTRATION (DO FIRST — FREE/CHEAP)
+============================================================
+
+STEP 1: Register ABN (free)
+  - Apply at abr.gov.au
+  - Needed for invoices, Stripe, contracts, and IP filings
+  - Takes ~10 minutes online
+
+STEP 2: Register Business Name (if trading as "Data Fight Central")
+  - Register at asic.gov.au — ~AUD $39 for 1 year or $92 for 3 years
+  - Required if you trade under a name other than your legal name
+
+STEP 3: Domain ownership
+  - Ensure datafightcentral.com WHOIS is in your name
+  - Buy protective domains (.au, .io, common misspellings) when budget allows
+
+NOTE ON PTY LTD:
+  When you can afford it (AUD $538 ASIC fee), form a Pty Ltd and
+  transfer all IP via a deed of assignment. Until then, sole trader
+  ABN is legally valid for all steps below.
+
+============================================================
+ 2. TRADE MARKS (PRIORITY: HIGH — AUD $250 per class)
+============================================================
+
+STEP 1: Search first (free)
+  - Search at search.ipaustralia.gov.au/trademarks
+  - Also search Google, WHOIS, social media handles
+
+STEP 2: File Australian trade mark application
+  - Cost: AUD $250 per class (online filing)
+  - Classes to consider:
+    Class 9  : Software, apps, streaming platforms
+    Class 41 : Entertainment, sporting events, streaming
+    Class 42 : SaaS, platform services
+  - Start with ONE class (most relevant) if budget is tight
+  - Takes ~7-8 months for registration
+
+MARKS TO PROTECT (priority order):
+  1. DATA FIGHT CENTRAL / DFC (word mark)
+  2. Logo mark (when finalised)
+  3. CHUCKYA (if filing separately)
+  4. Key taglines or event series names
+
+BUDGET-FRIENDLY: File Class 41 first (entertainment + streaming),
+add classes later.
+
+============================================================
+ 3. COPYRIGHT (FREE — AUTOMATIC)
+============================================================
+
+Copyright is automatic in Australia upon creation. No registration
+required. However, EVIDENCE and RECORD-KEEPING matter:
+
+DO NOW:
+  [x] Add copyright headers to source files:
+      // Copyright 2024-2026 Data Fight Central. All rights reserved.
+  [x] Commit code to private Git repo with timestamps
+  [x] Keep dated backups of designs, videos, documents
+  [x] Store original files (PSD, Figma, source video) securely
+  [ ] Archive a timestamped ZIP of key assets monthly
+
+IF DISPUTED: Git commit history, file metadata, and dated archives
+serve as evidence of authorship and creation date.
+
+============================================================
+ 4. PROVISIONAL PATENT (AUD ~$110)
+============================================================
+
+WHAT TO FILE: Provisional patent application with IP Australia
+  - Cost: AUD $110 (online, standard fee)
+  - Establishes priority date
+  - 12 months to convert to full patent or PCT
+
+WHAT TO INCLUDE:
+  - Title and abstract
+  - Background and problem statement
+  - Detailed description (step-by-step operation)
+  - Diagrams and sequence charts
+  - Example implementations
+  - Variants and alternatives
+  - Inventor name and contact
+
+SEE: ops/legal/provisional_patent_template.txt for full template
+
+FILING STEPS:
+  1. Fill template as plain-English PDF
+  2. File at ipaustralia.gov.au (online)
+  3. Pay AUD $110
+  4. Within 12 months: engage patent attorney to convert
+
+============================================================
+ 5. TRADE SECRETS & OPERATIONAL SECURITY (FREE)
+============================================================
+
+IDENTIFY CORE SECRETS:
+  - CHUCKYA signing algorithms and firmware logic
+  - Cortex engine / AI model weights
+  - Feed ranking algorithms
+  - Private keys, DRM credentials, API secrets
+
+CONTROLS (all free):
+  [x] Move private keys to secrets vault (1Password free tier or env vars)
+  [x] Remove any keys from git repo (git grep scan)
+  [x] Enable 2FA on GitHub, Firebase, Stripe
+  [x] Limit repo access to need-to-know
+  [ ] Mark confidential docs with "CONFIDENTIAL — DFC"
+  [ ] Keep audit log of who has access to what
+
+============================================================
+ 6. CONTRACTS & NDAs (FREE — TEMPLATES PROVIDED)
+============================================================
+
+REQUIRE BEFORE ANY DISCLOSURE:
+  - NDA + IP Assignment: ops/legal/nda_ip_assignment_template.txt
+  - Promoter Agreement: docs/PROMOTER_AGREEMENT_TEMPLATE.txt
+
+WHO MUST SIGN:
+  - Every freelancer before seeing code or designs
+  - Every contractor before starting work
+  - Every promoter before onboarding
+  - Any advisor or partner before disclosure
+
+COST: Free (use templates, get counsel review when budget allows)
+
+============================================================
+ 7. ENFORCEMENT & MONITORING (FREE/CHEAP)
+============================================================
+
+SET UP NOW (free):
+  [ ] Google Alerts for "Data Fight Central", "DFC", "CHUCKYA"
+  [ ] Monitor social media for brand misuse
+  [ ] Prepare cease-and-desist template (see below)
+  [ ] Prepare DMCA takedown template
+
+CEASE & DESIST (basic template):
+  "You are hereby notified that [infringing activity] infringes
+   the intellectual property rights of Data Fight Central,
+   ABN [number]. You must immediately cease and desist from
+   [specific action]. Failure to comply within 14 days may
+   result in legal action. [Your name, ABN, date]"
+
+DMCA/TAKEDOWN:
+  - For YouTube: use Copyright Takedown form
+  - For websites: send DMCA notice to hosting provider
+  - For apps: report to app store
+
+============================================================
+ 8. BUDGET PRIORITY ORDER
+============================================================
+
+  | Priority | Action                          | Cost (AUD) |
+  |----------|---------------------------------|------------|
+  | 1        | Register ABN                    | Free       |
+  | 2        | Register Business Name          | $39-$92    |
+  | 3        | Provisional Patent              | ~$110      |
+  | 4        | Trade Mark (1 class)            | $250       |
+  | 5        | Copyright evidence (backups)    | Free       |
+  | 6        | NDAs and contracts              | Free       |
+  | 7        | Google Alerts + monitoring      | Free       |
+  | 8        | Additional TM classes           | $250/each  |
+  | 9        | Full patent (within 12 months)  | $2000-5000 |
+  | 10       | Form Pty Ltd (when affordable)  | $538       |
+
+  TOTAL TO START: ~$400-$500 covers ABN + business name +
+  provisional patent + 1 trade mark class.
+
+============================================================
+ 9. WHEN YOU FORM PTY LTD (LATER)
+============================================================
+
+When you can afford it:
+  1. Register Pty Ltd with ASIC ($538)
+  2. Execute IP Assignment Deed — transfers all IP from you
+     (sole trader) to the company
+  3. Update all contracts to reference the company
+  4. Update Stripe, Firebase, and vendor accounts
+  5. Update trade mark and patent ownership records
+
+============================================================
+ 10. WHO TO HIRE WHEN BUDGET ALLOWS
+============================================================
+
+  | Role                    | When                          |
+  |-------------------------|-------------------------------|
+  | Trade mark attorney     | Before filing complex marks   |
+  | Patent attorney         | Before provisional expires    |
+  | Commercial lawyer       | For promoter agreements       |
+  | IP enforcement counsel  | On first infringement         |
+
+LOW-COST OPTIONS:
+  - University law clinics (often free IP advice)
+  - IP Australia's free advisory services
+  - Legal Aid (some states offer business advice)
+  - Community legal centres
+
+============================================================
+ RELATED ARTIFACTS
+============================================================
+
+  NDA + IP assignment    : ops/legal/nda_ip_assignment_template.txt
+  Provisional patent     : ops/legal/provisional_patent_template.txt
+  Promoter agreement     : docs/PROMOTER_AGREEMENT_TEMPLATE.txt
+
+============================================================
+ END OF IP PROTECTION PLAN
+============================================================

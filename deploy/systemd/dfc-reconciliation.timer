@@ -1,0 +1,13 @@
+[Unit]
+Description=DFC Wallet Reconciliation — Nightly Timer
+Documentation=https://github.com/DIRTYBOXING/Data-Fight-Central
+
+[Timer]
+# Run at 02:00 UTC every day (outside peak fight-night traffic)
+OnCalendar=*-*-* 02:00:00 UTC
+# If the system was down at 02:00, run as soon as it comes back (up to 1h late)
+Persistent=true
+RandomizedDelaySec=120
+
+[Install]
+WantedBy=timers.target

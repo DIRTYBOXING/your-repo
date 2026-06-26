@@ -1,0 +1,32 @@
+┌─────────────────────────────────────────────┐
+│        CHUCKYA — OPERATOR BADGE CARD        │
+│        Carry on phone or print on badge     │
+├─────────────────────────────────────────────┤
+│                                             │
+│  BEFORE SHIFT                               │
+│  ☐ Bluetooth ON                             │
+│  ☐ Location ON                              │
+│  ☐ CHUCKYA app shows bracelet "Paired"      │
+│  ☐ Battery level > 20%                      │
+│                                             │
+│  WHEN TESTING                               │
+│  ☐ Press bracelet panic button              │
+│  ☐ Phone alert within 1 second              │
+│  ☐ Backend returns alertId                  │
+│  ☐ Control room shows alert on map          │
+│                                             │
+│  IF EXPORT NEEDED                           │
+│  ☐ Request export via control room          │
+│  ☐ Legal approves (two-person rule)         │
+│  ☐ Verify signature + SHA256 before handoff │
+│  ☐ Hand evidence zip to police liaison      │
+│                                             │
+│  QUICK FIXES                                │
+│  • No BLE: toggle BT, move closer, restart  │
+│  • No alert: check backend URL + server logs│
+│  • Export fails: check approval status       │
+│                                             │
+│  EMERGENCY CONTACT: ____________________    │
+│  SHIFT LEAD: ____________________________   │
+│                                             │
+└─────────────────────────────────────────────┘

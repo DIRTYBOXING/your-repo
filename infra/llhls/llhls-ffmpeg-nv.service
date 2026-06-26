@@ -1,0 +1,16 @@
+[Unit]
+Description=LL-HLS FFmpeg Origin Service NVENC
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/llhls/stream1
+ExecStart=/usr/bin/ffmpeg -hide_banner -loglevel info -i "srt://0.0.0.0:9999?mode=listener" -map 0:v -map 0:a -c:v h264_nvenc -preset llhq -rc vbr_hq -cq 19 -b:v 3500k -maxrate 4000k -bufsize 8000k -g 48 -keyint_min 48 -sc_threshold 0 -bf 0 -c:a aac -b:a 128k -ac 2 -f hls -hls_time 1 -hls_list_size 6 -hls_flags delete_segments+append_list+omit_endlist+independent_segments -hls_segment_type fmp4 -hls_segment_filename "/var/www/llhls/stream1/seg_%05d.m4s" -master_pl_name "/var/www/llhls/stream1/master.m3u8" -hls_playlist_type event "/var/www/llhls/stream1/stream.m3u8"
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,82 @@
+name: Auto Fix and Triage
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+      - name: Run TODO Orchestrator
+        run: node tools/todo-orchestrator.js --scan --run
+      - name: Upload todo-results
+        uses: actions/upload-artifact@v4
+        with:
+          name: todo-results
+          path: todo-results.json
+
+  auto-fix:
+    needs: orchestrate
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+      - name: Run Auto PR Fixer
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_BASE: master
+        run: node tools/auto-pr-fixer.js
+      - name: Upload auto-fixer report if present
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-fixer-report
+          path: auto-fixer-report.json
+          if-no-files-found: ignore
+
+  triage:
+    needs: [orchestrate, auto-fix]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download todo-results
+        uses: actions/download-artifact@v4
+        with:
+          name: todo-results
+          path: .
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+      - name: Run Issue Triage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node tools/issue-triage.js

@@ -1,0 +1,453 @@
+{
+  "_notice": "PROPRIETARY — [Family Name] IP Dynasty Trust — ALL RIGHTS RESERVED",
+  "_version": "1.0.0",
+  "_updated": "2025-01-01",
+  "_description": "Machine-readable registry of all sovereign intellectual property owned by the Trust",
+
+  "trust": {
+    "name": "[Family Name] IP Dynasty Trust",
+    "jurisdiction": "[State/Country]",
+    "formed": "[Date]",
+    "type": "Irrevocable Spendthrift Dynasty Trust",
+    "founder": "[Founder Name]"
+  },
+
+  "opco": {
+    "name": "Data Fight Central LLC",
+    "license_type": "Exclusive, Revocable",
+    "license_document": "legal/IP_LICENSE_TO_OPCO.txt"
+  },
+
+  "ip_categories": {
+    "software_platforms": {
+      "description": "Core application platforms and frameworks",
+      "items": [
+        {
+          "name": "Data Fight Central Platform",
+          "type": "Flutter/Dart Mobile & Web App",
+          "files": "lib/",
+          "status": "active"
+        },
+        {
+          "name": "CHUCKYA Radar System",
+          "type": "React/TypeScript Control Room",
+          "files": "chuckya-radar/control-room-frontend/",
+          "status": "active"
+        },
+        {
+          "name": "CHUCKYA Radar Server",
+          "type": "Node.js/Express Backend",
+          "files": "chuckya-radar/radar-server/",
+          "status": "active"
+        },
+        {
+          "name": "Atlas AI Backend",
+          "type": "Python/FastAPI Multi-Model Router",
+          "files": "atlas_backend/",
+          "status": "active"
+        },
+        {
+          "name": "DFC Content Pipeline",
+          "type": "Content Ingestion & Processing",
+          "files": "dfc-content-pipeline/",
+          "status": "active"
+        },
+        {
+          "name": "DFC Messenger",
+          "type": "Real-time Communication System",
+          "files": "dfc-messenger/",
+          "status": "active"
+        },
+        {
+          "name": "Poster Worker",
+          "type": "Event Poster Generation",
+          "files": "poster-worker/",
+          "status": "active"
+        },
+        {
+          "name": "Promotion Worker",
+          "type": "Event Promotion Automation",
+          "files": "promotion-worker/",
+          "status": "active"
+        },
+        {
+          "name": "Entitlements Service",
+          "type": "Access Control & Permissions",
+          "files": "entitlements-service/",
+          "status": "active"
+        },
+        {
+          "name": "GenKit AI Functions",
+          "type": "Firebase AI Functions",
+          "files": "genkit/",
+          "status": "active"
+        }
+      ]
+    },
+
+    "ai_systems": {
+      "description": "Autonomous AI agents, engines, and intelligence systems",
+      "items": [
+        {
+          "name": "Samurai Swarm",
+          "type": "Multi-Agent AI Coordination System",
+          "agents": 53,
+          "engines": 25
+        },
+        {
+          "name": "DFC Nexus",
+          "type": "Central AI Orchestrator",
+          "description": "Routes tasks across all AI units"
+        },
+        {
+          "name": "Atlas Multi-Model Router",
+          "type": "AI Model Selection & Fallback",
+          "models": ["GPT-5", "Claude", "Gemini", "Perplexity"]
+        },
+        {
+          "name": "Fight Matching Algorithm",
+          "type": "Combat Sport Matchmaking AI",
+          "description": "Weighted multi-factor fighter matching"
+        },
+        {
+          "name": "Feed Ranking Engine",
+          "type": "Content Prioritization AI",
+          "description": "Trust-scored content amplification"
+        },
+        {
+          "name": "Auto Feed Orchestrator",
+          "type": "Autonomous Content Ingestion",
+          "description": "Cross-source normalization and ranking"
+        },
+        {
+          "name": "Detection & Triangulation AI",
+          "type": "Signal Intelligence",
+          "description": "Multi-sensor fusion for target location"
+        },
+        {
+          "name": "Drone Mission Planner",
+          "type": "Autonomous Flight Planning",
+          "description": "Multi-drone coordination and tasking"
+        },
+        {
+          "name": "Combat Intelligence Engine",
+          "type": "Fight Analytics AI",
+          "description": "Real-time combat analysis and prediction"
+        },
+        {
+          "name": "Quantum Optimization Module",
+          "type": "Advanced Computation",
+          "description": "Optimization algorithms for complex matching"
+        }
+      ]
+    },
+
+    "algorithms": {
+      "description": "Proprietary algorithms and computational methods",
+      "items": [
+        {
+          "name": "Fight Matching Weights",
+          "type": "Trade Secret",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Feed Trust Scoring",
+          "type": "Trade Secret",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Content Fingerprinting",
+          "type": "Trade Secret",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Device Verification Protocol",
+          "type": "Trade Secret",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Chain of Custody Signing",
+          "type": "HMAC-SHA256 Evidence Protocol",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Nonce Replay Protection",
+          "type": "Anti-Replay Security",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Signal Triangulation",
+          "type": "Multi-Sensor Fusion",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Drone Swarm Coordination",
+          "type": "Fleet Management Algorithm",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "PPV Pricing Model",
+          "type": "Dynamic Pricing",
+          "classification": "CONFIDENTIAL"
+        },
+        {
+          "name": "Marketplace Matching",
+          "type": "Supply-Demand Optimization",
+          "classification": "CONFIDENTIAL"
+        }
+      ]
+    },
+
+    "firmware_hardware": {
+      "description": "Embedded systems, firmware, and hardware designs",
+      "items": [
+        {
+          "name": "CHUCKYA Device Firmware",
+          "type": "nRF52840 Zephyr RTOS",
+          "files": "chuckya-radar/firmware/",
+          "protocols": ["BLE 5.x", "UWB DW3000", "CBOR"]
+        },
+        {
+          "name": "Android BLE Companion App",
+          "type": "Kotlin BLE Application",
+          "files": "chuckya-radar/android-app/"
+        },
+        {
+          "name": "Device Verifier Service",
+          "type": "Hardware Authentication",
+          "files": "chuckya-radar/device-verifier/"
+        }
+      ]
+    },
+
+    "drone_systems": {
+      "description": "Drone fleet control, detection, and mission systems",
+      "items": [
+        {
+          "name": "Drone Fleet Control",
+          "type": "Multi-Drone Management",
+          "description": "Fleet lifecycle, telemetry, command dispatch"
+        },
+        {
+          "name": "Launch Pad Control",
+          "type": "Ground Station Management",
+          "description": "Pad status, pre-flight checks, launch sequences"
+        },
+        {
+          "name": "Detection Radar",
+          "type": "Multi-Sensor Detection",
+          "detection_types": [
+            "phone_ping",
+            "gps",
+            "bluetooth",
+            "wifi",
+            "rf_signal",
+            "imsi_catcher",
+            "acoustic"
+          ]
+        },
+        {
+          "name": "Drone Tracker",
+          "type": "Real-Time Telemetry",
+          "description": "Position, altitude, heading, battery, signal tracking"
+        },
+        {
+          "name": "Mission Planner",
+          "type": "Autonomous Mission Planning",
+          "description": "Waypoint routing, objective assignment, multi-drone coordination"
+        }
+      ]
+    },
+
+    "cryptographic_protocols": {
+      "description": "Security protocols and cryptographic systems",
+      "items": [
+        {
+          "name": "RSA-2048 Device Signing",
+          "type": "Asymmetric Cryptography"
+        },
+        { "name": "JWT Authentication System", "type": "Token-Based Auth" },
+        {
+          "name": "HMAC-SHA256 Chain of Custody",
+          "type": "Evidence Integrity Protocol"
+        },
+        {
+          "name": "Nonce TTL Replay Protection",
+          "type": "Anti-Replay (5min window, 200/device limit)"
+        },
+        { "name": "Path Traversal Guards", "type": "Input Sanitization" },
+        {
+          "name": "WebRTC Signaling Protocol",
+          "type": "Peer-to-Peer Communication"
+        }
+      ]
+    },
+
+    "data_models": {
+      "description": "Database schemas, data models, and collection structures",
+      "items": [
+        {
+          "name": "Firestore Schema",
+          "type": "47+ Collections",
+          "doc": "docs/FIRESTORE_SCHEMA.md"
+        },
+        {
+          "name": "Data Models",
+          "type": "37+ Dart Models",
+          "files": "lib/shared/models/"
+        },
+        {
+          "name": "PostGIS Spatial Database",
+          "type": "Geospatial Data",
+          "description": "Location intelligence and spatial queries"
+        },
+        {
+          "name": "Redis Pub/Sub Schema",
+          "type": "Real-Time Messaging",
+          "description": "WebSocket scaling and state management"
+        }
+      ]
+    },
+
+    "trademarks": {
+      "description": "Brand names, logos, and design marks",
+      "items": [
+        {
+          "name": "Data Fight Central",
+          "symbol": "™",
+          "class": "Software, Combat Sports"
+        },
+        { "name": "DFC", "symbol": "™", "class": "Software, Combat Sports" },
+        {
+          "name": "CHUCKYA",
+          "symbol": "™",
+          "class": "Detection Technology, Hardware"
+        },
+        {
+          "name": "Blackbird",
+          "symbol": "™",
+          "class": "Surveillance, Intelligence"
+        },
+        { "name": "Samurai Swarm", "symbol": "™", "class": "AI Systems" },
+        {
+          "name": "Atlas",
+          "symbol": "™",
+          "class": "AI Router, Backend Systems"
+        },
+        {
+          "name": "DIRTYBOXING",
+          "symbol": "™",
+          "class": "Combat Sports, Media"
+        },
+        {
+          "name": "DFC Neon Theme",
+          "type": "Visual Identity",
+          "description": "Cyan/Magenta/Green/Gold/Red color system, dark UI"
+        }
+      ]
+    },
+
+    "infrastructure": {
+      "description": "Deployment, monitoring, and operational infrastructure",
+      "items": [
+        {
+          "name": "Docker Compose Full Stack",
+          "type": "Container Orchestration",
+          "files": "docker-compose.full.yml"
+        },
+        {
+          "name": "Nginx Reverse Proxy Config",
+          "type": "Gateway Configuration",
+          "files": "chuckya-radar/nginx/"
+        },
+        {
+          "name": "Prometheus Monitoring",
+          "type": "Metrics Collection",
+          "files": "monitoring/"
+        },
+        {
+          "name": "Grafana Dashboards",
+          "type": "Visualization",
+          "files": "chuckya-radar/grafana/"
+        },
+        {
+          "name": "Firebase Configuration",
+          "type": "Cloud Services",
+          "files": "firebase.json"
+        },
+        {
+          "name": "Terraform Infrastructure",
+          "type": "IaC",
+          "files": "terraform/"
+        },
+        {
+          "name": "Kubernetes Configs",
+          "type": "Container Orchestration",
+          "files": "chuckya-radar/k8s/"
+        },
+        {
+          "name": "CI/CD Pipelines",
+          "type": "Automation",
+          "files": ["azure-pipelines.yml", "cloudbuild.yaml"]
+        }
+      ]
+    },
+
+    "documentation": {
+      "description": "Technical documentation and specifications",
+      "items": [
+        { "name": "Data Models Documentation", "file": "docs/DATA_MODELS.md" },
+        {
+          "name": "Firestore Schema Documentation",
+          "file": "docs/FIRESTORE_SCHEMA.md"
+        },
+        { "name": "Setup Guide", "file": "docs/SETUP_GUIDE.md" },
+        { "name": "Deployment Documentation", "file": "docs/DEPLOYMENT.md" },
+        {
+          "name": "Implementation Summary",
+          "file": "docs/IMPLEMENTATION_SUMMARY.md"
+        },
+        { "name": "Platform Overview", "file": "DFC_PLATFORM_OVERVIEW.md" },
+        { "name": "Complete Writeup", "file": "DFC_COMPLETE_WRITEUP.md" }
+      ]
+    }
+  },
+
+  "registration_status": {
+    "copyright": {
+      "status": "AUTOMATIC — protected upon creation under Berne Convention",
+      "registration_recommended": true,
+      "office": "U.S. Copyright Office (copyright.gov)",
+      "note": "Formal registration enables statutory damages and attorney fees"
+    },
+    "trademarks": {
+      "status": "COMMON LAW — ™ symbol in use",
+      "registration_recommended": true,
+      "office": "USPTO (uspto.gov)",
+      "note": "Federal registration (®) provides nationwide protection"
+    },
+    "patents": {
+      "status": "NOT YET FILED",
+      "registration_recommended": true,
+      "note": "Provisional patents recommended for: fight matching algorithm, detection/triangulation system, drone coordination protocol, device verification chain of custody"
+    },
+    "trade_secrets": {
+      "status": "PROTECTED — under DTSA and state laws",
+      "note": "Maintain secrecy measures: NDAs, access controls, encryption, audit logs"
+    }
+  },
+
+  "total_ip_components": {
+    "software_platforms": 10,
+    "ai_systems": 10,
+    "algorithms": 10,
+    "firmware_hardware": 3,
+    "drone_systems": 5,
+    "cryptographic_protocols": 6,
+    "data_models": 4,
+    "trademarks": 8,
+    "infrastructure": 8,
+    "documentation": 7,
+    "total": 71
+  }
+}

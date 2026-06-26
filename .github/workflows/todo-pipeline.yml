@@ -1,0 +1,37 @@
+name: TODO Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"  # nightly at 6 PM AEST (08:00 UTC)
+
+jobs:
+  todo-pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies (secure — ignore scripts)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Run TODO orchestrator
+        run: node tools/todo-orchestrator.js --scan --run
+
+      - name: Auto-fix and PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: DIRTYBOXING/Data-Fight-Central
+        run: node tools/auto-pr-fixer.js

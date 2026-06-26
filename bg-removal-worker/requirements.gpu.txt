@@ -1,0 +1,10 @@
+# GPU requirements — paired with CUDA 12.4 runtime (Dockerfile.gpu)
+# Cloud Run NVIDIA L4 GPUs use CUDA 12.x drivers
+--index-url https://download.pytorch.org/whl/cu124
+torch==2.5.1
+torchvision==0.20.1
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+Pillow>=10.0.0
+numpy>=1.26.0
+python-multipart>=0.0.9

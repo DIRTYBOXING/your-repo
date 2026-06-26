@@ -1,0 +1,41 @@
+# CHUCKYA Control Room — Artillery Load Test
+# Simulates many WS clients connecting, authenticating, subscribing, and receiving alerts.
+#
+# Usage:
+#   npm install -g artillery@latest
+#   artillery run artillery.yml
+#
+# Before running, replace <TEST_JWT_WITH_REGIONS> with a valid JWT signed with your JWT_SECRET
+# containing claims: { sub: "loadtest", regions: ["brisbane", "sydney"] }
+
+config:
+  target: "ws://localhost:8080"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+      name: "Warm-up"
+    - duration: 120
+      arrivalRate: 50
+      name: "Sustained load"
+    - duration: 30
+      arrivalRate: 100
+      name: "Spike"
+
+scenarios:
+  - name: "ws-auth-subscribe"
+    engine: "ws"
+    flow:
+      - send:
+          text: '{"type":"auth","token":"<TEST_JWT_WITH_REGIONS>"}'
+      - think: 0.2
+      - send:
+          text: '{"type":"subscribe","region":"brisbane"}'
+      - think: 0.2
+      - send:
+          text: '{"type":"subscribe","region":"sydney"}'
+      - think: 0.5
+      - loop:
+          - send:
+              text: '{"type":"ping"}'
+          - think: 5
+        count: 24

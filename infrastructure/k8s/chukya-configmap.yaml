@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# Chukya 3.0 — Kubernetes ConfigMap (non-sensitive runtime config)
+# ═══════════════════════════════════════════════════════════════════════════
+# Apply:  kubectl apply -f infrastructure/k8s/chukya-configmap.yaml
+# Verify: kubectl get configmap chukya-config -n staging -o yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chukya-config
+  namespace: staging
+  labels:
+    app: chukya-safety
+    component: config
+data:
+  config.yaml: |
+    chukya:
+      scan:
+        travel_radar_interval_seconds: 30
+        ambush_burst_seconds: 5
+        guardian_continuous_seconds: 2
+        stealth_sentinel_interval_seconds: 120
+      thresholds:
+        police_notify_confidence: 0.8
+        consecutive_detections_required: 2
+        high_threat_confidence: 0.7
+        clear_threshold: 0.3
+      safe_zone:
+        default_radius_meters: 200
+        default_restraining_distance_meters: 200
+      evidence:
+        max_attachment_bytes: 10485760
+        retention_days: 2555
+      battery:
+        budget_percent_24h: 5.0
+      feature_flags:
+        # These mirror Firestore settings/feature_flags but serve as
+        # fallback defaults if Firestore is unreachable.
+        chukya_enabled: true
+        chukya_police_notifications_paused: false

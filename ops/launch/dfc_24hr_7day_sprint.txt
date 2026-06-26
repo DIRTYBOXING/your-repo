@@ -1,0 +1,150 @@
+============================================================
+ DATA FIGHT CENTRAL — 24-HOUR + 7-DAY SPRINT PLAN
+ Date: 28 March 2026
+ Classification: INTERNAL — Head of Dev / Ops
+============================================================
+
+IMMEDIATE 24-HOUR SPRINT (HIGH PRIORITY)
+=========================================
+
+| # | Task                                         | Owner              | Outcome                                      |
+|---|----------------------------------------------|--------------------|----------------------------------------------|
+| 1 | Rotate signing keys, move secrets to vault   | Security / DevOps  | No private keys in repo; keys in vault       |
+| 2 | Run E2E smoke and archive artifacts          | Backend Lead       | "Signature verified OK" or logs for triage   |
+| 3 | Deploy WebXR teaser to public host           | Frontend / WebXR   | Public join link for press and creators      |
+| 4 | Enable Stripe Connect onboarding (sandbox)   | Payments Engineer  | Promoter onboarding flow live in sandbox     |
+| 5 | Create promoter agreement draft, send counsel| Ops / Legal        | Legal review started                         |
+| 6 | Send outreach to 10 creators                 | Growth Lead        | Replies and early alpha signups              |
+
+EXACT COMMANDS TO RUN NOW
+==========================
+
+1. SCAN FOR PRIVATE KEYS IN REPO:
+   git grep -n "BEGIN RSA PRIVATE KEY" || true
+   git grep -n "PRIVATE KEY" || true
+   git grep -n "AWS_SECRET_ACCESS_KEY" || true
+   git grep -n "api_key" || true
+
+2. IF FOUND — REMOVE AND ROTATE:
+   git rm --cached path/to/secret.file
+   git commit -m "remove accidental secret file"
+   git push origin HEAD
+
+3. DEPLOY WEBXR TEASER (Firebase):
+   firebase deploy --only hosting:webxr
+
+4. STRIPE CONNECT ONBOARDING LINK (Node.js pseudocode):
+   const accountLink = await stripe.accountLinks.create({
+     account: connectedAccountId,
+     refresh_url: 'https://datafightcentral.web.app/onboard/refresh',
+     return_url: 'https://datafightcentral.web.app/onboard/complete',
+     type: 'account_onboarding'
+   });
+
+5. TOKEN ENDPOINT SNIPPET (Node.js + jsonwebtoken):
+   const jwt = require('jsonwebtoken');
+   app.post('/api/entitlement/:id/token', authMiddleware, async (req, res) => {
+     const entitlement = await db.getEntitlement(req.params.id);
+     if (!entitlement || entitlement.userId !== req.user.id)
+       return res.status(403).send();
+     const payload = {
+       iss: 'dfc-backend',
+       sub: `user:${req.user.id}`,
+       ent: `ent:${entitlement.id}`,
+       evt: `event:${entitlement.eventId}`,
+       dev: req.body.deviceFingerprint || 'unknown',
+       iat: Math.floor(Date.now()/1000),
+       exp: Math.floor(Date.now()/1000) + 600,
+       jti: uuidv4(),
+       aud: 'cdn.datafightcentral.com'
+     };
+     const token = jwt.sign(payload, process.env.SIGNING_PRIVATE_KEY, { algorithm: 'RS256' });
+     const manifestUrl = `https://cdn.datafightcentral.com/event/${entitlement.eventId}/playlist.m3u8?token=${encodeURIComponent(token)}`;
+     await db.saveToken(payload.jti, entitlement.id, req.user.id);
+     res.json({ playbackToken: token, manifestUrl });
+   });
+
+7-DAY SPRINT DELIVERABLES
+===========================
+
+| # | Deliverable                                          | Owner                    | Due   |
+|---|------------------------------------------------------|--------------------------|-------|
+| 1 | Full tokenized playback E2E (CDN + JWT + DRM)        | Backend + CDN + DRM Eng  | Day 3 |
+| 2 | Moderator roster and Code of Conduct published        | Ops                      | Day 3 |
+| 3 | Stripe Connect production flow (sandbox promoter)     | Payments Engineer        | Day 4 |
+| 4 | DRM vendor POC and watermarking POC                   | Media Engineer           | Day 5 |
+| 5 | Promoter onboarding UI with agreement acceptance      | Product + Frontend       | Day 5 |
+| 6 | Rescue Plaza asset pack commissioned                  | Creative Lead            | Day 7 |
+
+LEGAL AND COMMERCIAL (PARALLEL)
+=================================
+
+  - Send promoter agreement draft to counsel now
+  - Require promoters to create Stripe Standard accounts
+  - Prepare promoter starter pack: event checklist, RTMP ingest,
+    social assets, co-promotion terms
+
+STREAMING SECURITY CHECKLIST (before any public PPV)
+=====================================================
+
+  [ ] Signed CDN URLs for manifests and segments
+  [ ] Short-lived JWT tokens for manifests and DRM license requests
+  [ ] Multi-DRM integration (Widevine + FairPlay)
+  [ ] Forensic watermarking per session
+  [ ] Concurrency limits and device binding
+  [ ] Webhook monitoring for unusual playback patterns
+  [ ] Audit logs: jti, userId, watermarkId, playback timestamps
+
+METRICS AND DASHBOARDS TO WIRE
+================================
+
+  Events to track:
+    - ticket purchase, entitlement issued
+    - playback start, playback stop
+    - DRM license failures, watermark ID assigned
+    - charge disputes
+
+  Dashboards:
+    - GA4 + Meta Pixel for acquisition
+    - Prometheus + Grafana for backend health
+    - Single Grafana panel for live event health + moderation incidents
+
+  Alerting:
+    - High concurrency anomalies
+    - DRM license errors
+    - CDN abuse detection
+
+COMMUNICATION AND GROWTH
+==========================
+
+  - Send outreach to 10 creators (DM template + WebXR link)
+  - Offer co-promotion: small paid boost + featured placement
+    for first 3 promoters who sign up
+  - Schedule private pilot stream with 1 promoter + 50 viewers
+
+FINAL CHECKLIST BEFORE PUBLIC LAUNCH
+======================================
+
+  [ ] Signing keys rotated and stored in vault
+  [ ] E2E smoke passed and artifacts archived
+  [ ] WebXR teaser deployed and Meta Pixel firing
+  [ ] Stripe Connect onboarding live in sandbox
+  [ ] Token endpoint implemented + CDN signed URL tested
+  [ ] DRM license issuance tested for short clip
+  [ ] Forensic watermarking in packaging pipeline
+  [ ] Promoter agreement sent to counsel
+  [ ] Moderator roster and CoC published
+  [ ] Growth outreach sent and pilot event scheduled
+
+============================================================
+ RELATED ARTIFACTS
+============================================================
+
+  PPV architecture    : docs/PPV_STREAMING_ARCHITECTURE.txt
+  Promoter agreement  : docs/PROMOTER_AGREEMENT_TEMPLATE.txt
+  Tokenized playback  : docs/TOKENIZED_PLAYBACK_SPEC.txt
+  Playbook v3         : ops/launch/global_growth_metaverse_playbook.txt
+
+============================================================
+ END OF 24-HOUR + 7-DAY SPRINT PLAN
+============================================================

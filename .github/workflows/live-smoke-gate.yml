@@ -1,0 +1,187 @@
+name: Live Smoke Gate
+
+# Runs after Firebase Hosting deploy to verify the live site is healthy.
+# Triggered automatically by the deploy workflow or manually.
+
+on:
+  workflow_run:
+    workflows: ["DFC Deploy Pipeline"]
+    types: [completed]
+    branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Target URL to smoke test"
+        required: false
+        default: "https://www.datafightcentral.com"
+
+concurrency:
+  group: live-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TARGET_URL: ${{ github.event.inputs.base_url || 'https://www.datafightcentral.com' }}
+
+jobs:
+  # ── Gate: only run if upstream deploy succeeded ────────────────────────────
+  guard:
+    name: Deployment Guard
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check upstream result
+        id: check
+        run: |
+          upstream="${{ github.event.workflow_run.conclusion }}"
+          if [[ -z "$upstream" || "$upstream" == "success" ]]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Upstream deploy concluded: $upstream — skipping smoke."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ── 1. HTTP Health Check ───────────────────────────────────────────────────
+  http-health:
+    name: HTTP Health Check
+    needs: guard
+    if: needs.guard.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check root returns 200
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.TARGET_URL }}")
+          echo "Status: $STATUS"
+          if [[ "$STATUS" != "200" ]]; then
+            echo "::error::Live site returned $STATUS — expected 200"
+            exit 1
+          fi
+          echo "✅ ${{ env.TARGET_URL }} → 200 OK"
+
+      - name: Check critical route — /
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.TARGET_URL }}/#/")
+          echo "Route / → $STATUS"
+
+      - name: Check main.dart.js asset exists
+        run: |
+          # Fetch the index to extract the hashed main JS filename
+          INDEX=$(curl -sf "${{ env.TARGET_URL }}/index.html" || echo "")
+          if [[ -z "$INDEX" ]]; then
+            echo "::error::Could not fetch index.html"
+            exit 1
+          fi
+          echo "✅ index.html fetched (${#INDEX} bytes)"
+
+      - name: Check flutter.js shim
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${{ env.TARGET_URL }}/flutter.js")
+          echo "flutter.js → $STATUS"
+          if [[ "$STATUS" != "200" ]]; then
+            echo "::error::flutter.js missing from hosting — build may not have deployed"
+            exit 1
+          fi
+          echo "✅ flutter.js → 200"
+
+  # ── 2. Playwright Live Smoke ───────────────────────────────────────────────
+  playwright-live:
+    name: Playwright Live Smoke
+    needs: [guard, http-health]
+    if: needs.guard.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: npm ci (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install Playwright browsers
+        env:
+          npm_config_ignore_scripts: "true"
+        run: node ./node_modules/playwright/cli.js install chromium --with-deps
+
+      - name: Run live smoke gate
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ env.TARGET_URL }}
+          PLAYWRIGHT_ENTER_DEMO: "1"
+          CI: "true"
+        run: |
+          node scripts/run_live_smoke.mjs 2>&1 | tee live-smoke-report.txt
+          EXIT=${PIPESTATUS[0]}
+          echo "Gate exit: $EXIT"
+          exit $EXIT
+
+      - name: Upload smoke report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-smoke-report-${{ github.run_id }}
+          path: |
+            live-smoke-report.txt
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  # ── 3. Latency Probe ──────────────────────────────────────────────────────
+  latency-probe:
+    name: Latency & CDN Probe
+    needs: guard
+    if: needs.guard.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Measure TTFB
+        run: |
+          TTFB=$(curl -s -o /dev/null -w "%{time_starttransfer}" "${{ env.TARGET_URL }}")
+          echo "TTFB: ${TTFB}s"
+          # Warn if TTFB > 3s (CDN cold start or deploy propagation lag)
+          python3 -c "
+          ttfb = float('$TTFB')
+          print(f'TTFB: {ttfb:.3f}s')
+          if ttfb > 3.0:
+              print('::warning::TTFB > 3s — CDN may still be propagating or origin is slow')
+          else:
+              print('✅ TTFB within SLO')
+          "
+
+      - name: Check cache headers
+        run: |
+          echo "=== Cache-Control headers ==="
+          curl -sI "${{ env.TARGET_URL }}/flutter.js" | grep -i "cache-control" || echo "No cache-control header found"
+          curl -sI "${{ env.TARGET_URL }}/index.html" | grep -i "cache-control" || echo "No cache-control on index.html"
+
+  # ── 4. Summary ────────────────────────────────────────────────────────────
+  smoke-summary:
+    name: Smoke Summary
+    needs: [http-health, playwright-live, latency-probe]
+    if: always() && needs.guard.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report outcome
+        run: |
+          HTTP="${{ needs.http-health.result }}"
+          PW="${{ needs.playwright-live.result }}"
+          LATENCY="${{ needs.latency-probe.result }}"
+
+          echo "## Live Smoke Gate Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| HTTP Health | $HTTP |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Playwright Visual | $PW |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Latency Probe | $LATENCY |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Target: ${{ env.TARGET_URL }}" >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$HTTP" != "success" || "$PW" != "success" ]]; then
+            echo "::error::Live smoke gate FAILED — check artifacts for details"
+            exit 1
+          fi
+          echo "✅ All live smoke checks passed"

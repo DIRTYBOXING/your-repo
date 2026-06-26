@@ -1,0 +1,5 @@
+{
+  "block_keywords": ["leak", "rumor", "unverified"],
+  "trusted_categories": ["events", "news", "media"],
+  "require_manual_review": ["untrusted"]
+}

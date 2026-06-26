@@ -1,0 +1,11 @@
+{
+  "canonicalRuntime": "firebase-functions-ppv",
+  "cutoverPhase": "dual-read",
+  "telemetryEnabled": true,
+  "deprecationTargets": [
+    "live-publisher-ppv-checkout",
+    "entitlements-service-checkout",
+    "web-ppv-client"
+  ],
+  "updatedAt": "2026-04-12"
+}

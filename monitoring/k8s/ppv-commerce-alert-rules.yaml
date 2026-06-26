@@ -1,0 +1,53 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ppv-commerce-alert-rules
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  groups:
+    - name: ppv-commerce.rules
+      rules:
+        - alert: PpvEntitlementFailureRateHigh
+          expr: |
+            (
+              sum(rate(dfc_purchase_success_total[5m]))
+              -
+              sum(rate(dfc_entitlement_granted_total[5m]))
+            ) / clamp_min(sum(rate(dfc_purchase_success_total[5m])), 1) > 0.005
+          for: 5m
+          labels:
+            severity: critical
+            team: commerce
+          annotations:
+            summary: "PPV entitlement failure rate is above 0.5%"
+            description: "Purchase success is outpacing entitlement grants by more than 0.5% over 5m."
+
+        - alert: PpvPurchaseSuccessRateDrop
+          expr: |
+            sum(rate(dfc_purchase_success_total[5m]))
+            /
+            clamp_min(sum(rate(dfc_purchase_attempts_total[5m])), 1)
+            < 0.98
+          for: 10m
+          labels:
+            severity: warning
+            team: commerce
+          annotations:
+            summary: "PPV purchase success rate dropped below 98%"
+            description: "Investigate checkout and webhook delivery health."
+
+        - alert: PpvWatchStartDrop
+          expr: |
+            sum(rate(dfc_watch_started_total[10m]))
+            /
+            clamp_min(sum(rate(dfc_entitlement_granted_total[10m])), 1)
+            < 0.90
+          for: 10m
+          labels:
+            severity: warning
+            team: streaming
+          annotations:
+            summary: "PPV watch starts are lagging entitlement grants"
+            description: "Less than 90% of entitlements are resulting in watch starts over 10m."

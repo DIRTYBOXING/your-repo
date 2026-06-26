@@ -1,0 +1,319 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA PHONE APP — INTEGRATION PSEUDOCODE                    ║
+║  BLE receive → sign → upload → local UX                        ║
+║  Target: Android (Kotlin) / iOS (Swift) with platform keystore ║
+║  Version: 1.0   Date: 2026-03-28                               ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+1. APP INITIALIZATION
+═══════════════════════════════════════════════════════════════════
+
+function app_start():
+    // Generate or load keypair from hardware-backed keystore
+    if not keystore_has_key("chuckya_device_key"):
+        keystore_generate_key(
+            alias     = "chuckya_device_key",
+            algorithm = "EC",           // ECDSA P-256
+            purposes  = [SIGN, VERIFY],
+            user_auth = false,          // available without biometric
+            hardware_backed = true      // Android StrongBox / iOS SE
+        )
+
+    // Load app instance ID (generated at first run)
+    app_id = load_or_generate_app_instance_id()
+
+    // Register public key with backend (once, or on key rotation)
+    public_key_pem = keystore_export_public_key("chuckya_device_key")
+    POST /v1/devices/register {
+        appInstanceId: app_id,
+        publicKeyPem:  public_key_pem,
+        platform:      "android" | "ios",
+        registeredAt:  now_iso()
+    }
+
+    // Load paired bracelets from local DB
+    paired_devices = db.load_paired_devices()
+
+    // Start BLE scanning for paired devices
+    start_ble_reconnect(paired_devices)
+
+═══════════════════════════════════════════════════════════════════
+2. BLE PAIRING FLOW
+═══════════════════════════════════════════════════════════════════
+
+function pair_new_bracelet():
+    // UI: show scanning screen
+    show_screen("Scanning for CHUCKYA bracelets...")
+
+    // Scan for devices advertising CHUCKYA service UUID
+    devices = ble_scan(
+        filter_service = "0000CCHK-0000-1000-8000-00805F9B34FB",
+        filter_name_prefix = "CHUCKYA-",
+        timeout = 15000ms
+    )
+
+    // UI: show device list with signal strength + battery
+    selected = show_device_picker(devices)
+
+    // Connect and read pairing code
+    connection = ble_connect(selected)
+    show_screen("Press button on bracelet to show pairing code")
+
+    // User enters 6-digit code from bracelet display
+    code = show_pairing_code_input()
+
+    // BLE pairing with numeric comparison or passkey
+    ble_pair(connection, passkey=code, bonding=true)
+
+    // Write confirmation token
+    confirmation = generate_confirmation_token()
+    ble_write(connection, "PairingCode", confirmation)
+
+    // Show consent screen
+    consent = show_consent_screen({
+        app_instance_id: true,          // always required
+        optional_imei: false,           // user toggles
+        optional_location: false,       // user toggles
+        guardian_notify: false           // user toggles
+    })
+
+    // Store consent record immutably
+    consent_record = {
+        consentRecordId: generate_uuid(),
+        appInstanceId:   app_id,
+        braceletId:      selected.device_id,
+        consents:        consent,
+        timestamp:       now_iso(),
+        appVersion:      get_app_version()
+    }
+    db.store_consent_record(consent_record)
+
+    // Register consent with backend
+    POST /v1/consent {
+        ...consent_record
+    }
+
+    // Store pairing record
+    db.store_paired_device({
+        braceletId:     selected.device_id,
+        bleAddress:     selected.address,
+        pairedAt:       now_iso(),
+        consentRecordId: consent_record.consentRecordId,
+        nickname:       null    // user can set later
+    })
+
+    // Subscribe to notifications
+    ble_subscribe(connection, "RawProximity")
+    ble_subscribe(connection, "Battery")
+
+    // UI: show success + tutorial
+    show_screen("Paired! One-tap panic. Silent mode. Guardian notify.")
+
+═══════════════════════════════════════════════════════════════════
+3. RECEIVING AND SIGNING EVENTS
+═══════════════════════════════════════════════════════════════════
+
+function on_ble_notification(characteristic, raw_data):
+    if characteristic != "RawProximity":
+        if characteristic == "Battery":
+            update_battery_ui(decode_uint8(raw_data))
+            return
+        return
+
+    // Decode raw wearable event
+    event = decode_json(raw_data)
+    // Expected: { deviceId, ts, nonce, d, dir, sig }
+
+    // Determine threat mode from signal type and proximity
+    mode = determine_mode(event)
+
+    // Build signed payload (without signature field)
+    consent_flags = get_current_consent_flags()
+    payload = {
+        appInstanceId: app_id,
+        timestamp:     event.ts,
+        nonce:         event.nonce,
+        mode:          mode,
+        proximity: {
+            distance_m:    event.d,
+            direction_deg: event.dir
+        },
+        signals:  [ event.sig ],
+        consent:  consent_flags
+    }
+
+    // Canonicalize: deterministic JSON sort (all keys alphabetical, recursive)
+    canonical_json = json_sort_keys(payload)
+
+    // Sign with hardware-backed keystore
+    signature_bytes = keystore_sign(
+        alias     = "chuckya_device_key",
+        algorithm = "SHA256withECDSA",
+        data      = utf8_bytes(canonical_json)
+    )
+
+    // Attach signature
+    payload.signatureBase64 = base64_encode(signature_bytes)
+
+    // Local UX (immediate feedback)
+    show_local_alert(payload)
+
+    // Upload to backend
+    upload_signed_event(payload)
+
+═══════════════════════════════════════════════════════════════════
+4. MODE DETERMINATION
+═══════════════════════════════════════════════════════════════════
+
+function determine_mode(event):
+    // Panic button always escalates to highest
+    if event.sig == "panic":
+        return "code_black"
+
+    // Tamper detection is high priority
+    if event.sig == "tamper":
+        return "code_red"
+
+    // Auto proximity based on distance
+    if event.sig == "auto_proximity":
+        if event.d <= 3:
+            return "code_red"       // dangerously close
+        if event.d <= 7:
+            return "code_yellow"    // approaching threshold
+        return "code_green"         // detected but not critical
+
+    // Periodic scan — informational only
+    if event.sig == "periodic":
+        return "code_green"
+
+    return "code_green"             // default safe
+
+═══════════════════════════════════════════════════════════════════
+5. UPLOAD WITH RETRY
+═══════════════════════════════════════════════════════════════════
+
+MAX_RETRY = 5
+RETRY_BACKOFF = [1000, 2000, 4000, 8000, 16000]  // milliseconds
+
+function upload_signed_event(payload):
+    for attempt in 0..MAX_RETRY:
+        try:
+            response = POST /v1/radar/event {
+                headers: { "Content-Type": "application/json" },
+                body: payload
+            }
+            if response.status == 200 or response.status == 201:
+                mark_event_uploaded(payload.nonce)
+                return SUCCESS
+
+            if response.status == 409:   // duplicate nonce
+                return ALREADY_UPLOADED
+
+        catch NetworkError:
+            // Queue for retry
+            pass
+
+        sleep(RETRY_BACKOFF[attempt])
+
+    // All retries exhausted — queue persistently
+    db.queue_for_retry(payload)
+    schedule_background_sync()
+
+function background_sync():
+    // Called by WorkManager (Android) or BGTaskScheduler (iOS)
+    queued = db.get_queued_events()
+    for event in queued:
+        result = upload_signed_event(event)
+        if result == SUCCESS or result == ALREADY_UPLOADED:
+            db.remove_from_queue(event.nonce)
+
+═══════════════════════════════════════════════════════════════════
+6. LOCAL UX (ALERT DISPLAY)
+═══════════════════════════════════════════════════════════════════
+
+function show_local_alert(payload):
+    // Haptic feedback
+    vibrate(duration=200ms)
+
+    // Determine UI based on mode
+    switch payload.mode:
+        case "code_black":
+            show_fullscreen_alert(
+                color  = "#FF00FF",
+                title  = "EMERGENCY",
+                body   = "Panic triggered. Help is being notified.",
+                arrow  = compute_escape_direction(payload.proximity)
+            )
+            play_alert_tone("emergency")
+
+        case "code_red":
+            show_banner_alert(
+                color  = "#FF3366",
+                title  = "THREAT DETECTED",
+                body   = format_distance(payload.proximity.distance_m),
+                arrow  = compute_escape_direction(payload.proximity)
+            )
+            play_alert_tone("warning")
+
+        case "code_yellow":
+            show_banner_alert(
+                color  = "#FFD700",
+                title  = "PROXIMITY ALERT",
+                body   = format_distance(payload.proximity.distance_m)
+            )
+            vibrate(duration=100ms)
+
+        case "code_green":
+            // Silent log only in normal mode
+            log_event(payload)
+
+function compute_escape_direction(proximity):
+    // Point arrow AWAY from threat (opposite direction)
+    threat_dir = proximity.direction_deg
+    escape_dir = (threat_dir + 180) % 360
+    return escape_dir
+
+═══════════════════════════════════════════════════════════════════
+7. SILENT MODE
+═══════════════════════════════════════════════════════════════════
+
+// User can enable silent mode when they don't want visible/audible alerts
+// Events still signed and uploaded — only local UX is suppressed
+
+function toggle_silent_mode(enabled):
+    db.set_setting("silent_mode", enabled)
+    if enabled:
+        // Still upload events but suppress local UX
+        // Bracelet still operates normally
+        show_toast("Silent mode ON — events still recorded")
+    else:
+        show_toast("Silent mode OFF — alerts will sound")
+
+function should_show_local_alert():
+    return not db.get_setting("silent_mode", default=false)
+
+═══════════════════════════════════════════════════════════════════
+8. GUARDIAN NOTIFY
+═══════════════════════════════════════════════════════════════════
+
+// Optional: notify a trusted contact when high-severity alert fires
+
+function check_guardian_notify(payload):
+    if payload.mode not in ["code_black", "code_red"]:
+        return
+
+    guardian = db.get_guardian_contact()
+    if guardian is null:
+        return
+
+    // Send push notification via backend
+    POST /v1/guardian/notify {
+        guardianId:    guardian.id,
+        alertMode:     payload.mode,
+        timestamp:     payload.timestamp,
+        // NO location data unless guardian consent separate
+        message:       "Safety alert triggered. Check in with your contact."
+    }
+
+═══════════════════════════════════════════════════════════════════

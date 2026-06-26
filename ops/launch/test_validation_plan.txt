@@ -1,0 +1,163 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — TEST AND VALIDATION PLAN                            ║
+║  DataFightCentral Engineering                                   ║
+║  Version: 1.0   Date: 2026-03-28                               ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+1. UNIT TESTS
+═══════════════════════════════════════════════════════════════════
+
+  BACKEND (Node.js)
+  ─────────────────────────────────────────────────────────────────
+  [ ] Canonical JSON sort produces deterministic output
+  [ ] SHA256 hash of canonical payload matches expected
+  [ ] Signature verification passes with valid key
+  [ ] Signature verification fails with wrong key
+  [ ] Signature verification fails with tampered payload
+  [ ] Nonce replay detection rejects duplicate nonce
+  [ ] TTL enforcement rejects old timestamps (> 5 min)
+  [ ] Risk score calculation matches expected for each mode
+  [ ] Rate limiter blocks excessive requests
+
+  ANDROID (Kotlin)
+  ─────────────────────────────────────────────────────────────────
+  [ ] Canonical.canonicalize() sorts keys alphabetically
+  [ ] SigningService generates valid RSA signature
+  [ ] SigningService signature verifiable with exported public key
+  [ ] CBOR decoder handles all integer key mappings (1-8)
+  [ ] CBOR decoder handles missing optional fields (bat, att)
+  [ ] UploadService retries on network failure (up to 5 attempts)
+  [ ] Mode determination: panic → code_black
+  [ ] Mode determination: auto_proximity < 3m → code_red
+  [ ] Mode determination: auto_proximity 3-7m → code_yellow
+
+  FIRMWARE (C)
+  ─────────────────────────────────────────────────────────────────
+  [ ] cbor_encode_event produces valid CBOR bytes
+  [ ] Circular buffer wraps correctly at BUFFER_SIZE
+  [ ] Button debounce rejects presses within 500ms
+  [ ] Buffered events flush on BLE connect
+  [ ] Battery level read returns 0-100 range
+
+═══════════════════════════════════════════════════════════════════
+2. INTEGRATION TESTS
+═══════════════════════════════════════════════════════════════════
+
+  BLE → PHONE
+  ─────────────────────────────────────────────────────────────────
+  [ ] Phone receives BLE notification from bracelet
+  [ ] CBOR payload decodes correctly on phone
+  [ ] Phone signs payload and signature is valid
+  [ ] Signed payload uploads to backend successfully
+  [ ] Offline buffer: events queue locally on network failure
+
+  PHONE → BACKEND
+  ─────────────────────────────────────────────────────────────────
+  [ ] POST /v1/radar/event accepted with valid signature
+  [ ] POST /v1/radar/event rejected with invalid signature
+  [ ] POST /v1/radar/event rejected with expired timestamp
+  [ ] POST /v1/radar/event rejected with duplicate nonce
+  [ ] Alert appears in GET /v1/radar/alerts within 5 seconds
+  [ ] WebSocket subscribers receive alert within 1 second
+
+  BACKEND → CONTROL ROOM
+  ─────────────────────────────────────────────────────────────────
+  [ ] Control room dashboard shows alert on map
+  [ ] Threat Radar displays blip at correct proximity
+  [ ] Evidence Locker shows alert details and signature status
+  [ ] Approval Console shows pending export requests
+  [ ] Two-person approval flow: request → approve → download
+
+═══════════════════════════════════════════════════════════════════
+3. END-TO-END TESTS
+═══════════════════════════════════════════════════════════════════
+
+  FULL PIPELINE (use Docker Compose stack)
+  ─────────────────────────────────────────────────────────────────
+  [ ] Bracelet panic → phone → backend → control room (< 5s)
+  [ ] Auto-proximity trigger → phone → backend → control room
+  [ ] Evidence export → two-person approval → download zip
+  [ ] Signature verification on exported evidence (OpenSSL CLI)
+  [ ] SHA256 in chain_of_custody.json matches computed hash
+  [ ] Grafana dashboard shows metrics (alerts/min, latency, etc.)
+  [ ] WS clients receive alerts in real-time
+
+  EDGE CASES
+  ─────────────────────────────────────────────────────────────────
+  [ ] Bracelet disconnects mid-event → buffer → reconnect → flush
+  [ ] Phone offline → queue events → upload on network restore
+  [ ] Redis down → WS server degrades gracefully (no broadcast)
+  [ ] Backend restart → no data loss (audit store intact)
+  [ ] Concurrent panic from multiple bracelets (3+ simultaneous)
+
+═══════════════════════════════════════════════════════════════════
+4. LOAD AND PERFORMANCE TESTS
+═══════════════════════════════════════════════════════════════════
+
+  TARGETS
+  ─────────────────────────────────────────────────────────────────
+  Ingest latency median:       < 200 ms
+  Ingest latency p95:          < 1000 ms
+  WS delivery latency:         < 500 ms (sub-second)
+  Signature verification rate: > 99.9%
+  Sustained throughput:        50 events/sec for 2 minutes
+  Spike tolerance:             100 events/sec for 30 seconds
+
+  TEST EXECUTION
+  ─────────────────────────────────────────────────────────────────
+  [ ] Run Artillery load test (3 phases: warm-up, sustained, spike)
+  [ ] Verify no 5xx errors during sustained phase
+  [ ] Verify p95 latency within target during spike
+  [ ] Monitor Redis memory usage during load
+  [ ] Monitor WS server connection count during load
+  [ ] Check Grafana dashboards for anomalies post-test
+
+═══════════════════════════════════════════════════════════════════
+5. SECURITY TESTS
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Static analysis on all Node.js services (npm audit)
+  [ ] Dependency vulnerability scan (Trivy or Snyk)
+  [ ] Secret scanning on repository (GitHub Advanced Security)
+  [ ] Container image scan for known CVEs
+  [ ] Test invalid JWT tokens on WS connection (expect reject)
+  [ ] Test tampered payload on /v1/radar/event (expect reject)
+  [ ] Test replay attack with reused nonce (expect reject)
+  [ ] Test oversized request body (> 5MB, expect reject)
+  [ ] Test rate limiting exceeds threshold (expect 429)
+
+═══════════════════════════════════════════════════════════════════
+6. HARDWARE VALIDATION (BLE + UWB)
+═══════════════════════════════════════════════════════════════════
+
+  [ ] BLE pairing across Android versions (API 26-34)
+  [ ] BLE pairing across BLE chipsets (Qualcomm, MediaTek, Nordic)
+  [ ] CBOR payload size within MTU on all test devices
+  [ ] UWB distance accuracy within ±0.5m at 1-10m range
+  [ ] UWB direction accuracy within ±15° at 3m range
+  [ ] Battery life test: 3+ days with 200ms advertising + periodic scan
+  [ ] Panic button debounce: no double-fire within 500ms
+  [ ] IP67 water resistance (30 min submersion at 1m)
+
+═══════════════════════════════════════════════════════════════════
+7. ACCEPTANCE CRITERIA (PILOT GATE)
+═══════════════════════════════════════════════════════════════════
+
+  All of the following must be TRUE before pilot deployment:
+
+  [ ] All unit tests pass
+  [ ] All integration tests pass
+  [ ] End-to-end drill completed with signoff
+  [ ] Load test meets all performance targets
+  [ ] Security tests pass with no critical or high findings
+  [ ] Hardware validation passes on 2+ device models
+  [ ] Police demo completed successfully
+  [ ] Evidence zip verified by independent party
+
+  Sign-off:
+  Tech Lead:       ________________  Date: ________
+  QA Lead:         ________________  Date: ________
+  Security Lead:   ________________  Date: ________
+
+═══════════════════════════════════════════════════════════════════

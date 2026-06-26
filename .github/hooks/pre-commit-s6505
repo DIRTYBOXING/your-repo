@@ -1,0 +1,48 @@
+#!/bin/bash
+# Pre-commit check for S6505: Prevent npm lifecycle script execution
+# This hook runs before commit to detect any `npm install` in workflows
+# and require hardening with `--ignore-scripts`.
+
+VIOLATIONS=()
+WORKFLOW_DIR=".github/workflows"
+
+# Detect workflow files with `npm install` not hardened with --ignore-scripts
+while IFS= read -r line; do
+  file=$(echo "$line" | cut -d: -f1)
+  linenum=$(echo "$line" | cut -d: -f2)
+  content=$(echo "$line" | cut -d: -f3-)
+  
+  # Skip if already hardened
+  if [[ "$content" == *"--ignore-scripts"* ]]; then
+    continue
+  fi
+  
+  # Skip firebase-tools/serverless already in ppv-*.yml if already has --ignore-scripts pattern
+  if [[ "$content" == *"-g"* ]] && [[ "$content" != *"--ignore-scripts"* ]]; then
+    VIOLATIONS+=("$file:$linenum: $content")
+  elif [[ "$content" == "npm install" ]] || [[ "$content" == "npm ci" ]]; then
+    # npm ci/install without --ignore-scripts is a violation
+    if [[ "$content" != *"--ignore-scripts"* ]]; then
+      VIOLATIONS+=("$file:$linenum: $content")
+    fi
+  fi
+done < <(grep -rn "npm install\|npm ci" "$WORKFLOW_DIR" 2>/dev/null || true)
+
+if [ ${#VIOLATIONS[@]} -gt 0 ]; then
+  echo "❌ S6505 Violation Detected: npm lifecycle scripts not hardened"
+  echo ""
+  echo "Found unprotected npm install/ci commands in workflows:"
+  printf '%s\n' "${VIOLATIONS[@]}"
+  echo ""
+  echo "Fix: Add '--ignore-scripts' flag and env npm_config_ignore_scripts='true'"
+  echo "Example:"
+  echo "  - name: Install (secure)"
+  echo "    env:"
+  echo "      npm_config_ignore_scripts: 'true'"
+  echo "    run: npm ci --ignore-scripts"
+  echo ""
+  exit 1
+fi
+
+echo "✓ S6505 check passed: All npm installs are hardened"
+exit 0

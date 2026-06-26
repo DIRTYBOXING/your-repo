@@ -1,0 +1,47 @@
+{
+  "eventId": "ppv-elite-fs-cairns",
+  "title": "ELITE FIGHT SERIES: CAIRNS",
+  "subtitle": "Queensland's Rising Stars",
+  "date": "2026-04-26",
+  "time": "18:00 AEST",
+  "price": "19.99",
+  "promoter": "Elite Fight Series",
+  "sport": "MMA",
+  "venue": "Cairns Convention Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["DFC"],
+  "fighters": [
+    {
+      "name": "Jayden Cole",
+      "weightClass": "Welterweight",
+      "corner": "left"
+    },
+    {
+      "name": "Marcus Browne",
+      "weightClass": "Welterweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Jayden Cole",
+      "fighter2": "Marcus Browne",
+      "weightClass": "Welterweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Riley Taukamo",
+      "fighter2": "Sam Patterson",
+      "weightClass": "Lightweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Zara Nguyen",
+      "fighter2": "Lily Crook",
+      "weightClass": "Strawweight",
+      "rounds": 3
+    }
+  ]
+}

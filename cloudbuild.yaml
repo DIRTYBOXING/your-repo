@@ -1,0 +1,223 @@
+steps:
+  # ─── poster-worker ───────────────────────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-poster-worker
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/poster-worker:$SHORT_SHA"
+      - -f
+      - poster-worker/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-poster-worker
+    waitFor: ["build-poster-worker"]
+    args: ["push", "gcr.io/$PROJECT_ID/poster-worker:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-poster-worker
+    waitFor: ["push-poster-worker"]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - poster-worker
+      - --image=gcr.io/$PROJECT_ID/poster-worker:$SHORT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --no-allow-unauthenticated
+      - --service-account=$_WORKER_SA
+      - --set-secrets=ASSETS_BUCKET=ASSETS_BUCKET:latest,AI_ENDPOINT=AI_ENDPOINT:latest
+      - --max-instances=10
+      - --timeout=300
+
+  # ─── promotion-worker ────────────────────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-promotion-worker
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/promotion-worker:$SHORT_SHA"
+      - -f
+      - promotion-worker/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-promotion-worker
+    waitFor: ["build-promotion-worker"]
+    args: ["push", "gcr.io/$PROJECT_ID/promotion-worker:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-promotion-worker
+    waitFor: ["push-promotion-worker"]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - promotion-worker
+      - --image=gcr.io/$PROJECT_ID/promotion-worker:$SHORT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --no-allow-unauthenticated
+      - --service-account=$_WORKER_SA
+      - --max-instances=10
+      - --timeout=300
+
+  # ─── entitlements-service ────────────────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-entitlements
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/entitlements-service:$SHORT_SHA"
+      - -f
+      - entitlements-service/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-entitlements
+    waitFor: ["build-entitlements"]
+    args: ["push", "gcr.io/$PROJECT_ID/entitlements-service:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-entitlements
+    waitFor: ["push-entitlements"]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - entitlements-service
+      - --image=gcr.io/$PROJECT_ID/entitlements-service:$SHORT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --no-allow-unauthenticated
+      - --service-account=$_ENTITLEMENTS_SA
+      - --set-secrets=STRIPE_SECRET=STRIPE_SECRET:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest,JWT_PRIVATE_KEY=JWT_PRIVATE_KEY:latest,JWT_PUBLIC_KEY=JWT_PUBLIC_KEY:latest,REDIS_URL=REDIS_URL:latest,DRM_LICENSE_URL=DRM_LICENSE_URL:latest
+      - --set-env-vars=TOKEN_TTL=120,JTI_TTL=180,NODE_ENV=production,FRONTEND_URL=https://datafightcentral.com
+      - --max-instances=20
+      - --timeout=60
+
+  # ─── genkit ──────────────────────────────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-genkit
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/genkit:$SHORT_SHA"
+      - -f
+      - genkit/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-genkit
+    waitFor: ["build-genkit"]
+    args: ["push", "gcr.io/$PROJECT_ID/genkit:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-genkit
+    waitFor: ["push-genkit"]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - genkit
+      - --image=gcr.io/$PROJECT_ID/genkit:$SHORT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --no-allow-unauthenticated
+      - --service-account=$_WORKER_SA
+      - --max-instances=5
+      - --timeout=300
+
+  # ─── atlas_backend ──────────────────────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-atlas
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/atlas-backend:$SHORT_SHA"
+      - -f
+      - atlas_backend/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-atlas
+    waitFor: ["build-atlas"]
+    args: ["push", "gcr.io/$PROJECT_ID/atlas-backend:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-atlas
+    waitFor: ["push-atlas"]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - atlas-backend
+      - --image=gcr.io/$PROJECT_ID/atlas-backend:$SHORT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --no-allow-unauthenticated
+      - --service-account=$_WORKER_SA
+      - --max-instances=5
+      - --timeout=300
+
+  # ─── dfc-outreach (email, social, safety, DRM, auth, SMS) ─────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build-outreach
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/dfc-outreach:$SHORT_SHA"
+      - -f
+      - Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: push-outreach
+    waitFor: ["build-outreach"]
+    args: ["push", "gcr.io/$PROJECT_ID/dfc-outreach:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-outreach
+    waitFor: ["push-outreach"]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - dfc-outreach
+      - --image=gcr.io/$PROJECT_ID/dfc-outreach:$SHORT_SHA
+      - --region=$_REGION
+      - --platform=managed
+      - --allow-unauthenticated
+      - --service-account=$_WORKER_SA
+      - --set-secrets=SENDGRID_API_KEY=SENDGRID_API_KEY:latest,HMAC_SECRET=HMAC_SECRET:latest,TWILIO_SID=TWILIO_SID:latest,TWILIO_AUTH_TOKEN=TWILIO_AUTH_TOKEN:latest,JWT_SECRET=JWT_SECRET:latest,REFRESH_TOKEN_SECRET=REFRESH_TOKEN_SECRET:latest
+      - --set-env-vars=FROM_EMAIL=legal@datafightcentral.com,NODE_ENV=production
+      - --max-instances=10
+      - --timeout=60
+
+  # ─── Firebase Functions ─────────────────────────────────────────────────────
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-functions
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        cd functions && npm ci
+        npx firebase-tools deploy --only functions --project=$PROJECT_ID
+
+images:
+  - "gcr.io/$PROJECT_ID/poster-worker:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/promotion-worker:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/entitlements-service:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/genkit:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/atlas-backend:$SHORT_SHA"
+  - "gcr.io/$PROJECT_ID/dfc-outreach:$SHORT_SHA"
+
+substitutions:
+  _REGION: australia-southeast1
+  _WORKER_SA: dfc-worker-sa@${PROJECT_ID}.iam.gserviceaccount.com
+  _ENTITLEMENTS_SA: dfc-entitlements-sa@${PROJECT_ID}.iam.gserviceaccount.com
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -1,0 +1,66 @@
+.github/ISSUE_TEMPLATE/automated-todo-failure.md:2:name: Automated TODO Failure
+.github/ISSUE_TEMPLATE/automated-todo-failure.md:3:about: Created by automation for failed TODO tasks
+.github/ISSUE_TEMPLATE/automated-todo-failure.md:8:Automated run failed for a TODO tag.
+.github/ISSUE_TEMPLATE/automated-todo-failure.md:13:- Tag: <!-- TODO/FIXME/HACK -->
+.github/prompts/event_details_screen.dart.prompt.md:1445:      // TODO: Persist posterUrl to Firestore via EventService
+.github/prompts/event_details_screen.dart.prompt.md:1493:    // TODO: Persist to Firestore via EventService
+.github/workflows/auto-fix-and-triage.yml:21:      - name: Run TODO Orchestrator
+.vscode/launch.json:108:      "name": "Debug TODO Orchestrator (Node)",
+REPO_STATE.md:43:See `TODO_OUT_OF_SCOPE.md`.
+TODO_OUT_OF_SCOPE.md:1:# TODO Out Of Scope
+android/app/build.gradle.kts:52:            // TODO: Add your own signing config for the release build.
+atlas_backend/ai_model_service.py:5:No stubs. No fakes. No TODO placeholders.
+docs/LAUNCH_READINESS_CHECKLIST.md:73:- General TODO backlog surfaced by the orchestrator audit:
+docs/LAUNCH_READINESS_CHECKLIST.md:77:  - `lib/features/social/screens/group_detail_screen.dart`: edit-navigation TODO still present.
+docs/LAUNCH_READINESS_CHECKLIST.md:78:  - `src/feeds/publish.ts`: persistence and moderation write path still TODO.
+docs/LAUNCH_READINESS_CHECKLIST.md:79:  - `functions/index_backup.js`: legacy backup file still contains historical TODOs, but it is not part of the active runtime.
+functions/index_backup.js:2547:// TODO: Create a price in Stripe Dashboard and set this environment variable
+functions/index_backup.js:3338:            // TODO: Send notification to user if action is required
+functions/index_backup.js:3476:            // TODO: Store subscription in database
+functions/index_backup.js:3512:            // TODO: Update subscription status in database
+functions/index_backup.js:3544:            // TODO: Revoke access to premium features
+functions/index_backup.js:3564:          // TODO: Record payment in database
+functions/index_backup.js:3593:            // TODO: Send notification to user about failed payment
+functions/index_backup.js:3594:            // TODO: Consider grace period before restricting access
+functions/index_backup.js:3611:        // TODO: Update customer's default payment method if needed
+functions/index_backup.js:3619:        // TODO: Handle payment method removal
+lib/DATAFIGHTCENTRAL 2 _ Next-Gen AI Data.html:348:            // TODO: Integrate with backend/email service
+lib/features/services/external_feed_service.dart:1:// TODO Implement this library.
+lib/features/shared/services/auto_feed_orchestrator_service.dart:1:// TODO Implement this library.
+lib/features/shared/services/email_campaign_service.dart:1:// TODO Implement this library.
+lib/features/social/screens/group_detail_screen.dart:346:                        // TODO: navigate to edit screen
+lib/features/social/screens/group_detail_screen.dart:349:                        /* TODO */
+lib/features/social/screens/group_detail_screen.dart:355:                          /* TODO */
+lib/features/social/screens/group_detail_screen.dart:359:                        /* TODO */
+linux/flutter/CMakeLists.txt:9:# TODO: Move the rest of this into files in ephemeral. See
+promotion-worker/src/index.ts:103:  // TODO: implement Graph API publish using token from Secret Manager
+src/feeds/publish.ts:15:  // TODO: Write to Firestore or DB, apply moderation rules
+todo-results.json:9:      "tag": "TODO",
+todo-results.json:18:      "tag": "TODO",
+todo-results.json:27:      "tag": "TODO",
+todo-results.json:36:      "tag": "TODO",
+todo-results.json:45:      "tag": "TODO",
+todo-results.json:54:      "tag": "TODO",
+todo-results.json:63:      "tag": "TODO",
+todo-results.json:72:      "tag": "TODO",
+todo-results.json:81:      "tag": "TODO",
+todo-results.json:90:      "tag": "TODO",
+todo-results.json:99:      "tag": "TODO",
+todo-results.json:108:      "tag": "TODO",
+todo-results.json:117:      "tag": "TODO",
+todo-results.json:126:      "tag": "TODO",
+todo-results.json:144:      "tag": "TODO",
+tools/issue-triage.js:19:const TODO_RESULTS = 'todo-results.json';
+tools/issue-triage.js:27:  if (!fs.existsSync(TODO_RESULTS)) {
+tools/issue-triage.js:28:    console.log(`${TODO_RESULTS} not found — nothing to triage.`);
+tools/issue-triage.js:31:  return JSON.parse(fs.readFileSync(TODO_RESULTS, 'utf8'));
+tools/issue-triage.js:56:    console.log('No failed TODOs. Nothing to triage.');
+tools/issue-triage.js:60:  console.log(`Triaging ${failed.length} failed TODO(s)...`);
+tools/issue-triage.js:63:    const title = `Automated TODO failed: ${r.tag} in ${r.file}:${r.line}`;
+tools/issue-triage.js:69:      `Automated run failed for TODO tag **${r.tag}** in \`${r.file}\` line ${r.line}.`,
+tools/todo-orchestrator.js:4: * Scans codebase for TODO/FIXME/HACK comments and optionally runs
+tools/todo-orchestrator.js:18:const TODO_PATTERN = /\/\/\s*(TODO|FIXME|HACK|XXX)\b[:\s]*(.*)/i;
+tools/todo-orchestrator.js:75:        const match = line.match(TODO_PATTERN);
+tools/todo-orchestrator.js:118:  console.log('TODO Orchestrator starting...');
+tools/todo-orchestrator.js:123:    console.log(`Found ${todos.length} TODO/FIXME/HACK comment(s).`);
+windows/flutter/CMakeLists.txt:19:# TODO: Move the rest of this into files in ephemeral. See

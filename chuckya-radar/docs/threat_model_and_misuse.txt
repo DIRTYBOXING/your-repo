@@ -1,0 +1,146 @@
+CHUCKYA RADAR — THREAT MODEL & MISUSE PREVENTION
+===================================================
+Last updated: 2026-03-28
+Classification: INTERNAL — Share only with authorised project members.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. HARM / MISUSE DRIVERS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Driver               | Description                                      | Example
+---------------------+--------------------------------------------------+-------------------------------
+Intentional malice   | Attacker deliberately exploits the system         | Stalker spoofs bracelet to
+                     | to locate, track, or harass a target.             | track victim's venue location.
+Opportunism          | Insider or bystander leverages access for         | Venue staff exports alert
+                     | personal gain or curiosity.                       | data to share on social media.
+Misuse as discipline | Authority figure weaponises monitoring to         | Controlling partner uses
+                     | control another person.                           | proximity alerts to restrict
+                     |                                                   | victim's movement.
+Mistakes/negligence  | Legitimate operator makes a procedural error      | Ops forgets two-person
+                     | that exposes PII or degrades trust.               | approval and emails raw PII.
+Systemic bias        | Algorithm or training data introduces             | Risk model assigns higher
+                     | discriminatory scoring.                           | scores to certain demographics
+                     |                                                   | without justification.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. COMMON ABUSE VECTORS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Vector                  | Attack surface       | Impact             | Mitigation ref
+------------------------+----------------------+--------------------+------------------
+Fake / cloned device    | BLE advertising      | False alerts,      | §3-A attestation,
+                        |                      | resource exhaustion | §3-E rate limits
+Social engineering      | Operator console     | Unauthorised       | §3-G RBAC,
+                        |                      | export             | §4-C training
+Overbroad permissions   | Admin/API roles      | Bulk PII access    | §3-G RBAC,
+                        |                      |                    | §3-H audit
+Insider abuse           | Ops / Legal roles    | Selective export,  | §3-C two-person,
+                        |                      | evidence tampering | §3-H immutable log
+Feature creep           | Product roadmap      | Gradual scope      | §4-D oversight,
+                        |                      | expansion beyond   | §4-E rapid response
+                        |                      | original consent   |
+Replay / nonce reuse    | Ingest API           | Duplicate alerts,  | §3-E rate limits,
+                        |                      | audit pollution    | nonce TTL (5 min)
+Key extraction          | Mobile device        | Forgery            | §3-D Keystore-only
+Network interception    | BLE / HTTPS          | Data leakage       | §3-B crypto, TLS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. DESIGN SAFEGUARDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ref   | Safeguard                | Implementation detail
+------+--------------------------+-------------------------------------------------
+3-A   | Privacy default          | No GPS or IMEI in alerts unless explicit consent
+      |                          | flag is TRUE. Consent recorded in signed_payload.
+3-B   | Crypto provenance        | SHA256withRSA signature on every payload. Public
+      |                          | key registered at device pairing. Chain of custody
+      |                          | manifest embeds SHA256 of every artifact.
+3-C   | Two-person export        | Ops requests + Legal approves. Both approver IDs
+      |                          | and timestamps logged in chain_of_custody.json.
+      |                          | Export blocked if either approval missing.
+3-D   | Keystore attestation     | Phone private keys generated in Android Keystore
+      |                          | / Secure Enclave. Key material never leaves the
+      |                          | hardware-backed store. No export API exposed.
+3-E   | Rate limits              | Ingest: 10 events/device/minute. Export: 5/hour.
+      |                          | Nonce TTL: 5 minutes. Duplicate nonce rejected.
+3-F   | Anomaly detection        | Alert on: burst ingest from single device,
+      |                          | repeated export requests, off-hours access,
+      |                          | failed signature verification spike.
+3-G   | RBAC                     | Roles: Operator, Ops Lead, Legal, Admin, Auditor.
+      |                          | Principle of least privilege. Operator cannot
+      |                          | export. Auditor has read-only access to logs.
+3-H   | Immutable audit log      | Every ingest writes payload.json,
+      |                          | signed_payload.json, chain_of_custody.json.
+      |                          | Append-only storage (S3 versioning / GCS Object
+      |                          | Lock). Tamper-evident SHA256 chain.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. POLICY CONTROLS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ref   | Control                  | Detail
+------+--------------------------+-------------------------------------------------
+4-A   | Consent UI               | Before pairing, user sees plain-language consent
+      |                          | screen listing: what is collected, who can access,
+      |                          | how to revoke. Consent hash stored on-device and
+      |                          | in signed payload.
+4-B   | Export SOP / MOUs        | Formal MOU with every venue and law enforcement
+      |                          | partner. MOU specifies data scope, retention,
+      |                          | deletion timeline, and breach notification.
+4-C   | Training                 | All operators complete 2-hour training covering:
+      |                          | privacy obligations, escalation levels, export
+      |                          | rules, and false-positive handling. Refresher
+      |                          | every 6 months.
+4-D   | Oversight                | Quarterly audit of: export logs, consent rates,
+      |                          | false-positive rate, demographic distribution of
+      |                          | alerts. Results shared with advisory board.
+4-E   | Rapid abuse response     | If misuse detected: revoke operator access within
+      |                          | 15 minutes, freeze exports, preserve logs, notify
+      |                          | affected parties within 24 hours.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. IMMEDIATE ENFORCEMENT CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before any demo or pilot deployment, confirm EVERY item:
+
+[ ] Privacy default enforced — test with consent.location=false, verify no
+    GPS in exported payload.
+[ ] Two-person export working — attempt export without Legal approval,
+    confirm system blocks it.
+[ ] Nonce replay rejection — send same nonce twice, confirm 409 on second.
+[ ] Nonce TTL — send payload with timestamp > 5 minutes old, confirm reject.
+[ ] Keystore-only keys — confirm no API or intent exports private key material.
+[ ] Rate limit triggered — burst 15 events in 1 minute from same device,
+    confirm throttle after 10.
+[ ] RBAC lockdown — Operator role cannot access export endpoint.
+[ ] Audit completeness — ingest one event, verify all three audit files exist
+    and SHA256 in manifest matches.
+[ ] Anomaly alert fires — trigger burst pattern, confirm monitoring alert.
+[ ] Consent UI tested — walk through pairing flow, verify consent screen
+    appears and hash is persisted.
+[ ] MOU template reviewed — Legal confirms current template covers data
+    scope, retention, and breach notification.
+[ ] Operator training logged — at least one operator has completed training
+    and certificate is on file.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. RISK REGISTER (Top 5)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ID   | Risk                     | Likelihood | Impact | Mitigation
+-----+--------------------------+------------+--------+--------------------------
+R-01 | Insider exports PII      | Medium     | High   | Two-person (3-C), RBAC
+     | without authorisation    |            |        | (3-G), immutable log (3-H)
+R-02 | Stalker spoofs device    | Low        | High   | Attestation (3-D), anomaly
+     | to track victim          |            |        | detection (3-F)
+R-03 | False positive causes    | Medium     | Medium | Confidence scoring,
+     | unnecessary escalation   |            |        | multi-signal corroboration
+R-04 | Key compromise on lost   | Low        | High   | Keystore (3-D), remote
+     | phone                    |            |        | wipe, key rotation SOP
+R-05 | Scope creep beyond       | High       | Medium | Oversight (4-D), consent
+     | original consent         |            |        | UI (4-A), MOU (4-B)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+END OF DOCUMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

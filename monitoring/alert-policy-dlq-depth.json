@@ -1,0 +1,35 @@
+{
+  "displayName": "DFC — DLQ depth > 50 unprocessed events",
+  "documentation": {
+    "content": "The webhook DLQ has more than 50 unprocessed events. Run `gcloud scheduler jobs run dlq-worker` or call `dlqWorkerRun` directly. If DLQ does not drain within 30 minutes, escalate to P1. See docs/ONCALL.md.",
+    "mimeType": "text/markdown"
+  },
+  "conditions": [
+    {
+      "displayName": "DLQ unprocessed event count exceeds 50",
+      "conditionThreshold": {
+        "filter": "metric.type=\"logging.googleapis.com/user/webhook_dlq_depth\" resource.type=\"cloud_function\"",
+        "aggregations": [
+          {
+            "alignmentPeriod": "300s",
+            "perSeriesAligner": "ALIGN_MEAN",
+            "crossSeriesReducer": "REDUCE_SUM",
+            "groupByFields": []
+          }
+        ],
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 50,
+        "duration": "0s",
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "604800s"
+  },
+  "combiner": "OR",
+  "enabled": true,
+  "notificationChannels": []
+}

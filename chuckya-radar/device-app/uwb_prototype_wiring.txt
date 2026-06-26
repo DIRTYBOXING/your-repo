@@ -1,0 +1,182 @@
+╔══════════════════════════════════════════════════════════════╗
+║  DFC CHUCKYA — UWB Prototype Wiring & Firmware Reference     ║
+║  Decawave DWM1001 + ESP32 + BLE Proximity Detection          ║
+╚══════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HARDWARE BOM (Bill of Materials)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Component               | Part Number      | Qty | Notes
+------------------------|------------------|-----|---------------------------
+UWB Module              | DWM1001-DEV      |  2  | Decawave/Qorvo, 10-30cm accuracy
+MCU                     | ESP32-WROOM-32   |  2  | Wi-Fi + BLE + UART
+BLE Dev Board (alt)     | nRF52840-DK      |  2  | Nordic, BLE 5.0 long range
+Voltage Regulator       | AMS1117-3.3      |  2  | 3.3V for DWM1001
+LiPo Battery            | 3.7V 1000mAh     |  2  | JST-PH connector
+Push Button             | 12mm tactile     |  2  | Panic button
+Buzzer                  | Piezo 3-5V       |  2  | Audible alert
+RGB LED                 | WS2812B          |  2  | Status indicator
+USB Hub                 | 7-port powered   |  1  | For bench testing
+Jumper Wires            | M-F, M-M         | 20  | Breadboard connections
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WIRING: DWM1001 to ESP32
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DWM1001 Pin   →   ESP32 Pin       Notes
+─────────────────────────────────────────────
+VCC (3.3V)    →   3V3             Or through AMS1117 from 5V
+GND           →   GND             Common ground
+TX (UART)     →   GPIO16 (RX2)    Serial data from UWB
+RX (UART)     →   GPIO17 (TX2)    Serial data to UWB
+RST           →   GPIO4           Optional reset control
+IRQ           →   GPIO5           Optional interrupt for events
+
+Peripherals:
+Button        →   GPIO12          Internal pull-up, active LOW
+Buzzer        →   GPIO13          Via NPN transistor (2N2222)
+LED Data      →   GPIO14          WS2812B data line, 330Ω resistor
+
+Power:
+LiPo 3.7V    →   AMS1117 IN     Regulator outputs 3.3V
+AMS1117 OUT   →   ESP32 3V3 + DWM1001 VCC
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FIRMWARE PSEUDOCODE (ESP32 + DWM1001)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ---- Initialization ----
+initialize UART2 at 115200 baud (GPIO16/17 → DWM1001)
+initialize BLE peripheral:
+  service UUID: "DFC-CHUCKYA-PROXIMITY"
+  characteristics:
+    "rawProximity"  (NOTIFY)  — unsigned JSON payload
+    "alertStatus"   (READ)    — current alert level
+initialize GPIO:
+  button GPIO12 — INPUT_PULLUP, attach interrupt
+  buzzer GPIO13 — OUTPUT, default LOW
+  LED    GPIO14 — WS2812B output
+
+set DEVICE_ID = read_from_flash() or generate_uuid()
+set AUTO_THRESHOLD = 5.0  // meters — trigger auto alert
+set SCAN_INTERVAL = 2000  // ms between passive scans
+
+// ---- Main Loop ----
+loop:
+  // --- Manual panic button ---
+  if button_pressed():
+    distances = perform_ranging_scan()
+    nearest = select_min_distance(distances)
+
+    payload = {
+      "deviceId": DEVICE_ID,
+      "timestamp": now_iso8601(),
+      "nonce": uuid_v4(),
+      "mode": "code_black",
+      "proximity": {
+        "distance_m": nearest.distance_m,
+        "direction_deg": nearest.direction_deg
+      },
+      "signals": ["panic_button"],
+      "consent": read_consent_flags()
+    }
+
+    // Send to connected phone via BLE NOTIFY
+    ble_notify("rawProximity", json_encode(payload))
+
+    // Local feedback
+    buzzer_pattern(SOS)       // ··· ─── ···
+    led_flash(RED, 3)
+    start_audio_buffer(10)    // 10 second capture
+
+  // --- Passive proximity scan ---
+  if millis() - last_scan > SCAN_INTERVAL:
+    last_scan = millis()
+    distances = perform_ranging_scan()
+
+    for each peer in distances:
+      if peer.distance_m < AUTO_THRESHOLD:
+        payload = {
+          "deviceId": DEVICE_ID,
+          "timestamp": now_iso8601(),
+          "nonce": uuid_v4(),
+          "mode": "code_amber",
+          "proximity": {
+            "distance_m": peer.distance_m,
+            "direction_deg": peer.direction_deg
+          },
+          "signals": ["uwb_proximity_auto"],
+          "consent": read_consent_flags()
+        }
+        ble_notify("rawProximity", json_encode(payload))
+        buzzer_short_beep()
+        led_flash(AMBER, 1)
+
+  // --- BLE connection handler ---
+  on_ble_connect(phone):
+    // Phone can request last payload or subscribe to notifications
+    // Phone signs the payload and POSTs to /v1/radar/event/verified
+    log("Phone connected, ready to relay signed payloads")
+
+  sleep(50)  // yield CPU
+
+// ---- UWB Ranging Function ----
+function perform_ranging_scan():
+  send_uart("AT+RANGE\r\n")     // DWM1001 API command
+  response = read_uart(timeout=500ms)
+  // Parse response: list of { peerId, distance_m, direction_deg }
+  return parse_ranging_response(response)
+
+// ---- Buzzer Patterns ----
+function buzzer_pattern(pattern):
+  if pattern == SOS:
+    for i in [100,100,100, 300,300,300, 100,100,100]:
+      buzzer ON for i ms
+      buzzer OFF for 100ms
+
+function buzzer_short_beep():
+  buzzer ON for 50ms
+  buzzer OFF
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PHONE INTEGRATION PATTERN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Phone connects to ESP32 BLE GATT service
+2. Subscribes to "rawProximity" characteristic (NOTIFY)
+3. On notification:
+   a. Receive unsigned JSON payload
+   b. Canonicalize: sort keys deterministically
+   c. Sign with device private key (SHA256withRSA from AndroidKeyStore)
+   d. Attach signatureBase64 to payload
+   e. POST to /v1/radar/event/verified
+4. If audio consent enabled:
+   a. Start 10s audio buffer on proximity alert
+   b. Upload audio clip to /v1/radar/alerts/<id>/evidence
+   c. Audio file included in evidence zip with SHA256
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TESTING CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Two DWM1001 modules powered and UART responding
+[ ] ESP32 BLE advertising "DFC-CHUCKYA-PROXIMITY"
+[ ] Phone connects and receives NOTIFY on proximity
+[ ] Panic button triggers code_black payload via BLE
+[ ] Auto scan detects second module within threshold
+[ ] Buzzer and LED respond to alerts
+[ ] Phone signs and uploads payload to staging backend
+[ ] Alert appears on dashboard within 5 seconds
+[ ] Distance readings accurate within 30cm at 1-5m range
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NOTES FOR PRODUCTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Replace UART AT commands with DWM1001 binary API for speed
+- Use secure element (ATECC608A) for on-device signing if needed
+- Add OTA firmware update via BLE DFU
+- Battery monitoring and low-power sleep between scans
+- Consider nRF52840 as single-chip solution (BLE + UWB bridge)
+- Enclosure: IP54 rated, lanyard mount, rechargeable USB-C

@@ -1,0 +1,53 @@
+{
+  "eventId": "ppv-ifma-antalyacup",
+  "title": "13TH IFMA MUAYTHAI INTERNATIONAL EMF OPEN CUP",
+  "subtitle": "Antalya, Turkey — World-Class Muay Thai",
+  "date": "2026-05-10",
+  "time": "14:00 TRT",
+  "price": "19.99",
+  "promoter": "IFMA / EMF",
+  "sport": "Muay Thai",
+  "venue": "Antalya Sports Complex, Turkey",
+  "currency": "USD",
+  "streamPlatforms": ["DFC"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Multiple Divisions",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Multiple Divisions",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Super Lightweight",
+      "rounds": 3,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Welterweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Lightweight",
+      "rounds": 3
+    }
+  ],
+  "safetyFlags": { "ageRestricted": false },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

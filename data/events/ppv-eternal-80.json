@@ -1,0 +1,47 @@
+{
+  "eventId": "ppv-eternal-80",
+  "title": "ETERNAL MMA 80",
+  "subtitle": "Redfern vs Ramirez — Bantamweight Title",
+  "date": "2026-04-12",
+  "time": "18:30 AWST",
+  "price": "24.99",
+  "promoter": "Eternal MMA",
+  "sport": "MMA",
+  "venue": "HBF Stadium, Perth",
+  "currency": "AUD",
+  "streamPlatforms": ["UFC Fight Pass"],
+  "fighters": [
+    {
+      "name": "Ben Redfern",
+      "weightClass": "Bantamweight",
+      "corner": "left"
+    },
+    {
+      "name": "Carlos Ramirez",
+      "weightClass": "Bantamweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Ben Redfern",
+      "fighter2": "Carlos Ramirez",
+      "weightClass": "Bantamweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Jake Matthews",
+      "fighter2": "Mitch Ramirez",
+      "weightClass": "Welterweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Amber Kitchen",
+      "fighter2": "Jade Masson-Wong",
+      "weightClass": "Flyweight",
+      "rounds": 3
+    }
+  ]
+}

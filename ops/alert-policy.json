@@ -1,0 +1,31 @@
+{
+  "displayName": "Canary rollback - playback success rate breach",
+  "combiner": "OR",
+  "conditions": [
+    {
+      "displayName": "Playback success rate < 99% (5m)",
+      "conditionThreshold": {
+        "filter": "metric.type=\"custom.googleapis.com/playback_success_rate\" resource.type=\"global\"",
+        "comparison": "COMPARISON_LT",
+        "thresholdValue": 99,
+        "duration": "300s",
+        "trigger": { "count": 1 },
+        "aggregations": [
+          { "alignmentPeriod": "60s", "perSeriesAligner": "ALIGN_MEAN" }
+        ]
+      }
+    }
+  ],
+  "notificationChannels": [
+    "projects/REPLACE_ME_PROJECT_ID/notificationChannels/REPLACE_ME_NOTIF_CHANNEL_ID"
+  ],
+  "documentation": {
+    "content": "Auto rollback to canary_percent=0 and pause promotions when playback success rate drops below 99% for 5 minutes.",
+    "mimeType": "text/markdown"
+  },
+  "enabled": true,
+  "userLabels": {
+    "service": "entitlements",
+    "severity": "critical"
+  }
+}

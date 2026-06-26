@@ -1,0 +1,49 @@
+{
+  "eventId": "ppv-pfl-pittsburgh-2026",
+  "title": "PFL SUPER FIGHTS: PITTSBURGH",
+  "subtitle": "Eblen vs Battle — MW Championship",
+  "date": "2026-03-28",
+  "time": "20:00 ET",
+  "price": "49.99",
+  "promoter": "PFL",
+  "sport": "MMA",
+  "venue": "PPG Paints Arena, Pittsburgh",
+  "currency": "USD",
+  "streamPlatforms": ["ESPN+"],
+  "fighters": [
+    {
+      "name": "Johnny Eblen",
+      "record": "15-0-0",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "Josh Battle",
+      "record": "10-2-0",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Johnny Eblen",
+      "fighter2": "Josh Battle",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "AJ McKee",
+      "fighter2": "Paul Hughes",
+      "weightClass": "Lightweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Anthony Pettis",
+      "fighter2": "Clay Collard",
+      "weightClass": "Featherweight",
+      "rounds": 3
+    }
+  ]
+}

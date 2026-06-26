@@ -1,0 +1,55 @@
+{
+  "incidentId": "R-YYYYMMDD-NNNN",
+  "createdAt": "ISO8601_TIMESTAMP",
+  "requestedBy": "ops_operator_id",
+  "approvedBy": ["legal_approver_id"],
+  "approvalTimestamps": {
+    "ops_operator_id": "ISO8601_TIMESTAMP",
+    "legal_approver_id": "ISO8601_TIMESTAMP"
+  },
+  "items": [
+    {
+      "filename": "payload.json",
+      "description": "Canonical signed payload from device (signatureBase64 removed before hashing)",
+      "sha256": "HEX_HASH_64_CHARS",
+      "createdAt": "ISO8601_TIMESTAMP"
+    },
+    {
+      "filename": "signed_payload.json",
+      "description": "Full payload including signatureBase64 field",
+      "sha256": "HEX_HASH_64_CHARS",
+      "createdAt": "ISO8601_TIMESTAMP"
+    },
+    {
+      "filename": "alert.json",
+      "description": "Scored alert with riskScore, mode, and classification metadata",
+      "sha256": "HEX_HASH_64_CHARS",
+      "createdAt": "ISO8601_TIMESTAMP"
+    },
+    {
+      "filename": "consent_record.json",
+      "description": "Immutable consent record for appInstanceId with timestamp and flags",
+      "sha256": "HEX_HASH_64_CHARS",
+      "createdAt": "ISO8601_TIMESTAMP"
+    },
+    {
+      "filename": "public.pem",
+      "description": "Device public key in PEM format for signature verification",
+      "sha256": "HEX_HASH_64_CHARS",
+      "createdAt": "ISO8601_TIMESTAMP"
+    },
+    {
+      "filename": "media/audio_clip_1.wav",
+      "description": "Optional audio buffer captured with explicit consent (may be absent)",
+      "sha256": "HEX_HASH_64_CHARS",
+      "createdAt": "ISO8601_TIMESTAMP"
+    }
+  ],
+  "exportSignature": {
+    "exportedBy": "export_service",
+    "exportedAt": "ISO8601_TIMESTAMP",
+    "algorithm": "SHA256withRSA",
+    "signature": "BASE64_SERVER_SIGNATURE_OVER_MANIFEST"
+  },
+  "notes": "Two-person approval enforced. Fields marked as optional may be absent if consent was not granted."
+}

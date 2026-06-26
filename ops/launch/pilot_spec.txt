@@ -1,0 +1,67 @@
+PILOT SPEC — DATA FIGHT CENTRAL
+================================
+
+Event:     [Event Name] — [Date]
+Promoter:  [Promoter Name]
+
+SCOPE
+Live PPV broadcast of the event plus 30-day VOD highlights package.
+
+TERRITORY
+[Worldwide or list of countries]
+
+COMMERCIAL
+Suggested pilot split — Promoter 60% / DFC 40% after payment & platform
+fees; alternative: guaranteed fee + revenue share.
+
+DELIVERABLES (DFC)
+- Multi-camera production support
+- Live encoding and CDN delivery
+- DRM-protected player integration
+- Paywall and PPV checkout
+- Sponsor inventory and ad insertion (if agreed)
+- Daily reporting and final settlement
+- Anti-piracy enforcement
+
+DELIVERABLES (PROMOTER)
+- Clean feed (SDI/RTMP/HLS) delivered to agreed ingest endpoint
+- Fighter releases and music/sponsor clearances
+- Logos and on-screen graphics assets
+- Point of contact for production and rights
+
+TECHNICAL REQUIREMENTS
+- Clean feed specs provided to DFC production team
+- Test window 48-72 hours pre-event
+- DRM and watermarking enabled on all streams
+- Geoblocking per licence territory
+- Minimum upload/encoder redundancy
+
+TIMELINE
+- Licence signed at least 14 days before event
+- Technical test 72 hours before
+- Final production run-through 24 hours before
+
+PAYMENTS
+- Promoter onboards to Stripe Connect (Express account)
+- Automatic promoter payouts — DFC does not hold funds
+- Reserve for chargebacks: 7-14 days
+- Final settlement within 30 days of event
+
+ANTI-PIRACY
+- Server-side forensic watermarking enabled on all streams
+- Monitoring and takedown workflow active during and after event
+- Named legal contact for takedowns: info@datafightcentral.com
+
+ACCEPTANCE
+Pilot success measured by:
+- Delivery quality (uptime, bitrate stability, DRM compliance)
+- Conversion metrics (views to purchases)
+- Timely settlement (within 30 days)
+- Post-event report delivered within 7 days
+
+CONTACT
+DFC Founder — Founder
+Data Fight Central (D.F.C)
+Phone:   0450 113 139
+Email:   info@datafightcentral.com
+Website: www.datafightcentral.com

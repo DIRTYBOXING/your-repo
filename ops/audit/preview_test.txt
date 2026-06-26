@@ -1,0 +1,50 @@
+===========================================================
+ DFC Preview Channel Test Results
+ Date: 2026-03-28
+===========================================================
+
+PREVIEW URLS (expire 2026-04-04):
+  Primary:   https://datafightcentral--preview-fix-w9oeuyd5.web.app
+  Secondary: https://datafightcentral-9d036--preview-fix-0rjdg3mf.web.app
+
+PRODUCTION URLS:
+  https://www.datafightcentral.com
+  https://datafightcentral.web.app
+
+--- OG IMAGE CHECK ---
+Asset:  /icons/Icon-512.png
+Status: 200 OK (395,468 bytes, image/png)
+Note:   www.datafightcentral.com redirects 301 → datafightcentral.com (no www)
+        OG tags in promoters.html now point to https://www.datafightcentral.com/icons/Icon-512.png
+
+--- CORS STATUS ---
+Bucket: gs://datafightcentral.firebasestorage.app
+Config: 5 origins, 6 methods, 10 response headers (already comprehensive)
+Saved:  ops/audit/cors_current.json
+
+--- STORAGE RULES (current in repo) ---
+File:   storage.rules
+Status: Production-grade. Public reads, auth-gated writes with size limits.
+        - users/{uid}:     10MB images, owner only
+        - posts/{postId}:  50MB, any auth user
+        - events/{eventId}: 100MB, any auth user
+        - fighters:        50MB, any auth user
+        - gyms:            25MB, any auth user
+        - campaigns:       admin/CF only (deny client write)
+
+--- EDGE TESTING ---
+[ ] Paste Edge DevTools console output after running auth debug snippets
+[ ] Paste first 8 console error lines if sign-in fails
+[ ] Paste Network entry for any failing upload
+
+--- STRIPE SANDBOX ---
+[ ] Paste stripe_paymentintent.json after running with real test keys
+
+--- MAPS ---
+[ ] Confirm Maps JavaScript API enabled in GCP Console
+[ ] Confirm API key referrers include *.datafightcentral.com/* and *.web.app/*
+
+--- FACEBOOK ---
+[ ] Page created: Data Fight Central
+[ ] Business Manager: Data Fight Central Pty Ltd
+[ ] ABN uploaded for verification

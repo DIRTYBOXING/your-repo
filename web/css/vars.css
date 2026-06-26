@@ -1,0 +1,43 @@
+:root {
+  --brandHero: #00f5ff;
+  --ctaPrimary: #ff00ff;
+  --ppvSurface: #142236;
+  --ppvSuccess: #00ff88;
+
+  --ppv-bg-primary: #0a1628;
+  --ppv-bg-secondary: #0d1b2a;
+  --ppv-text-primary: #e7edf5;
+  --ppv-text-secondary: #9aa8ba;
+
+  --ppv-breakpoint-mobile-max: 480px;
+  --ppv-breakpoint-tablet-max: 768px;
+  --ppv-breakpoint-laptop-max: 1024px;
+}
+
+@media (max-width: 480px) {
+  :root {
+    --ppv-grid-columns: 1;
+    --ppv-sticky-rail: always;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --ppv-grid-columns: 2;
+    --ppv-sticky-rail: always;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    --ppv-grid-columns: 3;
+    --ppv-sticky-rail: compact;
+  }
+}
+
+@media (min-width: 1025px) {
+  :root {
+    --ppv-grid-columns: 3;
+    --ppv-sticky-rail: compact;
+  }
+}

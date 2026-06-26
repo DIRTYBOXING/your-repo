@@ -1,0 +1,175 @@
+============================================================
+ DATA FIGHT CENTRAL — TAKEDOWN & EVIDENCE SOP
+ Date: 28 March 2026
+ Classification: INTERNAL — Legal / Ops
+============================================================
+
+PURPOSE: Standard operating procedure for content takedowns,
+DMCA notices, and evidence preservation during and after
+live events.
+
+============================================================
+ 1. EVIDENCE COLLECTION (do BEFORE sending takedown)
+============================================================
+
+CAPTURE IMMEDIATELY:
+  [ ] Screenshot of infringing content with URL visible
+  [ ] Timestamp (UTC) of discovery
+  [ ] Platform/host where content appears
+  [ ] Archive URL using web.archive.org or similar
+  [ ] If video: screen-record 30+ seconds showing infringement
+
+EXTRACT FROM DFC SYSTEMS:
+  [ ] Forensic watermark ID from pirated content
+  [ ] Map watermark ID -> userId, entitlementId, sessionId
+  [ ] Playback token logs (jti, iat, exp, device fingerprint)
+  [ ] Playback start/stop timestamps
+  [ ] CDN access logs for the session
+  [ ] Stripe purchase record for the entitlement
+
+STORE:
+  Location: ops-audit/piracy/<date>-<incident-id>/
+  Files:
+    - screenshot.png
+    - screen-recording.mp4
+    - watermark-trace.json
+    - playback-logs.json
+    - cdn-logs.txt
+    - stripe-receipt.json
+    - timeline.txt (chronological narrative)
+
+============================================================
+ 2. DMCA TAKEDOWN NOTICE (template)
+============================================================
+
+Send to the hosting provider's designated DMCA agent.
+
+---BEGIN NOTICE---
+
+To: [Hosting provider DMCA agent email]
+Subject: DMCA Takedown Notice — Data Fight Central
+
+Dear Sir/Madam,
+
+I am writing to notify you of copyright infringement on
+your platform pursuant to the Digital Millennium Copyright
+Act (17 U.S.C. Section 512).
+
+IDENTIFICATION OF COPYRIGHTED WORK:
+The copyrighted work is a live/recorded combat sports event
+streamed exclusively on the Data Fight Central platform
+(https://datafightcentral.web.app), owned by Data Fight
+Central, ABN [INSERT ABN].
+
+IDENTIFICATION OF INFRINGING MATERIAL:
+The infringing material is located at:
+  URL: [INSERT URL]
+  Description: [Unauthorized restream/recording of our event]
+
+GOOD FAITH STATEMENT:
+I have a good faith belief that the use of the copyrighted
+material described above is not authorized by the copyright
+owner, its agent, or the law.
+
+ACCURACY STATEMENT:
+The information in this notification is accurate, and under
+penalty of perjury, I am authorized to act on behalf of the
+copyright owner.
+
+CONTACT INFORMATION:
+  Name      : [YOUR LEGAL NAME]
+  Business  : Data Fight Central, ABN [INSERT ABN]
+  Email     : admin@datafightcentral.com
+  Address   : [INSERT ADDRESS]
+  Phone     : [INSERT PHONE]
+
+SIGNATURE:
+  [YOUR NAME]
+  Date: [DATE]
+
+---END NOTICE---
+
+============================================================
+ 3. PLATFORM-SPECIFIC TAKEDOWN STEPS
+============================================================
+
+YOUTUBE:
+  1. Go to youtube.com/copyright_complaint_form
+  2. Select "Copyright" -> "I found content that infringes
+     my copyright"
+  3. Fill form with URLs and evidence
+  4. Submit
+
+TWITCH:
+  1. Email dmca@twitch.tv with DMCA notice
+  2. Include stream URL and timestamps
+  3. Follow up if not actioned within 24 hours
+
+FACEBOOK/INSTAGRAM:
+  1. Use facebook.com/help/intellectual_property
+  2. Select "Copyright" and fill form
+  3. Attach evidence screenshots
+
+TWITTER/X:
+  1. Use help.twitter.com/forms/dmca
+  2. Fill DMCA form with URLs and evidence
+
+GENERIC HOSTING:
+  1. Find hosting provider via WHOIS lookup
+  2. Find DMCA agent contact (usually in Terms of Service)
+  3. Send DMCA notice template above
+
+============================================================
+ 4. AUSTRALIAN COPYRIGHT NOTICE (alternative to DMCA)
+============================================================
+
+For Australian-hosted content, use Australian copyright law
+rather than DMCA:
+
+---BEGIN NOTICE---
+
+NOTICE OF COPYRIGHT INFRINGEMENT
+Pursuant to the Copyright Act 1968 (Cth)
+
+[Same structure as DMCA notice above but reference:]
+  - Copyright Act 1968 (Cth), Section 36 (infringement)
+  - Copyright Act 1968 (Cth), Section 115 (remedies)
+
+[Include same evidence and contact information]
+
+---END NOTICE---
+
+============================================================
+ 5. INTERNAL RESPONSE TIMELINE
+============================================================
+
+  | Time         | Action                                   |
+  |--------------|------------------------------------------|
+  | 0-15 min     | Discover and capture evidence             |
+  | 15-30 min    | Extract watermark and identify source     |
+  | 30-60 min    | Revoke source entitlement, send takedown  |
+  | 1-24 hours   | Follow up on takedown, prepare legal pack |
+  | 24-72 hours  | Escalate if not actioned; consider legal  |
+  | 72+ hours    | Engage counsel for legal action if needed |
+
+============================================================
+ 6. LEGAL ESCALATION CRITERIA
+============================================================
+
+ESCALATE TO COUNSEL IF:
+  - Mass piracy (>5 unauthorized restreams)
+  - Takedown not actioned within 72 hours
+  - Commercial piracy (selling access to our content)
+  - Repeat offender (same person/entity)
+  - International jurisdiction complications
+
+EVIDENCE PACKAGE FOR COUNSEL:
+  - All items from Section 1 (evidence collection)
+  - Copies of takedown notices sent
+  - Responses from hosting providers
+  - Watermark trace proving source identification
+  - Financial impact estimate
+
+============================================================
+ END OF TAKEDOWN & EVIDENCE SOP
+============================================================

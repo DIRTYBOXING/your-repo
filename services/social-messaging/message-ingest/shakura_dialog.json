@@ -1,0 +1,65 @@
+{
+  "welcome": {
+    "id": "welcome",
+    "text": "Hi - I'm Shakura, your DFC guide. I can help set up your profile, create an event, sell PPV, or handle safety/legal issues. Type 'help' or click the Help button to get started.",
+    "quick_actions": [
+      { "label": "Set up profile", "action": "onboarding_profile" },
+      { "label": "Create event", "action": "onboarding_event" },
+      { "label": "Sell PPV", "action": "sell_ppv" },
+      { "label": "Report safety/legal", "action": "legal_intake" }
+    ]
+  },
+  "onboarding_profile": {
+    "id": "onboarding_profile",
+    "text": "Let's set up your profile. Share your display name and primary role.",
+    "form": [
+      { "name": "display_name", "label": "Display name", "required": true },
+      {
+        "name": "primary_role",
+        "label": "Primary role",
+        "type": "select",
+        "options": ["Fighter", "Promoter", "Trainer", "Gym", "Sponsor"],
+        "required": true
+      },
+      { "name": "location", "label": "Location (city, country)", "required": false },
+      { "name": "bio", "label": "Short bio (1-2 lines)", "required": false }
+    ],
+    "on_submit": "profile_saved"
+  },
+  "onboarding_event": {
+    "id": "onboarding_event",
+    "text": "I can help create your event. Send event name, start date/time, and fighters or matchups.",
+    "form": [
+      { "name": "event_name", "label": "Event name", "required": true },
+      { "name": "start_at", "label": "Start date/time (ISO)", "required": true },
+      { "name": "fighters", "label": "Fighters (comma separated)", "required": false },
+      { "name": "matchups", "label": "Matchups (JSON array)", "required": false }
+    ],
+    "on_submit": "event_created"
+  },
+  "sell_ppv": {
+    "id": "sell_ppv",
+    "text": "Let's sell PPV. Share your event and offer details and I will generate checkout and messaging copy.",
+    "form": [
+      { "name": "event_id", "label": "Event ID", "required": true },
+      { "name": "price", "label": "Price (USD)", "required": true },
+      { "name": "bundle", "label": "Bundle (poster, merch)", "required": false }
+    ],
+    "on_submit": "create_ppv_session"
+  },
+  "legal_intake": {
+    "id": "legal_intake",
+    "text": "I will collect legal and safety details securely and send them to legal operations.",
+    "form": [
+      { "name": "urls", "label": "Affected URL(s)", "required": true },
+      { "name": "proof", "label": "Proof of ownership (attach)", "required": true },
+      { "name": "contact_email", "label": "Contact email", "required": true },
+      { "name": "jurisdiction", "label": "Country / jurisdiction", "required": true }
+    ],
+    "on_submit": "create_legal_ticket"
+  },
+  "fallback": {
+    "id": "fallback",
+    "text": "I did not understand that. Type 'help' to see quick actions, or type 'human' to talk to operations."
+  }
+}

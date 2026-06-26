@@ -1,0 +1,77 @@
+name: Code Health
+
+on:
+  pull_request:
+    branches: [master, feat/**, chore/**]
+    paths:
+      - "lib/**"
+      - "scripts/cleanup_scan.sh"
+      - ".github/workflows/code-health.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: code-health-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code-health:
+    name: Code Health Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: npm ci (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install ripgrep
+        run: sudo apt-get install -y ripgrep
+
+      - name: Make cleanup script executable
+        run: chmod +x scripts/cleanup_scan.sh
+
+      - name: Ensure report directory exists
+        run: mkdir -p devops/reports
+
+      - name: Run cleanup scan (CI mode)
+        run: bash scripts/cleanup_scan.sh --ci 2>&1 | tee devops/reports/cleanup_scan.log
+        continue-on-error: false
+
+      - name: Upload cleanup scan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleanup-scan-report-${{ github.run_id }}
+          path: devops/reports/cleanup_scan.log
+          retention-days: 14
+
+      - name: Dart files > 400 lines (warn only)
+        run: |
+          echo "=== Dart files exceeding 400 lines ==="
+          git ls-files '*.dart' | while IFS= read -r f; do
+            [[ -f "$f" ]] || continue
+            lines=$(wc -l < "$f")
+            [[ "$lines" -gt 400 ]] && printf "WARN: %6d lines  %s\n" "$lines" "$f"
+          done | sort -nr || true
+          echo "Done."

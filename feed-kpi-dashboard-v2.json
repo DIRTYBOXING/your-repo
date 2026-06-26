@@ -1,0 +1,127 @@
+{
+  "uid": "feed-kpi-v2",
+  "title": "Feed Pipeline KPI Dashboard",
+  "schemaVersion": 36,
+  "version": 1,
+  "tags": ["feed", "pipeline", "observability"],
+  "templating": {
+    "list": [
+      {
+        "name": "sourceId",
+        "type": "query",
+        "datasource": "Prometheus",
+        "refresh": 1,
+        "definition": "label_values(feed_ingestion_processed_total, sourceId)",
+        "multi": true,
+        "includeAll": true,
+        "sort": 1,
+        "current": { "selected": false, "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "pipeline_stage",
+        "type": "query",
+        "datasource": "Prometheus",
+        "refresh": 1,
+        "definition": "label_values(feed_ingestion_processed_total, pipeline_stage)",
+        "multi": true,
+        "includeAll": true,
+        "sort": 1,
+        "current": { "selected": false, "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "canary",
+        "type": "custom",
+        "options": [
+          { "text": "All", "value": "$__all", "selected": true },
+          { "text": "true", "value": "true" },
+          { "text": "false", "value": "false" }
+        ],
+        "multi": true,
+        "includeAll": true,
+        "current": { "selected": true, "text": "All", "value": "$__all" }
+      }
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "name": "Deploys",
+        "type": "tags",
+        "datasource": "Prometheus",
+        "iconColor": "#5794F2",
+        "enable": true,
+        "expr": "changes(feed_deploy_version[1d]) > 0",
+        "title": "Deploy",
+        "tags": ["deploy"]
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Freshness median (hours)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.5, sum(rate(feed_item_age_seconds_bucket{sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\",canary=~\"$canary\"}[10m])) by (le)) / 3600",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "fieldConfig": { "unit": "hours", "decimals": 2 }
+    },
+    {
+      "type": "stat",
+      "title": "Duplicate rate (%)",
+      "targets": [
+        {
+          "expr": "avg_over_time(feed_duplicate_rate{sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\",canary=~\"$canary\"}[10m]) * 100",
+          "refId": "B"
+        }
+      ],
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "fieldConfig": { "unit": "percent", "decimals": 2 }
+    },
+    {
+      "type": "stat",
+      "title": "Ingestion error rate (%)",
+      "targets": [
+        {
+          "expr": "sum(rate(feed_ingestion_errors_total{sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\",canary=~\"$canary\"}[5m])) / sum(rate(feed_ingestion_processed_total{sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\",canary=~\"$canary\"}[5m])) * 100",
+          "refId": "C"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 },
+      "fieldConfig": { "unit": "percent", "decimals": 2 }
+    },
+    {
+      "type": "graph",
+      "title": "p95 Processing Latency (s)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(feed_processing_latency_seconds_bucket{sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\",canary=~\"$canary\"}[5m])) by (le))",
+          "refId": "D"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 },
+      "fieldConfig": { "unit": "s", "decimals": 2 }
+    },
+    {
+      "type": "graph",
+      "title": "Canary vs Baseline: Duplicate rate",
+      "targets": [
+        {
+          "expr": "avg_over_time(feed_duplicate_rate{canary=\"true\",sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\"}[30m]) * 100",
+          "legendFormat": "canary",
+          "refId": "E1"
+        },
+        {
+          "expr": "avg_over_time(feed_duplicate_rate{canary=\"false\",sourceId=~\"$sourceId\",pipeline_stage=~\"$pipeline_stage\"}[30m]) * 100",
+          "legendFormat": "baseline",
+          "refId": "E2"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 4, "w": 6, "h": 6 },
+      "fieldConfig": { "unit": "percent", "decimals": 2 }
+    }
+  ]
+}

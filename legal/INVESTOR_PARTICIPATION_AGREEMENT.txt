@@ -1,0 +1,225 @@
+# ══════════════════════════════════════════════════════════════════
+# INVESTOR PARTICIPATION AGREEMENT — TEMPLATE
+# Data Fight Central LLC ("OpCo")
+# ══════════════════════════════════════════════════════════════════
+#
+# IMPORTANT: This template is for OpCo equity investment ONLY.
+# The intellectual property is owned by [Family Name] IP Dynasty
+# Trust and is NOT part of this transaction.
+#
+# Agreement Date: ________________
+# Investor Name:  ________________
+# ══════════════════════════════════════════════════════════════════
+
+
+# ─────────────────────────────────────────────────────────────────
+# 1. INVESTMENT STRUCTURE
+# ─────────────────────────────────────────────────────────────────
+
+1.1  INVESTMENT TYPE: [Select one]
+     [ ] Equity (preferred stock in OpCo)
+     [ ] Convertible Note (converts to OpCo equity)
+     [ ] SAFE (Simple Agreement for Future Equity in OpCo)
+     [ ] Revenue Participation (percentage of OpCo net revenue)
+
+1.2  INVESTMENT AMOUNT: $________________
+
+1.3  EQUITY PERCENTAGE: ____% of OpCo (post-money)
+
+1.4  VALUATION: Pre-money valuation of OpCo: $________________
+     NOTE: This valuation reflects the OpCo's business including
+     the value of its IP license — NOT the IP itself.
+
+
+# ─────────────────────────────────────────────────────────────────
+# 2. MANDATORY IP ACKNOWLEDGMENT
+# ─────────────────────────────────────────────────────────────────
+
+2.1  The Investor hereby acknowledges, understands, and agrees:
+
+     (a) ALL intellectual property used by the OpCo — including but
+         not limited to source code, algorithms, AI systems, firmware,
+         trademarks, trade secrets, patents, and all proprietary
+         technology — is owned by [Family Name] IP Dynasty Trust
+         (the "IP Trust"), a separate legal entity.
+
+     (b) The OpCo operates under an EXCLUSIVE BUT REVOCABLE license
+         from the IP Trust. This license may be terminated under the
+         conditions specified in the IP License Agreement.
+
+     (c) The Investor's investment is in the OPERATING COMPANY ONLY.
+         The Investor acquires NO rights, title, interest, claim,
+         lien, security interest, or encumbrance of any kind in the
+         intellectual property.
+
+     (d) In the event the IP license is revoked, the OpCo may become
+         unable to operate the platform. The Investor accepts this
+         risk as part of the investment.
+
+     (e) The IP Trust is controlled by the Founder's family and is
+         NOT subject to the governance, voting, or control of OpCo
+         shareholders or directors.
+
+     (f) The Investor shall NOT:
+         - Attempt to acquire the IP through any means
+         - Claim any interest in the IP in any proceeding
+         - Support any action that would transfer the IP from the Trust
+         - Use voting rights to force an IP transfer or encumbrance
+         - Seek to merge the OpCo and the IP Trust
+
+     (g) This acknowledgment is a MATERIAL TERM of the investment.
+         Breach of this Section is grounds for immediate forfeiture
+         of Investor's equity at the lesser of cost or fair market value.
+
+
+# ─────────────────────────────────────────────────────────────────
+# 3. INVESTOR RIGHTS
+# ─────────────────────────────────────────────────────────────────
+
+3.1  WHAT THE INVESTOR RECEIVES:
+     (a) Equity in the OpCo per Section 1
+     (b) Rights to OpCo dividends and distributions (if/when declared)
+     (c) Information rights: Quarterly financial reports of the OpCo
+     (d) Pro rata rights: Participate in future OpCo equity rounds
+     (e) Board observer seat: [if applicable, at $_______ threshold]
+     (f) Tag-along rights: If Founder sells OpCo equity, Investor
+         may sell proportionally on same terms
+
+3.2  WHAT THE INVESTOR DOES NOT RECEIVE:
+     (a) Any ownership of the IP (trademarks, source code, algorithms,
+         AI systems, firmware, patents, trade secrets, etc.)
+     (b) Any license to use the IP independently of the OpCo
+     (c) Any right to view, copy, or access source code
+     (d) Any right to prevent the IP Trust from revoking the license
+     (e) Any security interest or lien on the IP
+     (f) Any right to force-sell, encumber, or transfer the IP
+     (g) Any claim on the IP in bankruptcy, dissolution, or liquidation
+
+
+# ─────────────────────────────────────────────────────────────────
+# 4. FOUNDER PROTECTIONS
+# ─────────────────────────────────────────────────────────────────
+
+4.1  FOUNDER CONTROL: The Founder retains majority voting control of
+     the OpCo regardless of equity dilution through:
+     (a) Dual-class share structure (Founder shares = 10x voting), OR
+     (b) Reserved board seats (Founder controls [X] of [Y] seats), OR
+     (c) Protective provisions requiring Founder consent for major
+         decisions (sale, merger, dissolution, new debt, etc.)
+
+4.2  ANTI-DILUTION: The Founder's equity in the OpCo shall not be
+     diluted below [X]% without the Founder's written consent.
+
+4.3  VESTING: Founder's equity is FULLY VESTED (no cliff, no vesting
+     schedule). The Founder created the technology before any investment.
+
+4.4  DRAG-ALONG: The Founder may force a sale of the OpCo (NOT the IP)
+     if approved by holders of [X]% of OpCo equity. The IP remains
+     with the Trust regardless of any OpCo sale.
+
+
+# ─────────────────────────────────────────────────────────────────
+# 5. IP VALUE PARTICIPATION (OPTIONAL — FOUNDER'S SOLE DISCRETION)
+# ─────────────────────────────────────────────────────────────────
+
+5.1  At the Founder's sole discretion, an Investor may be offered
+     participation in the VALUE of the IP (without ownership):
+
+     [ ] NOT OFFERED in this agreement
+     [ ] OFFERED as follows:
+
+5.2  IF OFFERED:
+     (a) Investor receives ____% of the royalty payments made by
+         the OpCo to the IP Trust
+     (b) This participation is for a fixed term of ____ years
+     (c) This participation terminates automatically at term end
+     (d) This is a CONTRACTUAL RIGHT, not an ownership interest
+     (e) This right is non-transferable and non-assignable
+     (f) The IP Trust and Founder retain full ownership and control
+
+5.3  VALUATION OF IP VALUE PARTICIPATION:
+     (a) Annual license fee paid by OpCo to Trust: $________________
+     (b) Investor's participation percentage: ____%
+     (c) Estimated annual payment to Investor: $________________
+     (d) This is an estimate only; actual payments depend on OpCo revenue
+
+
+# ─────────────────────────────────────────────────────────────────
+# 6. EXIT SCENARIOS
+# ─────────────────────────────────────────────────────────────────
+
+6.1  OPCO SALE (ACQUISITION):
+     - Investor receives pro rata share of sale proceeds
+     - IP remains with the Trust
+     - New owner must negotiate a new IP license with the Trust
+     - No guarantee the Trust will license to the acquirer
+
+6.2  OPCO IPO:
+     - Investor's shares become publicly tradeable
+     - IP remains with the Trust (disclosed as a risk factor)
+     - License terms are disclosed in SEC filings
+
+6.3  OPCO DISSOLUTION:
+     - Investor receives pro rata share of remaining OpCo assets
+     - IP returns to the Trust (it never left)
+     - Investor has NO claim on the IP
+
+6.4  LICENSE REVOCATION:
+     - If the Trust revokes the IP license, the OpCo may be unable
+       to operate. Investor accepts this risk.
+     - Investor's recourse is limited to OpCo assets (excluding IP)
+
+6.5  INVESTOR EXIT:
+     - Secondary sale of OpCo equity subject to right of first refusal
+       by Founder and other existing investors
+     - Lock-up period: [X] years from investment date
+
+
+# ─────────────────────────────────────────────────────────────────
+# 7. STANDARD TERMS
+# ─────────────────────────────────────────────────────────────────
+
+7.1  GOVERNING LAW: [State/Country]
+7.2  DISPUTE RESOLUTION: Binding arbitration, single arbitrator
+7.3  CONFIDENTIALITY: Terms of this Agreement are confidential
+7.4  AMENDMENTS: Written consent of both parties required
+7.5  SEVERABILITY: Invalid provisions severed; remainder survives
+7.6  ENTIRE AGREEMENT: Supersedes all prior discussions/agreements
+
+
+# ─────────────────────────────────────────────────────────────────
+# SIGNATURES
+# ─────────────────────────────────────────────────────────────────
+
+INVESTOR:
+
+Name: ________________________________________
+Entity (if applicable): ______________________
+Address: _____________________________________
+Date: ________________________________________
+Signature: ___________________________________
+
+
+DATA FIGHT CENTRAL LLC (OpCo):
+
+By: __________________________________________
+Name: ________________________________________
+Title: _______________________________________
+Date: ________________________________________
+Signature: ___________________________________
+
+
+ACKNOWLEDGED BY [FAMILY NAME] IP DYNASTY TRUST:
+
+By (Trustee): ________________________________
+Name: ________________________________________
+Date: ________________________________________
+Signature: ___________________________________
+
+(Trust signature confirms awareness of investment and confirms
+ the IP ownership structure described in Section 2.)
+
+
+# ══════════════════════════════════════════════════════════════════
+# END OF INVESTOR PARTICIPATION AGREEMENT
+# ══════════════════════════════════════════════════════════════════

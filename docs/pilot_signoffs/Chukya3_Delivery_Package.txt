@@ -1,0 +1,380 @@
+================================================================================
+  CHUKYA 3.0 PINK SHIELD — FINALIZED DELIVERY PACKAGE
+  Date: 2026-03-27
+  Repo: DIRTYBOXING/Data-Fight-Central
+  Branch: maps/precompute-cluster-icons
+  Commits: 32ced114 → d6fdf3d2 → db241f40
+================================================================================
+
+TABLE OF CONTENTS
+  1. Executive Summary
+  2. Immediate Ops Commands
+  3. Repo File Inventory
+  4. GitHub Issue Creation
+  5. Police Outreach Email
+  6. Formal Letter to Logan Police
+  7. Joint Test Runbook (1 hour)
+  8. Monitoring and Emergency Actions
+  9. Acceptance Criteria for Go-Live
+ 10. Final Sign-Off Statement
+
+================================================================================
+1. EXECUTIVE SUMMARY
+================================================================================
+
+Goal: Launch a controlled pilot of Chukya 3.0 Pink Shield to protect victims,
+provide auditable evidence, and enable supervised police notifications.
+
+Safety posture: Feature remains DISABLED for live notifications until Legal and
+Police sign-off and a supervised joint test passes. Emergency kill switches and
+audit logging are in place.
+
+Staging API: https://staging-api.example.com
+Pilot scope: 50 victims, Brisbane/Logan, 12 weeks.
+Key KPIs:
+  - Detection true positive rate >= 85% (controlled tests)
+  - False positive rate <= 5%
+  - Police notification median latency <= 30s
+  - Evidence upload p95 latency <= 10s
+  - Battery impact <= 5% daily for active users
+
+================================================================================
+2. IMMEDIATE OPS COMMANDS (run in order)
+================================================================================
+
+# --- Replace YOUR_PROJECT_ID with your GCP project ID throughout ---
+
+PROJECT_ID=YOUR_PROJECT_ID
+
+# A. Set feature flags to safe defaults
+gcloud firestore documents update settings/feature_flags \
+  --update-fields='chukya_enabled=false,chukya_police_notifications_paused=true' \
+  --project=$PROJECT_ID
+
+# B. Create police service account and grant minimal role
+SA_NAME=chukya-police-service
+gcloud iam service-accounts create $SA_NAME \
+  --project=$PROJECT_ID \
+  --display-name="Chukya Police Service"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role="roles/datastore.user"
+
+# C. Set police_service custom claim (run from secure admin env)
+#    node -e "
+#      const admin = require('firebase-admin');
+#      admin.initializeApp({ credential: admin.credential.applicationDefault() });
+#      admin.auth().setCustomUserClaims('POLICE_USER_UID', { police_service: true });
+#    "
+
+# D. Create HMAC secret and restrict access
+echo -n "REPLACE_WITH_STRONG_SECRET" | \
+  gcloud secrets create chukya-hmac-secret --data-file=- --project=$PROJECT_ID
+gcloud secrets add-iam-policy-binding chukya-hmac-secret \
+  --member="serviceAccount:YOUR_FUNCTION_SA@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor" \
+  --project=$PROJECT_ID
+
+# E. Workload Identity for CI (no long-lived keys)
+POOL_ID=github-pool
+PROVIDER_ID=github-provider
+GITHUB_REPO=DIRTYBOXING/Data-Fight-Central
+
+gcloud iam workload-identity-pools create $POOL_ID \
+  --project=$PROJECT_ID --location="global" \
+  --display-name="GitHub Actions Pool"
+
+gcloud iam workload-identity-pools providers create-oidc $PROVIDER_ID \
+  --project=$PROJECT_ID --location="global" \
+  --workload-identity-pool=$POOL_ID \
+  --display-name="GitHub Actions Provider" \
+  --issuer-uri="https://token.actions.githubusercontent.com" \
+  --allowed-audiences="https://github.com/${GITHUB_REPO}" \
+  --attribute-mapping="google.subject=assertion.sub,attribute.actor=assertion.actor,attribute.repository=assertion.repository"
+
+SA_TEST=chukya-test-runner
+gcloud iam service-accounts create $SA_TEST \
+  --project=$PROJECT_ID --display-name="Chukya Test Runner"
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${SA_TEST}@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role="roles/datastore.user"
+gcloud iam service-accounts add-iam-policy-binding \
+  ${SA_TEST}@${PROJECT_ID}.iam.gserviceaccount.com \
+  --project=$PROJECT_ID \
+  --role="roles/iam.workloadIdentityUser" \
+  --member="principalSet://iam.googleapis.com/projects/${PROJECT_ID}/locations/global/workloadIdentityPools/${POOL_ID}/attribute.repository/${GITHUB_REPO}"
+
+# F. Run smoke checks
+chmod +x tools/smoke_all.sh
+API_BASE=https://staging-api.example.com TEST_TOKEN=YOUR_TEST_TOKEN ./tools/smoke_all.sh
+
+# G. Run asserting injections
+API_BASE=https://staging-api.example.com \
+  TEST_TOKEN=YOUR_TEST_TOKEN \
+  FIREBASE_PROJECT=$PROJECT_ID \
+  node tools/inject_chukya_assert_admin.js
+
+================================================================================
+3. REPO FILE INVENTORY
+================================================================================
+
+Committed across 3 commits (32ced114, d6fdf3d2, db241f40):
+
+Core Chukya service and UI:
+  lib/shared/services/chukya_radar_service.dart
+  lib/shared/models/threat_profile.dart
+  lib/shared/models/proximity_alert.dart
+  lib/core/config/chukya_config.dart
+
+Cloud Functions:
+  functions/chukya/police_validation.js      (addThreatProfile, revokeThreatProfile)
+  functions/chukya/check_fingerprint.js      (fuzzy fingerprint matching)
+
+Firestore:
+  firestore.rules                            (7 Chukya collections added)
+  scripts/seed_chukya.js                     (test data seeder)
+
+CI/CD workflows:
+  .github/workflows/deploy-chukya-staging.yml    (5-job staging deploy)
+  .github/workflows/chukya-nightly-admin.yml     (nightly Workload Identity tests)
+
+Test tooling:
+  tools/inject_chukya_assert_admin.js        (Admin SDK asserting script)
+  tools/smoke_all.sh                         (service health + inject smoke)
+  tools/github_issue_body.md                 (prefilled approval issue body)
+  test_fingerprint_high.json                 (confidence >= 0.8 payload)
+  test_fingerprint_medium.json               (confidence 0.6-0.8 payload)
+  test_fingerprint_low.json                  (no-match payload)
+  test/chukya_radar_service_test.dart        (unit tests)
+
+Infrastructure:
+  infrastructure/k8s/chukya-configmap.yaml
+  infrastructure/k8s/chukya-secrets.yaml
+  infrastructure/k8s/chukya-backend-servicemonitor.yaml
+  infrastructure/k8s/chukya-api-servicemonitor.yaml
+  infrastructure/systemd/chukya-safety.service
+  infrastructure/systemd/chukya-logrotate.conf
+  infrastructure/systemd/setup-vm.sh
+  infrastructure/monitoring/chukya_metrics.yaml
+
+Operations:
+  ops/incident-runbook-chukya.md             (5-phase SRE runbook)
+  docs/pilot_signoffs/Chukya3_SignOff_Bundle_OnePage.txt
+
+Config:
+  .env.example                               (updated with Chukya vars)
+  package.json                               (type:module, node-fetch, chukya:test script)
+
+================================================================================
+4. GITHUB ISSUE CREATION
+================================================================================
+
+Command (run from repo root):
+
+  gh issue create \
+    --repo DIRTYBOXING/Data-Fight-Central \
+    --title "Approval Request -- Chukya 3.0 Pink Shield Pilot" \
+    --body-file tools/github_issue_body.md \
+    --label "pilot" --label "legal-review"
+
+GitHub secrets to add:
+  GCP_PROJECT         = your GCP project ID
+  CHUKYA_API_BASE     = https://staging-api.example.com
+  CHUKYA_TEST_TOKEN   = test bearer token for injection endpoint
+  GITHUB_REPO         = DIRTYBOXING/Data-Fight-Central
+
+================================================================================
+5. POLICE OUTREACH EMAIL (copy-paste into mail client)
+================================================================================
+
+To: logan.police@qps.qld.gov.au
+Cc: legal@example.com, sre-lead@example.com, product-lead@example.com
+Subject: Request for Partnership and Joint Test -- Chukya 3.0 Pink Shield
+
+Hi Senior Sergeant [Name],
+
+My name is DFC Founder, Head of Development and Strategy at DFC. We
+request Logan Police partner with us for a supervised joint test and pilot of
+Chukya 3.0 in the Brisbane/Logan area.
+
+What we need from Logan Police:
+1. Create a police service account with the custom claim police_service.
+2. Join a 60-minute supervised joint test in staging to add a test profile,
+   run a high-confidence injection, and verify evidence and logs.
+3. Review and sign the Privacy Impact Assessment and pilot SOP.
+4. Confirm a police liaison and escalation contact for the pilot.
+
+Proposed pilot:
+- Cohort: 50 victims in Brisbane/Logan metro
+- Duration: 12 weeks
+- Success criteria: detection TP >= 85%, false positive <= 5%,
+  police notification median latency <= 30s
+
+Safety controls:
+- Feature flags chukya_enabled and chukya_police_notifications_paused remain
+  disabled until the joint test passes and all sign-offs are recorded.
+- HMAC hashing for all identifiers; evidence is append-only; Cloud Audit Logs
+  enabled for all police API calls.
+
+Please reply with your preferred date/time for the joint test or confirm:
+Approved -- [Name] [Rank] [Date].
+
+Regards,
+DFC Founder
+Head of Development and Strategy, DFC Pink Shield
+[Email] | [Phone]
+
+================================================================================
+6. FORMAL LETTER TO LOGAN POLICE (paste into letterhead)
+================================================================================
+
+[Your organisation letterhead]
+
+Date: [DD MMM YYYY]
+
+Senior Sergeant / Duty Officer
+Logan Police Station
+Brisbane, QLD
+
+Subject: Request for Partnership and Pilot Sign-Off -- Chukya 3.0
+         (Pink Shield Proximity Radar)
+
+Dear Senior Sergeant,
+
+My name is DFC Founder, Head of Development and Strategy at DFC. I am
+writing to request Logan Police's partnership and formal sign-off to run a
+controlled pilot of Chukya 3.0 (Pink Shield Proximity Radar) in the
+Brisbane/Logan area.
+
+Chukya 3.0 is a purpose-built proximity detection and evidence collection
+system designed to protect victims of domestic and family violence by detecting
+and logging the presence of police-validated offender profiles near a protected
+person. Key features include:
+
+- Police-validated watchlist: only profiles added and validated by police are
+  used for matching.
+- Privacy-preserving identifiers: phone identifiers are HMAC-hashed on the
+  server; raw phone numbers are never stored.
+- Append-only evidence vault: detections and attachments are stored with
+  chain-of-custody metadata for admissibility.
+- Emergency controls: remote feature flags to pause scanning and police
+  notifications instantly.
+- Audit and retention: all police API calls and evidence writes are logged
+  and retained per legal guidance.
+
+We request Logan Police to:
+1. Create a police service account with the police_service claim to allow
+   secure profile additions to the watchlist.
+2. Participate in a joint test of addThreatProfile and a high-confidence
+   synthetic injection in staging.
+3. Review and sign the Privacy Impact Assessment and the pilot SOP.
+4. Confirm a point of contact (police liaison) and agree the escalation path
+   for any incidents.
+
+Pilot scope (proposed):
+- Cohort: 50 victims in Brisbane/Logan metro
+- Duration: 12 weeks
+- Success criteria: detection TP >= 85%, false positive <= 5%,
+  police notification median latency <= 30s
+
+Please reply with approval in the form: Approved -- [Name] [Rank] [Date]
+or advise a convenient time for a joint test and review meeting.
+
+Sincerely,
+
+DFC Founder
+Head of Development and Strategy, DFC Pink Shield
+[Email] | [Phone]
+
+================================================================================
+7. JOINT TEST RUNBOOK (1 hour, for Police Liaison + SRE)
+================================================================================
+
+Preconditions:
+- Legal sign-off and PIA draft available.
+- Police SA created and police_service claim set.
+- Feature flags: chukya_enabled=false, chukya_police_notifications_paused=true.
+
+Agenda:
+  00:00-00:10  Introductions and objectives.
+  00:10-00:20  Police adds test profile via addThreatProfile.
+               Confirm Firestore write and audit log.
+  00:20-00:30  Product triggers high-confidence injection in staging.
+  00:30-00:40  Verify proximity_alerts, evidence metadata, function logs.
+  00:40-00:50  Optional supervised notification test:
+               - Set chukya_police_notifications_paused=false
+               - Trigger one notification, confirm receipt
+               - Re-pause immediately
+  00:50-01:00  Debrief and next steps.
+
+Verification commands:
+  firebase firestore:documents:list proximity_alerts \
+    --project=$PROJECT_ID --limit=20
+
+  firebase functions:log --project=$PROJECT_ID \
+    --only chukyaCheckFingerprint --limit=200
+
+  # Re-pause after supervised test
+  gcloud firestore documents update settings/feature_flags \
+    --update-fields='chukya_police_notifications_paused=true' \
+    --project=$PROJECT_ID
+
+================================================================================
+8. MONITORING AND EMERGENCY ACTIONS
+================================================================================
+
+Prometheus alerts:
+  ChukyaHighFalsePositiveRate:
+    expr: chukya_false_positive_rate > 0.07 for 10m -> warning
+  ChukyaPoliceLatencyHigh:
+    expr: median(chukya_police_notification_latency_seconds) > 30 for 5m -> critical
+  ChukyaEvidenceUploadSlow:
+    expr: histogram_quantile(0.95, chukya_evidence_upload_seconds) > 10 for 5m -> warning
+
+Emergency kill switch:
+  gcloud firestore documents update settings/feature_flags \
+    --update-fields='chukya_enabled=false,chukya_police_notifications_paused=true' \
+    --project=$PROJECT_ID
+
+Scale down or rollback:
+  kubectl -n staging scale deployment chukya-safety --replicas=0
+  helm rollback chukya-safety --namespace staging <REVISION>
+
+Full incident response: see ops/incident-runbook-chukya.md
+
+================================================================================
+9. ACCEPTANCE CRITERIA FOR GO-LIVE
+================================================================================
+
+All five must be satisfied before flipping chukya_enabled=true:
+
+  [  ] LEGAL    PIA signed and consent process validated.
+  [  ] POLICE   Service account created, joint test passed, liaison assigned.
+  [  ] SRE      Monitoring and alerts configured, rollback tested.
+  [  ] QA       Nightly asserting tests green for 3 consecutive runs.
+  [  ] PRODUCT  Pilot cohort consented and onboarding scheduled.
+
+Enable command (only after all boxes checked):
+  gcloud firestore documents update settings/feature_flags \
+    --update-fields='chukya_enabled=true' --project=$PROJECT_ID
+
+Enable police notifications (only after supervised notification test and SOP):
+  gcloud firestore documents update settings/feature_flags \
+    --update-fields='chukya_police_notifications_paused=false' --project=$PROJECT_ID
+
+================================================================================
+10. FINAL SIGN-OFF STATEMENT
+================================================================================
+
+I, DFC Founder, Head of Development and Strategy, confirm Chukya 3.0
+Pink Shield is staged for a controlled pilot. All safety controls, legal
+prerequisites, police onboarding steps, monitoring, and rollback plans are
+in place. We will not enable live police notifications until Legal and Police
+sign-off and a supervised joint test passes.
+
+Signed -- DFC Founder
+Date: 2026-03-27
+
+================================================================================
+END OF DELIVERY PACKAGE
+================================================================================

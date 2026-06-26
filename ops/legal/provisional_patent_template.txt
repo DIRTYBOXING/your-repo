@@ -1,0 +1,247 @@
+============================================================
+ DATA FIGHT CENTRAL — PROVISIONAL PATENT DRAFT TEMPLATE
+ Version 1.0 | March 2026
+ Classification: CONFIDENTIAL — For Patent Filing Only
+============================================================
+
+PURPOSE: Fill each section with plain English, diagrams, and
+example implementations. Save as PDF with timestamp and file
+with IP Australia (ipaustralia.gov.au). Cost: ~AUD $110.
+
+============================================================
+ SECTION 1: TITLE
+============================================================
+
+[Insert short descriptive title of the invention]
+
+Example:
+  "Integrated Combat Sports Platform with Wearable Emergency
+   Response, Token-Gated Streaming, and Metaverse Engagement"
+
+============================================================
+ SECTION 2: ABSTRACT
+============================================================
+
+[One paragraph (150-250 words) summarising the invention and
+its primary advantage over existing solutions]
+
+Example structure:
+  "A system and method for [what it does] comprising [key
+   components]. The system provides [primary advantage] by
+   [how it achieves it]. Unlike existing solutions which
+   [limitation], the present invention [differentiator]."
+
+============================================================
+ SECTION 3: BACKGROUND AND PROBLEM STATEMENT
+============================================================
+
+[Describe current solutions and their shortcomings. Explain
+the problem you solve. Do NOT cite prior art by patent number
+— just describe the landscape.]
+
+Points to cover:
+  - Current state of combat sports streaming (fragmented,
+    no unified platform for small promoters)
+  - Limitations of existing emergency/panic systems
+    (not wearable, not fight-specific, no signed attestation)
+  - Lack of integrated creator/promoter tools
+  - No tokenized PPV with forensic anti-piracy for small
+    promoters
+  - Gap in metaverse/WebXR for combat sports
+
+============================================================
+ SECTION 4: SUMMARY OF THE INVENTION
+============================================================
+
+[High-level description of the novel idea and key components]
+
+Components to describe:
+  1. SURVIVAL STACK (CHUCKYA)
+     - Wearable firmware (nRF52840 + BLE GATT)
+     - CBOR payload signing with hardware keystore
+     - Device-verifier backend
+     - Operator alert chain and rescue pipeline
+
+  2. TOKENIZED PPV STREAMING
+     - Stripe Connect Direct charges (promoter as MOR)
+     - JWT-based entitlement tokens (RS256, short TTL)
+     - CDN signed URL gating
+     - Multi-DRM (Widevine/FairPlay/PlayReady)
+     - Forensic watermarking per session
+
+  3. PLATFORM INTELLIGENCE (CORTEX ENGINE)
+     - AI coaching and fight analytics
+     - Feed ranking and content curation
+     - Fighter performance modeling
+
+  4. METAVERSE / WEBXR INTEGRATION
+     - WebXR arena experience (A-Frame)
+     - Asset pipeline for 3D content
+     - Creator tools and marketplace
+
+  5. CREATOR AND PROMOTER TOOLS
+     - Promoter onboarding and agreement flow
+     - Event management dashboard
+     - Social/marketing toolkit
+
+============================================================
+ SECTION 5: DETAILED DESCRIPTION
+============================================================
+
+[Step-by-step operation. This is the most important section.
+Be thorough — describe HOW each component works.]
+
+5.1. WEARABLE FIRMWARE FLOW
+  - Device boot and key generation
+  - BLE GATT service advertisement
+  - Panic trigger detection (button press, gesture, sensor)
+  - CBOR payload construction:
+    {
+      "type": "panic",
+      "ts": <unix_timestamp>,
+      "lat": <latitude>,
+      "lon": <longitude>,
+      "dev": "<device_id>",
+      "sig": "<ed25519_signature>"
+    }
+  - Payload signing with hardware keystore (SHA256withRSA or Ed25519)
+  - BLE transmission to companion app
+  - Companion app relay to backend verifier
+
+5.2. DEVICE VERIFIER BACKEND
+  - Receive signed payload
+  - Verify signature against registered public key
+  - Validate timestamp freshness (anti-replay)
+  - Trigger operator alert chain
+  - Log attestation for audit trail
+
+5.3. TOKEN MINTING AND PPV PLAYBACK
+  - Purchase flow via Stripe Connect Direct charge
+  - Entitlement creation in database
+  - JWT minting: RS256, claims (iss, sub, ent, evt, dev, iat, exp, jti, aud)
+  - CDN signed URL generation with embedded token
+  - Player loads manifest via signed URL
+  - DRM license request with bearer token
+  - License server validates entitlement and issues decryption key
+  - Forensic watermark injection per session
+  - Concurrency tracking and device binding
+
+5.4. CORTEX ENGINE / AI
+  - Data ingestion from fighter stats, event results, training data
+  - Model architecture (describe at high level)
+  - Coaching output generation
+  - Feed ranking algorithm (factors, weights, signals)
+  - Content curation pipeline
+
+5.5. WEBXR PARITY
+  - A-Frame scene construction
+  - Asset loading and streaming
+  - User interaction model
+  - Integration with live event data
+
+[Include pseudocode for critical flows]
+
+============================================================
+ SECTION 6: EXAMPLE IMPLEMENTATIONS
+============================================================
+
+EXAMPLE 1: LIVE PPV WITH CHUCKYA EMERGENCY
+  - Fighter wears CHUCKYA device during event
+  - Panic triggered -> signed CBOR payload -> verifier -> operator alert
+  - Simultaneously, PPV viewers watch via token-gated stream
+  - Forensic watermark identifies any leak source
+
+EXAMPLE 2: TOKENIZED PLAYBACK FOR SMALL PROMOTER
+  - Promoter creates event on DFC platform
+  - Viewer purchases ticket (Stripe Direct charge on promoter account)
+  - Backend mints JWT, generates CDN signed URL
+  - Player loads encrypted stream, requests DRM license
+  - Watermark embedded per viewer session
+
+EXAMPLE 3: WEBXR ARENA EXPERIENCE
+  - User opens WebXR link on mobile or VR headset
+  - A-Frame loads neon octagon arena
+  - Live fight data overlaid in real-time
+  - Social features (chat, reactions) integrated
+
+============================================================
+ SECTION 7: VARIANTS AND ALTERNATIVES
+============================================================
+
+  - Hardware: nRF52840 variants, ESP32-C3, other BLE SoCs
+  - Encoding: CBOR vs JSON vs Protobuf
+  - Signing: Ed25519 vs RSA vs ECDSA
+  - DRM vendors: Castlabs, Axinom, Verimatrix, BuyDRM
+  - CDN providers: CloudFront, Cloudflare, Fastly, Akamai
+  - Player: Shaka, THEOplayer, Bitmovin, Video.js
+  - Metaverse: A-Frame, Three.js, Unity WebGL, Babylon.js
+  - Streaming: HLS, DASH, LL-HLS, WebRTC
+
+============================================================
+ SECTION 8: DRAWINGS AND DIAGRAMS
+============================================================
+
+[Attach as separate pages. Label each figure.]
+
+FIGURE 1: System Architecture Overview
+  - Show all components and data flow
+
+FIGURE 2: Wearable Device Block Diagram
+  - MCU, BLE radio, sensors, keystore, battery
+
+FIGURE 3: Panic Alert Sequence Diagram
+  - Device -> Companion App -> Verifier -> Operator -> Rescue
+
+FIGURE 4: Tokenized Playback Flow
+  - Purchase -> Entitlement -> JWT -> CDN -> DRM -> Player
+
+FIGURE 5: WebXR Arena Architecture
+  - Browser -> A-Frame -> Asset Server -> Live Data Feed
+
+============================================================
+ SECTION 9: INVENTORS AND CONTACT
+============================================================
+
+Inventor(s):
+  Name      : [YOUR LEGAL NAME]
+  Address   : [ADDRESS]
+  Email     : [EMAIL]
+  Phone     : [PHONE]
+
+Assignee:
+  Data Fight Central, ABN [INSERT ABN]
+  (or Pty Ltd when formed)
+
+============================================================
+ SECTION 10: CLAIMS (OPTIONAL FOR PROVISIONAL)
+============================================================
+
+[Not required for provisional but recommended to outline
+scope you intend to claim in the full application]
+
+Suggested claim areas:
+  1. A system for emergency response using a wearable device
+     with signed payload attestation and backend verification
+  2. A method for token-gated PPV streaming with CDN signed
+     URLs, DRM enforcement, and forensic watermarking
+  3. An integrated platform combining emergency response,
+     tokenized streaming, AI coaching, and metaverse engagement
+     for combat sports
+
+============================================================
+ FILING CHECKLIST
+============================================================
+
+  [ ] All sections filled with sufficient detail
+  [ ] Diagrams created and labeled
+  [ ] Pseudocode included for key flows
+  [ ] Variants section covers obvious alternatives
+  [ ] Inventor details correct
+  [ ] Saved as timestamped PDF in secure vault
+  [ ] Filed at ipaustralia.gov.au
+  [ ] Fee paid (~AUD $110)
+  [ ] Calendar reminder: 12 months to convert to full patent
+
+============================================================
+ END OF PROVISIONAL PATENT DRAFT TEMPLATE
+============================================================

@@ -1,0 +1,12 @@
+## Copy this file to android/local.properties and fill values for local Android builds.
+## Keep real keys out of source control.
+
+# Existing Flutter/Android SDK entries usually live in local.properties too:
+# sdk.dir=C:\\Users\\User\\AppData\\Local\\Android\\Sdk
+# flutter.sdk=C:\\src\\flutter
+
+# Preferred Android Maps key (used by android/app/build.gradle.kts)
+MAPS_API_KEY_ANDROID=
+
+# Backward-compatible fallback key name
+MAPS_API_KEY=

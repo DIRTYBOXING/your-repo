@@ -1,0 +1,83 @@
+╔══════════════════════════════════════════════════════════════════╗
+║              CHUCKYA PERSONAL SAFETY RADAR                      ║
+║         ONE-PAGE POLICE / RESPONDER BRIEF  (PRINTABLE)          ║
+║         DataFightCentral Pty Ltd — Confidential                 ║
+╚══════════════════════════════════════════════════════════════════╝
+
+PURPOSE
+────────────────────────────────────────────────────────────────────
+CHUCKYA is a privacy-first personal safety system that detects
+proximity threats using wearable sensors and a phone app.  When an
+alert triggers, the system produces cryptographically signed,
+tamper-evident evidence packages suitable for use in court.
+
+WHAT POLICE WILL SEE
+────────────────────────────────────────────────────────────────────
+  • CONTROL ROOM — web dashboard showing live alerts on a map,
+    threat classification (code_red / code_black / code_yellow),
+    and device fleet status.
+  • EVIDENCE ZIP — downloadable package containing:
+      - payload.json   (canonical alert data)
+      - alert.json     (scored alert with risk level)
+      - chain_of_custody.json  (SHA256 hashes + timestamps)
+      - consent_record.json    (user consent flags)
+      - public.pem     (device public key for verification)
+
+HOW SIGNATURE VERIFICATION WORKS
+────────────────────────────────────────────────────────────────────
+Every alert is signed by the sender's private key stored in the
+phone's hardware-backed keystore (Android Keystore / iOS Secure
+Enclave).  No private key ever leaves the device.
+
+To verify an evidence package:
+
+  1.  jq -S . payload.json > payload.canon
+  2.  jq -r '.signatureBase64' signed_payload.json | base64 -d > sig.bin
+  3.  openssl dgst -sha256 -verify public.pem -signature sig.bin payload.canon
+
+  Output: "Verified OK"  ←  means the payload has not been tampered
+  with and was signed by the registered device.
+
+  4.  sha256sum payload.canon
+      Compare to hash in chain_of_custody.json — must match.
+
+PRIVACY MODEL
+────────────────────────────────────────────────────────────────────
+  • Civilians see ONLY proximity distance and direction (no GPS).
+  • GPS / IMEI included ONLY if the user explicitly consented
+    (recorded immutably with timestamp).
+  • Evidence export requires TWO-PERSON APPROVAL (Ops + Legal)
+    before any data leaves the system.
+  • All audit artifacts are append-only and immutable.
+
+CHAIN OF CUSTODY GUARANTEE
+────────────────────────────────────────────────────────────────────
+  Wearable → Phone → Backend → Audit Store → Evidence Zip
+  
+  Every step produces a SHA256 hash recorded in
+  chain_of_custody.json with ISO 8601 timestamps.  The chain is
+  unbroken from sensor event to police handover.
+
+DEMO STEPS (2 MINUTES)
+────────────────────────────────────────────────────────────────────
+  0:00  Open control room dashboard in browser
+  0:15  Press panic button on bracelet (or run demo trigger)
+  0:20  Alert appears on map with threat classification
+  0:30  Click alert → view evidence details + signature status
+  0:45  Click "Request Export" → Ops approves → Legal approves
+  1:00  Download evidence zip
+  1:15  Run verification CLI one-liner (see above)
+  1:30  Show SHA256 matches chain_of_custody.json
+  1:45  Brief complete — questions?
+
+CONTACT
+────────────────────────────────────────────────────────────────────
+  System:   CHUCKYA Personal Safety Radar
+  Operator: DataFightCentral Pty Ltd
+  Website:  www.datafightcentral.com
+  Email:    ops@datafightcentral.com
+
+────────────────────────────────────────────────────────────────────
+         This document is UNCLASSIFIED — safe to distribute
+         to police, legal, and emergency response personnel.
+────────────────────────────────────────────────────────────────────

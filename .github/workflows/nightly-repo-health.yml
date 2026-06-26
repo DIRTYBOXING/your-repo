@@ -1,0 +1,78 @@
+name: Nightly Repo Health
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # 03:00 UTC every night
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  repo-health:
+    name: Repo Health Report
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed for branch checks
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+
+      - name: Install dependencies
+        shell: pwsh
+        run: flutter pub get
+
+      - name: Analyzer strictness report (warn-only)
+        shell: pwsh
+        run: pwsh scripts/analyzer-warning-report.ps1
+
+      - name: Upload analyzer ratchet report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: analyzer-ratchet-report
+          path: reports/analyzer-ratchet-candidates.md
+          if-no-files-found: warn
+
+      - name: Run repo-health script
+        id: health
+        shell: pwsh
+        run: |
+          $output = pwsh scripts/repo-health.ps1 2>&1
+          $output | ForEach-Object { Write-Output $_ }
+
+          # Capture counts from the output
+          $warnCount  = ($output | Where-Object { $_ -match '⚠️' }).Count
+          $errorCount = ($output | Where-Object { $_ -match '❌' }).Count
+          $passCount  = ($output | Where-Object { $_ -match '✅' }).Count
+
+          # Write to GitHub Step Summary as Markdown
+          $md = @"
+          ## 🏥 DFC Repo Health — $(Get-Date -Format 'yyyy-MM-dd')
+
+          | Metric | Count |
+          |--------|-------|
+          | ✅ Passes | $passCount |
+          | ⚠️ Warnings | $warnCount |
+          | ❌ Errors | $errorCount |
+
+          <details><summary>Full output</summary>
+
+          ``````
+          $($output -join "`n")
+          ``````
+
+          </details>
+          "@
+          $md | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+
+          # Fail the job if there are any errors
+          if ($errorCount -gt 0) {
+            Write-Error "Repo health check found $errorCount error(s). See summary above."
+            exit 1
+          }

@@ -1,0 +1,81 @@
+name: Observability Smoke Verify
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+      - "release/**"
+      - "fix/*"
+  pull_request:
+    paths:
+      - "infra/alertmanager-manifest.yaml"
+      - ".vscode/**"
+      - "tools/agent/**"
+      - "example/**"
+      - ".github/workflows/observability-smoke-verify.yml"
+
+jobs:
+  smoke:
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ALERTMANAGER_URL: ${{ secrets.ALERTMANAGER_URL }}
+      PROMETHEUS_URL: ${{ secrets.PROMETHEUS_URL }}
+      RUNBOOK_HOST: ${{ secrets.RUNBOOK_HOST }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+
+      - name: Install agent deps
+        if: env.ALERTMANAGER_URL != ''
+        working-directory: tools/agent
+        run: |
+          dart pub get --enforce-lockfile
+
+      - name: Skip external smoke without Alertmanager
+        if: env.ALERTMANAGER_URL == ''
+        run: echo 'ALERTMANAGER_URL is not configured for this run; skipping external observability smoke.'
+
+      - name: Run agent smoke test
+        if: env.ALERTMANAGER_URL != ''
+        working-directory: tools/agent
+        run: |
+          dart run bin/agent.dart --alertmanager "$ALERTMANAGER_URL"
+
+      - name: Post CI_Smoke alert
+        if: env.ALERTMANAGER_URL != ''
+        run: |
+          curl -s -XPOST -H "Content-Type: application/json" \
+            -d '[{"labels":{"alertname":"CI_Smoke","sourceId":"ci"},"annotations":{"summary":"CI smoke"}}]' \
+            "$ALERTMANAGER_URL/api/v1/alerts"
+
+      - name: Poll Alertmanager for CI_Smoke
+        if: env.ALERTMANAGER_URL != ''
+        run: |
+          SECONDS=0; TIMEOUT=60; INTERVAL=5; FOUND=0;
+          while [ $SECONDS -lt $TIMEOUT ]; do
+            RESP=$(curl -s "$ALERTMANAGER_URL/api/v2/alerts" || true)
+            echo "$RESP" | jq -e '.[] | select(.labels.alertname=="CI_Smoke" and .labels.sourceId=="ci")' >/dev/null 2>&1 && { echo 'Found CI_Smoke'; FOUND=1; break; };
+            sleep $INTERVAL; SECONDS=$((SECONDS+INTERVAL)); echo Waiting $SECONDS;
+          done
+          if [ $FOUND -ne 1 ]; then echo 'CI_Smoke not found'; exit 1; fi
+
+      - name: Cleanup CI_Smoke alert
+        if: env.ALERTMANAGER_URL != ''
+        run: |
+          curl -s -XPOST -H "Content-Type: application/json" -d '[]' "$ALERTMANAGER_URL/api/v1/alerts" || true
+          echo 'Cleanup posted'
+
+      - name: Upload agent logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-logs
+          path: tools/agent/*.log
+          if-no-files-found: ignore

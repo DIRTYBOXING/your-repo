@@ -1,0 +1,262 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA BRACELET — FIRMWARE PSEUDOCODE                        ║
+║  Target: nRF52840 / ESP32 with UWB + BLE                       ║
+║  Version: 1.0   Date: 2026-03-28                               ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+1. INITIALIZATION
+═══════════════════════════════════════════════════════════════════
+
+function main():
+    // Hardware init
+    init_gpio()                     // button, LED, vibrator, buzzer
+    init_ble_stack()                // BLE 5.x with LESC support
+    init_uwb_module()               // DW3000 ranging module
+    init_secure_element()           // ATECC608A if present
+    init_battery_monitor()          // ADC for battery voltage
+
+    // BLE setup
+    register_gatt_service("0000CCHK-0000-1000-8000-00805F9B34FB")
+    register_characteristic("RawProximity",  "0000C001...", NOTIFY|READ)
+    register_characteristic("PairingCode",   "0000C002...", READ|WRITE)
+    register_characteristic("Battery",       "00002A19...", READ|NOTIFY)
+    register_characteristic("Control",       "0000C003...", WRITE)
+    register_characteristic("Attestation",   "0000C004...", READ)   // optional
+
+    // State
+    event_buffer = circular_buffer(capacity=10)
+    paired = load_bond_from_flash()
+    device_id = load_device_id()    // e.g., "B01" from factory config
+
+    // Start advertising
+    start_advertising(
+        name = "CHUCKYA-" + device_id,
+        service_uuid = "0000CCHK...",
+        interval = paired ? 2000ms : 500ms
+    )
+
+    // Enter main loop
+    run_event_loop()
+
+═══════════════════════════════════════════════════════════════════
+2. MAIN EVENT LOOP
+═══════════════════════════════════════════════════════════════════
+
+function run_event_loop():
+    while true:
+        // Check for pending events
+        handle_button_events()
+        handle_periodic_scan()
+        handle_battery_check()
+
+        // Sleep between cycles to save power
+        sleep_until_event_or_timeout(interval=1000ms)
+
+═══════════════════════════════════════════════════════════════════
+3. PANIC BUTTON HANDLER
+═══════════════════════════════════════════════════════════════════
+
+function handle_button_events():
+    if button_pressed():
+        // Debounce: ignore presses within 500ms
+        if time_since_last_press() < 500ms:
+            return
+
+        // Measure environment
+        proximity = measure_uwb_distance()   // returns {distance_m, direction_deg}
+        ts = get_utc_iso8601()
+        nonce = generate_uuid_v4()
+
+        // Build event
+        event = {
+            deviceId:  device_id,
+            ts:        ts,
+            nonce:     nonce,
+            d:         proximity.distance_m,
+            dir:       proximity.direction_deg,
+            sig:       "panic"
+        }
+
+        // Buffer event
+        event_buffer.push(event)
+
+        // Notify user locally
+        vibrate(pattern="long")
+        set_led(pattern="solid_red", duration=3000ms)
+        beep(pattern="alert")
+
+        // Send to phone if connected
+        if ble_connected():
+            ble_notify("RawProximity", encode_json(event))
+            // Switch to fast advertising for 30s in case connection drops
+            set_advertising_interval(100ms, timeout=30000ms)
+        else:
+            // Not connected — boost advertising to get phone's attention
+            set_advertising_interval(100ms, timeout=30000ms)
+
+═══════════════════════════════════════════════════════════════════
+4. PERIODIC PROXIMITY SCAN
+═══════════════════════════════════════════════════════════════════
+
+SCAN_INTERVAL = 10000ms       // scan every 10 seconds
+AUTO_THRESHOLD_M = 10         // auto-alert if object within 10m
+
+function handle_periodic_scan():
+    if time_since_last_scan() < SCAN_INTERVAL:
+        return
+
+    distances = uwb_perform_ranging_scan()   // list of {distance, direction}
+    if distances.empty():
+        return
+
+    nearest = min(distances, key=distance)
+
+    if nearest.distance_m < AUTO_THRESHOLD_M:
+        ts = get_utc_iso8601()
+        nonce = generate_uuid_v4()
+
+        event = {
+            deviceId:  device_id,
+            ts:        ts,
+            nonce:     nonce,
+            d:         nearest.distance_m,
+            dir:       nearest.direction_deg,
+            sig:       "auto_proximity"
+        }
+
+        event_buffer.push(event)
+
+        // Gentle notification (not panic-level)
+        vibrate(pattern="short")
+        set_led(pattern="blink_yellow", duration=2000ms)
+
+        if ble_connected():
+            ble_notify("RawProximity", encode_json(event))
+
+═══════════════════════════════════════════════════════════════════
+5. BATTERY MONITORING
+═══════════════════════════════════════════════════════════════════
+
+BATTERY_CHECK_INTERVAL = 600000ms  // every 10 minutes
+
+function handle_battery_check():
+    if time_since_last_battery_check() < BATTERY_CHECK_INTERVAL:
+        return
+
+    level = read_battery_percentage()    // 0-100
+    update_characteristic("Battery", level)
+
+    if level < 15:
+        set_led(pattern="blink_red_slow")
+        // Phone will show low-battery warning via BLE notification
+
+═══════════════════════════════════════════════════════════════════
+6. BLE CONNECTION HANDLERS
+═══════════════════════════════════════════════════════════════════
+
+function on_ble_connect(peer):
+    // Negotiate MTU for larger payloads
+    request_mtu(247)
+
+    // Verify bonding
+    if not peer.is_bonded():
+        // Allow pairing flow but restrict to PairingCode characteristic
+        return
+
+    // Flush buffered events to phone
+    if event_buffer.not_empty():
+        for event in event_buffer:
+            ble_notify("RawProximity", encode_json(event))
+        event_buffer.clear()
+
+    // Switch to connected advertising interval (not needed while connected)
+    stop_advertising()
+
+function on_ble_disconnect():
+    // Resume advertising
+    start_advertising(interval = paired ? 2000ms : 500ms)
+
+═══════════════════════════════════════════════════════════════════
+7. PAIRING FLOW
+═══════════════════════════════════════════════════════════════════
+
+function on_pairing_initiated():
+    // Generate 6-digit code
+    code = random_digits(6)
+    display_code(code)   // LED blink pattern or e-ink if available
+    update_characteristic("PairingCode", code)
+
+    // Start 60-second timeout
+    start_timer(60000ms, on_pairing_timeout)
+
+function on_pairing_code_write(token):
+    if validate_pairing_token(token):
+        enable_bonding()
+        paired = true
+        save_bond_to_flash()
+        vibrate(pattern="short")
+        set_led(pattern="solid_green", duration=3000ms)
+        cancel_timer(on_pairing_timeout)
+    else:
+        vibrate(pattern="sos")
+        set_led(pattern="blink_red", duration=3000ms)
+
+function on_pairing_timeout():
+    clear_characteristic("PairingCode")
+    set_led(pattern="off")
+
+═══════════════════════════════════════════════════════════════════
+8. CONTROL COMMAND HANDLER
+═══════════════════════════════════════════════════════════════════
+
+function on_control_write(payload):
+    if not sender.is_bonded():
+        return ERROR_AUTH_REQUIRED
+
+    cmd = decode_json(payload)
+
+    switch cmd.cmd:
+        case "led":
+            set_led(pattern=cmd.arg)
+        case "vibe":
+            vibrate(pattern=cmd.arg)
+        case "beep":
+            beep(pattern=cmd.arg)
+        case "factory_reset":
+            erase_bonds()
+            erase_event_buffer()
+            reset_to_defaults()
+            reboot()
+        case "dfu":
+            enter_dfu_mode()     // Nordic DFU or ESP OTA
+        default:
+            return ERROR_UNKNOWN_COMMAND
+
+═══════════════════════════════════════════════════════════════════
+9. POWER MANAGEMENT
+═══════════════════════════════════════════════════════════════════
+
+function sleep_until_event_or_timeout(interval):
+    // Configure wake sources:
+    //   - GPIO interrupt on button press
+    //   - BLE event (connection, write)
+    //   - Timer expiry
+    configure_wake_sources([GPIO_BUTTON, BLE_EVENT, TIMER])
+    enter_system_on_sleep()       // nRF52: System ON sleep
+    // MCU wakes on any configured source
+
+═══════════════════════════════════════════════════════════════════
+10. MEMORY MAP (FLASH)
+═══════════════════════════════════════════════════════════════════
+
+  Address     Size    Contents
+  ─────────────────────────────────────────────
+  0x00000     256K    Application firmware
+  0x40000     16K     Bonding data (LTK, IRK)
+  0x44000     4K      Device config (device_id, thresholds)
+  0x45000     8K      Event buffer (10 events × ~800 bytes)
+  0x47000     4K      Attestation key (if secure element absent)
+  0x48000+    --      Reserved for DFU staging
+
+═══════════════════════════════════════════════════════════════════

@@ -1,0 +1,43 @@
+{
+  "events": {
+    "event_sample_001": {
+      "title": "DFC Fight Night 12",
+      "name": "DFC Fight Night 12",
+      "date": "2026-05-18T19:00:00Z",
+      "venue": "Logan Metro Sports Centre",
+      "city": "Logan",
+      "country": "Australia",
+      "latitude": -27.649,
+      "longitude": 153.109,
+      "posterUrl": "https://firebasestorage.googleapis.com/your-bucket/posters/event_sample_001.jpg",
+      "promoterId": "PROMOTER_001",
+      "price": 29.99,
+      "platform": "PPV",
+      "status": "upcoming"
+    }
+  },
+  "posts": {
+    "post_sample_001": {
+      "authorId": "USER_123",
+      "userId": "USER_123",
+      "content": "Fight card announced!",
+      "createdAt": "2026-04-30T12:00:00Z",
+      "date": "2026-04-30T12:00:00Z",
+      "publishedAt": "2026-04-30T12:00:00Z"
+    }
+  },
+  "messages": {
+    "msg_sample_001": {
+      "authorId": "USER_123",
+      "senderId": "USER_123",
+      "senderName": "User 123",
+      "receiverId": "USER_456",
+      "receiverName": "User 456",
+      "content": "Is the fight card final?",
+      "text": "Is the fight card final?",
+      "createdAt": "2026-04-30T12:05:00Z",
+      "sentAt": "2026-04-30T12:05:00Z",
+      "pairId": "USER_123_USER_456"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "bluetoothDevices": [
+    { "name": "Unknown Device", "rssi": -70, "count": 2 },
+    { "name": "Bluetooth Speaker", "rssi": -80, "count": 5 }
+  ],
+  "phoneHash": "TEST_PHONE_HASH_NO_MATCH",
+  "meta": {
+    "testRunId": "chukya-smoke-low-001",
+    "victimId": "victim_test_001",
+    "mode": "ble_passive",
+    "description": "Low-confidence fingerprint: weak RSSI, unknown devices, no phone hash match, expected to produce no alerts"
+  }
+}

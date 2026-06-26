@@ -1,0 +1,17 @@
+{
+  "name": "dfc-auto-clip-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DFC Auto-Clip Worker — AI highlight extraction from fight footage",
+  "scripts": {
+    "start": "node src/worker.js",
+    "dev": "node --watch src/worker.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.6.0",
+    "bullmq": "^5.20.0",
+    "ioredis": "^5.4.1",
+    "fluent-ffmpeg": "^2.1.3",
+    "uuid": "^10.0.0"
+  }
+}

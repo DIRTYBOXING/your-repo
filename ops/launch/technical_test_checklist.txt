@@ -1,0 +1,89 @@
+TECHNICAL TEST CHECKLIST — DATA FIGHT CENTRAL
+===============================================
+Run during the 72-hour test window before any public PPV sale.
+Save ALL evidence to ops/audit/[event-name]/.
+
+INGEST
+------
+- [ ] Ingest endpoint accepts SDI/RTMP/HLS feed
+- [ ] 30-minute continuous ingest completed
+- [ ] Zero dropped frames confirmed
+- [ ] Bitrate stability logged (encoder logs saved)
+- [ ] Backup feed tested and failover confirmed
+
+DRM
+---
+- [ ] FairPlay licence issuance tested (iOS / Safari)
+- [ ] Widevine licence issuance tested (Android / Chrome)
+- [ ] PlayReady licence issuance tested (Edge — if required)
+- [ ] Licence server logs captured and saved
+- [ ] Player debug logs captured and saved
+- [ ] Offline playback blocked (confirmed no download)
+
+FORENSIC WATERMARKING
+---------------------
+- [ ] Session watermark embedded per viewer
+- [ ] Screen-capture leak simulation performed
+- [ ] Extraction tool run on leaked capture
+- [ ] Extraction report confirms correct viewer ID recovery
+- [ ] Watermark logs saved (session ID, user ID, timestamp)
+- [ ] Logs stored in audit folder for minimum 12 months
+
+PLAYER AND ANALYTICS
+---------------------
+- [ ] Playback tested on desktop browser (Chrome, Firefox, Safari)
+- [ ] Playback tested on iOS (Safari / native)
+- [ ] Playback tested on Android (Chrome / native)
+- [ ] Startup time recorded (target: under 3 seconds)
+- [ ] Rebuffer events recorded (target: zero in 30-min test)
+- [ ] Analytics events firing: play, pause, seek, error,
+      drm-failure, watermark-id, quality-change
+
+PAYMENTS (SANDBOX)
+-------------------
+- [ ] Test PPV purchase completes in Stripe test mode
+- [ ] PaymentIntent created with correct amount and currency
+- [ ] transfer_data.destination matches promoter Connected Account ID
+- [ ] application_fee_amount matches agreed DFC commission
+- [ ] Transfer appears in Connected Account test dashboard
+- [ ] Payout schedule confirmed in Connected Account settings
+
+LOAD TEST
+----------
+- [ ] CDN staging endpoint configured
+- [ ] Load test run at 2x expected peak concurrent viewers
+- [ ] CDN origin response time under 200ms at peak
+- [ ] No 5xx errors during load test
+- [ ] CDN metrics captured and saved
+
+GEOBLOCKING
+-----------
+- [ ] Geoblocking enabled per licence territory
+- [ ] VPN bypass tested and blocked (if required by licence)
+- [ ] Blocked regions receive appropriate error message
+
+EVIDENCE FOLDER CONTENTS (ops/audit/[event-name]/)
+-----------------------------------------------------
+- [ ] Encoder/ingest logs
+- [ ] DRM licence server logs
+- [ ] Player debug logs
+- [ ] Watermark extraction report
+- [ ] Watermark session logs
+- [ ] Analytics event samples
+- [ ] Stripe test PaymentIntent JSON
+- [ ] Stripe test transfer JSON
+- [ ] Load test metrics/screenshots
+- [ ] Geoblocking test screenshots
+- [ ] Signed Pilot Licence (scanned)
+- [ ] Witnessed Statutory Declaration (scanned)
+- [ ] Fighter releases (scanned)
+- [ ] Sponsor/music clearances (scanned)
+
+SIGN-OFF
+--------
+Test conducted by: ______________________
+Date: __________
+Result: PASS / FAIL
+Notes: ______________________
+
+If ANY item above is FAIL or incomplete, do NOT enable public PPV sales.

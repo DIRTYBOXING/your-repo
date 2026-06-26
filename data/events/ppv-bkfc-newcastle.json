@@ -1,0 +1,53 @@
+{
+  "eventId": "ppv-bkfc-newcastle",
+  "title": "BKFC FIGHT NIGHT: NEWCASTLE",
+  "subtitle": "Bare Knuckle Hits the Hunter Valley",
+  "date": "2026-04-25",
+  "time": "19:00 AEST",
+  "price": "29.99",
+  "promoter": "BKFC",
+  "sport": "BKFC",
+  "venue": "Newcastle Entertainment Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["BKFC App"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Welterweight",
+      "rounds": 5
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Heavyweight",
+      "rounds": 5
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

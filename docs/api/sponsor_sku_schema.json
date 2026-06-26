@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://datafightcentral.com/schemas/sponsor-sku.json",
+  "title": "DFC Sponsor SKU",
+  "description": "Firestore document schema for sponsor_skus/{skuId}. Each SKU is an inventory slot that sponsors can purchase or activate.",
+  "type": "object",
+  "required": ["skuId", "name", "type", "priceModel", "status", "createdAt"],
+  "properties": {
+    "skuId": {
+      "type": "string",
+      "pattern": "^sku_[a-z0-9_]+$",
+      "description": "Unique SKU identifier (Firestore document ID).",
+      "examples": [
+        "sku_preroll_30s",
+        "sku_og_badge_gold",
+        "sku_banner_ringside"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 120,
+      "examples": [
+        "Pre-Roll 30s",
+        "OG Badge — Gold Tier",
+        "Ringside Banner Overlay"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "pre_roll",
+        "mid_roll",
+        "og_badge",
+        "co_branded_clip",
+        "banner_overlay",
+        "ringside_virtual",
+        "avatar_skin"
+      ],
+      "description": "Placement type determines where the sponsor asset is rendered."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+
+    "priceModel": {
+      "type": "object",
+      "required": ["currency", "amount", "billingType"],
+      "properties": {
+        "currency": {
+          "type": "string",
+          "enum": ["AUD", "USD", "GBP", "EUR", "THB", "NZD"],
+          "default": "AUD"
+        },
+        "amount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Price in smallest currency unit (cents). e.g. 50000 = $500.00 AUD."
+        },
+        "billingType": {
+          "type": "string",
+          "enum": ["flat", "cpm", "cpc", "revenue_share"]
+        },
+        "revenueSharePercent": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Sponsor's share when billingType is revenue_share."
+        },
+        "platformFeePercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 50,
+          "default": 25,
+          "description": "DFC's cut of this SKU's revenue."
+        }
+      }
+    },
+
+    "deliveryRules": {
+      "type": "object",
+      "properties": {
+        "maxImpressions": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "Cap total impressions; null = unlimited."
+        },
+        "geoTargets": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "description": "ISO 3166-1 alpha-2 country codes."
+        },
+        "sportTypes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Restrict to specific sport types."
+        },
+        "eventIds": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Restrict to specific events."
+        },
+        "scheduledStart": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "scheduledEnd": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+
+    "assetRequirements": {
+      "type": "object",
+      "properties": {
+        "formats": {
+          "type": "array",
+          "items": { "type": "string" },
+          "examples": [["mp4", "png", "svg"]]
+        },
+        "maxFileSizeMB": {
+          "type": "integer",
+          "default": 50
+        },
+        "dimensions": {
+          "type": "object",
+          "properties": {
+            "width": { "type": "integer" },
+            "height": { "type": "integer" }
+          }
+        },
+        "durationSeconds": {
+          "type": ["integer", "null"],
+          "description": "For video assets (pre-roll, mid-roll)."
+        }
+      }
+    },
+
+    "analyticsObligations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["impressions", "clicks", "conversions", "watch_time", "ctr"]
+      },
+      "description": "Metrics DFC must report to the sponsor."
+    },
+
+    "performanceSLA": {
+      "type": "object",
+      "properties": {
+        "guaranteedImpressions": {
+          "type": ["integer", "null"]
+        },
+        "guaranteedClicks": {
+          "type": ["integer", "null"]
+        },
+        "refundPolicy": {
+          "type": "string",
+          "enum": ["full_refund", "bonus_credits", "pro_rata", "none"],
+          "default": "bonus_credits"
+        },
+        "reportingWindowHours": {
+          "type": "integer",
+          "default": 48
+        }
+      }
+    },
+
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "sold_out", "archived"],
+      "default": "active"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  },
+
+  "_firestoreCollection": "sponsor_skus",
+  "_firestoreSecurityNotes": [
+    "Read: any authenticated user (catalog browsing).",
+    "Write: admin or sponsor role only.",
+    "Delete: admin only (soft-delete via status: archived preferred).",
+    "Indexes: type + status (composite), sportTypes (array-contains)."
+  ],
+
+  "_sampleDocument": {
+    "skuId": "sku_preroll_30s",
+    "name": "Pre-Roll 30s — Fight Night",
+    "type": "pre_roll",
+    "description": "30-second sponsor video played before main card livestream. Premium placement, guaranteed full-screen.",
+    "priceModel": {
+      "currency": "AUD",
+      "amount": 50000,
+      "billingType": "flat",
+      "revenueSharePercent": null,
+      "platformFeePercent": 25
+    },
+    "deliveryRules": {
+      "maxImpressions": null,
+      "geoTargets": ["AU", "US", "GB"],
+      "sportTypes": ["mma", "boxing", "bkfc"],
+      "eventIds": [],
+      "scheduledStart": "2026-04-01T00:00:00Z",
+      "scheduledEnd": "2026-06-30T23:59:59Z"
+    },
+    "assetRequirements": {
+      "formats": ["mp4"],
+      "maxFileSizeMB": 50,
+      "dimensions": { "width": 1920, "height": 1080 },
+      "durationSeconds": 30
+    },
+    "analyticsObligations": ["impressions", "watch_time", "ctr"],
+    "performanceSLA": {
+      "guaranteedImpressions": 50000,
+      "guaranteedClicks": null,
+      "refundPolicy": "bonus_credits",
+      "reportingWindowHours": 48
+    },
+    "status": "active",
+    "createdAt": "2026-03-28T00:00:00Z",
+    "updatedAt": null
+  }
+}

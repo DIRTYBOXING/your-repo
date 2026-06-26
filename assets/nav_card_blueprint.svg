@@ -1,0 +1,28 @@
+<svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081A2F"/>
+      <stop offset="1" stop-color="#04111F"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="180" x2="1200" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2FC4F2" stop-opacity="0.2"/>
+      <stop offset="0.5" stop-color="#7CEBFF"/>
+      <stop offset="1" stop-color="#2FC4F2" stop-opacity="0.2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="360" rx="24" fill="url(#bg)"/>
+  <rect x="12" y="12" width="1176" height="336" rx="18" stroke="#4CCDF7" stroke-opacity="0.5" stroke-width="2"/>
+  <path d="M48 180H1152" stroke="url(#line)" stroke-width="2"/>
+  <rect x="82" y="86" width="300" height="188" rx="12" stroke="#58D7FF" stroke-opacity="0.7"/>
+  <text x="104" y="132" font-family="Segoe UI, Arial, sans-serif" font-size="34" fill="#E8FBFF" font-weight="700">DFC</text>
+  <text x="104" y="172" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#B3E6F5">Promoter + Community</text>
+  <text x="104" y="208" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#B3E6F5">Master Blueprint</text>
+  <text x="104" y="246" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#8BCFE3">Visual map for partners, campaigns, and operations</text>
+  <rect x="474" y="76" width="644" height="210" rx="16" stroke="#58D7FF" stroke-opacity="0.6"/>
+  <text x="506" y="126" font-family="Segoe UI, Arial, sans-serif" font-size="28" fill="#E8FBFF" font-weight="700">What this card opens</text>
+  <text x="506" y="166" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#A8DDED">• Platform blueprint canvas (hero, core, outcomes)</text>
+  <text x="506" y="196" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#A8DDED">• Engineering print/export variant</text>
+  <text x="506" y="226" font-family="Segoe UI, Arial, sans-serif" font-size="22" fill="#A8DDED">• Campaign mission integration for John handoff</text>
+  <rect x="506" y="246" width="372" height="30" rx="8" fill="#61DEFF" fill-opacity="0.16" stroke="#61DEFF"/>
+  <text x="522" y="267" font-family="Segoe UI, Arial, sans-serif" font-size="18" fill="#DFF8FF" font-weight="700">Open /blueprint.html</text>
+</svg>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pilot Spec — Data Fight Central</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      @media print {
+        body {
+          font-size: 11pt;
+          color: #000;
+        }
+        .no-print {
+          display: none;
+        }
+      }
+      body {
+        font-family: "Georgia", serif;
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        line-height: 1.7;
+        color: #222;
+      }
+      h1 {
+        font-size: 1.6rem;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin-top: 2rem;
+        color: #333;
+      }
+      .field {
+        border-bottom: 1px solid #999;
+        display: inline-block;
+        min-width: 200px;
+        margin: 0 0.25rem;
+      }
+      .btn-print {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background: #00d9ff;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 2rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.5rem;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        font-weight: 600;
+        width: 35%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="no-print" style="text-align: center">
+      <button class="btn-print" onclick="window.print()">
+        Print / Save as PDF
+      </button>
+      <a
+        class="btn-print"
+        href="/promoters.html"
+        style="
+          text-decoration: none;
+          margin-left: 0.5rem;
+          background: #555;
+          color: #fff;
+        "
+        >Back to Promoter Hub</a
+      >
+    </div>
+
+    <h1>PILOT SPEC — DATA FIGHT CENTRAL</h1>
+
+    <table>
+      <tr>
+        <th>Event</th>
+        <td><span class="field"></span></td>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td><span class="field"></span></td>
+      </tr>
+      <tr>
+        <th>Promoter</th>
+        <td><span class="field"></span></td>
+      </tr>
+      <tr>
+        <th>Scope</th>
+        <td>Live PPV broadcast + 30-day VOD highlights package</td>
+      </tr>
+      <tr>
+        <th>Territory</th>
+        <td><span class="field" style="min-width: 250px"></span></td>
+      </tr>
+      <tr>
+        <th>Commercial</th>
+        <td>
+          Promoter 60% / DFC 40% after fees; alternative: guaranteed fee +
+          revenue share
+        </td>
+      </tr>
+    </table>
+
+    <h2>DFC Deliverables</h2>
+    <ul>
+      <li>Multi-camera production support</li>
+      <li>Live encoding and CDN delivery</li>
+      <li>DRM-protected player integration</li>
+      <li>Paywall and PPV checkout</li>
+      <li>Sponsor inventory and ad insertion (if agreed)</li>
+      <li>Daily reporting and final settlement</li>
+      <li>Anti-piracy enforcement</li>
+    </ul>
+
+    <h2>Promoter Deliverables</h2>
+    <ul>
+      <li>Clean feed (SDI/RTMP/HLS) delivered to agreed ingest endpoint</li>
+      <li>Fighter releases and music/sponsor clearances</li>
+      <li>Logos and on-screen graphics assets</li>
+      <li>Point of contact for production and rights</li>
+    </ul>
+
+    <h2>Technical Requirements</h2>
+    <ul>
+      <li>Clean feed specs provided to DFC production team</li>
+      <li>Test window 48–72 hours pre-event</li>
+      <li>DRM and watermarking enabled on all streams</li>
+      <li>Geoblocking per licence territory</li>
+      <li>Minimum upload/encoder redundancy</li>
+    </ul>
+
+    <h2>Timeline</h2>
+    <table>
+      <tr>
+        <th>Licence signed</th>
+        <td>At least 14 days before event</td>
+      </tr>
+      <tr>
+        <th>Technical test</th>
+        <td>72 hours before event</td>
+      </tr>
+      <tr>
+        <th>Final run-through</th>
+        <td>24 hours before event</td>
+      </tr>
+    </table>
+
+    <h2>Payments</h2>
+    <ul>
+      <li>Promoter onboards to Stripe Connect (Express account)</li>
+      <li>Automatic promoter payouts — DFC does not hold funds</li>
+      <li>Reserve for chargebacks: 7–14 days</li>
+      <li>Final settlement within 30 days of event</li>
+    </ul>
+
+    <h2>Anti-Piracy</h2>
+    <ul>
+      <li>Server-side forensic watermarking enabled on all streams</li>
+      <li>Monitoring and takedown workflow active during and after event</li>
+      <li>Named legal contact for takedowns: info@datafightcentral.com</li>
+    </ul>
+
+    <h2>Acceptance Criteria</h2>
+    <ul>
+      <li>Delivery quality (uptime, bitrate stability, DRM compliance)</li>
+      <li>Conversion metrics (views to purchases)</li>
+      <li>Timely settlement (within 30 days)</li>
+      <li>Post-event report delivered within 7 days</li>
+    </ul>
+
+    <p style="margin-top: 2rem; font-size: 0.9rem">
+      <strong>Contact:</strong> DFC Founder — Founder, Data Fight Central |
+      info@datafightcentral.com | 0450 113 139
+    </p>
+  </body>
+</html>

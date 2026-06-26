@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFC PPV Hero + Livefeed Card</title>
+    <style>
+      /* ═══════════════════════════════════════════════════════════════════
+   DFC DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════════════ */
+      :root {
+        --dfc-bg: #060a14;
+        --dfc-panel: #0c1226;
+        --dfc-card: #131830;
+        --dfc-surface: #1a2235;
+        --dfc-border: #1d2b4f;
+        --dfc-cyan: #00fff0;
+        --dfc-red: #ff2d55;
+        --dfc-gold: #ffca28;
+        --dfc-orange: #ff9800;
+        --dfc-green: #00ff9d;
+        --dfc-text: #eaf2ff;
+        --dfc-text2: #9aa7c0;
+        --dfc-text3: #566380;
+        --dfc-radius: 14px;
+        --dfc-font:
+          "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--dfc-bg);
+        font-family: var(--dfc-font);
+        color: var(--dfc-text);
+      }
+
+      /* ═══════════════════════════════════════════════════════════════════
+   PPV HERO BANNER
+   Drop-in: replace bg image URL, event title, main event, price.
+   ═══════════════════════════════════════════════════════════════════ */
+      .ppv-hero {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 24px auto;
+        border-radius: var(--dfc-radius);
+        overflow: hidden;
+        border: 1.5px solid rgba(255, 45, 85, 0.5);
+        box-shadow: 0 0 30px rgba(255, 45, 85, 0.15);
+      }
+      .ppv-hero__bg {
+        width: 100%;
+        height: 340px;
+        background: linear-gradient(
+          135deg,
+          #8b0000 0%,
+          #ff4500 50%,
+          #1a1a2e 100%
+        );
+        background-size: cover;
+        background-position: center;
+        position: relative;
+      }
+      .ppv-hero__bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(6, 10, 20, 0.95) 100%
+        );
+      }
+      .ppv-hero__badge {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        z-index: 2;
+        background: var(--dfc-red);
+        color: #fff;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .ppv-hero__price {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 2;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 202, 40, 0.5);
+        color: var(--dfc-gold);
+        padding: 6px 16px;
+        border-radius: 24px;
+        font-size: 18px;
+        font-weight: 900;
+      }
+      .ppv-hero__content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
+        padding: 24px;
+      }
+      .ppv-hero__title {
+        font-size: 28px;
+        font-weight: 900;
+        line-height: 1.15;
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+        margin-bottom: 8px;
+      }
+      .ppv-hero__main-event {
+        font-size: 15px;
+        color: var(--dfc-text2);
+        margin-bottom: 16px;
+      }
+      .ppv-hero__cta {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff0000, #ff6d00);
+        color: #fff;
+        padding: 12px 32px;
+        border-radius: 24px;
+        font-weight: 900;
+        font-size: 14px;
+        letter-spacing: 0.8px;
+        text-decoration: none;
+        box-shadow: 0 0 20px rgba(255, 45, 85, 0.4);
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s;
+      }
+      .ppv-hero__cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(255, 45, 85, 0.6);
+      }
+
+      /* Undercard list */
+      .ppv-hero__undercard {
+        list-style: none;
+        padding: 16px 24px;
+        background: var(--dfc-card);
+      }
+      .ppv-hero__undercard li {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--dfc-border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--dfc-text2);
+      }
+      .ppv-hero__undercard li:last-child {
+        border-bottom: none;
+      }
+      .ppv-hero__undercard li::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--dfc-cyan);
+        flex-shrink: 0;
+      }
+
+      /* ═══════════════════════════════════════════════════════════════════
+   LIVEFEED CARD — Real-time fight update
+   Drop-in: wire WebSocket data into .livefeed__body + .livefeed__meta
+   ═══════════════════════════════════════════════════════════════════ */
+      .livefeed {
+        max-width: 800px;
+        margin: 24px auto;
+      }
+      .livefeed__header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: var(--dfc-panel);
+        border-radius: var(--dfc-radius) var(--dfc-radius) 0 0;
+        border: 1px solid var(--dfc-border);
+        border-bottom: none;
+      }
+      .livefeed__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--dfc-red);
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+      .livefeed__label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        color: var(--dfc-red);
+        text-transform: uppercase;
+      }
+      .livefeed__event-name {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--dfc-text3);
+      }
+
+      /* Individual update cards */
+      .livefeed__card {
+        background: var(--dfc-card);
+        border: 1px solid var(--dfc-border);
+        border-bottom: none;
+        padding: 16px;
+        display: flex;
+        gap: 14px;
+        transition: background 0.3s;
+      }
+      .livefeed__card:last-child {
+        border-bottom: 1px solid var(--dfc-border);
+        border-radius: 0 0 var(--dfc-radius) var(--dfc-radius);
+      }
+      .livefeed__card--new {
+        background: rgba(0, 255, 240, 0.04);
+        border-left: 3px solid var(--dfc-cyan);
+      }
+      .livefeed__card--result {
+        background: rgba(255, 45, 85, 0.06);
+        border-left: 3px solid var(--dfc-red);
+      }
+
+      .livefeed__icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .livefeed__icon--round {
+        background: rgba(0, 255, 240, 0.12);
+      }
+      .livefeed__icon--result {
+        background: rgba(255, 45, 85, 0.15);
+      }
+      .livefeed__icon--stats {
+        background: rgba(255, 152, 0, 0.12);
+      }
+      .livefeed__icon--quote {
+        background: rgba(0, 255, 157, 0.12);
+      }
+
+      .livefeed__body {
+        flex: 1;
+      }
+      .livefeed__type {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--dfc-cyan);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .livefeed__text {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--dfc-text);
+      }
+      .livefeed__meta {
+        font-size: 11px;
+        color: var(--dfc-text3);
+        margin-top: 6px;
+      }
+
+      /* ═══════════════════════════════════════════════════════════════════
+   SOCIAL SHARE CARD — OG/Twitter-sized promo
+   Drop-in: 1200×630 aspect, used for link previews and ads
+   ═══════════════════════════════════════════════════════════════════ */
+      .social-card {
+        max-width: 600px;
+        margin: 24px auto;
+        border-radius: var(--dfc-radius);
+        overflow: hidden;
+        border: 1px solid var(--dfc-border);
+        aspect-ratio: 1200/630;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          #0a0a0a 0%,
+          #1a1a2e 50%,
+          #0a0a0a 100%
+        );
+      }
+      .social-card__bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: brightness(0.4);
+      }
+      .social-card__content {
+        position: relative;
+        z-index: 2;
+        padding: 32px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .social-card__tag {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: var(--dfc-cyan);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .social-card__headline {
+        font-size: 24px;
+        font-weight: 900;
+        line-height: 1.2;
+        margin-bottom: 12px;
+      }
+      .social-card__sub {
+        font-size: 13px;
+        color: var(--dfc-text2);
+        margin-bottom: 16px;
+      }
+      .social-card__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .social-card__brand {
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: var(--dfc-cyan);
+        opacity: 0.7;
+      }
+      .social-card__cta {
+        background: var(--dfc-red);
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+      }
+
+      /* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════ */
+      @media (max-width: 640px) {
+        .ppv-hero__bg {
+          height: 240px;
+        }
+        .ppv-hero__title {
+          font-size: 20px;
+        }
+        .ppv-hero__cta {
+          padding: 10px 24px;
+          font-size: 12px;
+        }
+        .social-card__headline {
+          font-size: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═════════════════════════════════════════════════════════════════
+     1. PPV HERO BANNER
+     Replace: background-image URL, title, main event, price, undercard
+     ═════════════════════════════════════════════════════════════════ -->
+    <div class="ppv-hero">
+      <div
+        class="ppv-hero__bg"
+        style="
+          background-image: url(&quot;https://storage.googleapis.com/datafightcentral.appspot.com/events/hero.jpg&quot;);
+        "
+      >
+        <span class="ppv-hero__badge">&#x1F4FA; LIVE PPV</span>
+        <span class="ppv-hero__price">$29.99</span>
+        <div class="ppv-hero__content">
+          <h1 class="ppv-hero__title">IBC CHAMPIONSHIPS IV</h1>
+          <p class="ppv-hero__main-event">
+            Isaac Hardman vs TBA &mdash; Main Event &bull; May 2026 &bull; Gold
+            Coast, AU
+          </p>
+          <a href="/ppv/ibc-4/checkout" class="ppv-hero__cta"
+            >BUY NOW &mdash; WATCH LIVE</a
+          >
+        </div>
+      </div>
+      <ul class="ppv-hero__undercard">
+        <li>Danny Mac Celebrity Brawl &mdash; Co-Main</li>
+        <li>Lightweight Brawling Final &mdash; 3 Rounds</li>
+        <li>Women&rsquo;s Open Weight &mdash; Debut</li>
+        <li>48hr replay included with purchase</li>
+      </ul>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+     2. LIVEFEED CARD — WebSocket-powered real-time updates
+     Wire: connect to ws://live-publisher:4003/ws/live?eventId=EVENT_ID
+     Each message → prepend a new .livefeed__card
+     ═════════════════════════════════════════════════════════════════ -->
+    <div class="livefeed">
+      <div class="livefeed__header">
+        <span class="livefeed__dot"></span>
+        <span class="livefeed__label">Live Feed</span>
+        <span class="livefeed__event-name">IBC Championships IV</span>
+      </div>
+
+      <!-- Result card (latest) -->
+      <div class="livefeed__card livefeed__card--result">
+        <div class="livefeed__icon livefeed__icon--result">&#x1F3C6;</div>
+        <div class="livefeed__body">
+          <div class="livefeed__type" style="color: var(--dfc-red)">Result</div>
+          <div class="livefeed__text">
+            <strong>Isaac Hardman</strong> defeats Jonathan Tuhu via TKO &mdash;
+            Round 4 (2:47)
+          </div>
+          <div class="livefeed__meta">Main Event &bull; 2 minutes ago</div>
+        </div>
+      </div>
+
+      <!-- Round update card -->
+      <div class="livefeed__card livefeed__card--new">
+        <div class="livefeed__icon livefeed__icon--round">&#x1F94A;</div>
+        <div class="livefeed__body">
+          <div class="livefeed__type">Round 4 Update</div>
+          <div class="livefeed__text">
+            Hardman lands a devastating right hook that drops Tuhu. Referee
+            steps in after follow-up ground and pound.
+          </div>
+          <div class="livefeed__meta">Round 4 of 5 &bull; 4 minutes ago</div>
+        </div>
+      </div>
+
+      <!-- Stats card -->
+      <div class="livefeed__card">
+        <div class="livefeed__icon livefeed__icon--stats">&#x1F4CA;</div>
+        <div class="livefeed__body">
+          <div class="livefeed__type" style="color: var(--dfc-orange)">
+            Fight Stats
+          </div>
+          <div class="livefeed__text">
+            Hardman: 87 strikes landed (62%) | Tuhu: 54 strikes landed (41%) |
+            Clinch control: Hardman 3:12
+          </div>
+          <div class="livefeed__meta">After Round 3 &bull; 8 minutes ago</div>
+        </div>
+      </div>
+
+      <!-- Quote card -->
+      <div class="livefeed__card">
+        <div class="livefeed__icon livefeed__icon--quote">&#x1F4AC;</div>
+        <div class="livefeed__body">
+          <div class="livefeed__type" style="color: var(--dfc-green)">
+            Corner Audio
+          </div>
+          <div class="livefeed__text">
+            &ldquo;You&rsquo;re winning every round. Stay behind the jab and let
+            the right hand go when he reaches.&rdquo;
+          </div>
+          <div class="livefeed__meta">
+            Hardman&rsquo;s corner &bull; 12 minutes ago
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+     3. SOCIAL SHARE CARD — OG/Twitter preview
+     Export as image (html2canvas) or use as link preview template
+     ═════════════════════════════════════════════════════════════════ -->
+    <div class="social-card">
+      <div
+        class="social-card__bg"
+        style="
+          background-image: url(&quot;https://storage.googleapis.com/datafightcentral.appspot.com/events/hero.jpg&quot;);
+        "
+      ></div>
+      <div class="social-card__content">
+        <div class="social-card__tag">LIVE PPV &bull; MAY 2026</div>
+        <h2 class="social-card__headline">
+          IBC Championships IV &mdash; Hardman vs TBA
+        </h2>
+        <p class="social-card__sub">
+          Gold Coast, Australia &bull; $29.99 &bull; 48hr replay included
+        </p>
+        <div class="social-card__footer">
+          <span class="social-card__brand">DATAFIGHTCENTRAL.COM</span>
+          <span class="social-card__cta">ORDER NOW</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═════════════════════════════════════════════════════════════════
+     LIVEFEED WEBSOCKET WIRING (production)
+     ═════════════════════════════════════════════════════════════════ -->
+    <script>
+      (function () {
+        const EVENT_ID = "ibc-4"; // Replace with dynamic event ID
+        const WS_URL = `wss://live-publisher.datafightcentral.com/ws/live?eventId=${EVENT_ID}`;
+        const feedContainer = document.querySelector(".livefeed");
+        const header = document.querySelector(".livefeed__header");
+
+        const ICONS = {
+          round_update: { emoji: "\u{1F94A}", cls: "round" },
+          result: { emoji: "\u{1F3C6}", cls: "result" },
+          stats: { emoji: "\u{1F4CA}", cls: "stats" },
+          quote: { emoji: "\u{1F4AC}", cls: "quote" },
+          breaking: { emoji: "\u{1F6A8}", cls: "result" },
+          walkout: { emoji: "\u{1F3B6}", cls: "round" },
+          highlight: { emoji: "\u{1F525}", cls: "result" },
+          prediction: { emoji: "\u{1F916}", cls: "stats" },
+          ppv_promo: { emoji: "\u{1F4FA}", cls: "round" },
+        };
+
+        function createCard(data) {
+          const icon = ICONS[data.type] || { emoji: "\u{1F4E2}", cls: "round" };
+          const isResult = data.type === "result";
+          const card = document.createElement("div");
+          card.className = `livefeed__card livefeed__card--new${isResult ? " livefeed__card--result" : ""}`;
+          card.innerHTML = `
+      <div class="livefeed__icon livefeed__icon--${icon.cls}">${icon.emoji}</div>
+      <div class="livefeed__body">
+        <div class="livefeed__type"${isResult ? ' style="color: var(--dfc-red);"' : ""}>${(data.type || "update").replace(/_/g, " ")}</div>
+        <div class="livefeed__text">${escapeHtml(data.content || "")}</div>
+        <div class="livefeed__meta">${escapeHtml(data.meta || "")} &bull; just now</div>
+      </div>
+    `;
+          return card;
+        }
+
+        function escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        function connect() {
+          const ws = new WebSocket(WS_URL);
+          ws.onmessage = (e) => {
+            try {
+              const data = JSON.parse(e.data);
+              const card = createCard(data);
+              header.insertAdjacentElement("afterend", card);
+              // Remove "new" highlight after 5s
+              setTimeout(
+                () => card.classList.remove("livefeed__card--new"),
+                5000,
+              );
+            } catch (err) {
+              console.error("[DFC Livefeed] Parse error:", err);
+            }
+          };
+          ws.onclose = () => setTimeout(connect, 3000); // Auto-reconnect
+          ws.onerror = () => ws.close();
+        }
+
+        if (typeof WebSocket !== "undefined") connect();
+      })();
+    </script>
+  </body>
+</html>

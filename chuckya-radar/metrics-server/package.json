@@ -1,0 +1,14 @@
+{
+  "name": "chuckya-metrics-server",
+  "version": "1.0.0",
+  "description": "DFC CHUCKYA Prometheus metrics exporter for Grafana dashboards",
+  "main": "metrics.js",
+  "private": true,
+  "scripts": {
+    "start": "node metrics.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "prom-client": "^15.1.0"
+  }
+}

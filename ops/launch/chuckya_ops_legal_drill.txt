@@ -1,0 +1,260 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — 30-MINUTE OPS + LEGAL DRILL SCRIPT                 ║
+║  Rehearse the full detection → export → police handover flow   ║
+║  Run tonight with Ops, Legal, and venue staff                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+PARTICIPANTS
+═══════════════════════════════════════════════════════════════════
+
+  Role            Name              Contact
+  ──────────────  ────────────────  ────────────────
+  Ops Lead        ________________  ________________
+  Legal Lead      ________________  ________________
+  Tech Lead       ________________  ________________
+  Venue Security  ________________  ________________
+  Police Liaison  ________________  ________________ (on call)
+
+EQUIPMENT NEEDED
+═══════════════════════════════════════════════════════════════════
+
+  [ ] 1 laptop with Docker Compose stack running
+  [ ] 1 phone with CHUCKYA app, paired to bracelet
+  [ ] 1 CHUCKYA bracelet, charged >80%
+  [ ] Control room dashboard open in browser
+  [ ] Printed copy of this drill script
+  [ ] Printed operator badge card
+  [ ] Stopwatch or phone timer
+  [ ] Notepad for observations
+
+PRE-DRILL CHECKS (5 minutes before start)
+═══════════════════════════════════════════════════════════════════
+
+  [ ] All services healthy: curl http://localhost:8081/healthz → 200
+  [ ] Bracelet paired and showing in app
+  [ ] Control room dashboard loads and shows map
+  [ ] WS subscription active (check browser console for "connected")
+  [ ] Legal lead present and ready
+  [ ] Stopwatch ready
+
+═══════════════════════════════════════════════════════════════════
+PHASE 1: BRIEFING (0:00 - 0:05)  5 MINUTES
+═══════════════════════════════════════════════════════════════════
+
+  Ops Lead reads aloud:
+
+  "We are rehearsing the CHUCKYA detection and response flow.
+   This is a tabletop drill. No real threat exists.
+
+   Scenario: A bracelet wearer presses their panic button.
+   We will walk through every step from detection to police
+   handover. Each person will perform their role as if this
+   were a real event.
+
+   Timeline:
+   - Phase 2: Detection and triage (5 min)
+   - Phase 3: Local response (5 min)
+   - Phase 4: Evidence export and approval (10 min)
+   - Phase 5: Police handover simulation (5 min)
+
+   Any questions before we start?"
+
+  [ ] All participants confirm understanding
+
+═══════════════════════════════════════════════════════════════════
+PHASE 2: DETECTION AND TRIAGE (0:05 - 0:10)  5 MINUTES
+═══════════════════════════════════════════════════════════════════
+
+  ACTION: Tech Lead presses bracelet panic button.
+  START STOPWATCH NOW.
+
+  Observe and record:
+
+  [ ] Bracelet vibrates/LED within 200ms
+      Observed: YES / NO  Time: ________
+
+  [ ] Phone shows alert UI within 1 second
+      Observed: YES / NO  Time: ________
+
+  [ ] Control room dashboard shows alert on map
+      Observed: YES / NO  Time: ________
+
+  [ ] Total latency (button press → control room): ________ seconds
+
+  Ops Lead reviews alert details on control room:
+  [ ] Alert ID visible: ________
+  [ ] Mode displayed: code_black / code_red / amber
+  [ ] Distance reading: ________ m
+  [ ] Direction reading: ________ degrees
+  [ ] Confidence/risk score: ________
+
+  Ops Lead decision:
+  [ ] "CONFIRMED — proceed to local response"
+  OR
+  [ ] "FALSE POSITIVE — stand down" (if so, skip to Phase 5 debrief)
+
+═══════════════════════════════════════════════════════════════════
+PHASE 3: LOCAL RESPONSE (0:10 - 0:15)  5 MINUTES
+═══════════════════════════════════════════════════════════════════
+
+  Ops Lead directs response:
+
+  Step 1: Silent guidance to wearer
+  [ ] "Phone displays escape vector and nearest safe exit"
+      Simulated: describe what wearer would see
+      __________________________________________________
+
+  Step 2: Staff deployment
+  [ ] Ops Lead to Venue Security: "Move to sector ___,
+      assist person with bracelet, clear escape path"
+  [ ] Venue Security acknowledges: YES / NO  Time: ________
+
+  Step 3: Escalation assessment
+  [ ] Is threat imminent? (simulated: YES for drill)
+  [ ] Ops Lead declares: "CODE BLACK — requesting evidence export
+      and preparing for police notification"
+
+  Record:
+  Time from detection to escalation decision: ________ seconds
+
+═══════════════════════════════════════════════════════════════════
+PHASE 4: EVIDENCE EXPORT AND APPROVAL (0:15 - 0:25)  10 MINUTES
+═══════════════════════════════════════════════════════════════════
+
+  Step 1: Ops requests export
+  ─────────────────────────────────────────────────────────────────
+  [ ] Ops Lead: "Requesting export for alert <ALERT_ID>"
+  [ ] Tech Lead runs export command:
+
+      curl -X POST "http://localhost:8081/v1/radar/alerts/<ALERT_ID>/export" \
+        -o evidence.zip
+
+  [ ] evidence.zip downloaded: YES / NO
+
+  Step 2: Legal review and approval (TWO-PERSON RULE)
+  ─────────────────────────────────────────────────────────────────
+  [ ] Ops Lead presents request to Legal Lead:
+      "I am requesting export of evidence for alert <ALERT_ID>.
+       The alert was triggered by a panic button at <time>.
+       I believe this constitutes a genuine threat requiring
+       police involvement."
+
+  [ ] Legal Lead reviews:
+      - What data is included? (distance, direction, consent flags)
+      - Is GPS/IMEI included? (should be NO unless consented)
+      - Is the request proportionate?
+
+  [ ] Legal Lead decision:
+      [ ] APPROVED — "Export approved. Proceed with verification."
+      [ ] DENIED — "More information needed" (state reason: _________)
+
+  [ ] Approval timestamp recorded: ________
+  [ ] Both names recorded in chain_of_custody:
+      Requestor: ________________
+      Approver:  ________________
+
+  Step 3: Verify evidence integrity
+  ─────────────────────────────────────────────────────────────────
+  [ ] Tech Lead unzips and verifies:
+
+      unzip evidence.zip -d evidence
+      jq -S . evidence/payload.json > evidence/payload.canon
+      openssl dgst -sha256 evidence/payload.canon
+
+  [ ] payload.json present: YES / NO
+  [ ] signed_payload.json present: YES / NO
+  [ ] chain_of_custody.json present: YES / NO
+  [ ] consent record present: YES / NO
+  [ ] SHA256 computed: ________
+
+  [ ] If public.pem available, verify signature:
+      jq -r '.signatureBase64' evidence/signed_payload.json | base64 -d > sig.bin
+      openssl dgst -sha256 -verify public.pem -signature sig.bin evidence/payload.canon
+
+  [ ] Signature: VERIFIED / FAILED
+
+  Time for full export + approval + verification: ________ minutes
+
+═══════════════════════════════════════════════════════════════════
+PHASE 5: POLICE HANDOVER SIMULATION (0:25 - 0:30)  5 MINUTES
+═══════════════════════════════════════════════════════════════════
+
+  Ops Lead simulates call to police liaison:
+
+  "This is [name] from [organization], CHUCKYA Event Ops.
+   We have a detection event at [venue] at [time].
+   A bracelet wearer pressed their panic button.
+   We have a signed evidence package ready for handover.
+
+   The package includes:
+   - Proximity data (distance and direction only — no GPS/IMEI)
+   - Digitally signed payload with SHA256 verification
+   - Chain of custody manifest with approval timestamps
+   - Verification instructions
+
+   We can provide the evidence zip and our public key for
+   independent verification. How would you like to receive it?"
+
+  [ ] Simulated handover completed: YES / NO
+
+  What to hand over:
+  [ ] evidence.zip file
+  [ ] public.pem (for independent verification)
+  [ ] Printed verification steps (from verification_cli_reference.txt)
+  [ ] Printed police brief (from police_brief_printable.txt)
+
+  What NOT to hand over without additional Legal approval:
+  [ ] GPS coordinates (unless wearer consented)
+  [ ] IMEI data (unless wearer consented)
+  [ ] Raw BLE scan data from other devices
+  [ ] Any data from non-consenting persons
+
+═══════════════════════════════════════════════════════════════════
+DEBRIEF (after drill)
+═══════════════════════════════════════════════════════════════════
+
+  Review together. Each person answers:
+
+  1. What worked well?
+  Ops:    ________________________________________________
+  Legal:  ________________________________________________
+  Tech:   ________________________________________________
+  Venue:  ________________________________________________
+
+  2. What was confusing or slow?
+  Ops:    ________________________________________________
+  Legal:  ________________________________________________
+  Tech:   ________________________________________________
+  Venue:  ________________________________________________
+
+  3. What needs to change before real deployment?
+  ________________________________________________________
+  ________________________________________________________
+  ________________________________________________________
+
+  KEY METRICS FROM DRILL
+  ─────────────────────────────────────────────────────────────────
+  Detection latency (button → control room):    ________ seconds
+  Escalation decision time:                      ________ seconds
+  Export + approval + verification time:         ________ minutes
+  Total drill time:                              ________ minutes
+
+  ISSUES TO FIX BEFORE PILOT
+  ─────────────────────────────────────────────────────────────────
+  1. ______________________________________________________
+  2. ______________________________________________________
+  3. ______________________________________________________
+
+  SIGN-OFF
+  ─────────────────────────────────────────────────────────────────
+  Drill completed:  YES / NO
+  Date: ________  Time: ________
+
+  Ops Lead:        ________________  Signature: ________________
+  Legal Lead:      ________________  Signature: ________________
+  Tech Lead:       ________________  Signature: ________________
+  Venue Security:  ________________  Signature: ________________
+
+═══════════════════════════════════════════════════════════════════
+NEXT DRILL SCHEDULED: ________________
+═══════════════════════════════════════════════════════════════════

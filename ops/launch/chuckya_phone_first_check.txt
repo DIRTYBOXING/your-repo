@@ -1,0 +1,205 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — PHONE-FIRST CHECK PLAN                              ║
+║  Validate core abilities with a phone and a laptop              ║
+║  No legal device settings changes · No extra PII collection     ║
+╚══════════════════════════════════════════════════════════════════╝
+
+What this proves:
+  1. BLE discovery and pairing
+  2. Telemetry delivery (bracelet → phone CBOR < 1s)
+  3. Phone signing (canonical + keystore)
+  4. Upload and ingest (signed POST → alertId)
+  5. Realtime fanout (WS sub-second)
+  6. Evidence export (zip + signature + SHA256 verify)
+
+═══════════════════════════════════════════════════════════════════
+PHASE 1 — PHONE PERMISSIONS AND PAIRING
+═══════════════════════════════════════════════════════════════════
+
+  Step 1: Enable Bluetooth and Location
+  ─────────────────────────────────────────────────────────────────
+  [ ] Bluetooth ON
+  [ ] Location ON
+  [ ] Leave phone's normal privacy settings unchanged
+  [ ] On Android API 31+: accept BLUETOOTH_SCAN prompt
+  [ ] On Android API 31+: accept BLUETOOTH_CONNECT prompt
+  [ ] On Android API 31+: accept NEARBY_DEVICES prompt
+  [ ] If scan derives location: accept ACCESS_FINE_LOCATION prompt
+      (do NOT change global settings — consent to app prompt only)
+
+  Step 2: Pair and bond
+  ─────────────────────────────────────────────────────────────────
+  [ ] Open CHUCKYA app → Pair Bracelet → Scan
+  [ ] Bracelet appears as "CHUCKYA-<id>"
+  [ ] Numeric comparison code matches on bracelet and phone
+  [ ] Accept bond
+  [ ] App shows bracelet as "Paired"
+  [ ] Battery level displayed
+      PASS: ________  FAIL: ________  Notes: ________________
+
+═══════════════════════════════════════════════════════════════════
+PHASE 2 — RAW TELEMETRY DELIVERY
+═══════════════════════════════════════════════════════════════════
+
+  Step 3: Trigger panic and verify reception
+  ─────────────────────────────────────────────────────────────────
+  [ ] Press bracelet panic button
+  [ ] Bracelet vibrates / LED flash within 200ms
+  [ ] Phone alert UI appears within ~1 second
+  [ ] adb logcat shows decoded CBOR event:
+        id:  ________
+        ts:  ________
+        nid: ________
+        d:   ________ (distance meters)
+        dir: ________ (direction degrees)
+        sig: panic
+      PASS: ________  FAIL: ________  Notes: ________________
+
+  Logcat filter command:
+    adb logcat -s com.dfc.chuckya:V
+
+═══════════════════════════════════════════════════════════════════
+PHASE 3 — PHONE SIGNING AND UPLOAD
+═══════════════════════════════════════════════════════════════════
+
+  Step 4: Verify signing flow
+  ─────────────────────────────────────────────────────────────────
+  What the phone must do (automatic):
+    1. Canonicalize event (sorted keys, deterministic JSON)
+    2. Sign canonical bytes with Android Keystore / iOS Secure Enclave
+    3. Attach signatureBase64
+    4. POST to /v1/radar/event
+
+  [ ] Logcat shows "Signing payload" or equivalent
+  [ ] Logcat shows "Upload OK" or HTTP 200/201 response
+  [ ] Backend returns JSON with alertId field
+  [ ] Backend returns status: "ingested"
+      PASS: ________  FAIL: ________  Notes: ________________
+
+  Step 5: Quick test from laptop (if signed payload available)
+  ─────────────────────────────────────────────────────────────────
+  Command:
+    curl -v -X POST "http://localhost:8081/v1/radar/event" \
+      -H "Content-Type: application/json" \
+      -d @tools/signed_payload.json
+
+  [ ] HTTP 200 or 201 returned
+  [ ] Response contains "id" field (alert id)
+  [ ] Response contains "status": "ingested"
+      PASS: ________  FAIL: ________  Notes: ________________
+
+═══════════════════════════════════════════════════════════════════
+PHASE 4 — BACKEND INGEST AND REALTIME FANOUT
+═══════════════════════════════════════════════════════════════════
+
+  Step 6: Verify audit artifacts
+  ─────────────────────────────────────────────────────────────────
+  [ ] payload.json written to audit folder
+  [ ] signed_payload.json written to audit folder
+  [ ] chain_of_custody.json written to audit folder
+  [ ] chain_of_custody.json contains SHA256 for each artifact
+  [ ] chain_of_custody.json contains approval metadata (empty until export)
+      PASS: ________  FAIL: ________  Notes: ________________
+
+  Step 7: Verify WebSocket broadcast
+  ─────────────────────────────────────────────────────────────────
+  Pre-requisite: control room client subscribed to region/cell.
+
+  Publish test alert from admin endpoint:
+    curl -X POST "http://localhost:8080/publish" \
+      -H "Authorization: Bearer <ADMIN_TOKEN>" \
+      -d '{"region":"brisbane","payload":{"alertId":"TEST-1","ts":"2026-03-28T00:00:00Z","lat":-27.47,"lng":153.02}}'
+
+  [ ] Subscribed WS client receives alert
+  [ ] Delivery latency < 1 second (sub-second)
+  [ ] Alert appears on control room dashboard map
+  [ ] Threat Radar blip displayed at correct proximity
+      PASS: ________  FAIL: ________  Notes: ________________
+
+═══════════════════════════════════════════════════════════════════
+PHASE 5 — EVIDENCE EXPORT AND VERIFICATION
+═══════════════════════════════════════════════════════════════════
+
+  Step 8: Export evidence zip
+  ─────────────────────────────────────────────────────────────────
+  Command:
+    curl -X POST "http://localhost:8081/v1/radar/alerts/<ALERT_ID>/export" \
+      -o evidence.zip
+    unzip evidence.zip -d evidence
+
+  [ ] evidence.zip downloaded
+  [ ] evidence/ contains payload.json
+  [ ] evidence/ contains signed_payload.json
+  [ ] evidence/ contains consent record
+  [ ] evidence/ contains chain_of_custody.json
+      PASS: ________  FAIL: ________  Notes: ________________
+
+  Step 9: Verify signature and SHA256
+  ─────────────────────────────────────────────────────────────────
+  Commands:
+    jq -S . evidence/payload.json > evidence/payload.canon
+    jq -r '.signatureBase64' evidence/signed_payload.json | base64 -d > evidence/sig.bin
+    openssl dgst -sha256 -verify public.pem -signature evidence/sig.bin evidence/payload.canon
+    openssl dgst -sha256 evidence/payload.canon
+    jq . evidence/chain_of_custody.json
+
+  [ ] "Verified OK" from openssl
+  [ ] SHA256 in manifest matches computed hash
+  [ ] chain_of_custody.json lists all files with correct hashes
+      PASS: ________  FAIL: ________  Notes: ________________
+
+═══════════════════════════════════════════════════════════════════
+ACCEPTANCE CRITERIA — ALL MUST PASS
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Phone discovers and bonds with bracelet
+  [ ] CBOR telemetry arrives on phone within 1s of button press
+  [ ] Phone signs payload and backend returns alertId
+  [ ] Control room receives WS alert sub-second after ingest
+  [ ] Evidence zip verifies: signature passes + SHA256 matches
+
+  Overall Result:  PASS / FAIL
+  Tested by: ________________  Date: ________  Time: ________
+
+═══════════════════════════════════════════════════════════════════
+TROUBLESHOOTING QUICK FIXES
+═══════════════════════════════════════════════════════════════════
+
+  No BLE device found
+  ─────────────────────────────────────────────────────────────────
+  - Ensure bracelet is advertising (LED blinking)
+  - Confirm bracelet battery is charged
+  - Move phone within 2 meters of bracelet
+  - Toggle Bluetooth OFF → ON on phone
+  - Restart phone if bonding cache is corrupted
+  - Test with nRF Connect app to confirm bracelet is visible
+
+  CBOR decode errors
+  ─────────────────────────────────────────────────────────────────
+  - Check MTU negotiation (minimum 23 bytes, prefer 247+)
+  - Verify CBOR encoder on firmware matches schema (integer keys 1-7)
+  - Send known CBOR sample from nRF Connect and verify phone decodes
+  - Check for byte order issues or truncated notifications
+
+  Upload fails
+  ─────────────────────────────────────────────────────────────────
+  - Check backend URL in UploadService.kt (currently: staging.example.com)
+  - Verify TLS certificate is valid
+  - Check CORS headers if testing from browser
+  - Check server logs: docker logs chuckya-radar-api-1
+
+  Signature verification fails
+  ─────────────────────────────────────────────────────────────────
+  - Ensure canonicalization sorts keys identically on phone and verifier
+  - Confirm public.pem matches the phone's keystore key
+  - Verify Base64 encoding is NO_WRAP (no line breaks)
+  - Test with tools/sign_payload.js to generate a known-good payload
+
+  WS clients not receiving
+  ─────────────────────────────────────────────────────────────────
+  - Verify Redis is running: docker exec redis redis-cli PING
+  - Check client subscribed to correct region: region:brisbane
+  - Check WS server logs: docker logs chuckya-ws-server-1
+  - Verify JWT token is valid and not expired
+
+═══════════════════════════════════════════════════════════════════

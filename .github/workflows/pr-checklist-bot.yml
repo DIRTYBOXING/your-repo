@@ -1,0 +1,118 @@
+name: PR checklist bot
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [master]
+
+permissions:
+  pull-requests: write # post/update comments
+  contents: read
+
+jobs:
+  checklist-lint:
+    name: checklist / template compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify PR body and post checklist report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const prNumber = context.payload.pull_request.number;
+
+            // ── Rules ───────────────────────────────────────────────────────
+            const rules = [
+              {
+                id: 'summary',
+                label: 'Summary / Closes # line present',
+                pass: /closes\s+#\d+|summary/i.test(body),
+              },
+              {
+                id: 'type',
+                label: 'Type of change ticked',
+                pass: /- \[x\]/i.test(body),
+              },
+              {
+                id: 'node_check',
+                label: 'Node/TS pre-merge check acknowledged',
+                pass: /npm ci|npm audit|tsc/i.test(body),
+              },
+              {
+                id: 'flutter_check',
+                label: 'Flutter analyze check acknowledged',
+                pass: /flutter analyze/i.test(body),
+              },
+              {
+                id: 'affected',
+                label: 'Affected services ticked',
+                // at least one checkbox in the Affected services section
+                pass: /## Affected services[\s\S]*?- \[x\]/i.test(body),
+              },
+              {
+                id: 'security',
+                label: 'Security notes section present',
+                pass: /## Security notes/i.test(body),
+              },
+            ];
+
+            const passing = rules.filter(r => r.pass);
+            const failing = rules.filter(r => !r.pass);
+            const allPass = failing.length === 0;
+
+            // ── Build comment ───────────────────────────────────────────────
+            const lines = rules.map(r =>
+              `${r.pass ? '✅' : '❌'} **${r.label}**`
+            );
+
+            const header = allPass
+              ? '### ✅ PR checklist — all sections complete'
+              : `### ⚠️ PR checklist — ${failing.length} section(s) need attention`;
+
+            const footer = allPass
+              ? '_All required sections are present. Ready for review._'
+              : [
+                  '_Please update the PR description to include the missing sections._',
+                  '_Use the [PR template](.github/pull_request_template.md) as a guide._',
+                ].join('\n');
+
+            const commentBody = [header, '', ...lines, '', footer].join('\n');
+
+            // ── Find and update existing bot comment or create new one ──────
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const BOT_MARKER = '<!-- dfc-checklist-bot -->';
+            const existing = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes(BOT_MARKER)
+            );
+
+            const fullBody = `${BOT_MARKER}\n${commentBody}`;
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: fullBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: fullBody,
+              });
+            }
+
+            // ── Advisory mode: warn instead of hard-failing the workflow ─
+            if (!allPass) {
+              const missing = failing.map(r => `  • ${r.label}`).join('\n');
+              core.warning(
+                `PR description is missing required sections:\n${missing}\n` +
+                `Update the PR body when ready.`
+              );
+            }

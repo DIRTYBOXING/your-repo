@@ -1,0 +1,1787 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFC Redesign Wireframe — Home + Command Center</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Comic Sans MS", "Chalkboard SE", cursive;
+        background: #f5f5f5;
+        color: #000;
+        padding: 24px;
+      }
+      h1 {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 8px;
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+      }
+      .badge {
+        padding: 2px 7px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: bold;
+        color: #fff;
+      }
+      .badge-reuse {
+        background: #4caf50;
+      }
+      .badge-new {
+        background: #ff9800;
+      }
+      .screens-row {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+
+      /* Phone frame */
+      .phone {
+        width: 320px;
+        border: 3px solid #333;
+        border-radius: 28px;
+        background: #fff;
+        overflow: hidden;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .phone-label {
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+        text-align: center;
+      }
+      .phone-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .phone-notch {
+        width: 80px;
+        height: 10px;
+        background: #333;
+        border-radius: 0 0 8px 8px;
+        margin: 0 auto 4px;
+      }
+
+      /* Status bar */
+      .status-bar {
+        background: #eee;
+        display: flex;
+        justify-content: space-between;
+        padding: 3px 10px;
+        font-size: 9px;
+        color: #555;
+        border-bottom: 1px solid #ccc;
+      }
+
+      /* App Bar */
+      .app-bar {
+        background: #ddd;
+        padding: 8px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1.5px solid #aaa;
+        position: relative;
+      }
+      .app-bar .title {
+        font-size: 13px;
+        font-weight: bold;
+      }
+      .app-bar .icon-btn {
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        background: #bbb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+      }
+
+      /* Tab bar */
+      .tab-bar {
+        background: #eee;
+        display: flex;
+        border-bottom: 1.5px solid #aaa;
+      }
+      .tab-item {
+        flex: 1;
+        padding: 6px 2px;
+        text-align: center;
+        font-size: 9px;
+        border-right: 1px solid #ccc;
+        cursor: pointer;
+      }
+      .tab-item:last-child {
+        border-right: none;
+      }
+      .tab-item.active {
+        background: #fff;
+        font-weight: bold;
+        border-bottom: 2px solid #333;
+      }
+      .tab-item .tab-icon {
+        font-size: 13px;
+        display: block;
+      }
+
+      /* Screen body */
+      .screen-body {
+        padding: 10px;
+        background: #fff;
+        min-height: 480px;
+        overflow: hidden;
+      }
+
+      /* Widgets */
+      .section-label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #777;
+        margin-bottom: 4px;
+      }
+      .card {
+        border: 1.5px solid #aaa;
+        border-radius: 8px;
+        padding: 8px;
+        margin-bottom: 8px;
+        background: #fafafa;
+        position: relative;
+      }
+      .card-title {
+        font-size: 11px;
+        font-weight: bold;
+      }
+      .card-sub {
+        font-size: 9px;
+        color: #666;
+      }
+
+      .greeting-card {
+        background: #f0f0f0;
+        border: 1.5px dashed #999;
+        border-radius: 10px;
+        padding: 10px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+      }
+      .greeting-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #999;
+        background: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+      .greeting-text .name {
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .greeting-text .msg {
+        font-size: 9px;
+        color: #555;
+      }
+
+      /* Readiness gauge */
+      .readiness-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+        align-items: center;
+      }
+      .readiness-circle {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        border: 4px solid #aaa;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: bold;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .metrics-col {
+        flex: 1;
+      }
+      .metric-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 4px;
+      }
+      .metric-label {
+        font-size: 8px;
+        width: 52px;
+        flex-shrink: 0;
+      }
+      .metric-bar {
+        flex: 1;
+        height: 5px;
+        background: #ddd;
+        border-radius: 3px;
+      }
+      .metric-bar-fill {
+        height: 5px;
+        background: #999;
+        border-radius: 3px;
+      }
+      .metric-val {
+        font-size: 8px;
+        width: 32px;
+        text-align: right;
+      }
+
+      /* Quick actions */
+      .quick-actions {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        margin-bottom: 8px;
+        padding-bottom: 2px;
+      }
+      .quick-action-btn {
+        flex-shrink: 0;
+        width: 62px;
+        border: 1.5px solid #aaa;
+        border-radius: 10px;
+        padding: 7px 4px;
+        text-align: center;
+        background: #f5f5f5;
+        position: relative;
+      }
+      .quick-action-btn .qa-icon {
+        font-size: 16px;
+        display: block;
+      }
+      .quick-action-btn .qa-label {
+        font-size: 7px;
+        color: #555;
+        margin-top: 3px;
+        display: block;
+      }
+
+      /* Section header */
+      .sec-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 4px;
+      }
+      .sec-header .sec-title {
+        font-size: 11px;
+        font-weight: bold;
+      }
+      .sec-header .see-all {
+        font-size: 9px;
+        color: #555;
+        text-decoration: underline;
+      }
+
+      /* Signal cards */
+      .signal-card {
+        border: 1.5px solid #aaa;
+        border-radius: 7px;
+        padding: 7px;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #fafafa;
+        position: relative;
+      }
+      .signal-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #aaa;
+        flex-shrink: 0;
+      }
+      .signal-dot.green {
+        background: #444;
+      }
+      .signal-dot.amber {
+        background: #888;
+      }
+      .signal-content {
+        flex: 1;
+      }
+      .signal-title {
+        font-size: 10px;
+        font-weight: bold;
+      }
+      .signal-desc {
+        font-size: 8px;
+        color: #666;
+      }
+
+      /* Bottom nav */
+      .bottom-nav {
+        border-top: 1.5px solid #aaa;
+        background: #f0f0f0;
+        display: flex;
+      }
+      .nav-item {
+        flex: 1;
+        padding: 6px 0;
+        text-align: center;
+        font-size: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .nav-item .nav-icon {
+        font-size: 14px;
+      }
+      .nav-item.active .nav-icon {
+        font-weight: bold;
+      }
+      .nav-item.active {
+        font-weight: bold;
+      }
+
+      /* FAB */
+      .fab {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #333;
+        background: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: bold;
+        position: absolute;
+        right: 12px;
+        bottom: 52px;
+      }
+
+      /* Login specific */
+      .login-logo {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 3px dashed #999;
+        margin: 16px auto 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+      .login-wordmark {
+        text-align: center;
+        font-size: 12px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+      }
+      .login-sub {
+        text-align: center;
+        font-size: 9px;
+        color: #777;
+        margin-bottom: 16px;
+      }
+      .input-field {
+        border: 1.5px solid #aaa;
+        border-radius: 6px;
+        padding: 7px 10px;
+        margin-bottom: 8px;
+        font-size: 10px;
+        width: 100%;
+        background: #f9f9f9;
+        font-family: "Comic Sans MS", cursive;
+      }
+      .input-label {
+        font-size: 9px;
+        color: #555;
+        margin-bottom: 2px;
+      }
+      .cta-btn {
+        border: 2px solid #333;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: bold;
+        background: #ddd;
+        margin-bottom: 8px;
+        width: 100%;
+      }
+      .divider-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .divider-line {
+        flex: 1;
+        height: 1px;
+        background: #ccc;
+      }
+      .divider-text {
+        font-size: 9px;
+        color: #888;
+      }
+      .social-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .social-btn {
+        flex: 1;
+        border: 1.5px solid #999;
+        border-radius: 7px;
+        padding: 7px;
+        text-align: center;
+        font-size: 10px;
+        background: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+      }
+      .signup-row {
+        text-align: center;
+        font-size: 9px;
+        color: #555;
+      }
+
+      /* Callout annotations */
+      .annotation {
+        position: absolute;
+        right: -132px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 120px;
+        background: #fffde7;
+        border: 1px solid #f9a825;
+        border-radius: 4px;
+        padding: 4px 6px;
+        font-size: 9px;
+        color: #555;
+        z-index: 10;
+      }
+      .annotation::before {
+        content: "←";
+        position: absolute;
+        left: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10px;
+        color: #f9a825;
+      }
+
+      /* Badge helper */
+      .reuse-badge {
+        position: absolute;
+        top: -7px;
+        right: -2px;
+        background: #4caf50;
+        color: #fff;
+        font-size: 8px;
+        font-weight: bold;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-family: Arial, sans-serif;
+        z-index: 5;
+      }
+      .new-badge {
+        position: absolute;
+        top: -7px;
+        right: -2px;
+        background: #ff9800;
+        color: #fff;
+        font-size: 8px;
+        font-weight: bold;
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-family: Arial, sans-serif;
+        z-index: 5;
+      }
+
+      /* Notes panel */
+      .notes-panel {
+        width: 260px;
+        flex-shrink: 0;
+      }
+      .note-box {
+        border: 1.5px solid #bbb;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 12px;
+        background: #fffde7;
+      }
+      .note-box h3 {
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 6px;
+      }
+      .note-box p,
+      .note-box li {
+        font-size: 10px;
+        color: #444;
+        line-height: 1.5;
+      }
+      .note-box ul {
+        padding-left: 14px;
+      }
+
+      /* Health dashboard specific */
+      .vitals-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .vital-card {
+        border: 1.5px solid #aaa;
+        border-radius: 7px;
+        padding: 7px;
+        text-align: center;
+        background: #fafafa;
+        position: relative;
+      }
+      .vital-icon {
+        font-size: 14px;
+      }
+      .vital-val {
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .vital-unit {
+        font-size: 8px;
+        color: #777;
+      }
+      .vital-label {
+        font-size: 8px;
+        color: #888;
+      }
+      .chart-box {
+        border: 1.5px dashed #aaa;
+        border-radius: 6px;
+        padding: 8px;
+        margin-bottom: 6px;
+        background: #f9f9f9;
+        position: relative;
+      }
+      .chart-placeholder {
+        height: 50px;
+        background: #eee;
+        border-radius: 4px;
+        position: relative;
+        overflow: hidden;
+      }
+      .chart-line {
+        width: 100%;
+        height: 1px;
+        background: #999;
+        position: absolute;
+        bottom: 40%;
+      }
+      .chart-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 7px;
+        color: #888;
+        margin-top: 3px;
+      }
+      .range-selector {
+        display: flex;
+        border: 1.5px solid #aaa;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .range-btn {
+        flex: 1;
+        padding: 5px;
+        text-align: center;
+        font-size: 9px;
+        border-right: 1px solid #ccc;
+        background: #f5f5f5;
+        font-family: "Comic Sans MS", cursive;
+      }
+      .range-btn:last-child {
+        border-right: none;
+      }
+      .range-btn.active {
+        background: #ddd;
+        font-weight: bold;
+      }
+
+      /* Medical */
+      .body-map-placeholder {
+        border: 1.5px dashed #999;
+        border-radius: 6px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: #888;
+        background: #f9f9f9;
+        margin-bottom: 6px;
+        position: relative;
+      }
+      .body-map-zones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .body-zone-chip {
+        border: 1px solid #aaa;
+        border-radius: 12px;
+        padding: 3px 8px;
+        font-size: 8px;
+        background: #f5f5f5;
+      }
+
+      /* Owner */
+      .owner-card {
+        border: 1.5px solid #aaa;
+        border-radius: 8px;
+        padding: 8px;
+        margin-bottom: 6px;
+        background: #fafafa;
+        position: relative;
+      }
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-bottom: 6px;
+      }
+      .pill {
+        border: 1px solid #888;
+        border-radius: 12px;
+        padding: 2px 8px;
+        font-size: 8px;
+        background: #eee;
+      }
+      .owner-input {
+        border: 1.5px solid #aaa;
+        border-radius: 5px;
+        padding: 5px;
+        font-size: 9px;
+        width: 100%;
+        margin-bottom: 5px;
+        background: #f9f9f9;
+        font-family: "Comic Sans MS", cursive;
+      }
+      .btn-row {
+        display: flex;
+        gap: 6px;
+      }
+      .outline-btn {
+        flex: 1;
+        border: 1.5px solid #888;
+        border-radius: 6px;
+        padding: 6px;
+        text-align: center;
+        font-size: 9px;
+        background: #f5f5f5;
+        font-family: "Comic Sans MS", cursive;
+      }
+
+      @media (max-width: 900px) {
+        .annotation {
+          display: none;
+        }
+        .screens-row {
+          gap: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DataFightCentral — Redesign Wireframe</h1>
+    <p class="subtitle">
+      Balsamiq-style mid-fidelity wireframe · Issues addressed: #1 (font sizes),
+      #6 (6-tab nav), #7 (guest CTA), #9 (cycling quote), #10 (range selector),
+      #19/#20 (social icons), #28 (greeting personalization)
+    </p>
+
+    <div class="legend">
+      <div class="legend-item">
+        <span class="badge badge-reuse">[REUSE]</span> Existing Flutter
+        widget/screen reused
+      </div>
+      <div class="legend-item">
+        <span class="badge badge-new">[NEW]</span> New widget to be created
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ SCREENS ROW 1 ═══════════════════════════════════ -->
+    <div class="screens-row" style="margin-bottom: 40px">
+      <!-- ─── SCREEN 1: LOGIN ─── -->
+      <div class="phone-wrap">
+        <div class="phone-label">
+          Login Screen
+          <small style="font-weight: normal; font-size: 10px"
+            >(Issues #8 #19 #20 addressed)</small
+          >
+        </div>
+        <div class="phone" style="position: relative">
+          <div class="phone-notch"></div>
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+
+          <div class="screen-body" style="padding: 14px 16px">
+            <!-- Logo -->
+            <!-- REUSABLE: AnimatedDfcLogo from lib/shared/widgets/animated_dfc_logo.dart -->
+            <div style="position: relative">
+              <span class="reuse-badge">[REUSE] AnimatedDfcLogo</span>
+              <div class="login-logo">⬡</div>
+            </div>
+            <div class="login-wordmark">DATAFIGHT CENTRAL</div>
+            <div class="login-sub">Welcome back, warrior</div>
+
+            <!-- Form -->
+            <!-- REUSABLE: AppTextField from lib/shared/widgets/app_text_field.dart -->
+            <div style="position: relative; margin-bottom: 8px">
+              <span class="reuse-badge">[REUSE] AppTextField</span>
+              <div class="input-label">Email</div>
+              <div class="input-field">email@example.com</div>
+            </div>
+            <div style="position: relative; margin-bottom: 4px">
+              <div class="input-label">Password</div>
+              <div class="input-field">•••••••• 👁</div>
+            </div>
+            <!-- FIX #8: Forgot Password as full-width TextButton with 44dp tap area -->
+            <div
+              style="
+                text-align: right;
+                font-size: 10px;
+                padding: 8px 0 12px;
+                text-decoration: underline;
+                cursor: pointer;
+              "
+            >
+              Forgot Password?
+            </div>
+
+            <!-- CTA -->
+            <!-- REUSABLE: AppButton from lib/shared/widgets/app_button.dart -->
+            <div style="position: relative">
+              <span class="reuse-badge">[REUSE] AppButton</span>
+              <div class="cta-btn">🥊 &nbsp; SIGN IN</div>
+            </div>
+
+            <div class="divider-row">
+              <div class="divider-line"></div>
+              <div class="divider-text">or continue with</div>
+              <div class="divider-line"></div>
+            </div>
+
+            <!-- FIX #19/#20: Use SVG brand assets for Google + Apple -->
+            <!-- NEW COMPONENT: SocialSignInButton (accepts SVG asset path) -->
+            <div class="social-row" style="position: relative">
+              <span class="new-badge">[NEW] SocialSignInButton</span>
+              <div class="social-btn">
+                <img
+                  src=""
+                  alt=""
+                  style="
+                    width: 14px;
+                    height: 14px;
+                    background: #ccc;
+                    border-radius: 2px;
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-right: 4px;
+                  "
+                />
+                Google
+              </div>
+              <div class="social-btn">
+                <img
+                  src=""
+                  alt=""
+                  style="
+                    width: 14px;
+                    height: 14px;
+                    background: #ccc;
+                    border-radius: 2px;
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-right: 4px;
+                  "
+                />
+                Apple
+              </div>
+            </div>
+
+            <div class="signup-row" style="margin-top: 10px">
+              Don't have an account? &nbsp;<span
+                style="text-decoration: underline; font-weight: bold"
+                >Sign Up</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SCREEN 2: HOME (Dashboard tab) ─── -->
+      <div class="phone-wrap">
+        <div class="phone-label">
+          Home — Dashboard Tab
+          <small style="font-weight: normal; font-size: 10px"
+            >(Issues #6 #28 addressed)</small
+          >
+        </div>
+        <div class="phone" style="position: relative">
+          <div class="phone-notch"></div>
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+
+          <!-- App bar -->
+          <div class="app-bar">
+            <!-- REUSABLE: DFCNavDrawer (hamburger trigger) -->
+            <div style="position: relative">
+              <span class="reuse-badge" style="top: -10px; right: -4px"
+                >[REUSE] DFCNavDrawer</span
+              >
+              <div class="icon-btn">☰</div>
+            </div>
+            <div class="title">NEURAL HQ</div>
+            <div class="icon-btn">🔔</div>
+          </div>
+
+          <div
+            class="screen-body"
+            style="padding: 10px; overflow-y: auto; max-height: 480px"
+          >
+            <!-- FIX #28: Personalized greeting using auth.userModel.displayName -->
+            <!-- REUSABLE: AI greeting card from command_center_dashboard.dart _buildAIGreeting() -->
+            <div class="greeting-card" style="position: relative">
+              <span class="reuse-badge">[REUSE] AIGreetingCard</span>
+              <div class="greeting-icon">☀️</div>
+              <div class="greeting-text">
+                <div class="name">Good morning, Marcus 👋</div>
+                <div class="msg">
+                  Readiness 82% — ready for a strong session.
+                </div>
+              </div>
+            </div>
+
+            <!-- Readiness orb -->
+            <!-- REUSABLE: RecoveryScoreGauge (lib/shared/widgets) -->
+            <div class="card" style="position: relative">
+              <span class="reuse-badge">[REUSE] RecoveryScoreGauge</span>
+              <div class="readiness-row">
+                <div class="readiness-circle">82%</div>
+                <div class="metrics-col">
+                  <div class="metric-row">
+                    <span class="metric-label">Heart Rate</span>
+                    <div class="metric-bar">
+                      <div class="metric-bar-fill" style="width: 62%"></div>
+                    </div>
+                    <span class="metric-val">62 bpm</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="metric-label">HRV</span>
+                    <div class="metric-bar">
+                      <div class="metric-bar-fill" style="width: 56%"></div>
+                    </div>
+                    <span class="metric-val">45 ms</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="metric-label">Sleep</span>
+                    <div class="metric-bar">
+                      <div class="metric-bar-fill" style="width: 78%"></div>
+                    </div>
+                    <span class="metric-val">78%</span>
+                  </div>
+                  <div class="metric-row">
+                    <span class="metric-label">Hydration</span>
+                    <div class="metric-bar">
+                      <div class="metric-bar-fill" style="width: 85%"></div>
+                    </div>
+                    <span class="metric-val">85%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions — FIX: remove Drone Command, keep health-relevant -->
+            <div class="sec-header">
+              <span class="sec-title">Quick Actions</span>
+            </div>
+            <!-- NEW COMPONENT: QuickActionsBar (health-relevant only) -->
+            <div class="quick-actions" style="position: relative">
+              <span class="new-badge" style="top: -10px; left: 0"
+                >[NEW] QuickActionsBar</span
+              >
+              <div class="quick-action-btn">
+                <span class="qa-icon">▶</span
+                ><span class="qa-label">Start Session</span>
+              </div>
+              <div class="quick-action-btn">
+                <span class="qa-icon">💧</span
+                ><span class="qa-label">Log Water</span>
+              </div>
+              <div class="quick-action-btn">
+                <span class="qa-icon">🌙</span
+                ><span class="qa-label">Log Sleep</span>
+              </div>
+              <div class="quick-action-btn">
+                <span class="qa-icon">⚖️</span
+                ><span class="qa-label">Log Weight</span>
+              </div>
+              <div class="quick-action-btn">
+                <span class="qa-icon">📊</span
+                ><span class="qa-label">Analytics</span>
+              </div>
+            </div>
+
+            <!-- Performance Signals -->
+            <div class="sec-header">
+              <span class="sec-title">Performance Signals</span
+              ><span class="see-all">View all</span>
+            </div>
+            <!-- REUSABLE: SignalCard from lib/shared/widgets/signal_card.dart -->
+            <div style="position: relative">
+              <span class="reuse-badge" style="top: -8px"
+                >[REUSE] SignalCard</span
+              >
+              <div class="signal-card">
+                <div class="signal-dot green"></div>
+                <div class="signal-content">
+                  <div class="signal-title">Load vs Recovery · 1.2</div>
+                  <div class="signal-desc">
+                    Training load balanced with recovery capacity
+                  </div>
+                </div>
+              </div>
+              <div class="signal-card">
+                <div class="signal-dot amber"></div>
+                <div class="signal-content">
+                  <div class="signal-title">Weight Cut Risk · -2.3kg</div>
+                  <div class="signal-desc">
+                    Hydration declining — increase electrolytes
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FIX #6: 5-tab nav (Profile moved to drawer) -->
+          <!-- REUSABLE: NavigationBar (Material 3) -->
+          <div class="bottom-nav" style="position: relative">
+            <span
+              class="reuse-badge"
+              style="top: -10px; left: 50%; transform: translateX(-50%)"
+              >[REUSE] NavigationBar (5 tabs)</span
+            >
+            <div class="nav-item active">
+              <span class="nav-icon">⊞</span>Dashboard
+            </div>
+            <div class="nav-item"><span class="nav-icon">📡</span>Feed</div>
+            <div class="nav-item">
+              <span class="nav-icon">⚡</span>FightWire
+            </div>
+            <div class="nav-item"><span class="nav-icon">🏋</span>Training</div>
+            <div class="nav-item"><span class="nav-icon">🌿</span>Wellness</div>
+          </div>
+
+          <!-- FAB for AI (replaces floating pill + orb) -->
+          <!-- NEW COMPONENT: AIAssistantFAB (single entry point for Samurai Shido) -->
+          <div
+            class="fab"
+            style="position: absolute; right: 10px; bottom: 44px; z-index: 20"
+          >
+            <span class="new-badge" style="top: -10px; right: -4px"
+              >[NEW] AIAssistantFAB</span
+            >
+            🤖
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── NOTES PANEL 1 ─── -->
+      <div class="notes-panel">
+        <div class="note-box">
+          <h3>🔑 Key Changes — Home</h3>
+          <ul>
+            <li>6 tabs → 5 tabs (Profile moves into drawer navigation)</li>
+            <li>Floating DFC Orb + floating pill → single FAB for AI</li>
+            <li>
+              Greeting personalized with <code>auth.userModel.displayName</code>
+            </li>
+            <li>
+              Quick Actions removes "Drone Command" — health-relevant only
+            </li>
+            <li>No overlapping positioned elements over content</li>
+          </ul>
+        </div>
+        <div class="note-box">
+          <h3>🔑 Key Changes — Login</h3>
+          <ul>
+            <li>"Forgot Password?" uses full-width tap zone (≥ 44dp)</li>
+            <li>
+              Google/Apple buttons use SVG brand assets via new
+              <code>SocialSignInButton</code>
+            </li>
+            <li>
+              Particle animation count reduced (e.g. 20 shards, 40 embers)
+            </li>
+          </ul>
+        </div>
+        <div class="note-box">
+          <h3>Component Map</h3>
+          <ul>
+            <li><b>[REUSE]</b> AnimatedDfcLogo</li>
+            <li><b>[REUSE]</b> AppTextField, AppButton</li>
+            <li><b>[REUSE]</b> DFCNavDrawer</li>
+            <li><b>[REUSE]</b> RecoveryScoreGauge</li>
+            <li><b>[REUSE]</b> SignalCard</li>
+            <li><b>[NEW]</b> SocialSignInButton</li>
+            <li><b>[NEW]</b> QuickActionsBar</li>
+            <li><b>[NEW]</b> AIAssistantFAB</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ SCREENS ROW 2 ═══════════════════════════════════ -->
+    <div class="screens-row" style="margin-bottom: 40px">
+      <!-- ─── SCREEN 3: HEALTH DASHBOARD ─── -->
+      <div class="phone-wrap">
+        <div class="phone-label">
+          Health Dashboard
+          <small style="font-weight: normal; font-size: 10px"
+            >(Issues #10 #17 #18 addressed)</small
+          >
+        </div>
+        <div class="phone" style="position: relative">
+          <div class="phone-notch"></div>
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+          <div class="app-bar">
+            <div class="icon-btn">←</div>
+            <div class="title">HEALTH INTEL</div>
+            <div
+              style="
+                font-size: 9px;
+                padding: 2px 6px;
+                border: 1px solid #aaa;
+                border-radius: 10px;
+              "
+            >
+              ✓ Synced
+            </div>
+          </div>
+          <div class="screen-body" style="overflow-y: auto; max-height: 480px">
+            <!-- FIX #10: Range selector wired to actual data re-fetch -->
+            <!-- NEW COMPONENT: HealthRangeSelector (calls Firestore per range) -->
+            <div
+              class="range-selector"
+              style="position: relative; margin-bottom: 8px"
+            >
+              <span class="new-badge" style="top: -10px; left: 0"
+                >[NEW] HealthRangeSelector</span
+              >
+              <div class="range-btn active">Day</div>
+              <div class="range-btn">Week</div>
+              <div class="range-btn">Month</div>
+            </div>
+
+            <!-- Vitals grid -->
+            <!-- REUSABLE: VitalCard (exists as inline widget in health_dashboard_screen.dart) -->
+            <div class="vitals-grid" style="position: relative">
+              <span class="reuse-badge" style="top: -10px"
+                >[REUSE] VitalCard</span
+              >
+              <div class="vital-card">
+                <div class="vital-icon">❤️</div>
+                <div class="vital-val">62</div>
+                <div class="vital-unit">bpm</div>
+                <div class="vital-label">Resting HR</div>
+              </div>
+              <div class="vital-card">
+                <div class="vital-icon">🌙</div>
+                <div class="vital-val">7.2</div>
+                <div class="vital-unit">hrs</div>
+                <div class="vital-label">Sleep</div>
+              </div>
+              <div class="vital-card">
+                <div class="vital-icon">🚶</div>
+                <div class="vital-val">8.4k</div>
+                <div class="vital-unit"></div>
+                <div class="vital-label">Steps</div>
+              </div>
+              <div class="vital-card">
+                <div class="vital-icon">🔥</div>
+                <div class="vital-val">45</div>
+                <div class="vital-unit">min</div>
+                <div class="vital-label">Active</div>
+              </div>
+            </div>
+
+            <!-- Chart section — FIX #18: add axis labels -->
+            <!-- REUSABLE: NeonLineChart from lib/shared/widgets/widgets.dart -->
+            <div class="chart-box" style="position: relative">
+              <span class="reuse-badge">[REUSE] NeonLineChart</span>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 4px;
+                "
+              >
+                <div>
+                  <div style="font-size: 10px; font-weight: bold">
+                    Heart Rate
+                  </div>
+                  <div style="font-size: 8px; color: #777">
+                    Resting HR trend
+                  </div>
+                </div>
+                <div style="font-size: 13px; font-weight: bold">62 bpm →</div>
+              </div>
+              <div style="display: flex; gap: 4px; margin-bottom: 4px">
+                <!-- Y axis labels — FIX #18 -->
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    font-size: 7px;
+                    color: #888;
+                    width: 20px;
+                  "
+                >
+                  <span>80</span><span>70</span><span>60</span><span>50</span>
+                </div>
+                <div style="flex: 1">
+                  <div class="chart-placeholder">
+                    <div class="chart-line" style="bottom: 55%"></div>
+                    <!-- Simulated line chart -->
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 200 50"
+                      preserveAspectRatio="none"
+                      style="position: absolute; top: 0; left: 0"
+                    >
+                      <polyline
+                        points="0,30 33,25 66,28 100,20 133,27 166,24 200,26"
+                        fill="none"
+                        stroke="#999"
+                        stroke-width="2"
+                      />
+                    </svg>
+                  </div>
+                  <div class="chart-labels">
+                    <span>Mon</span><span>Tue</span><span>Wed</span
+                    ><span>Thu</span><span>Fri</span><span>Sat</span
+                    ><span>Sun</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  border: 1px solid #ccc;
+                  border-radius: 5px;
+                  padding: 5px;
+                  font-size: 8px;
+                  color: #666;
+                  background: #f9f9f9;
+                "
+              >
+                ✨ Resting HR stable. Good recovery indicators.
+              </div>
+            </div>
+
+            <!-- FIX #17: Data sources use Wrap not Row -->
+            <div class="sec-header" style="margin-bottom: 4px">
+              <span class="sec-title">Data Sources</span>
+            </div>
+            <!-- NEW COMPONENT: DataSourceChipList (uses Wrap for overflow safety) -->
+            <div
+              style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+                position: relative;
+              "
+            >
+              <span class="new-badge" style="top: -10px; left: 0"
+                >[NEW] DataSourceChipList</span
+              >
+              <div class="body-zone-chip">✓ Google Fit</div>
+              <div class="body-zone-chip">✓ Manual Input</div>
+              <div class="body-zone-chip">○ Wearable</div>
+            </div>
+
+            <!-- Button consistent with dark theme -->
+            <!-- REUSABLE: AppButton (outlined variant) -->
+            <div style="position: relative; margin-top: 8px">
+              <span class="reuse-badge" style="top: -8px"
+                >[REUSE] AppButton (outlined)</span
+              >
+              <div
+                class="cta-btn"
+                style="font-size: 10px; padding: 8px; border-style: dashed"
+              >
+                🧠 Open Medical Intelligence
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SCREEN 4: MEDICAL INTELLIGENCE ─── -->
+      <div class="phone-wrap">
+        <div class="phone-label">
+          Medical Intelligence
+          <small style="font-weight: normal; font-size: 10px"
+            >(Issues #5 #16 #25 addressed)</small
+          >
+        </div>
+        <div class="phone" style="position: relative">
+          <div class="phone-notch"></div>
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+
+          <!-- FIX #16: AppBar uses DesignTokens.bgPrimary background, not Colors.black -->
+          <div class="app-bar" style="background: #e0e0e0">
+            <div class="icon-btn">←</div>
+            <div class="title">Medical Intelligence</div>
+            <div></div>
+          </div>
+
+          <div class="screen-body" style="overflow-y: auto; max-height: 480px">
+            <!-- Header card -->
+            <div class="card" style="background: #e8e8e8; margin-bottom: 8px">
+              <div class="card-title">SamurAI Medical Companion</div>
+              <div class="card-sub" style="margin-top: 3px; line-height: 1.4">
+                Personal injury log &amp; scans diary. Not medical advice —
+                helps you remember what doctors tell you.
+              </div>
+            </div>
+
+            <!-- Body map — FIX #5: Now has GestureDetector tap zones -->
+            <!-- NEW COMPONENT: InteractiveBodyMap (GestureDetector with region geometry) -->
+            <div style="position: relative; margin-bottom: 8px">
+              <span class="new-badge" style="top: -8px; left: 0"
+                >[NEW] InteractiveBodyMap</span
+              >
+              <div class="body-map-placeholder">
+                <div style="text-align: center">
+                  <div style="font-size: 24px">🧍</div>
+                  <div style="font-size: 8px; color: #888; margin-top: 2px">
+                    Tap a body zone to log pain or injury
+                  </div>
+                </div>
+              </div>
+              <!-- Touch zone chips over map -->
+              <div class="body-map-zones" style="margin-top: 4px">
+                <div class="body-zone-chip" style="background: #ddd">Head</div>
+                <div class="body-zone-chip" style="background: #ddd">Neck</div>
+                <div class="body-zone-chip" style="background: #ddd">
+                  Shoulder
+                </div>
+                <div class="body-zone-chip" style="background: #ddd">Back</div>
+                <div class="body-zone-chip" style="background: #ddd">Knee</div>
+                <div class="body-zone-chip" style="background: #ddd">Ankle</div>
+              </div>
+            </div>
+
+            <!-- FIX #25: Show display name, not uid.substring(0,6) -->
+            <div style="font-size: 8px; color: #888; margin-bottom: 8px">
+              Linked to your profile: Marcus R. ✓
+            </div>
+
+            <!-- Injury log entries -->
+            <!-- REUSABLE: InjuryLogList (existing widget in medical_intelligence_screen.dart) -->
+            <div style="position: relative">
+              <span class="reuse-badge" style="top: -8px"
+                >[REUSE] InjuryLogList</span
+              >
+              <div class="card" style="margin-bottom: 6px">
+                <div style="display: flex; justify-content: space-between">
+                  <div class="card-title">Left knee pain</div>
+                  <div
+                    style="
+                      font-size: 9px;
+                      padding: 2px 6px;
+                      border: 1px solid #aaa;
+                      border-radius: 10px;
+                    "
+                  >
+                    Pain 4/10
+                  </div>
+                </div>
+                <div class="card-sub">Lower left knee — meniscus area</div>
+                <div style="font-size: 8px; color: #888; margin-top: 3px">
+                  Rehab: band squats, physio. Relief: ice + elevation.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAB -->
+          <div
+            style="
+              position: absolute;
+              right: 10px;
+              bottom: 10px;
+              border: 2px solid #333;
+              border-radius: 50px;
+              padding: 8px 12px;
+              background: #ddd;
+              font-size: 9px;
+              font-weight: bold;
+            "
+          >
+            ＋ Log Pain / Injury
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SCREEN 5: SOCIAL CONNECTORS ─── -->
+      <div class="phone-wrap">
+        <div class="phone-label">
+          Social Connectors
+          <small style="font-weight: normal; font-size: 10px"
+            >(Issues #15 #29 #30 addressed)</small
+          >
+        </div>
+        <div class="phone" style="position: relative">
+          <div class="phone-notch"></div>
+          <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+          <div class="app-bar">
+            <div class="icon-btn">←</div>
+            <div class="title">Social Connectors</div>
+            <div></div>
+          </div>
+          <div class="screen-body" style="overflow-y: auto; max-height: 480px">
+            <!-- Global controls card -->
+            <!-- REUSABLE: SocialConnectorService provider -->
+            <div class="owner-card" style="position: relative">
+              <span class="reuse-badge">[REUSE] SocialConnectorService</span>
+              <div class="card-title" style="margin-bottom: 6px">
+                Global Controls
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 5px;
+                "
+              >
+                <span style="font-size: 10px">Unified Ecosystem Mode</span>
+                <!-- FIX #30: Switch uses DesignTokens.neonCyan (shown as darker track here) -->
+                <div
+                  style="
+                    width: 36px;
+                    height: 18px;
+                    background: #999;
+                    border-radius: 9px;
+                    position: relative;
+                  "
+                >
+                  <div
+                    style="
+                      width: 14px;
+                      height: 14px;
+                      background: #fff;
+                      border-radius: 50%;
+                      position: absolute;
+                      right: 2px;
+                      top: 2px;
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 5px;
+                "
+              >
+                <span style="font-size: 10px">Cross-Post Enable</span>
+                <div
+                  style="
+                    width: 36px;
+                    height: 18px;
+                    background: #ccc;
+                    border-radius: 9px;
+                    position: relative;
+                  "
+                >
+                  <div
+                    style="
+                      width: 14px;
+                      height: 14px;
+                      background: #fff;
+                      border-radius: 50%;
+                      position: absolute;
+                      left: 2px;
+                      top: 2px;
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 8px;
+                "
+              >
+                <span style="font-size: 10px">Strict Clean/Safe Mode</span>
+                <div
+                  style="
+                    width: 36px;
+                    height: 18px;
+                    background: #999;
+                    border-radius: 9px;
+                    position: relative;
+                  "
+                >
+                  <div
+                    style="
+                      width: 14px;
+                      height: 14px;
+                      background: #fff;
+                      border-radius: 50%;
+                      position: absolute;
+                      right: 2px;
+                      top: 2px;
+                    "
+                  ></div>
+                </div>
+              </div>
+              <div class="cta-btn" style="font-size: 10px; padding: 6px">
+                ↺ Sync Now
+              </div>
+            </div>
+
+            <!-- Platform list — FIX #15: Connect/Disconnect as separate row, not in ListTile trailing -->
+            <!-- FIX #29: Platform-specific icons -->
+            <!-- NEW COMPONENT: PlatformConnectorTile (full-width row with icon + name + status + separate buttons) -->
+            <div style="position: relative">
+              <span class="new-badge" style="top: -8px; left: 0"
+                >[NEW] PlatformConnectorTile</span
+              >
+
+              <div class="owner-card">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 6px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 24px;
+                      height: 24px;
+                      background: #ddd;
+                      border-radius: 5px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 11px;
+                    "
+                  >
+                    f
+                  </div>
+                  <div style="flex: 1">
+                    <div style="font-size: 10px; font-weight: bold">
+                      Facebook
+                    </div>
+                    <div style="font-size: 8px; color: #777">facebook.com</div>
+                  </div>
+                  <div
+                    style="
+                      font-size: 9px;
+                      color: #555;
+                      padding: 2px 6px;
+                      border: 1px solid #aaa;
+                      border-radius: 10px;
+                    "
+                  >
+                    ✓ Connected
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 6px">
+                    <span style="font-size: 9px">Enable</span>
+                    <div
+                      style="
+                        width: 32px;
+                        height: 16px;
+                        background: #999;
+                        border-radius: 8px;
+                        position: relative;
+                      "
+                    >
+                      <div
+                        style="
+                          width: 12px;
+                          height: 12px;
+                          background: #fff;
+                          border-radius: 50%;
+                          position: absolute;
+                          right: 2px;
+                          top: 2px;
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="outline-btn" style="flex: 0; padding: 4px 10px">
+                    Disconnect
+                  </div>
+                </div>
+              </div>
+
+              <div class="owner-card">
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    margin-bottom: 6px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 24px;
+                      height: 24px;
+                      background: #ddd;
+                      border-radius: 5px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      font-size: 11px;
+                    "
+                  >
+                    in
+                  </div>
+                  <div style="flex: 1">
+                    <div style="font-size: 10px; font-weight: bold">
+                      LinkedIn
+                    </div>
+                    <div style="font-size: 8px; color: #777">linkedin.com</div>
+                  </div>
+                  <div
+                    style="
+                      font-size: 9px;
+                      color: #999;
+                      padding: 2px 6px;
+                      border: 1px solid #ccc;
+                      border-radius: 10px;
+                    "
+                  >
+                    ✗ Disconnected
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  "
+                >
+                  <div style="display: flex; align-items: center; gap: 6px">
+                    <span style="font-size: 9px">Enable</span>
+                    <div
+                      style="
+                        width: 32px;
+                        height: 16px;
+                        background: #ccc;
+                        border-radius: 8px;
+                        position: relative;
+                      "
+                    >
+                      <div
+                        style="
+                          width: 12px;
+                          height: 12px;
+                          background: #fff;
+                          border-radius: 50%;
+                          position: absolute;
+                          left: 2px;
+                          top: 2px;
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                  <div
+                    class="outline-btn"
+                    style="flex: 0; padding: 4px 10px; font-weight: bold"
+                  >
+                    Connect
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style="
+                  text-align: center;
+                  font-size: 9px;
+                  color: #888;
+                  padding: 4px;
+                "
+              >
+                … 6 more platforms
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── NOTES PANEL 2 ─── -->
+      <div class="notes-panel">
+        <div class="note-box">
+          <h3>🔑 Key Changes — Health Dashboard</h3>
+          <ul>
+            <li>Range selector (Day/Week/Month) triggers Firestore re-fetch</li>
+            <li>Charts have Y-axis labels + date labels below X-axis</li>
+            <li>Data source chips use <code>Wrap</code> (overflow-safe)</li>
+            <li>
+              "Open Medical Intelligence" button uses <code>AppButton</code>
+            </li>
+          </ul>
+        </div>
+        <div class="note-box">
+          <h3>🔑 Key Changes — Medical Intelligence</h3>
+          <ul>
+            <li>
+              AppBar background: <code>DesignTokens.bgPrimary</code> not
+              <code>Colors.black</code>
+            </li>
+            <li>Body map has real tappable zone chips (+ internal geometry)</li>
+            <li>
+              Profile link shows <code>user.displayName</code> not raw UID
+            </li>
+          </ul>
+        </div>
+        <div class="note-box">
+          <h3>🔑 Key Changes — Social Connectors</h3>
+          <ul>
+            <li>
+              New <code>PlatformConnectorTile</code> separates
+              Connect/Disconnect from enable toggle — no cramped trailing row
+            </li>
+            <li>
+              Platform-specific icon placeholders (to be replaced with SVG
+              assets)
+            </li>
+            <li>
+              Switch <code>activeColor</code> uses
+              <code>DesignTokens.neonCyan</code>
+            </li>
+          </ul>
+        </div>
+        <div class="note-box">
+          <h3>Component Map</h3>
+          <ul>
+            <li><b>[REUSE]</b> VitalCard, NeonLineChart</li>
+            <li><b>[REUSE]</b> InjuryLogList</li>
+            <li><b>[REUSE]</b> SocialConnectorService</li>
+            <li><b>[NEW]</b> HealthRangeSelector</li>
+            <li><b>[NEW]</b> DataSourceChipList</li>
+            <li><b>[NEW]</b> InteractiveBodyMap</li>
+            <li><b>[NEW]</b> PlatformConnectorTile</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ FLOW DIAGRAM ═══════════════════════════════════ -->
+    <div style="margin-top: 8px">
+      <h2 style="font-size: 15px; margin-bottom: 12px">
+        Navigation Flow — Redesign
+      </h2>
+      <div
+        style="
+          border: 2px solid #aaa;
+          border-radius: 10px;
+          padding: 16px;
+          background: #fafafa;
+          max-width: 700px;
+        "
+      >
+        <pre
+          style="
+            font-size: 10px;
+            line-height: 1.7;
+            font-family: &quot;Courier New&quot;, monospace;
+            color: #333;
+          "
+        >
+  /landing (AdrenalineGatewayScreen)
+      │
+      ├── [ENTER THE CAGE] → /login  ← back arrow visible
+      │       └── auth success → /home
+      │
+      └── [EXPLORE AS GUEST] ← TextButton (≥44dp tap target)
+              └── /home (guest mode)
+
+  /home (HomeScreen — 5-tab NavigationBar)
+      ├── Tab 0: Dashboard (Premium2026Dashboard)
+      │       └── Quick actions, Readiness, Signals, FightWire preview
+      ├── Tab 1: Feed (SocialFeedScreen)
+      ├── Tab 2: FightWire (FightWireScreen)
+      ├── Tab 3: Training (TrainingMasterScreen)
+      └── Tab 4: Wellness (WellnessMasterScreen)
+
+      Drawer (DFCNavDrawer):
+      └── Profile, Settings, Command Center, Owner Panel, etc.
+
+      FAB (AIAssistantFAB):
+      └── /ai-bots/shido  ← single AI entry point
+    </pre
+        >
+      </div>
+    </div>
+  </body>
+</html>

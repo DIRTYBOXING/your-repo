@@ -1,0 +1,91 @@
+{
+  "name": "DFC Devcontainer",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/aspect-build/rules_lint/devcontainers/features/dart-sdk:0": {},
+    "ghcr.io/aspect-build/rules_lint/devcontainers/features/flutter-sdk:0": {}
+  },
+
+  "forwardPorts": [
+    3000, 3001, 4000, 4001, 4010, 4020, 5432, 5678, 6379, 8000, 8088, 8090,
+    8200, 9000, 9229
+  ],
+  "portsAttributes": {
+    "3000": { "label": "Generic Dev Server", "onAutoForward": "notify" },
+    "3001": { "label": "Serverless Offline", "onAutoForward": "notify" },
+    "4000": {
+      "label": "Express API (server/)",
+      "onAutoForward": "openBrowser"
+    },
+    "4010": { "label": "Entitlements Service", "onAutoForward": "notify" },
+    "4020": { "label": "OG Clip SSR", "onAutoForward": "notify" },
+    "5432": { "label": "PostgreSQL (PostGIS)", "onAutoForward": "silent" },
+    "5678": { "label": "n8n Workflow Engine", "onAutoForward": "notify" },
+    "6379": { "label": "Redis", "onAutoForward": "silent" },
+    "8000": { "label": "Atlas Ingest API", "onAutoForward": "notify" },
+    "8088": { "label": "Flutter Web (Chrome)", "onAutoForward": "openBrowser" },
+    "8090": { "label": "Fight Predictor API", "onAutoForward": "notify" },
+    "8200": { "label": "HashiCorp Vault", "onAutoForward": "notify" },
+    "9000": { "label": "MinIO Object Store", "onAutoForward": "silent" },
+    "9229": { "label": "Node Inspector", "onAutoForward": "silent" }
+  },
+
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "workspaceFolder": "/workspace",
+  "postAttachCommand": "echo '✅  DFC container ready — run F5 for Flutter Web Demo'",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "eslint.validate": ["javascript", "typescript"],
+        "python.defaultInterpreterPath": "/usr/local/bin/python",
+        "files.exclude": {
+          "**/.env": true,
+          "**/todo-results.json": true,
+          "**/auto-fixer-report.json": true
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "Dart-Code.dart-code",
+        "Dart-Code.flutter",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "ms-playwright.playwright",
+        "SonarSource.sonarlint-vscode",
+        "usernamehw.errorlens",
+        "streetsidesoftware.code-spell-checker",
+        "ms-azuretools.vscode-docker",
+        "googlecloudtools.cloudcode",
+        "toba.vsfire",
+        "alesdi.firestore-explorer",
+        "humao.rest-client",
+        "eamodio.gitlens",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "redhat.vscode-yaml",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "editorconfig.editorconfig",
+        "christian-kohler.path-intellisense",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  },
+  "remoteUser": "vscode",
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  }
+}

@@ -1,0 +1,10 @@
+gym_id,gym_name,contact_name,contact_email,city,country,sponsored,notes
+dfc_hq,DFC Headquarters,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Brisbane,Australia,yes,Official headquarters of Data Fight Central
+bkfc_newcastle,BKFC Newcastle Gym Network,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Newcastle,Australia,no,Linked to ppv-bkfc-newcastle event
+ifma_antalya,IFMA Muaythai Training Centre,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Antalya,Turkey,no,Linked to ppv-ifma-antalyacup event
+legends_melbourne,Legends Fight Show Gym,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Melbourne,Australia,no,Linked to ppv-legends45 event
+eternal_sydney,Eternal MMA Training Centre,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Sydney,Australia,no,Linked to ppv-eternal88 event
+adelaide_combat,Adelaide Combat Series Gym,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Adelaide,Australia,no,Linked to ppv-adelaide-cs12 event
+ufc_lasvegas,UFC Performance Institute,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Las Vegas,USA,no,Linked to ppv-ufc-paramount-fightnight event
+brisbane_boxing,Brisbane Boxing Promotions Gym,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Brisbane,Australia,no,Linked to ppv-brisbane-bonanza event
+westcoast_perth,West Coast Warriors Gym,[CONTACT_NAME],[REPLACE_WITH_REAL_EMAIL],Perth,Australia,no,Linked to ppv-westcoast-warriors33 event

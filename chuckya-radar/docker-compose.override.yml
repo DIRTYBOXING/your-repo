@@ -1,0 +1,56 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  DFC CHUCKYA RADAR — COMPOSE OVERRIDE                      ║
+# ║  Adds: nginx reverse proxy, React frontend, Mapbox tiles   ║
+# ║  Usage: docker-compose up (auto-merges override)            ║
+# ╚══════════════════════════════════════════════════════════════╝
+version: "3.8"
+services:
+  # ─── Nginx reverse proxy (single entry point) ───
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - radar-api
+      - ws-server
+      - metrics-server
+      - frontend
+    restart: unless-stopped
+
+  # ─── React control-room frontend ───
+  frontend:
+    build: ./control-room-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_MAPBOX_TOKEN=${MAPBOX_TOKEN:-pk.placeholder}
+      - VITE_WS_URL=ws://localhost/ws/
+      - VITE_API_BASE=/v1
+    depends_on:
+      - radar-api
+
+  # ─── Mapbox vector tile server ───
+  tileserver:
+    image: maptiler/tileserver-gl:latest
+    ports:
+      - "8082:8082"
+    command: ["--port", "8082"]
+    volumes:
+      - ./tiles:/data:ro
+
+  # ─── Artillery load test container (on-demand) ───
+  artillery:
+    image: artilleryio/artillery:latest
+    profiles: ["loadtest"]
+    volumes:
+      - ./load-test:/load-test:ro
+    working_dir: /load-test
+    command: ["run", "artillery.yml"]
+    depends_on:
+      - nginx
+
+  # Override static service — disable when nginx + frontend are active
+  static:
+    profiles: ["legacy"]

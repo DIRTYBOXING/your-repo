@@ -1,0 +1,105 @@
+openapi: 3.1.0
+info:
+  title: DFC Social + Event API
+  version: "2026.04"
+  description: Canonical API contracts for event page truth and social feed.
+servers:
+  - url: https://api.datafightcentral.com
+paths:
+  /api/events/{id}:
+    get:
+      summary: Get canonical event payload for page truth
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Canonical event payload
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - title
+                  - posterUrl
+                  - startTime
+                  - priceCents
+                  - currency
+                  - entitlementRequired
+                  - venue
+                properties:
+                  id:
+                    type: string
+                  title:
+                    type: string
+                  posterUrl:
+                    type: string
+                  startTime:
+                    type: string
+                  priceCents:
+                    type: integer
+                  currency:
+                    type: string
+                  entitlementRequired:
+                    type: boolean
+                  venue:
+                    type: object
+                    required: [name]
+                    properties:
+                      name:
+                        type: string
+                      lat:
+                        type: number
+                      lng:
+                        type: number
+  /api/users/{id}/feed:
+    get:
+      summary: Get merged social feed for a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: cursor
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Feed response
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, nextCursor]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, type, actorId, createdAt, payload]
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum: [clip, post, event]
+                        actorId:
+                          type: string
+                        createdAt:
+                          type: string
+                        payload:
+                          type: object
+                  nextCursor:
+                    type: string

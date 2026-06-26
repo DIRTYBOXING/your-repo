@@ -1,0 +1,47 @@
+[Unit]
+Description=DFC Wallet Reconciliation Job
+Documentation=https://github.com/DIRTYBOXING/Data-Fight-Central
+# Run after network and Redis are available
+After=network-online.target redis.service
+Wants=network-online.target redis.service
+
+[Service]
+Type=oneshot
+# Run as a dedicated low-privilege service account
+User=dfc
+Group=dfc
+WorkingDirectory=/opt/dfc/server
+
+# Environment — override via /etc/dfc/reconciliation.env or EnvironmentFile
+Environment=NODE_ENV=production
+Environment=REDIS_URL=redis://localhost:6379
+Environment=RECON_LOCK_TTL_MS=300000
+EnvironmentFile=-/etc/dfc/reconciliation.env
+
+ExecStart=/usr/bin/node /opt/dfc/server/jobs/reconciliation-runner.js
+
+# Exit codes:
+#   0 — success
+#   1 — job failed (systemd will trigger OnFailure alert)
+#   2 — lock held by another instance (expected during overlapping windows)
+SuccessExitStatus=0 2
+
+# Resource limits
+TimeoutStartSec=120
+LimitNOFILE=65536
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/dfc
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dfc-reconciliation
+
+[Install]
+# Not directly enabled — managed by the timer unit below
+WantedBy=multi-user.target

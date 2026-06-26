@@ -1,0 +1,69 @@
+name: Deploy and Smoke Staging
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "serverless/**"
+      - "functions/**"
+      - "services/**"
+      - "ci/**"
+      - "docker-compose.yml"
+      - ".github/workflows/deploy-and-smoke-staging.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy-and-smoke:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID_VALUE: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY_VALUE: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps (secure — ignore scripts)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install serverless (secure)
+        run: npm install -g serverless --ignore-scripts
+
+      - name: Detect deploy readiness
+        id: readiness
+        shell: bash
+        run: |
+          if [ -n "${AWS_ACCESS_KEY_ID_VALUE}" ] && [ -n "${AWS_SECRET_ACCESS_KEY_VALUE}" ]; then
+            echo "can_deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_deploy=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy serverless
+        if: steps.readiness.outputs.can_deploy == 'true'
+        run: npx serverless deploy --stage staging
+
+      - name: Skip deploy notice
+        if: steps.readiness.outputs.can_deploy != 'true'
+        run: echo "::notice::AWS secrets missing — skipping staging deploy"
+
+      - name: Smoke test
+        if: steps.readiness.outputs.can_deploy == 'true'
+        run: bash ./ci/smoke_clip_publish_strict.sh --timeout 60 --retries 3
+
+      - name: Skip smoke notice
+        if: steps.readiness.outputs.can_deploy != 'true'
+        run: echo "::notice::Skipped smoke because deploy was skipped"
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-artifacts
+          path: ci/smoke-artifacts/

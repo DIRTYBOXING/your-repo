@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Coffee Campaign Hero Image: LIFE, HOPE, FRESH STARTS -->
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFA726;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6F00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="coffeeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB74D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glowEffect">
+      <stop offset="0%" style="stop-color:#FFD54F;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FFA726;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Warm Background -->
+  <rect width="800" height="600" fill="url(#skyGradient)"/>
+  
+  <!-- Rising Sun (Hope) -->
+  <circle cx="700" cy="100" r="80" fill="#FFD54F" opacity="0.6"/>
+  <circle cx="700" cy="100" r="60" fill="url(#glowEffect)"/>
+  
+  <!-- Coffee Cup (Life-Giving) -->
+  <g id="coffeeCup" transform="translate(250, 200)">
+    <!-- Cup Body -->
+    <path d="M50 50 L80 250 L220 250 L250 50 Z" fill="url(#coffeeGradient)" stroke="#D84315" stroke-width="4"/>
+    <!-- Steam (Life Energy) -->
+    <path d="M120 30 Q130 10, 140 30 Q150 10, 160 30" stroke="#FFE0B2" stroke-width="3" fill="none" opacity="0.7">
+      <animate attributeName="d" 
+        values="M120 30 Q130 10, 140 30 Q150 10, 160 30;
+                M120 25 Q130 5, 140 25 Q150 5, 160 25;
+                M120 30 Q130 10, 140 30 Q150 10, 160 30"
+        dur="2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M140 20 Q150 0, 160 20 Q170 0, 180 20" stroke="#FFE0B2" stroke-width="3" fill="none" opacity="0.5">
+      <animate attributeName="d" 
+        values="M140 20 Q150 0, 160 20 Q170 0, 180 20;
+                M140 15 Q150 -5, 160 15 Q170 -5, 180 15;
+                M140 20 Q150 0, 160 20 Q170 0, 180 20"
+        dur="2.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- Coffee Liquid -->
+    <ellipse cx="150" cy="120" rx="80" ry="15" fill="#6D4C41" opacity="0.8"/>
+  </g>
+  
+  <!-- Heart Symbol (Compassion) -->
+  <g transform="translate(550, 350)">
+    <path d="M0 20 L-20 0 Q-30 -10, -20 -20 Q-10 -30, 0 -20 Q10 -30, 20 -20 Q30 -10, 20 0 Z" 
+          fill="#FF8A80" stroke="#D32F2F" stroke-width="2">
+      <animateTransform attributeName="transform" type="scale" 
+        values="1;1.1;1" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Coin Symbol (Impact) -->
+  <g transform="translate(150, 400)">
+    <circle cx="0" cy="0" r="30" fill="#FFD700" stroke="#F57F17" stroke-width="3"/>
+    <text x="0" y="10" font-family="Arial" font-size="32" font-weight="bold" 
+          text-anchor="middle" fill="#F57F17">$</text>
+  </g>
+  
+  <!-- Text: COFFEE NOT A COFFIN -->
+  <text x="400" y="520" font-family="Arial" font-size="48" font-weight="bold" 
+        text-anchor="middle" fill="#FFFFFF" stroke="#BF360C" stroke-width="2">
+    ☕ COFFEE = LIFE
+  </text>
+  
+  <text x="400" y="560" font-family="Arial" font-size="24" 
+        text-anchor="middle" fill="#FFE0B2">
+    Skip one. Change everything. 🌅
+  </text>
+  
+  <!-- Children Silhouettes (Hope for the Future) -->
+  <g opacity="0.3">
+    <circle cx="600" cy="500" r="15" fill="#FFFFFF"/>
+    <rect x="592" y="515" width="16" height="30" rx="4" fill="#FFFFFF"/>
+    
+    <circle cx="650" cy="495" r="18" fill="#FFFFFF"/>
+    <rect x="640" y="513" width="20" height="35" rx="5" fill="#FFFFFF"/>
+  </g>
+</svg>

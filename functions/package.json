@@ -1,0 +1,31 @@
+{
+  "name": "datafightcentral-functions",
+  "private": true,
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@genkit-ai/googleai": "^1.28.0",
+    "@google-cloud/pubsub": "^5.3.0",
+    "@google/generative-ai": "^0.21.0",
+    "@mux/mux-node": "^9.0.1",
+    "@sendgrid/mail": "^8.1.6",
+    "ably": "^2.21.0",
+    "axios": "^1.14.0",
+    "express": "^4.21.0",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^7.2.5",
+    "genkit": "^1.28.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
+    "pg": "^8.13.0",
+    "rss-parser": "^3.13.0",
+    "stripe": "^17.7.0",
+    "twilio": "^5.0.0"
+  }
+}

@@ -1,0 +1,169 @@
+name: Mux Serial Deploy
+
+on:
+  workflow_call:
+    inputs:
+      project_id:
+        required: false
+        type: string
+        default: datafightcentral
+      region:
+        required: false
+        type: string
+        default: australia-southeast1
+      mux_base_url:
+        required: false
+        type: string
+        default: https://australia-southeast1-datafightcentral.cloudfunctions.net
+      functions:
+        required: false
+        type: string
+        default: testMuxAuth,createMuxLiveStream,resendMuxCredentialPack,getMuxPlaybackUrl,disableMuxStream,getMuxStreamStatus,getMuxVodReplay,muxWebhook
+      run_ppv_gate:
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      FIREBASE_TOKEN:
+        required: true
+      GCP_SA_KEY:
+        required: true
+      ENTITLEMENT_PROXY_URL:
+        required: false
+  workflow_dispatch:
+    inputs:
+      project_id:
+        description: Firebase project id
+        required: false
+        default: datafightcentral
+      region:
+        description: Cloud Functions region
+        required: false
+        default: australia-southeast1
+      mux_base_url:
+        description: Base URL for testMuxAuth smoke
+        required: false
+        default: https://australia-southeast1-datafightcentral.cloudfunctions.net
+      functions:
+        description: Optional comma-separated function list override
+        required: false
+        default: testMuxAuth,createMuxLiveStream,resendMuxCredentialPack,getMuxPlaybackUrl,disableMuxStream,getMuxStreamStatus,getMuxVodReplay,muxWebhook
+      run_ppv_gate:
+        description: Run the PPV production gate after Mux verification
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: mux-serial-deploy-${{ inputs.project_id || 'datafightcentral' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PROJECT_ID: ${{ inputs.project_id || 'datafightcentral' }}
+      REGION: ${{ inputs.region || 'australia-southeast1' }}
+      MUX_BASE_URL: ${{ inputs.mux_base_url || 'https://australia-southeast1-datafightcentral.cloudfunctions.net' }}
+      FUNCTION_LIST: ${{ inputs.functions || 'testMuxAuth,createMuxLiveStream,resendMuxCredentialPack,getMuxPlaybackUrl,disableMuxStream,getMuxStreamStatus,getMuxVodReplay,muxWebhook' }}
+      FIREBASE_TOKEN: ${{ secrets['FIREBASE_TOKEN'] }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate secret contract
+        shell: bash
+        env:
+          FIREBASE_TOKEN: ${{ secrets['FIREBASE_TOKEN'] }}
+          GCP_SA_KEY: ${{ secrets['GCP_SA_KEY'] }}
+        run: |
+          missing=0
+          for key in FIREBASE_TOKEN GCP_SA_KEY; do
+            if [ -z "${!key:-}" ]; then
+              echo "Missing required secret: ${key}" >&2
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+
+      - name: Install root dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install functions dependencies
+        working-directory: functions
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install CLI dependencies (secure — ignore scripts)
+        shell: bash
+        run: |
+          npm install -g firebase-tools --ignore-scripts
+          chmod +x scripts/deploy_mux_streaming_core.sh
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets['GCP_SA_KEY'] }}
+          create_credentials_file: true
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Resolve expected secret versions
+        id: secret_versions
+        shell: bash
+        run: |
+          latest_version() {
+            gcloud secrets versions list "$1" --project "$PROJECT_ID" --limit=1 --sort-by=~createTime --format='value(name.basename())'
+          }
+
+          echo "mux_token_id=$(latest_version MUX_TOKEN_ID)" >> "$GITHUB_OUTPUT"
+          echo "mux_token_secret=$(latest_version MUX_TOKEN_SECRET)" >> "$GITHUB_OUTPUT"
+          echo "mux_signing_key_id=$(latest_version MUX_SIGNING_KEY_ID)" >> "$GITHUB_OUTPUT"
+          echo "mux_signing_private_key=$(latest_version MUX_SIGNING_PRIVATE_KEY)" >> "$GITHUB_OUTPUT"
+          echo "mux_webhook_secret=$(latest_version MUX_WEBHOOK_SECRET)" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy Mux functions serially
+        shell: bash
+        run: |
+          IFS=',' read -r -a fn_array <<< "$FUNCTION_LIST"
+          scripts/deploy_mux_streaming_core.sh --project "$PROJECT_ID" "${fn_array[@]}"
+
+      - name: Verify deployed functions and smoke
+        shell: pwsh
+        run: |
+          ./scripts/verify_mux_streaming_core.ps1 `
+            -ProjectId "$env:PROJECT_ID" `
+            -Region "$env:REGION" `
+            -MuxBaseUrl "$env:MUX_BASE_URL" `
+            -ExpectedMuxTokenIdVersion "${{ steps.secret_versions.outputs.mux_token_id }}" `
+            -ExpectedMuxTokenSecretVersion "${{ steps.secret_versions.outputs.mux_token_secret }}" `
+            -ExpectedMuxSigningKeyIdVersion "${{ steps.secret_versions.outputs.mux_signing_key_id }}" `
+            -ExpectedMuxSigningPrivateKeyVersion "${{ steps.secret_versions.outputs.mux_signing_private_key }}" `
+            -ExpectedMuxWebhookSecretVersion "${{ steps.secret_versions.outputs.mux_webhook_secret }}"
+
+      - name: Run PPV production gate
+        if: ${{ inputs.run_ppv_gate }}
+        shell: pwsh
+        env:
+          ENTITLEMENTS_SERVICE_BASE_URL: ${{ secrets['ENTITLEMENT_PROXY_URL'] }}
+        run: |
+          ./scripts/ppv_production_gate.ps1 -MuxBaseUrl "$env:MUX_BASE_URL" -EntitlementsBaseUrl "$env:ENTITLEMENTS_SERVICE_BASE_URL"

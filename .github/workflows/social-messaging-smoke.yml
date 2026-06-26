@@ -1,0 +1,68 @@
+name: Social Messaging Smoke
+
+"on":
+  pull_request:
+    branches:
+      - master
+      - staging
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  social-messaging-smoke:
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Start ws-gateway stub
+        run: |
+          node services/ws-gateway/server.js &
+          echo $! > /tmp/ws_gateway.pid
+
+      - name: Start feed-service mock
+        run: |
+          node services/feed-service/mock-server.js &
+          echo $! > /tmp/feed_mock.pid
+
+      - name: Run social messaging smoke script
+        env:
+          BASE_URL: http://localhost:8080
+          WS_BASE: ws://localhost:8799/ws/social
+          FEED_USER_ID: demo_user
+          CLIP_CDN_URL: ""
+        run: bash ops/social_messaging_smoke.sh
+
+      - name: Run Playwright social smoke
+        env:
+          SOCIAL_API_BASE: http://localhost:8080
+          FEED_USER_ID: demo_user
+          CLIP_CDN_URL: ""
+          npm_config_ignore_scripts: "true"
+        run: node ./node_modules/playwright/cli.js test test/visual/social-messaging-smoke.spec.ts --project=chromium --reporter=line
+
+      - name: Stop ws-gateway stub
+        if: always()
+        run: |
+          if [ -f /tmp/ws_gateway.pid ]; then
+            kill "$(cat /tmp/ws_gateway.pid)" || true
+          fi
+          if [ -f /tmp/feed_mock.pid ]; then
+            kill "$(cat /tmp/feed_mock.pid)" || true
+          fi

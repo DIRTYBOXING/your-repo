@@ -1,0 +1,39 @@
+name: Smoke Tests
+
+on:
+  workflow_run:
+    workflows: ["CI Build Test Deploy"]
+    types: [completed]
+
+jobs:
+  run-smoke:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install newman (secure — ignore scripts)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm install newman --ignore-scripts
+
+      - name: Run smoke tests
+        run: node run-smoke-tests.js
+        env:
+          ATLAS_BASE: ${{ secrets.ATLAS_BASE }}
+          BOT_JWT: ${{ secrets.BOT_JWT }}
+          ADMIN_JWT: ${{ secrets.ADMIN_JWT }}
+          PROMOTER_JWT: ${{ secrets.PROMOTER_JWT }}
+          ATLAS_SERVICE_JWT: ${{ secrets.ATLAS_SERVICE_JWT }}
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-results
+          path: reports/smoke-results.json

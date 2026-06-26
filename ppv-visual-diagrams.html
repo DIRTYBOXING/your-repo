@@ -1,0 +1,3584 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>DFC Unicorn Godmode — PPV Visual Diagrams</title>
+    <meta
+      name="description"
+      content="Visual diagrams for the Digital Fitness Coach (DFC) ecosystem PPV checklist: integrations, data flows, AI bots, lifecycle loops, and rapid build pipeline."
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg0: #070a12;
+        --bg1: #0b1020;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.085);
+        --stroke: rgba(255, 255, 255, 0.14);
+        --stroke2: rgba(255, 255, 255, 0.2);
+        --text: #eaf0ff;
+        --muted: rgba(234, 240, 255, 0.72);
+        --faint: rgba(234, 240, 255, 0.52);
+
+        --a: #7cffb2; /* mint */
+        --b: #7aa7ff; /* sky */
+        --c: #ff6bd6; /* magenta */
+        --d: #ffb86b; /* amber */
+        --e: #b18cff; /* violet */
+        --danger: #ff4d6d;
+
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        --shadow2: 0 12px 28px rgba(0, 0, 0, 0.48);
+
+        --r12: 14px;
+        --r16: 18px;
+        --r20: 22px;
+
+        --max: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(
+            1200px 800px at 15% 10%,
+            rgba(124, 255, 178, 0.12),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 600px at 85% 20%,
+            rgba(122, 167, 255, 0.12),
+            transparent 62%
+          ),
+          radial-gradient(
+            900px 700px at 60% 92%,
+            rgba(255, 107, 214, 0.1),
+            transparent 62%
+          ),
+          linear-gradient(180deg, var(--bg0), var(--bg1));
+        font-family:
+          "IBM Plex Sans",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial;
+        overflow-x: hidden;
+      }
+
+      /* Subtle tech texture */
+      body:before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(
+            transparent 0 98%,
+            rgba(255, 255, 255, 0.05) 98% 100%
+          ),
+          linear-gradient(
+            90deg,
+            transparent 0 98%,
+            rgba(255, 255, 255, 0.04) 98% 100%
+          );
+        background-size:
+          36px 36px,
+          36px 36px;
+        opacity: 0.22;
+        mask-image: radial-gradient(
+          1200px 700px at 45% 15%,
+          #000 30%,
+          transparent 70%
+        );
+      }
+
+      a {
+        color: inherit;
+      }
+      .wrap {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 26px 18px 90px;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        backdrop-filter: blur(14px);
+        background: linear-gradient(
+          180deg,
+          rgba(7, 10, 18, 0.88),
+          rgba(7, 10, 18, 0.62)
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .nav {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 240px;
+        font-family: "Space Grotesk", ui-sans-serif, system-ui;
+        letter-spacing: 0.2px;
+      }
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background:
+          radial-gradient(
+            12px 12px at 30% 30%,
+            rgba(124, 255, 178, 0.85),
+            transparent 65%
+          ),
+          radial-gradient(
+            14px 14px at 70% 40%,
+            rgba(122, 167, 255, 0.85),
+            transparent 62%
+          ),
+          radial-gradient(
+            18px 18px at 55% 75%,
+            rgba(255, 107, 214, 0.75),
+            transparent 62%
+          ),
+          linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.14),
+            rgba(255, 255, 255, 0.02)
+          );
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+        position: relative;
+        overflow: hidden;
+      }
+      .logo:after {
+        content: "";
+        position: absolute;
+        inset: -40%;
+        background: conic-gradient(
+          from 210deg,
+          rgba(124, 255, 178, 0),
+          rgba(124, 255, 178, 0.45),
+          rgba(122, 167, 255, 0),
+          rgba(255, 107, 214, 0.4),
+          rgba(255, 184, 107, 0)
+        );
+        animation: spin 7.5s linear infinite;
+        opacity: 0.55;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(1turn);
+        }
+      }
+      .brand .t {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.05;
+      }
+      .brand .t b {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .brand .t span {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .tab {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        padding: 9px 11px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+        user-select: none;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .tab:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .tab[aria-selected="true"] {
+        color: var(--text);
+        border-color: rgba(124, 255, 178, 0.35);
+        background: linear-gradient(
+          180deg,
+          rgba(124, 255, 178, 0.12),
+          rgba(255, 255, 255, 0.05)
+        );
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+      }
+      .tab[aria-selected="true"] .dot {
+        background: var(--a);
+        box-shadow: 0 0 0 3px rgba(124, 255, 178, 0.16);
+      }
+
+      .hero {
+        padding: 28px 0 16px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+        align-items: stretch;
+      }
+      @media (max-width: 920px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        .brand {
+          min-width: unset;
+        }
+        .tabs {
+          justify-content: flex-start;
+        }
+      }
+      .hpanel {
+        border-radius: var(--r20);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.035)
+        );
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        position: relative;
+      }
+      .hpanel:before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        background:
+          radial-gradient(
+            700px 240px at 20% 0%,
+            rgba(124, 255, 178, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            600px 260px at 70% 20%,
+            rgba(122, 167, 255, 0.14),
+            transparent 62%
+          ),
+          radial-gradient(
+            700px 320px at 75% 90%,
+            rgba(255, 107, 214, 0.12),
+            transparent 65%
+          );
+        opacity: 0.9;
+        pointer-events: none;
+      }
+      .hcontent {
+        position: relative;
+        padding: 22px 22px 18px;
+      }
+      h1 {
+        margin: 0 0 10px;
+        font-family: "Space Grotesk", ui-sans-serif;
+        font-size: clamp(28px, 3.3vw, 44px);
+        line-height: 1.04;
+        letter-spacing: -0.6px;
+      }
+      .lede {
+        color: var(--muted);
+        margin: 0;
+        font-size: 14.5px;
+        line-height: 1.6;
+        max-width: 70ch;
+      }
+      .pillrow {
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pill {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .pill strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .aside {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .aside .kpi {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.18);
+        border-radius: var(--r16);
+        padding: 14px 14px 12px;
+      }
+      .kpi .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .kpi h3 {
+        margin: 0;
+        font-family: "Space Grotesk";
+        font-size: 14px;
+        letter-spacing: 0.2px;
+      }
+      .tag {
+        font-size: 11px;
+        color: var(--faint);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 6px 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .kpi p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 12.8px;
+      }
+      .kpi ul {
+        margin: 10px 0 0;
+        padding: 0 0 0 16px;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.55;
+      }
+      .kpi li {
+        margin: 6px 0;
+      }
+
+      main {
+        margin-top: 14px;
+      }
+      .section {
+        margin-top: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--r20);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.03)
+        );
+        box-shadow: var(--shadow2);
+        overflow: hidden;
+        position: relative;
+      }
+      .section header {
+        position: relative;
+        background: transparent;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: none;
+      }
+      .shead {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 16px 18px 14px;
+      }
+      .shead h2 {
+        margin: 0;
+        font-family: "Space Grotesk";
+        letter-spacing: -0.3px;
+        font-size: clamp(16px, 2.1vw, 22px);
+        line-height: 1.1;
+      }
+      .shead p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 12.8px;
+        max-width: 80ch;
+        line-height: 1.55;
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .btn {
+        appearance: none;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 12px;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+        color: var(--text);
+        background: linear-gradient(
+          180deg,
+          rgba(124, 255, 178, 0.16),
+          rgba(255, 255, 255, 0.06)
+        );
+        border: 1px solid rgba(124, 255, 178, 0.28);
+        cursor: pointer;
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        transition:
+          transform 0.15s ease,
+          filter 0.2s ease,
+          background 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.06);
+      }
+      .btn:active {
+        transform: translateY(0px) scale(0.99);
+      }
+      .btn.secondary {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.14);
+        color: var(--muted);
+      }
+      .btn.secondary:hover {
+        border-color: rgba(255, 255, 255, 0.22);
+        color: var(--text);
+      }
+      .btn .ic {
+        width: 14px;
+        height: 14px;
+        display: inline-block;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 16px 16px 18px;
+      }
+      @media (max-width: 980px) {
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Diagram frame */
+      .diagram {
+        border-radius: var(--r16);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+        position: relative;
+        min-height: 320px;
+      }
+      .diagram .cap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 12px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.02)
+        );
+      }
+      .diagram .cap b {
+        font-family: "Space Grotesk";
+        font-size: 13px;
+        letter-spacing: 0.2px;
+      }
+      .diagram .cap span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .canvas {
+        padding: 12px;
+      }
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .legend {
+        padding: 10px 12px 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .key {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .sw {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .sw.a {
+        background: rgba(124, 255, 178, 0.8);
+      }
+      .sw.b {
+        background: rgba(122, 167, 255, 0.85);
+      }
+      .sw.c {
+        background: rgba(255, 107, 214, 0.85);
+      }
+      .sw.d {
+        background: rgba(255, 184, 107, 0.85);
+      }
+      .sw.e {
+        background: rgba(177, 140, 255, 0.85);
+      }
+
+      /* Reveal */
+      .reveal {
+        opacity: 0;
+        transform: translateY(10px);
+        filter: blur(0.2px);
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+          filter 0.7s ease;
+      }
+
+      footer {
+        margin-top: 22px;
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.6;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 16px 4px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      code.k {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(234, 240, 255, 0.88);
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="t">
+            <b>DFC Unicorn Godmode</b>
+            <span
+              >PPV visuals for rapid builds (integrations + lifecycle +
+              AI)</span
+            >
+          </div>
+        </div>
+
+        <nav class="tabs" aria-label="Diagram sections">
+          <button class="tab" data-jump="#system" aria-selected="true">
+            <span class="dot"></span>System Map
+          </button>
+          <button class="tab" data-jump="#flows">
+            <span class="dot"></span>Data Flows
+          </button>
+          <button class="tab" data-jump="#ppv">
+            <span class="dot"></span>PPV Gates
+          </button>
+          <button class="tab" data-jump="#future">
+            <span class="dot"></span>Future Tech
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <section class="hero">
+        <div class="hpanel reveal">
+          <div class="hcontent">
+            <h1>
+              Visual diagrams for "every PPV part" — integrations, layouts, and
+              checks.
+            </h1>
+            <p class="lede">
+              Built for <strong>rapid builds</strong>: quick alignment, fewer
+              meetings, faster execution. These diagrams show how
+              <strong>every app/device</strong> feeds the DFC core (training
+              modules, camps, charts/graphs, bots) and how the
+              <strong>daily life cycle loop</strong> (mood, sleep, diet,
+              hydration, training, recovery) drives decisions.
+            </p>
+            <div class="pillrow" aria-label="Highlights">
+              <span class="pill"
+                ><strong>Integrate everything</strong> → normalize → score →
+                coach</span
+              >
+              <span class="pill"
+                ><strong>PPV gates</strong> → build → verify → launch</span
+              >
+              <span class="pill"
+                ><strong>Future-proof</strong> via adapters + capability
+                registry</span
+              >
+              <span class="pill"
+                ><strong>Security</strong> by default (scopes, consent,
+                audit)</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <aside class="aside">
+          <div class="kpi reveal">
+            <div class="top">
+              <h3>What these visuals cover</h3>
+              <span class="tag">Rapid build pack</span>
+            </div>
+            <ul>
+              <li>
+                Device/App integrations (Fitbit, Google Fit, Apple Health,
+                ECG/EEG/BP, etc.)
+              </li>
+              <li>
+                DFC modules: training, camps, charts/graphs, bots, notifications
+              </li>
+              <li>
+                Daily loop: mood • sleep • diet • hydration • training •
+                recovery
+              </li>
+              <li>PPV: pre-prod gates + production readiness checks</li>
+            </ul>
+          </div>
+
+          <div class="kpi reveal">
+            <div class="top">
+              <h3>How to use</h3>
+              <span class="tag">10-minute alignment</span>
+            </div>
+            <p>
+              Pick a diagram. Confirm owners. Confirm what's "in" for this
+              build. Then turn each box into Jira/Epics with "definition of
+              done" matching the PPV gates.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <main>
+        <!-- SYSTEM -->
+        <section id="system" class="section reveal">
+          <header>
+            <div class="shead">
+              <div>
+                <h2>1) System Map — "Everything integrates into DFC"</h2>
+                <p>
+                  High-level architecture: devices/apps → ingestion/adapters →
+                  DFC brain → modules → experiences (charts, bots, camps).
+                </p>
+              </div>
+              <div class="controls">
+                <button class="btn secondary" data-download="systemMap">
+                  <span class="ic" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 3v10m0 0 4-4m-4 4-4-4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
+                  Export SVG
+                </button>
+                <button class="btn" data-focus="#system">Focus</button>
+              </div>
+            </div>
+          </header>
+
+          <div class="grid2">
+            <figure class="diagram" aria-label="System map diagram">
+              <div class="cap">
+                <b>DFC Ecosystem Integration Map</b>
+                <span>apps • devices • AI • training • analytics</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="systemMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="System map showing integrations flowing into DFC core and modules"
+                >
+                  <defs>
+                    <linearGradient id="gPanel" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="rgba(255,255,255,.10)" />
+                      <stop offset="1" stop-color="rgba(255,255,255,.03)" />
+                    </linearGradient>
+                    <linearGradient id="gCore" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="rgba(124,255,178,.18)" />
+                      <stop offset="1" stop-color="rgba(122,167,255,.12)" />
+                    </linearGradient>
+                    <filter
+                      id="softShadow"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="18"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arrowMint"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto-start-reverse"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(124,255,178,.85)"
+                      />
+                    </marker>
+                    <marker
+                      id="arrowBlue"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto-start-reverse"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(122,167,255,.85)"
+                      />
+                    </marker>
+                    <marker
+                      id="arrowPink"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto-start-reverse"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(255,107,214,.85)"
+                      />
+                    </marker>
+                    <style>
+                      .box {
+                        fill: url(#gPanel);
+                        stroke: rgba(255, 255, 255, 0.18);
+                        stroke-width: 1.2;
+                      }
+                      .core {
+                        fill: url(#gCore);
+                        stroke: rgba(124, 255, 178, 0.3);
+                        stroke-width: 1.4;
+                      }
+                      .title {
+                        font:
+                          700 18px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                        letter-spacing: 0.2px;
+                      }
+                      .sub {
+                        font:
+                          500 13px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .tiny {
+                        font:
+                          600 12px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.7);
+                      }
+                      .chip {
+                        font:
+                          700 12px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.88);
+                      }
+                      .lineMint {
+                        stroke: rgba(124, 255, 178, 0.72);
+                        stroke-width: 2.4;
+                        fill: none;
+                        marker-end: url(#arrowMint);
+                      }
+                      .lineBlue {
+                        stroke: rgba(122, 167, 255, 0.72);
+                        stroke-width: 2.4;
+                        fill: none;
+                        marker-end: url(#arrowBlue);
+                      }
+                      .linePink {
+                        stroke: rgba(255, 107, 214, 0.7);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arrowPink);
+                      }
+                      .dash {
+                        stroke-dasharray: 8 7;
+                      }
+                    </style>
+                  </defs>
+
+                  <!-- Left: Sources -->
+                  <g filter="url(#softShadow)">
+                    <rect
+                      class="box"
+                      x="40"
+                      y="70"
+                      rx="18"
+                      ry="18"
+                      width="320"
+                      height="510"
+                    />
+                    <text class="title" x="66" y="116">
+                      Sources (Everything)
+                    </text>
+                    <text class="sub" x="66" y="142">
+                      Apps + Devices + Sensors + Inputs
+                    </text>
+
+                    <!-- Chips -->
+                    <g>
+                      <rect
+                        x="66"
+                        y="170"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(124,255,178,.10)"
+                        stroke="rgba(124,255,178,.25)"
+                      />
+                      <text class="chip" x="86" y="198">Wearables</text>
+                      <text class="sub" x="175" y="198">
+                        watch • band • ring • chest strap
+                      </text>
+
+                      <rect
+                        x="66"
+                        y="226"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(122,167,255,.10)"
+                        stroke="rgba(122,167,255,.25)"
+                      />
+                      <text class="chip" x="86" y="254">Health Sensors</text>
+                      <text class="sub" x="190" y="254">
+                        ECG • EEG • BP • SpO₂ • HRV
+                      </text>
+
+                      <rect
+                        x="66"
+                        y="282"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(255,107,214,.10)"
+                        stroke="rgba(255,107,214,.25)"
+                      />
+                      <text class="chip" x="86" y="310">
+                        Phones + OS Health
+                      </text>
+                      <text class="sub" x="212" y="310">
+                        Apple Health • Google Fit
+                      </text>
+
+                      <rect
+                        x="66"
+                        y="338"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(255,184,107,.10)"
+                        stroke="rgba(255,184,107,.28)"
+                      />
+                      <text class="chip" x="86" y="366">
+                        Nutrition + Hydration
+                      </text>
+                      <text class="sub" x="222" y="366">
+                        diet logs • smart bottle
+                      </text>
+
+                      <rect
+                        x="66"
+                        y="394"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(177,140,255,.10)"
+                        stroke="rgba(177,140,255,.25)"
+                      />
+                      <text class="chip" x="86" y="422">Sleep + Mood</text>
+                      <text class="sub" x="190" y="422">
+                        sleep stages • journaling
+                      </text>
+
+                      <rect
+                        x="66"
+                        y="450"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(255,255,255,.06)"
+                        stroke="rgba(255,255,255,.16)"
+                      />
+                      <text class="chip" x="86" y="478">Training Devices</text>
+                      <text class="sub" x="205" y="478">
+                        treadmill • bike • gym equip
+                      </text>
+
+                      <rect
+                        x="66"
+                        y="506"
+                        width="268"
+                        height="44"
+                        rx="14"
+                        fill="rgba(255,255,255,.05)"
+                        stroke="rgba(255,255,255,.14)"
+                      />
+                      <text class="chip" x="86" y="534">Manual Inputs</text>
+                      <text class="sub" x="195" y="534">
+                        RPE • soreness • notes • goals
+                      </text>
+                    </g>
+                  </g>
+
+                  <!-- Middle: Ingestion -->
+                  <g filter="url(#softShadow)">
+                    <rect
+                      class="box"
+                      x="410"
+                      y="110"
+                      rx="18"
+                      ry="18"
+                      width="320"
+                      height="430"
+                    />
+                    <text class="title" x="436" y="156">Integration Layer</text>
+                    <text class="sub" x="436" y="182">
+                      Adapters • Consent • Normalization
+                    </text>
+
+                    <rect
+                      x="436"
+                      y="214"
+                      width="268"
+                      height="62"
+                      rx="16"
+                      fill="rgba(255,255,255,.05)"
+                      stroke="rgba(255,255,255,.15)"
+                    />
+                    <text class="tiny" x="456" y="242">Connectors / SDKs</text>
+                    <text class="sub" x="456" y="263">
+                      Fitbit • Google Fit • Apple Health • OEMs
+                    </text>
+
+                    <rect
+                      x="436"
+                      y="292"
+                      width="268"
+                      height="62"
+                      rx="16"
+                      fill="rgba(255,255,255,.05)"
+                      stroke="rgba(255,255,255,.15)"
+                    />
+                    <text class="tiny" x="456" y="320">Consent + Scopes</text>
+                    <text class="sub" x="456" y="341">
+                      what/when/why is collected (audit)
+                    </text>
+
+                    <rect
+                      x="436"
+                      y="370"
+                      width="268"
+                      height="62"
+                      rx="16"
+                      fill="rgba(255,255,255,.05)"
+                      stroke="rgba(255,255,255,.15)"
+                    />
+                    <text class="tiny" x="456" y="398">Normalization</text>
+                    <text class="sub" x="456" y="419">
+                      units • timestamps • dedupe • schema
+                    </text>
+
+                    <rect
+                      x="436"
+                      y="448"
+                      width="268"
+                      height="62"
+                      rx="16"
+                      fill="rgba(255,255,255,.05)"
+                      stroke="rgba(255,255,255,.15)"
+                    />
+                    <text class="tiny" x="456" y="476">Event Bus</text>
+                    <text class="sub" x="456" y="497">
+                      stream + batch (replayable)
+                    </text>
+                  </g>
+
+                  <!-- Right: DFC Core -->
+                  <g filter="url(#softShadow)">
+                    <rect
+                      class="core"
+                      x="780"
+                      y="70"
+                      rx="18"
+                      ry="18"
+                      width="380"
+                      height="510"
+                    />
+                    <text class="title" x="806" y="116">DFC Core (Brain)</text>
+                    <text class="sub" x="806" y="142">
+                      scoring • personalization • safety • orchestration
+                    </text>
+
+                    <rect
+                      x="806"
+                      y="176"
+                      width="328"
+                      height="76"
+                      rx="18"
+                      fill="rgba(0,0,0,.22)"
+                      stroke="rgba(124,255,178,.24)"
+                    />
+                    <text class="tiny" x="828" y="208">State + Profile</text>
+                    <text class="sub" x="828" y="230">
+                      baseline • goals • constraints • history
+                    </text>
+
+                    <rect
+                      x="806"
+                      y="268"
+                      width="328"
+                      height="76"
+                      rx="18"
+                      fill="rgba(0,0,0,.22)"
+                      stroke="rgba(122,167,255,.24)"
+                    />
+                    <text class="tiny" x="828" y="300">Decision Engine</text>
+                    <text class="sub" x="828" y="322">
+                      readiness score • plan adjustments • guardrails
+                    </text>
+
+                    <rect
+                      x="806"
+                      y="360"
+                      width="328"
+                      height="76"
+                      rx="18"
+                      fill="rgba(0,0,0,.22)"
+                      stroke="rgba(255,107,214,.22)"
+                    />
+                    <text class="tiny" x="828" y="392">
+                      AI/Bots Orchestrator
+                    </text>
+                    <text class="sub" x="828" y="414">
+                      chat • inline coaching • nudges • escalation
+                    </text>
+
+                    <rect
+                      x="806"
+                      y="452"
+                      width="328"
+                      height="104"
+                      rx="18"
+                      fill="rgba(0,0,0,.22)"
+                      stroke="rgba(255,184,107,.22)"
+                    />
+                    <text class="tiny" x="828" y="484">Modules</text>
+                    <text class="sub" x="828" y="505">
+                      Training • Camps • Charts/Graphs • Notifications
+                    </text>
+                    <text class="sub" x="828" y="526">
+                      Recovery • Diet guidance • Hydration • Sleep protocol
+                    </text>
+                  </g>
+
+                  <!-- Arrows from sources to integration -->
+                  <path
+                    class="lineMint"
+                    d="M360 210 C 388 210, 390 230, 410 240"
+                  />
+                  <path
+                    class="lineBlue"
+                    d="M360 254 C 388 254, 390 270, 410 300"
+                  />
+                  <path
+                    class="linePink"
+                    d="M360 310 C 388 310, 390 310, 410 320"
+                  />
+                  <path
+                    class="linePink dash"
+                    d="M360 366 C 388 366, 390 348, 410 390"
+                  />
+                  <path
+                    class="lineBlue dash"
+                    d="M360 422 C 388 422, 390 410, 410 468"
+                  />
+                  <path
+                    class="lineMint dash"
+                    d="M360 478 C 388 478, 390 470, 410 500"
+                  />
+                  <path
+                    class="lineBlue"
+                    d="M360 534 C 388 534, 395 520, 410 510"
+                  />
+
+                  <!-- Arrows from integration to core -->
+                  <path
+                    class="lineMint"
+                    d="M730 248 C 760 248, 765 220, 780 210"
+                  />
+                  <path
+                    class="lineBlue"
+                    d="M730 320 C 760 320, 765 300, 780 300"
+                  />
+                  <path
+                    class="linePink"
+                    d="M730 398 C 760 398, 765 382, 780 392"
+                  />
+                  <path
+                    class="lineMint dash"
+                    d="M730 476 C 760 476, 765 490, 780 500"
+                  />
+
+                  <!-- Footer note -->
+                  <text class="sub" x="40" y="625">
+                    Rapid build hint: treat each box as an Epic. PPV gates
+                    define "done" before shipping.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"
+                  ><span class="sw a"></span>Physiology & readiness</span
+                >
+                <span class="key"
+                  ><span class="sw b"></span>Activity & performance</span
+                >
+                <span class="key"
+                  ><span class="sw c"></span>Conversation & coaching</span
+                >
+                <span class="key"
+                  ><span class="sw d"></span>Nutrition & recovery ops</span
+                >
+                <span class="key"
+                  ><span class="sw e"></span>Sleep & mood signals</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure class="diagram" aria-label="Daily loop diagram">
+              <div class="cap">
+                <b>Daily Life Cycle Loop</b>
+                <span>collect → score → coach → adapt</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="dailyLoop"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="Circular daily loop for mood sleep diet hydration training recovery"
+                >
+                  <defs>
+                    <filter
+                      id="glow"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="0"
+                        stdDeviation="10"
+                        flood-color="rgba(124,255,178,.25)"
+                      />
+                      <feDropShadow
+                        dx="0"
+                        dy="18"
+                        stdDeviation="16"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arrowLite"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(234,240,255,.78)"
+                      />
+                    </marker>
+                    <style>
+                      .ring {
+                        fill: none;
+                        stroke: rgba(255, 255, 255, 0.12);
+                        stroke-width: 18;
+                      }
+                      .node {
+                        fill: rgba(255, 255, 255, 0.06);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .nodeTitle {
+                        font:
+                          800 16px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .nodeSub {
+                        font:
+                          500 12.5px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.7);
+                      }
+                      .centerTitle {
+                        font:
+                          800 22px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .centerSub {
+                        font:
+                          500 13px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.74);
+                      }
+                      .arrow {
+                        stroke: rgba(234, 240, 255, 0.55);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arrowLite);
+                      }
+                    </style>
+                  </defs>
+
+                  <!-- Ring -->
+                  <circle cx="600" cy="320" r="210" class="ring" />
+
+                  <!-- Center -->
+                  <g filter="url(#glow)">
+                    <rect
+                      x="420"
+                      y="250"
+                      width="360"
+                      height="140"
+                      rx="24"
+                      fill="rgba(0,0,0,.20)"
+                      stroke="rgba(124,255,178,.22)"
+                    />
+                    <text
+                      x="600"
+                      y="298"
+                      text-anchor="middle"
+                      class="centerTitle"
+                    >
+                      DFC Readiness Score
+                    </text>
+                    <text
+                      x="600"
+                      y="322"
+                      text-anchor="middle"
+                      class="centerSub"
+                    >
+                      today's plan = training load + recovery protocol
+                    </text>
+                    <text
+                      x="600"
+                      y="346"
+                      text-anchor="middle"
+                      class="centerSub"
+                    >
+                      nudges + guardrails + "why" explanation
+                    </text>
+                  </g>
+
+                  <!-- Nodes -->
+                  <!-- Mood -->
+                  <g>
+                    <rect
+                      class="node"
+                      x="120"
+                      y="140"
+                      width="260"
+                      height="94"
+                      rx="18"
+                    />
+                    <text class="nodeTitle" x="148" y="178">Mood / Stress</text>
+                    <text class="nodeSub" x="148" y="202">
+                      journals • HRV proxy • signals
+                    </text>
+                  </g>
+                  <!-- Sleep -->
+                  <g>
+                    <rect
+                      class="node"
+                      x="470"
+                      y="60"
+                      width="260"
+                      height="94"
+                      rx="18"
+                    />
+                    <text class="nodeTitle" x="498" y="98">Sleep</text>
+                    <text class="nodeSub" x="498" y="122">
+                      duration • stages • consistency
+                    </text>
+                  </g>
+                  <!-- Diet -->
+                  <g>
+                    <rect
+                      class="node"
+                      x="820"
+                      y="140"
+                      width="260"
+                      height="94"
+                      rx="18"
+                    />
+                    <text class="nodeTitle" x="848" y="178">Diet</text>
+                    <text class="nodeSub" x="848" y="202">
+                      macros • timing • adherence
+                    </text>
+                  </g>
+                  <!-- Hydration -->
+                  <g>
+                    <rect
+                      class="node"
+                      x="900"
+                      y="360"
+                      width="260"
+                      height="94"
+                      rx="18"
+                    />
+                    <text class="nodeTitle" x="928" y="398">Hydration</text>
+                    <text class="nodeSub" x="928" y="422">
+                      ml/day • electrolytes • reminders
+                    </text>
+                  </g>
+                  <!-- Training -->
+                  <g>
+                    <rect
+                      class="node"
+                      x="680"
+                      y="510"
+                      width="260"
+                      height="94"
+                      rx="18"
+                    />
+                    <text class="nodeTitle" x="708" y="548">Training</text>
+                    <text class="nodeSub" x="708" y="572">
+                      volume • intensity • technique
+                    </text>
+                  </g>
+                  <!-- Recovery -->
+                  <g>
+                    <rect
+                      class="node"
+                      x="260"
+                      y="510"
+                      width="260"
+                      height="94"
+                      rx="18"
+                    />
+                    <text class="nodeTitle" x="288" y="548">Recovery</text>
+                    <text class="nodeSub" x="288" y="572">
+                      rest • mobility • soreness • BP
+                    </text>
+                  </g>
+
+                  <!-- Arrows around ring (clockwise) -->
+                  <path class="arrow" d="M 365 140 C 445 95, 505 80, 560 78" />
+                  <path class="arrow" d="M 730 78 C 800 80, 860 104, 930 148" />
+                  <path
+                    class="arrow"
+                    d="M 1080 234 C 1120 290, 1120 330, 1120 360"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 1120 454 C 1100 500, 1030 530, 930 560"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 820 604 C 740 622, 650 620, 560 610"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 260 604 C 180 580, 130 520, 120 460"
+                  />
+
+                  <!-- Feed lines into center -->
+                  <path
+                    class="arrow"
+                    d="M 380 190 C 440 220, 470 250, 470 280"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 600 154 C 600 185, 600 220, 600 250"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 820 190 C 760 220, 730 250, 730 280"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 900 407 C 835 392, 780 370, 760 350"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 760 510 C 720 455, 690 410, 680 390"
+                  />
+                  <path
+                    class="arrow"
+                    d="M 390 510 C 430 455, 470 410, 520 390"
+                  />
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build hint: ship the loop first. Everything else
+                    (camps, advanced AI, future devices) plugs into the same
+                    scoring + orchestration.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"
+                  ><span class="sw a"></span>Readiness scoring</span
+                >
+                <span class="key"
+                  ><span class="sw b"></span>Adaptive training</span
+                >
+                <span class="key"
+                  ><span class="sw c"></span>Bot nudges + explanations</span
+                >
+                <span class="key"
+                  ><span class="sw d"></span>Recovery protocols</span
+                >
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- FLOWS -->
+        <section id="flows" class="section reveal">
+          <header>
+            <div class="shead">
+              <div>
+                <h2>
+                  2) Data Flows — ingestion → normalization → storage → AI →
+                  experiences
+                </h2>
+                <p>
+                  Shows the "truth pipeline" (what's collected, where it goes,
+                  and what triggers charts, bots, and training changes).
+                </p>
+              </div>
+              <div class="controls">
+                <button class="btn secondary" data-download="flowMap">
+                  <span class="ic" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 3v10m0 0 4-4m-4 4-4-4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
+                  Export SVG
+                </button>
+                <button class="btn" data-focus="#flows">Focus</button>
+              </div>
+            </div>
+          </header>
+
+          <div class="grid2">
+            <figure class="diagram" aria-label="Data flow diagram">
+              <div class="cap">
+                <b>Truth Pipeline (Rapid Build Default)</b>
+                <span>stream + batch + audit</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="flowMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="Flow diagram showing data ingestion to AI and dashboards"
+                >
+                  <defs>
+                    <filter
+                      id="shadow2"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="16"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arr"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(234,240,255,.70)"
+                      />
+                    </marker>
+                    <style>
+                      .b {
+                        fill: rgba(255, 255, 255, 0.06);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .h {
+                        font:
+                          800 16px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .p {
+                        font:
+                          500 12.8px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .a {
+                        stroke: rgba(234, 240, 255, 0.55);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arr);
+                      }
+                      .mint {
+                        stroke: rgba(124, 255, 178, 0.65);
+                      }
+                      .blue {
+                        stroke: rgba(122, 167, 255, 0.65);
+                      }
+                      .pink {
+                        stroke: rgba(255, 107, 214, 0.6);
+                      }
+                      .amber {
+                        stroke: rgba(255, 184, 107, 0.62);
+                      }
+                    </style>
+                  </defs>
+
+                  <!-- Left column -->
+                  <g filter="url(#shadow2)">
+                    <rect
+                      class="b"
+                      x="40"
+                      y="70"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="66" y="110">Collectors</text>
+                    <text class="p" x="66" y="134">
+                      SDKs • OAuth • Webhooks • BLE
+                    </text>
+                    <text class="p" x="66" y="156">
+                      Fitbit/Google Fit/Apple Health
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="40"
+                      y="220"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="66" y="260">Ingress API</text>
+                    <text class="p" x="66" y="284">
+                      /devices/* • /daily/* • /training/*
+                    </text>
+                    <text class="p" x="66" y="306">
+                      rate limits • validation • signing
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="40"
+                      y="370"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="66" y="410">Consent Ledger</text>
+                    <text class="p" x="66" y="434">
+                      who/what/when/why (audit)
+                    </text>
+                    <text class="p" x="66" y="456">
+                      scopes • retention • export/delete
+                    </text>
+                  </g>
+
+                  <!-- Middle column -->
+                  <g filter="url(#shadow2)">
+                    <rect
+                      class="b"
+                      x="455"
+                      y="120"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="481" y="160">Normalizer</text>
+                    <text class="p" x="481" y="184">
+                      schema • units • timestamps
+                    </text>
+                    <text class="p" x="481" y="206">
+                      dedupe • device quirks
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="455"
+                      y="270"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="481" y="310">Event Bus</text>
+                    <text class="p" x="481" y="334">
+                      stream (near-real-time)
+                    </text>
+                    <text class="p" x="481" y="356">
+                      batch (nightly backfills)
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="455"
+                      y="420"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="481" y="460">Storage</text>
+                    <text class="p" x="481" y="484">
+                      time-series • relational • object
+                    </text>
+                    <text class="p" x="481" y="506">
+                      hot vs cold • retention policies
+                    </text>
+                  </g>
+
+                  <!-- Right column -->
+                  <g filter="url(#shadow2)">
+                    <rect
+                      class="b"
+                      x="870"
+                      y="90"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="896" y="130">AI / Scoring</text>
+                    <text class="p" x="896" y="154">
+                      readiness • anomaly detection
+                    </text>
+                    <text class="p" x="896" y="176">
+                      personalization • safeguards
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="870"
+                      y="245"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="896" y="285">DFC Modules</text>
+                    <text class="p" x="896" y="309">
+                      training plans • camps • content
+                    </text>
+                    <text class="p" x="896" y="331">
+                      notifications • recovery protocols
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="870"
+                      y="400"
+                      rx="18"
+                      width="290"
+                      height="120"
+                    />
+                    <text class="h" x="896" y="440">Experiences</text>
+                    <text class="p" x="896" y="464">
+                      charts/graphs • bot chat • daily plan
+                    </text>
+                    <text class="p" x="896" y="486">
+                      coach insights • exports
+                    </text>
+                  </g>
+
+                  <!-- Arrows -->
+                  <path
+                    class="a mint"
+                    d="M 330 130 C 390 130, 410 150, 455 160"
+                  />
+                  <path
+                    class="a blue"
+                    d="M 330 280 C 400 280, 410 250, 455 210"
+                  />
+                  <path
+                    class="a amber"
+                    d="M 330 430 C 390 430, 415 430, 455 450"
+                  />
+
+                  <path
+                    class="a blue"
+                    d="M 745 180 C 810 180, 830 150, 870 150"
+                  />
+                  <path
+                    class="a pink"
+                    d="M 745 330 C 810 330, 830 300, 870 305"
+                  />
+                  <path
+                    class="a amber"
+                    d="M 745 480 C 810 480, 830 470, 870 460"
+                  />
+
+                  <!-- Internal -->
+                  <path class="a" d="M 600 240 C 600 255, 600 260, 600 270" />
+                  <path class="a" d="M 600 390 C 600 405, 600 410, 600 420" />
+                  <path
+                    class="a"
+                    d="M 1015 210 C 1015 230, 1015 235, 1015 245"
+                  />
+                  <path
+                    class="a"
+                    d="M 1015 365 C 1015 385, 1015 390, 1015 400"
+                  />
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build hint: insist on a consent ledger + normalization
+                    early — it prevents rework as new devices and future tech
+                    arrive.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"
+                  ><span class="sw a"></span>Validated ingestion</span
+                >
+                <span class="key"
+                  ><span class="sw b"></span>Near-real-time stream</span
+                >
+                <span class="key"><span class="sw c"></span>AI decisions</span>
+                <span class="key"
+                  ><span class="sw d"></span>Audit + retention</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure class="diagram" aria-label="Integration strategy diagram">
+              <div class="cap">
+                <b>Integration Strategy (Future-proof)</b>
+                <span>adapters + capability registry</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="adapterMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="Adapter strategy showing device capabilities and mapping"
+                >
+                  <defs>
+                    <filter
+                      id="shadow3"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="16"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arr2"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(124,255,178,.75)"
+                      />
+                    </marker>
+                    <style>
+                      .b {
+                        fill: rgba(255, 255, 255, 0.06);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .core {
+                        fill: rgba(124, 255, 178, 0.09);
+                        stroke: rgba(124, 255, 178, 0.22);
+                        stroke-width: 1.2;
+                      }
+                      .h {
+                        font:
+                          800 16px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .p {
+                        font:
+                          500 12.8px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .mono {
+                        font:
+                          700 12.2px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.8);
+                      }
+                      .a {
+                        stroke: rgba(124, 255, 178, 0.6);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arr2);
+                      }
+                      .dash {
+                        stroke-dasharray: 8 7;
+                      }
+                    </style>
+                  </defs>
+
+                  <!-- Devices -->
+                  <g filter="url(#shadow3)">
+                    <rect
+                      class="b"
+                      x="40"
+                      y="70"
+                      rx="18"
+                      width="340"
+                      height="220"
+                    />
+                    <text class="h" x="66" y="110">Devices / Apps (Any)</text>
+                    <text class="p" x="66" y="136">
+                      Fitbit • Apple Watch • Garmin • WHOOP
+                    </text>
+                    <text class="p" x="66" y="158">
+                      EEG headset • ECG patch • BP cuff
+                    </text>
+                    <text class="p" x="66" y="180">
+                      smart bottle • smart scale • gym equipment
+                    </text>
+                    <text class="p" x="66" y="202">
+                      future sensors + chips (NVIDIA/edge AI)
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="40"
+                      y="320"
+                      rx="18"
+                      width="340"
+                      height="240"
+                    />
+                    <text class="h" x="66" y="360">Adapter Contracts</text>
+                    <text class="p" x="66" y="386">
+                      Each integration implements:
+                    </text>
+                    <text class="mono" x="66" y="412">• authenticate()</text>
+                    <text class="mono" x="66" y="434">• pull()/webhook()</text>
+                    <text class="mono" x="66" y="456">• mapToCanonical()</text>
+                    <text class="mono" x="66" y="478">• validate()</text>
+                    <text class="mono" x="66" y="500">• backfill()</text>
+                    <text class="mono" x="66" y="522">• capabilities()</text>
+                  </g>
+
+                  <!-- Registry -->
+                  <g filter="url(#shadow3)">
+                    <rect
+                      class="core"
+                      x="430"
+                      y="110"
+                      rx="18"
+                      width="350"
+                      height="420"
+                    />
+                    <text class="h" x="456" y="150">Capability Registry</text>
+                    <text class="p" x="456" y="176">
+                      The "future-proof" key
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="456"
+                      y="210"
+                      rx="16"
+                      width="298"
+                      height="86"
+                    />
+                    <text class="mono" x="476" y="240">capabilities:</text>
+                    <text class="p" x="476" y="262">
+                      heart_rate, hrv, sleep, ecg, eeg, bp,
+                    </text>
+                    <text class="p" x="476" y="282">
+                      hydration, steps, gps, training_load…
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="456"
+                      y="312"
+                      rx="16"
+                      width="298"
+                      height="86"
+                    />
+                    <text class="mono" x="476" y="342">
+                      quality + provenance:
+                    </text>
+                    <text class="p" x="476" y="364">
+                      sampling_rate, confidence, device_id,
+                    </text>
+                    <text class="p" x="476" y="384">
+                      firmware, algorithm_version
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="456"
+                      y="414"
+                      rx="16"
+                      width="298"
+                      height="96"
+                    />
+                    <text class="mono" x="476" y="444">routing rules:</text>
+                    <text class="p" x="476" y="466">
+                      which models/services can consume what
+                    </text>
+                    <text class="p" x="476" y="486">
+                      based on consent + risk classification
+                    </text>
+                  </g>
+
+                  <!-- Core -->
+                  <g filter="url(#shadow3)">
+                    <rect
+                      class="b"
+                      x="840"
+                      y="120"
+                      rx="18"
+                      width="320"
+                      height="190"
+                    />
+                    <text class="h" x="866" y="160">DFC Core</text>
+                    <text class="p" x="866" y="186">
+                      consumes canonical events
+                    </text>
+                    <text class="p" x="866" y="208">
+                      ignores device-specific quirks
+                    </text>
+                    <text class="p" x="866" y="230">
+                      safe defaults + guardrails
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="840"
+                      y="340"
+                      rx="18"
+                      width="320"
+                      height="190"
+                    />
+                    <text class="h" x="866" y="380">Modules + Bots</text>
+                    <text class="p" x="866" y="406">
+                      training • camps • charts • notifications
+                    </text>
+                    <text class="p" x="866" y="428">
+                      daily plan • chat coach • safety bot
+                    </text>
+                    <text class="p" x="866" y="450">
+                      future model swaps without rewrites
+                    </text>
+                  </g>
+
+                  <!-- Arrows -->
+                  <path class="a" d="M 380 420 C 415 420, 420 420, 430 420" />
+                  <path
+                    class="a dash"
+                    d="M 380 470 C 415 470, 420 470, 430 470"
+                  />
+
+                  <path class="a" d="M 780 240 C 820 240, 825 220, 840 210" />
+                  <path class="a" d="M 780 470 C 820 470, 825 450, 840 430" />
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build hint: "capability registry + canonical schema"
+                    means new tech is an adapter — not a rewrite.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"
+                  ><span class="sw a"></span>Canonical events</span
+                >
+                <span class="key"
+                  ><span class="sw b"></span>Device-agnostic core</span
+                >
+                <span class="key"
+                  ><span class="sw d"></span>Quality/provenance</span
+                >
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- PPV -->
+        <section id="ppv" class="section reveal">
+          <header>
+            <div class="shead">
+              <div>
+                <h2>3) PPV Gates — "On and checked" for rapid builds</h2>
+                <p>
+                  Pre-production → production readiness: what must be checked
+                  before launch. Use this as the definition of done.
+                </p>
+              </div>
+              <div class="controls">
+                <button class="btn secondary" data-download="ppvMap">
+                  <span class="ic" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 3v10m0 0 4-4m-4 4-4-4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
+                  Export SVG
+                </button>
+                <button class="btn" data-focus="#ppv">Focus</button>
+              </div>
+            </div>
+          </header>
+
+          <div class="grid2">
+            <figure class="diagram" aria-label="PPV gates diagram">
+              <div class="cap">
+                <b>PPV Gate Map (Rapid Build)</b>
+                <span>gates → checks → ship</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="ppvMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="PPV gates diagram with pre-production and production checks"
+                >
+                  <defs>
+                    <filter
+                      id="shadow4"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="16"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arr3"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(255,255,255,.70)"
+                      />
+                    </marker>
+                    <style>
+                      .g {
+                        fill: rgba(255, 255, 255, 0.06);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .title {
+                        font:
+                          900 18px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .txt {
+                        font:
+                          500 12.8px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .a {
+                        stroke: rgba(234, 240, 255, 0.55);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arr3);
+                      }
+                      .ok {
+                        stroke: rgba(124, 255, 178, 0.4);
+                      }
+                      .warn {
+                        stroke: rgba(255, 184, 107, 0.42);
+                      }
+                      .risk {
+                        stroke: rgba(255, 77, 109, 0.42);
+                      }
+                      .chip {
+                        fill: rgba(0, 0, 0, 0.18);
+                        stroke: rgba(255, 255, 255, 0.14);
+                        stroke-width: 1.1;
+                      }
+                      .cap {
+                        font:
+                          800 12.4px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.86);
+                      }
+                    </style>
+                  </defs>
+
+                  <!-- Gate columns -->
+                  <g filter="url(#shadow4)">
+                    <rect
+                      class="g"
+                      x="40"
+                      y="70"
+                      rx="18"
+                      width="340"
+                      height="500"
+                    />
+                    <text class="title" x="66" y="116">Gate A — Pre-Prod</text>
+                    <text class="txt" x="66" y="142">
+                      Scope locked + integration contracts
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="66"
+                      y="170"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="86" y="202">
+                      A1: Integration inventory
+                    </text>
+                    <text class="txt" x="86" y="222">
+                      every device/app + data types + owners
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="66"
+                      y="236"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="86" y="268">A2: Canonical schema</text>
+                    <text class="txt" x="86" y="288">
+                      units • timestamps • provenance
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="66"
+                      y="302"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="86" y="334">
+                      A3: Consent + privacy
+                    </text>
+                    <text class="txt" x="86" y="354">
+                      scopes • retention • export/delete
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="66"
+                      y="368"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="86" y="400">A4: UX layout images</text>
+                    <text class="txt" x="86" y="420">
+                      dashboards • graphs • bot flows
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="66"
+                      y="434"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="86" y="466">
+                      A5: PPV "done" definitions
+                    </text>
+                    <text class="txt" x="86" y="486">
+                      tests • monitoring • rollback
+                    </text>
+                  </g>
+
+                  <g filter="url(#shadow4)">
+                    <rect
+                      class="g"
+                      x="430"
+                      y="70"
+                      rx="18"
+                      width="340"
+                      height="500"
+                    />
+                    <text class="title" x="456" y="116">Gate B — Build</text>
+                    <text class="txt" x="456" y="142">
+                      Implement + verify end-to-end
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="456"
+                      y="170"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="476" y="202">
+                      B1: Adapters working
+                    </text>
+                    <text class="txt" x="476" y="222">
+                      OAuth/webhooks/BLE + backfill
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="456"
+                      y="236"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="476" y="268">
+                      B2: Normalization + storage
+                    </text>
+                    <text class="txt" x="476" y="288">
+                      dedupe • time-series • retention
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="456"
+                      y="302"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="476" y="334">
+                      B3: Readiness engine
+                    </text>
+                    <text class="txt" x="476" y="354">
+                      daily loop → plan decisions
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="456"
+                      y="368"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="476" y="400">
+                      B4: Bots + notifications
+                    </text>
+                    <text class="txt" x="476" y="420">
+                      coaching • safety • reminders
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="456"
+                      y="434"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="476" y="466">B5: Charts/graphs</text>
+                    <text class="txt" x="476" y="486">
+                      insights • trends • explainability
+                    </text>
+                  </g>
+
+                  <g filter="url(#shadow4)">
+                    <rect
+                      class="g"
+                      x="820"
+                      y="70"
+                      rx="18"
+                      width="340"
+                      height="500"
+                    />
+                    <text class="title" x="846" y="116">Gate C — Prod</text>
+                    <text class="txt" x="846" y="142">
+                      Secure, reliable, observable launch
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="846"
+                      y="170"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="866" y="202">C1: Security</text>
+                    <text class="txt" x="866" y="222">
+                      scopes • secrets • pen test • audit
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="846"
+                      y="236"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="866" y="268">C2: Reliability</text>
+                    <text class="txt" x="866" y="288">
+                      SLOs • retries • idempotency
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="846"
+                      y="302"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="866" y="334">C3: Monitoring</text>
+                    <text class="txt" x="866" y="354">
+                      dashboards • alerts • tracing
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="846"
+                      y="368"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="866" y="400">C4: Rollback</text>
+                    <text class="txt" x="866" y="420">
+                      blue/green • canary • safe toggles
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="846"
+                      y="434"
+                      rx="14"
+                      width="288"
+                      height="56"
+                    />
+                    <text class="cap" x="866" y="466">
+                      C5: Post-launch loop
+                    </text>
+                    <text class="txt" x="866" y="486">
+                      feedback → fixes → model updates
+                    </text>
+                  </g>
+
+                  <!-- Arrows between gates -->
+                  <path
+                    class="a ok"
+                    d="M 380 320 C 400 320, 410 320, 430 320"
+                  />
+                  <path
+                    class="a warn"
+                    d="M 770 320 C 790 320, 800 320, 820 320"
+                  />
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build rule: don't "almost ship" — if a gate item isn't
+                    checked, it's either cut from scope or delayed.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"><span class="sw a"></span>Gate checks</span>
+                <span class="key"
+                  ><span class="sw d"></span>Prod readiness</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure
+              class="diagram"
+              aria-label="Layout and visualization diagram"
+            >
+              <div class="cap">
+                <b>Layout Images → Data Binding</b>
+                <span>dashboards that match the data model</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="layoutMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="Dashboard layout wireframe with data bindings"
+                >
+                  <defs>
+                    <filter
+                      id="shadow5"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="16"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <style>
+                      .frame {
+                        fill: rgba(255, 255, 255, 0.05);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .pane {
+                        fill: rgba(0, 0, 0, 0.16);
+                        stroke: rgba(255, 255, 255, 0.12);
+                        stroke-width: 1.1;
+                      }
+                      .h {
+                        font:
+                          900 18px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .p {
+                        font:
+                          500 12.8px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .k {
+                        font:
+                          800 12.5px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.86);
+                      }
+                      .bar {
+                        fill: rgba(124, 255, 178, 0.22);
+                      }
+                      .bar2 {
+                        fill: rgba(122, 167, 255, 0.2);
+                      }
+                      .bar3 {
+                        fill: rgba(255, 107, 214, 0.18);
+                      }
+                      .chip {
+                        fill: rgba(255, 255, 255, 0.05);
+                        stroke: rgba(255, 255, 255, 0.14);
+                        stroke-width: 1.1;
+                      }
+                    </style>
+                  </defs>
+
+                  <g filter="url(#shadow5)">
+                    <rect
+                      class="frame"
+                      x="40"
+                      y="70"
+                      rx="18"
+                      width="1120"
+                      height="510"
+                    />
+                    <text class="h" x="66" y="116">
+                      DFC Dashboard Layout (Example)
+                    </text>
+                    <text class="p" x="66" y="142">
+                      Purpose: charts + daily plan + bot coach → all bound to
+                      canonical metrics
+                    </text>
+
+                    <!-- Left column -->
+                    <rect
+                      class="pane"
+                      x="66"
+                      y="170"
+                      rx="16"
+                      width="420"
+                      height="380"
+                    />
+                    <text class="k" x="90" y="204">A) Daily Plan</text>
+                    <text class="p" x="90" y="228">
+                      bound to: readiness_score, constraints, schedule
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="90"
+                      y="250"
+                      rx="14"
+                      width="372"
+                      height="64"
+                    />
+                    <text class="k" x="112" y="284">Today's training</text>
+                    <text class="p" x="112" y="306">
+                      auto-adjusted by sleep/HRV/soreness
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="90"
+                      y="326"
+                      rx="14"
+                      width="372"
+                      height="64"
+                    />
+                    <text class="k" x="112" y="360">Recovery protocol</text>
+                    <text class="p" x="112" y="382">
+                      hydration + mobility + rest targets
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="90"
+                      y="402"
+                      rx="14"
+                      width="372"
+                      height="128"
+                    />
+                    <text class="k" x="112" y="436">Coach Bot</text>
+                    <text class="p" x="112" y="458">
+                      "why this plan" + nudges + safety checks
+                    </text>
+                    <rect
+                      x="112"
+                      y="474"
+                      width="330"
+                      height="10"
+                      rx="5"
+                      fill="rgba(255,255,255,.10)"
+                    />
+                    <rect
+                      x="112"
+                      y="492"
+                      width="260"
+                      height="10"
+                      rx="5"
+                      fill="rgba(255,255,255,.10)"
+                    />
+                    <rect
+                      x="112"
+                      y="510"
+                      width="300"
+                      height="10"
+                      rx="5"
+                      fill="rgba(255,255,255,.10)"
+                    />
+
+                    <!-- Right column -->
+                    <rect
+                      class="pane"
+                      x="510"
+                      y="170"
+                      rx="16"
+                      width="624"
+                      height="180"
+                    />
+                    <text class="k" x="534" y="204">B) Trends & Charts</text>
+                    <text class="p" x="534" y="228">
+                      bound to: time-series (sleep, HR, BP, steps, hydration)
+                    </text>
+
+                    <!-- mini chart -->
+                    <rect
+                      x="534"
+                      y="248"
+                      width="580"
+                      height="78"
+                      rx="14"
+                      fill="rgba(255,255,255,.04)"
+                      stroke="rgba(255,255,255,.12)"
+                    />
+                    <rect
+                      class="bar"
+                      x="556"
+                      y="294"
+                      width="22"
+                      height="24"
+                      rx="6"
+                    />
+                    <rect
+                      class="bar2"
+                      x="590"
+                      y="284"
+                      width="22"
+                      height="34"
+                      rx="6"
+                    />
+                    <rect
+                      class="bar3"
+                      x="624"
+                      y="276"
+                      width="22"
+                      height="42"
+                      rx="6"
+                    />
+                    <rect
+                      class="bar"
+                      x="658"
+                      y="286"
+                      width="22"
+                      height="32"
+                      rx="6"
+                    />
+                    <rect
+                      class="bar2"
+                      x="692"
+                      y="270"
+                      width="22"
+                      height="48"
+                      rx="6"
+                    />
+                    <rect
+                      class="bar3"
+                      x="726"
+                      y="292"
+                      width="22"
+                      height="26"
+                      rx="6"
+                    />
+                    <rect
+                      class="bar"
+                      x="760"
+                      y="280"
+                      width="22"
+                      height="38"
+                      rx="6"
+                    />
+
+                    <!-- Bottom right -->
+                    <rect
+                      class="pane"
+                      x="510"
+                      y="370"
+                      rx="16"
+                      width="624"
+                      height="180"
+                    />
+                    <text class="k" x="534" y="404">C) Camps / Modules</text>
+                    <text class="p" x="534" y="428">
+                      bound to: enrollments, completion, leaderboard, content
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="534"
+                      y="448"
+                      rx="14"
+                      width="286"
+                      height="80"
+                    />
+                    <text class="k" x="556" y="482">
+                      Camp: 21-day consistency
+                    </text>
+                    <text class="p" x="556" y="504">
+                      daily streak • hydration • sleep
+                    </text>
+
+                    <rect
+                      class="chip"
+                      x="848"
+                      y="448"
+                      rx="14"
+                      width="286"
+                      height="80"
+                    />
+                    <text class="k" x="870" y="482">
+                      Module: Strength Block
+                    </text>
+                    <text class="p" x="870" y="504">
+                      auto-deload if recovery dips
+                    </text>
+                  </g>
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build hint: layout images should reference canonical
+                    fields (e.g., readiness_score) — prevents UI drift when new
+                    devices arrive.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"><span class="sw a"></span>Plan + bot</span>
+                <span class="key"
+                  ><span class="sw b"></span>Charts + graphs</span
+                >
+                <span class="key"
+                  ><span class="sw d"></span>Modules + camps</span
+                >
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- FUTURE -->
+        <section id="future" class="section reveal">
+          <header>
+            <div class="shead">
+              <div>
+                <h2>
+                  4) Future Tech — chips, edge AI, new sensors (no rewrites)
+                </h2>
+                <p>
+                  Keep "godmode" sustainable: capability registry + model swap
+                  strategy + OTA updates, so new tech is plug-in work.
+                </p>
+              </div>
+              <div class="controls">
+                <button class="btn secondary" data-download="futureMap">
+                  <span class="ic" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 3v10m0 0 4-4m-4 4-4-4"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </span>
+                  Export SVG
+                </button>
+                <button class="btn" data-focus="#future">Focus</button>
+              </div>
+            </div>
+          </header>
+
+          <div class="grid2">
+            <figure class="diagram" aria-label="Future tech diagram">
+              <div class="cap">
+                <b>Edge + Cloud AI Split</b>
+                <span>latency • privacy • power</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="futureMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="Diagram showing edge AI devices and cloud AI services"
+                >
+                  <defs>
+                    <filter
+                      id="shadow6"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="16"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arr4"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(177,140,255,.80)"
+                      />
+                    </marker>
+                    <style>
+                      .b {
+                        fill: rgba(255, 255, 255, 0.06);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .edge {
+                        fill: rgba(177, 140, 255, 0.1);
+                        stroke: rgba(177, 140, 255, 0.22);
+                        stroke-width: 1.2;
+                      }
+                      .cloud {
+                        fill: rgba(122, 167, 255, 0.1);
+                        stroke: rgba(122, 167, 255, 0.22);
+                        stroke-width: 1.2;
+                      }
+                      .h {
+                        font:
+                          900 18px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .p {
+                        font:
+                          500 12.8px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .a {
+                        stroke: rgba(177, 140, 255, 0.62);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arr4);
+                      }
+                      .mono {
+                        font:
+                          800 12.4px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.84);
+                      }
+                    </style>
+                  </defs>
+
+                  <g filter="url(#shadow6)">
+                    <rect
+                      class="edge"
+                      x="40"
+                      y="110"
+                      rx="18"
+                      width="520"
+                      height="420"
+                    />
+                    <text class="h" x="66" y="156">Edge (Device-side)</text>
+                    <text class="p" x="66" y="182">
+                      phones • watches • headsets • future chips
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="66"
+                      y="220"
+                      rx="16"
+                      width="468"
+                      height="86"
+                    />
+                    <text class="mono" x="88" y="250">On-device inference</text>
+                    <text class="p" x="88" y="272">
+                      quick nudges • offline mode • privacy-first features
+                    </text>
+                    <text class="p" x="88" y="292">
+                      example: fatigue estimation from HRV
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="66"
+                      y="322"
+                      rx="16"
+                      width="468"
+                      height="86"
+                    />
+                    <text class="mono" x="88" y="352">Sensor fusion</text>
+                    <text class="p" x="88" y="374">
+                      EEG/ECG/BP + motion + sleep signals
+                    </text>
+                    <text class="p" x="88" y="394">
+                      quality scoring before upload
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="66"
+                      y="424"
+                      rx="16"
+                      width="468"
+                      height="86"
+                    />
+                    <text class="mono" x="88" y="454">OTA updates</text>
+                    <text class="p" x="88" y="476">
+                      models + firmware + adapter configs
+                    </text>
+                    <text class="p" x="88" y="496">
+                      safe rollout + rollback
+                    </text>
+                  </g>
+
+                  <g filter="url(#shadow6)">
+                    <rect
+                      class="cloud"
+                      x="620"
+                      y="110"
+                      rx="18"
+                      width="540"
+                      height="420"
+                    />
+                    <text class="h" x="646" y="156">Cloud (DFC Core)</text>
+                    <text class="p" x="646" y="182">
+                      heavy models • personalization • analytics
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="646"
+                      y="220"
+                      rx="16"
+                      width="488"
+                      height="86"
+                    />
+                    <text class="mono" x="668" y="250">
+                      Model training + evaluation
+                    </text>
+                    <text class="p" x="668" y="272">
+                      new sensors → new features without breaking old
+                    </text>
+                    <text class="p" x="668" y="292">
+                      guardrails + safety tests
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="646"
+                      y="322"
+                      rx="16"
+                      width="488"
+                      height="86"
+                    />
+                    <text class="mono" x="668" y="352">
+                      Personalization engine
+                    </text>
+                    <text class="p" x="668" y="374">
+                      plans adapt to life cycle + constraints
+                    </text>
+                    <text class="p" x="668" y="394">
+                      explainability: "why" + confidence
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="646"
+                      y="424"
+                      rx="16"
+                      width="488"
+                      height="86"
+                    />
+                    <text class="mono" x="668" y="454">
+                      Capability registry
+                    </text>
+                    <text class="p" x="668" y="476">
+                      new tech = adapter + capability declaration
+                    </text>
+                    <text class="p" x="668" y="496">no rewrites</text>
+                  </g>
+
+                  <path class="a" d="M 560 260 C 600 260, 610 260, 620 260" />
+                  <path class="a" d="M 560 362 C 600 362, 610 350, 620 338" />
+                  <path class="a" d="M 560 464 C 600 464, 610 470, 620 476" />
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build hint: split edge vs cloud early. It makes
+                    privacy, latency, and future chip upgrades manageable.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"><span class="sw e"></span>Edge AI</span>
+                <span class="key"><span class="sw b"></span>Cloud AI</span>
+                <span class="key"
+                  ><span class="sw a"></span>OTA + rollbacks</span
+                >
+              </figcaption>
+            </figure>
+
+            <figure
+              class="diagram"
+              aria-label="Rapid build operating model diagram"
+            >
+              <div class="cap">
+                <b>Rapid Build Operating Model</b>
+                <span>ship fast without chaos</span>
+              </div>
+              <div class="canvas">
+                <svg
+                  id="opsMap"
+                  viewBox="0 0 1200 650"
+                  role="img"
+                  aria-label="Operating model diagram for rapid builds with loops"
+                >
+                  <defs>
+                    <filter
+                      id="shadow7"
+                      x="-30%"
+                      y="-30%"
+                      width="160%"
+                      height="160%"
+                    >
+                      <feDropShadow
+                        dx="0"
+                        dy="16"
+                        stdDeviation="14"
+                        flood-color="rgba(0,0,0,.45)"
+                      />
+                    </filter>
+                    <marker
+                      id="arr5"
+                      viewBox="0 0 10 10"
+                      refX="8.5"
+                      refY="5"
+                      markerWidth="9"
+                      markerHeight="9"
+                      orient="auto"
+                    >
+                      <path
+                        d="M 0 0 L 10 5 L 0 10 z"
+                        fill="rgba(255,184,107,.82)"
+                      />
+                    </marker>
+                    <style>
+                      .b {
+                        fill: rgba(255, 255, 255, 0.06);
+                        stroke: rgba(255, 255, 255, 0.16);
+                        stroke-width: 1.2;
+                      }
+                      .h {
+                        font:
+                          900 18px "Space Grotesk",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.96);
+                      }
+                      .p {
+                        font:
+                          500 12.8px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.72);
+                      }
+                      .mono {
+                        font:
+                          800 12.4px "IBM Plex Sans",
+                          sans-serif;
+                        fill: rgba(234, 240, 255, 0.84);
+                      }
+                      .a {
+                        stroke: rgba(255, 184, 107, 0.62);
+                        stroke-width: 2.2;
+                        fill: none;
+                        marker-end: url(#arr5);
+                      }
+                      .dash {
+                        stroke-dasharray: 8 7;
+                      }
+                    </style>
+                  </defs>
+
+                  <g filter="url(#shadow7)">
+                    <rect
+                      class="b"
+                      x="40"
+                      y="110"
+                      rx="18"
+                      width="520"
+                      height="420"
+                    />
+                    <text class="h" x="66" y="156">Build Loop (Weekly)</text>
+                    <text class="p" x="66" y="182">
+                      make progress visible and shippable
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="66"
+                      y="220"
+                      rx="16"
+                      width="468"
+                      height="86"
+                    />
+                    <text class="mono" x="88" y="250">1) Scope slice</text>
+                    <text class="p" x="88" y="272">
+                      choose 1–2 integrations + 1 experience
+                    </text>
+                    <text class="p" x="88" y="292">
+                      everything else explicitly "later"
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="66"
+                      y="322"
+                      rx="16"
+                      width="468"
+                      height="86"
+                    />
+                    <text class="mono" x="88" y="352">
+                      2) Ship behind flags
+                    </text>
+                    <text class="p" x="88" y="374">
+                      canary users • safe toggles • rollback ready
+                    </text>
+                    <text class="p" x="88" y="394">don't block on perfect</text>
+
+                    <rect
+                      class="b"
+                      x="66"
+                      y="424"
+                      rx="16"
+                      width="468"
+                      height="86"
+                    />
+                    <text class="mono" x="88" y="454">3) Measure</text>
+                    <text class="p" x="88" y="476">
+                      data completeness • model confidence • UX adoption
+                    </text>
+                    <text class="p" x="88" y="496">fix the top 3 issues</text>
+                  </g>
+
+                  <g filter="url(#shadow7)">
+                    <rect
+                      class="b"
+                      x="620"
+                      y="110"
+                      rx="18"
+                      width="540"
+                      height="420"
+                    />
+                    <text class="h" x="646" y="156">PPV Loop (Always On)</text>
+                    <text class="p" x="646" y="182">
+                      quality gates running continuously
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="646"
+                      y="220"
+                      rx="16"
+                      width="488"
+                      height="86"
+                    />
+                    <text class="mono" x="668" y="250">
+                      Security + privacy checks
+                    </text>
+                    <text class="p" x="668" y="272">
+                      scopes • consent • audit trails • retention
+                    </text>
+                    <text class="p" x="668" y="292">
+                      red-team mindset for integrations
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="646"
+                      y="322"
+                      rx="16"
+                      width="488"
+                      height="86"
+                    />
+                    <text class="mono" x="668" y="352">Integration health</text>
+                    <text class="p" x="668" y="374">
+                      sync latency • webhook failures • backfills
+                    </text>
+                    <text class="p" x="668" y="394">
+                      device mapping drift tests
+                    </text>
+
+                    <rect
+                      class="b"
+                      x="646"
+                      y="424"
+                      rx="16"
+                      width="488"
+                      height="86"
+                    />
+                    <text class="mono" x="668" y="454">
+                      Experience correctness
+                    </text>
+                    <text class="p" x="668" y="476">
+                      charts match canonical fields
+                    </text>
+                    <text class="p" x="668" y="496">
+                      bot actions traceable to data
+                    </text>
+                  </g>
+
+                  <path class="a" d="M 560 260 C 600 260, 610 260, 620 260" />
+                  <path
+                    class="a dash"
+                    d="M 620 476 C 590 520, 520 540, 460 532"
+                  />
+                  <path
+                    class="a dash"
+                    d="M 460 532 C 300 512, 180 470, 80 450"
+                  />
+
+                  <text
+                    x="40"
+                    y="625"
+                    fill="rgba(234,240,255,.72)"
+                    style="
+                      font:
+                        500 13px &quot;IBM Plex Sans&quot;,
+                        sans-serif;
+                    "
+                  >
+                    Rapid build hint: "ship behind flags + always-on PPV" keeps
+                    unicorn speed without production chaos.
+                  </text>
+                </svg>
+              </div>
+              <figcaption class="legend">
+                <span class="key"
+                  ><span class="sw d"></span>Flags + rollout</span
+                >
+                <span class="key"><span class="sw a"></span>Quality gates</span>
+                <span class="key"
+                  ><span class="sw b"></span>Integration health</span
+                >
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <footer>
+          <div>
+            Built as a single-file visual reference. Export any diagram as SVG
+            via <code class="k">Export SVG</code>. Use these as: PRDs,
+            onboarding docs, investor decks, or sprint kickoff visuals.
+          </div>
+          <div>
+            Interaction: scroll reveals + tab jumps. Tip: print to PDF from
+            browser for a "PPV packet".
+          </div>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      // Tab jump + selected state
+      const tabs = Array.from(document.querySelectorAll(".tab"));
+      tabs.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const sel = btn.getAttribute("data-jump");
+          const el = document.querySelector(sel);
+          if (!el) return;
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+          btn.setAttribute("aria-selected", "true");
+        });
+      });
+
+      // Focus button: briefly highlight section
+      document.querySelectorAll("[data-focus]").forEach((b) => {
+        b.addEventListener("click", () => {
+          const sel = b.getAttribute("data-focus");
+          const el = document.querySelector(sel);
+          if (!el) return;
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          el.animate(
+            [
+              {
+                boxShadow: "0 0 0 rgba(124,255,178,0)",
+                transform: "translateY(0)",
+              },
+              {
+                boxShadow: "0 0 0 6px rgba(124,255,178,.18)",
+                transform: "translateY(-1px)",
+              },
+              {
+                boxShadow: "0 0 0 rgba(124,255,178,0)",
+                transform: "translateY(0)",
+              },
+            ],
+            { duration: 900, easing: "cubic-bezier(.2,.8,.2,1)" },
+          );
+        });
+      });
+
+      // Export SVG (inline) to file
+      function downloadSVG(svgEl, filename) {
+        const clone = svgEl.cloneNode(true);
+        clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+        const serializer = new XMLSerializer();
+        let source = serializer.serializeToString(clone);
+
+        if (!source.match(/^<\?xml/)) {
+          source = '<?xml version="1.0" encoding="UTF-8"?>\n' + source;
+        }
+
+        const blob = new Blob([source], {
+          type: "image/svg+xml;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename.endsWith(".svg") ? filename : filename + ".svg";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1200);
+      }
+
+      document.querySelectorAll("[data-download]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-download");
+          const svg = document.getElementById(id);
+          if (!svg) return;
+          downloadSVG(svg, id + "-export.svg");
+        });
+      });
+
+      // Scroll reveal with IntersectionObserver
+      const revealEls = document.querySelectorAll(".reveal");
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+
+      revealEls.forEach((el, idx) => {
+        if (idx < 4) {
+          setTimeout(() => el.classList.add("in"), 120 + idx * 120);
+        } else {
+          io.observe(el);
+        }
+      });
+
+      // Update selected tab based on scroll position
+      const sections = ["#system", "#flows", "#ppv", "#future"]
+        .map((s) => document.querySelector(s))
+        .filter(Boolean);
+      const tabBySel = new Map(
+        tabs.map((t) => [t.getAttribute("data-jump"), t]),
+      );
+      const io2 = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) return;
+          const id = "#" + visible.target.id;
+          tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+          const tab = tabBySel.get(id);
+          if (tab) tab.setAttribute("aria-selected", "true");
+        },
+        { threshold: [0.25, 0.4, 0.55] },
+      );
+      sections.forEach((s) => io2.observe(s));
+    </script>
+  </body>
+</html>

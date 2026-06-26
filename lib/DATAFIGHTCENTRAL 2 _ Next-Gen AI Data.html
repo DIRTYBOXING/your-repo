@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DATAFIGHTCENTRAL | Next-Gen AI Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Space+Grotesk:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Outfit", "sans-serif"],
+              display: ["Space Grotesk", "sans-serif"],
+            },
+            colors: {
+              fight: {
+                black: "#0a0a0c",
+                gray: "#1c1c1e",
+                accent: "#ff3e3e",
+                glow: "#ff3e3e33",
+                blue: "#00d2ff",
+              },
+            },
+            animation: {
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+              float: "float 6s ease-in-out infinite",
+              "glow-line": "glow-line 3s linear infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              "glow-line": {
+                "0%": { left: "-100%" },
+                "100%": { left: "100%" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #0a0a0c;
+        color: #ffffff;
+        overflow-x: hidden;
+      }
+
+      .glass-card {
+        background: rgba(28, 28, 30, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+      }
+
+      .video-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        box-shadow: 0 0 50px rgba(255, 62, 62, 0.15);
+      }
+
+      .video-container video {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 24px;
+        object-fit: cover;
+      }
+
+      .text-gradient {
+        background: linear-gradient(135deg, #fff 0%, #888 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .accent-gradient {
+        background: linear-gradient(90deg, #ff3e3e, #ff8c3e);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .grid-bg {
+        background-image: radial-gradient(
+          circle at 2px 2px,
+          rgba(255, 255, 255, 0.05) 1px,
+          transparent 0
+        );
+        background-size: 40px 40px;
+      }
+
+      .scanline {
+        height: 2px;
+        width: 100%;
+        background: linear-gradient(90deg, transparent, #ff3e3e, transparent);
+        position: absolute;
+        z-index: 10;
+        opacity: 0.5;
+        animation: glow-line 3s linear infinite;
+      }
+    </style>
+  </head>
+  <body class="grid-bg font-sans">
+    <!-- Hero Section -->
+    <main
+      class="relative min-h-screen flex flex-col items-center justify-center p-6 md:p-12 max-w-7xl mx-auto"
+    >
+      <!-- Top Logo/Heading -->
+      <header
+        class="w-full flex justify-between items-center mb-12 animate-fade-in"
+      >
+        <div class="flex items-center gap-2">
+          <div
+            class="w-8 h-8 bg-fight-accent rounded-sm rotate-45 flex items-center justify-center"
+          >
+            <div class="w-4 h-4 bg-fight-black rotate-45"></div>
+          </div>
+          <span
+            class="font-display font-black text-xl tracking-tighter uppercase"
+            >DATAFIGHTCENTRAL</span
+          >
+        </div>
+        <div
+          class="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase text-gray-400"
+        >
+          <span class="hover:text-fight-accent transition-colors cursor-pointer"
+            >Intelligence</span
+          >
+          <span class="hover:text-fight-accent transition-colors cursor-pointer"
+            >Performance</span
+          >
+          <span class="hover:text-fight-accent transition-colors cursor-pointer"
+            >Security</span
+          >
+        </div>
+      </header>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Text Content -->
+        <div class="lg:col-span-6 space-y-8 order-2 lg:order-1">
+          <div
+            class="inline-block px-3 py-1 border border-fight-accent/30 rounded-full bg-fight-accent/10"
+          >
+            <span
+              class="text-[10px] font-black tracking-[0.2em] text-fight-accent uppercase"
+              >AI Training Protocol Activated</span
+            >
+          </div>
+
+          <h1
+            class="text-5xl md:text-7xl font-display font-black leading-tight tracking-tighter"
+          >
+            MASTER THE <br />
+            <span class="accent-gradient">FIGHT GAME</span>
+          </h1>
+
+          <p
+            class="text-xl md:text-2xl text-gray-300 font-light leading-relaxed max-w-xl"
+          >
+            Next-gen AI data designed to
+            <span class="text-white font-medium">predict victories</span>,
+            <span class="text-white font-medium">optimize training</span>, and
+            <span class="text-white font-medium">protect athletes</span> like
+            never before.
+          </p>
+
+          <div class="flex flex-wrap gap-4 pt-4">
+            <button
+              class="px-8 py-4 bg-white text-fight-black font-black uppercase tracking-wider rounded-xl hover:bg-fight-accent hover:text-white transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-white/5 cta-lead"
+              onclick="
+                window.location.href = 'https://datafightcentral.web.app'
+              "
+            >
+              Analyze Now
+            </button>
+            <button
+              class="px-8 py-4 border border-white/20 text-white font-black uppercase tracking-wider rounded-xl hover:bg-white/10 transition-all duration-300 cta-lead"
+              onclick="
+                window.location.href =
+                  'https://datafightcentral.web.app/dashboard'
+              "
+            >
+              View Data
+            </button>
+            <button
+              class="px-8 py-4 bg-fight-accent text-white font-black uppercase tracking-wider rounded-xl hover:bg-fight-blue hover:text-black transition-all duration-300 cta-lead"
+              onclick="
+                window.open('https://datafightcentral.web.app', '_blank')
+              "
+            >
+              Share Video
+            </button>
+          </div>
+
+          <!-- Feature Pills -->
+          <div class="grid grid-cols-3 gap-4 pt-8">
+            <div
+              class="glass-card p-4 rounded-2xl flex flex-col items-center text-center"
+            >
+              <span class="text-fight-accent font-bold text-lg">98%</span>
+              <span class="text-[10px] uppercase tracking-widest text-gray-400"
+                >Accuracy</span
+              >
+            </div>
+            <div
+              class="glass-card p-4 rounded-2xl flex flex-col items-center text-center"
+            >
+              <span class="text-fight-blue font-bold text-lg">24/7</span>
+              <span class="text-[10px] uppercase tracking-widest text-gray-400"
+                >Monitoring</span
+              >
+            </div>
+            <div
+              class="glass-card p-4 rounded-2xl flex flex-col items-center text-center"
+            >
+              <span class="text-white font-bold text-lg">Real-time</span>
+              <span class="text-[10px] uppercase tracking-widest text-gray-400"
+                >Insights</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Content -->
+        <div class="lg:col-span-6 order-1 lg:order-2">
+          <div class="relative group">
+            <!-- Glow effect behind video -->
+            <div
+              class="absolute -inset-4 bg-fight-accent/20 blur-3xl rounded-full opacity-50 group-hover:opacity-80 transition-opacity"
+            ></div>
+
+            <div class="video-container relative border border-white/10">
+              <div class="scanline"></div>
+              <video
+                src="https://opal.google/board/blobs/4963d81d-79aa-4181-8ea9-c96da081f416"
+                alt="Master the fight game with AI data visualization"
+                autoplay
+                muted
+                loop
+                playsinline
+              ></video>
+
+              <!-- Overlay UI elements -->
+              <div class="absolute top-4 right-4 flex gap-2">
+                <div
+                  class="w-2 h-2 rounded-full bg-red-500 animate-pulse"
+                ></div>
+                <span
+                  class="text-[10px] font-bold tracking-widest uppercase text-white/70"
+                  >REC // AI FEED</span
+                >
+              </div>
+
+              <div class="absolute bottom-6 left-6 right-6">
+                <div
+                  class="glass-card px-4 py-3 rounded-xl border-fight-accent/20 flex items-center justify-between"
+                >
+                  <div class="flex flex-col">
+                    <span
+                      class="text-[8px] uppercase tracking-[0.2em] text-gray-400"
+                      >Target Analytics</span
+                    >
+                    <span class="text-xs font-bold tracking-wide"
+                      >ELITE PERFORMANCE METRICS</span
+                    >
+                  </div>
+                  <div class="flex gap-1">
+                    <div class="w-1 h-4 bg-fight-accent/40"></div>
+                    <div class="w-1 h-4 bg-fight-accent/60"></div>
+                    <div class="w-1 h-4 bg-fight-accent"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Decorative corner elements -->
+            <div
+              class="absolute -top-2 -left-2 w-8 h-8 border-t-2 border-l-2 border-fight-accent/60 rounded-tl-lg"
+            ></div>
+            <div
+              class="absolute -bottom-2 -right-2 w-8 h-8 border-b-2 border-r-2 border-fight-accent/60 rounded-br-lg"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Visual Hint (Not a functional footer) -->
+      <div class="mt-20 w-full flex flex-col items-center gap-4 opacity-40">
+        <div
+          class="h-[1px] w-full max-w-xs bg-gradient-to-r from-transparent via-white/30 to-transparent"
+        ></div>
+        <p class="text-[10px] uppercase tracking-[0.4em] font-light">
+          The Future of Combat Intelligence
+        </p>
+      </div>
+    </main>
+
+    <!-- Lead Capture Modal (with Formspree integration) -->
+    <div id="leadModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Get Your Free Marketing Guide</h2>
+        <form
+          id="leadForm"
+          action="https://formspree.io/f/yourFormID"
+          method="POST"
+        >
+          <input type="text" name="name" placeholder="Your Name" required />
+          <input type="email" name="email" placeholder="Your Email" required />
+          <input type="text" name="company" placeholder="Company (optional)" />
+          <button type="submit">Get Guide</button>
+        </form>
+        <div
+          id="formSuccess"
+          style="display: none; color: green; margin-top: 10px"
+        >
+          Thank you! Check your inbox soon.
+        </div>
+      </div>
+    </div>
+    <script>
+      document.getElementById("leadForm").onsubmit = function (e) {
+        e.preventDefault();
+        fetch(this.action, {
+          method: "POST",
+          body: new FormData(this),
+          headers: { Accept: "application/json" },
+        }).then((response) => {
+          if (response.ok) {
+            document.getElementById("formSuccess").style.display = "block";
+            this.reset();
+          } else {
+            alert("Submission failed. Please try again.");
+          }
+        });
+      };
+    </script>
+    <!-- Privacy/Cookie Consent Banner -->
+    <div
+      id="cookieConsent"
+      style="
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #222;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        z-index: 9999;
+      "
+    >
+      This site uses cookies to enhance your experience.
+      <button onclick="acceptCookies()" style="margin-left: 10px">
+        Accept
+      </button>
+    </div>
+    <script>
+      function acceptCookies() {
+        document.getElementById("cookieConsent").style.display = "none";
+        localStorage.setItem("cookieAccepted", "true");
+      }
+      if (localStorage.getItem("cookieAccepted")) {
+        document.getElementById("cookieConsent").style.display = "none";
+      }
+    </script>
+
+    <!-- SEO & Social Meta Tags -->
+    <meta
+      name="description"
+      content="Next-gen AI data for combat sports. Predict victories, optimize training, and protect athletes with DataFightCentral."
+    />
+    <meta property="og:title" content="DATAFIGHTCENTRAL | Next-Gen AI Data" />
+    <meta
+      property="og:description"
+      content="Master the fight game with elite AI analytics and real-time performance metrics."
+    />
+    <meta property="og:image" content="https://yourdomain.com/og-image.jpg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yourdomain.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DATAFIGHTCENTRAL | Next-Gen AI Data" />
+    <meta
+      name="twitter:description"
+      content="Master the fight game with elite AI analytics and real-time performance metrics."
+    />
+    <meta name="twitter:image" content="https://yourdomain.com/og-image.jpg" />
+
+    <!-- Google Analytics (example) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXX-X"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "UA-XXXXXX-X");
+    </script>
+
+    <!-- Integration Instructions for Social Login & Automated Posting -->
+    <div
+      style="
+        background: #f9f9f9;
+        border: 1px solid #eee;
+        padding: 16px;
+        margin: 32px 0;
+        border-radius: 8px;
+      "
+    >
+      <h4>DFC Social Integration Setup</h4>
+      <ul style="text-align: left; max-width: 600px; margin: auto">
+        <li>
+          Register your app with <b>Google, Facebook, Twitter/X</b> to obtain
+          API keys and secrets.
+        </li>
+        <li>
+          Set up <b>Firebase Auth</b> or your preferred OAuth provider and
+          enable Google, Facebook, Twitter/X sign-in.
+        </li>
+        <li>
+          Connect backend endpoints for <b>automated posting</b> and
+          <b>feed sync</b> using each platform’s API.
+        </li>
+        <li>
+          Update the <b>socialLogin()</b> and <b>shareToSocial()</b> functions
+          with real authentication and posting logic.
+        </li>
+        <li>
+          For advanced features, enable webhooks and real-time sync between DFC
+          and user social profiles.
+        </li>
+        <li>
+          See <b>docs/DFC_SOCIAL_WORKFLOW_ARCHITECTURE.md</b> for detailed
+          platform wiring and best practices.
+        </li>
+      </ul>
+      <p style="color: #888; font-size: 13px">
+        These steps ensure full viral amplification, seamless onboarding, and
+        automated event sharing for Data Fight Central.
+      </p>
+    </div>
+
+    <script>
+      // Smooth reveal on scroll/load
+      document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll(".animate-fade-in");
+        elements.forEach((el, index) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(20px)";
+          el.style.transition = `all 0.8s ease-out ${index * 0.2}s`;
+
+          setTimeout(() => {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+          }, 100);
+        });
+      });
+
+      // Interactive hover effect for the video container
+      const videoCont = document.querySelector(".video-container");
+      if (videoCont) {
+        videoCont.addEventListener("mousemove", (e) => {
+          const { left, top, width, height } =
+            videoCont.getBoundingClientRect();
+          const x = (e.clientX - left) / width;
+          const y = (e.clientY - top) / height;
+
+          videoCont.style.transform = `perspective(1000px) rotateX(${(y - 0.5) * 5}deg) rotateY(${(x - 0.5) * -5}deg)`;
+        });
+
+        videoCont.addEventListener("mouseleave", () => {
+          videoCont.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+          videoCont.style.transition = "transform 0.5s ease";
+        });
+
+        videoCont.addEventListener("mouseenter", () => {
+          videoCont.style.transition = "none";
+        });
+      }
+
+      // Lead capture modal logic
+      document.querySelectorAll(".cta-lead").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.getElementById("lead-modal").classList.remove("hidden");
+        });
+      });
+      document
+        .getElementById("lead-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          // TODO: Integrate with backend/email service
+          document.getElementById("lead-form").classList.add("hidden");
+          document.getElementById("lead-success").classList.remove("hidden");
+        });
+    </script>
+  </body>
+</html>

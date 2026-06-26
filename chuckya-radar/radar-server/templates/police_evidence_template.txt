@@ -1,0 +1,42 @@
+CHUCKYA Radar Police Evidence Pack
+=====================================
+Incident ID: {{incidentId}}
+Export ID: {{exportId}}
+Generated At: {{generatedAt}}
+Prepared By: Data Fight Central Ops
+
+SUMMARY
+-------
+Priority: {{priority}} ({{riskScore}})
+Type: {{type}}
+Event: {{eventTitle}}
+SessionId: {{sessionId}}
+Top signals: {{topSignals}}
+
+TIMELINE
+--------
+{{#each timeline}}
+- {{ts}}: {{event}} {{meta}}
+{{/each}}
+
+EVIDENCE BUNDLE (signed, time-limited)
+--------------------------------------
+{{#each evidence}}
+- {{filename}} (SHA256: {{sha256}})
+{{/each}}
+
+LEGAL & CONTACT
+---------------
+Data Fight Central legal contact: legal@datafightcentral.com
+Ops contact: ops@datafightcentral.com
+
+CHAIN OF CUSTODY
+----------------
+{{#each evidence}}
+- item: {{filename}}
+  storedAt: {{path}}
+  sha256: {{sha256}}
+  createdAt: {{createdAt}}
+  exportedAt: {{exportedAt}}
+  exportedBy: {{exportedBy}}
+{{/each}}

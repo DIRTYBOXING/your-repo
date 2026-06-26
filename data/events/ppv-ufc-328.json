@@ -1,0 +1,56 @@
+{
+  "eventId": "ppv-ufc-328",
+  "title": "UFC 328: CHIMAEV vs STRICKLAND",
+  "subtitle": "Middleweight No. 1 Contender",
+  "date": "2026-05-09",
+  "time": "18:00 BST",
+  "price": "79.99",
+  "promoter": "UFC",
+  "sport": "UFC",
+  "venue": "O2 Arena, London",
+  "currency": "USD",
+  "streamPlatforms": ["ESPN+", "TNT Sports"],
+  "fighters": [
+    {
+      "name": "Khamzat Chimaev",
+      "nickname": "Borz",
+      "record": "14-0-0",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "Sean Strickland",
+      "record": "29-6-0",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Khamzat Chimaev",
+      "fighter2": "Sean Strickland",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "Tom Aspinall",
+      "fighter2": "Ciryl Gane",
+      "weightClass": "Heavyweight",
+      "rounds": 5,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Paddy Pimblett",
+      "fighter2": "Dan Hooker",
+      "weightClass": "Lightweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Leon Edwards",
+      "fighter2": "Jack Della Maddalena",
+      "weightClass": "Welterweight",
+      "rounds": 5
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - datafightcentral/**
+    - .dart_tool/**
+    - windows/**
+    - linux/**
+    - macos/**
+    - ios/**
+    - android/**
+  # Phase C ratchet: promote currently clean rules to enforced errors.
+  errors:
+    always_declare_return_types: error
+    avoid_empty_else: error
+    avoid_returning_null_for_future: error
+    avoid_slow_async_io: error
+    cancel_subscriptions: error
+    prefer_void_to_null: error
+    avoid_shadowing_type_parameters: error
+    use_rethrow_when_possible: error
+    avoid_renaming_method_parameters: error
+    unnecessary_null_aware_assignments: error
+    avoid_void_async: error
+    no_adjacent_strings_in_list: error
+    unnecessary_null_checks: error
+
+linter:
+  rules:
+    # Phase A (warn-only): high-signal, low-noise strictness rules.
+    # CI remains non-blocking while these warnings are burned down.
+    avoid_print: true
+    prefer_final_locals: true
+    always_declare_return_types: true
+    avoid_dynamic_calls: true
+    avoid_empty_else: true
+    avoid_redundant_argument_values: true
+    avoid_slow_async_io: true
+    cancel_subscriptions: true
+    close_sinks: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    unnecessary_lambdas: true
+    # Phase B2: second-batch candidates for ratchet promotion.
+    avoid_void_async: true
+    prefer_void_to_null: true
+    no_adjacent_strings_in_list: true
+    avoid_shadowing_type_parameters: true
+    use_rethrow_when_possible: true
+    avoid_renaming_method_parameters: true
+    unnecessary_null_aware_assignments: true
+    unnecessary_null_checks: true

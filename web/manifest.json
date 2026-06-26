@@ -1,0 +1,94 @@
+{
+  "name": "Data Fight Central — #1 AI Combat Sports Platform",
+  "short_name": "DFC",
+  "start_url": "https://www.datafightcentral.com/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#050A14",
+  "theme_color": "#050A14",
+  "description": "The world's #1 AI-powered combat sports & humanitarian platform. UFC, MMA, Boxing, Muay Thai, BJJ, Kickboxing & BKFC — fight analytics, real-time news, training tools, event management, fighter safety, sponsor dashboards & promoter tools. Youth crime prevention through sport — using adrenaline, discipline & technology to divert at-risk youth from crime into the gym. Mental health support, crisis helplines, homelessness resources. Gym Not Jail. Fighters Are Safer With DFC. www.datafightcentral.com",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "categories": [
+    "sports",
+    "health",
+    "fitness",
+    "news",
+    "social",
+    "education",
+    "lifestyle"
+  ],
+  "lang": "en-US",
+  "dir": "ltr",
+  "scope": "/",
+  "id": "datafightcentral",
+  "screenshots": [
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "label": "DFC — #1 AI Combat Sports Platform"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "DFC Desktop — Fight Analytics & PPV Streaming"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "FightWire News",
+      "short_name": "News",
+      "url": "/#/fightwire",
+      "description": "UFC, MMA & Boxing breaking news",
+      "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Events",
+      "short_name": "Events",
+      "url": "/#/events",
+      "description": "Upcoming fight events worldwide",
+      "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Training",
+      "short_name": "Training",
+      "url": "/#/daily-grind",
+      "description": "Daily training & fight camp tools",
+      "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Promoter Hub",
+      "short_name": "Promoter",
+      "url": "/#/promoter",
+      "description": "Promoter dashboard & event management",
+      "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/Icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

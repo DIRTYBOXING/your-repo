@@ -1,0 +1,61 @@
+{
+  "eventId": "ppv-ibc-03",
+  "title": "IBC 03: GOLD COAST BRAWL",
+  "subtitle": "Potter vs Perceval — MW Title",
+  "date": "2026-03-07",
+  "time": "19:00 AEST",
+  "price": "29.99",
+  "promoter": "International Brawling Championship",
+  "sport": "Brawling",
+  "venue": "Gold Coast Convention Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["TrillerTV+", "Kayo"],
+  "fighters": [
+    {
+      "name": "Callan Potter",
+      "record": "22-8-0",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "Steve Perceval",
+      "record": "18-5-0",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Callan Potter",
+      "fighter2": "Steve Perceval",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Kit Dale",
+      "fighter2": "Mitch Clarke",
+      "weightClass": "Welterweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Janay Harding",
+      "fighter2": "Jessica-Rose Clark",
+      "weightClass": "Flyweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Brentin Mumford",
+      "fighter2": "Joel Brunker",
+      "weightClass": "Lightweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Justin Tafa",
+      "fighter2": "Isi Fitikefu",
+      "weightClass": "Heavyweight",
+      "rounds": 3
+    }
+  ]
+}

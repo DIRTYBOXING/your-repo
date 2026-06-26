@@ -1,0 +1,13 @@
+{
+  "id": "WH-TEST-12345",
+  "event_type": "PAYMENT.CAPTURE.COMPLETED",
+  "resource_type": "capture",
+  "resource": {
+    "id": "2GG279541U471931P",
+    "custom_id": "eventId=999;userId=test_user",
+    "amount": {
+      "currency_code": "USD",
+      "value": "49.99"
+    }
+  }
+}

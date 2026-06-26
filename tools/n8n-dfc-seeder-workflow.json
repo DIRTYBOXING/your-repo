@@ -1,0 +1,378 @@
+{
+  "name": "DFC Event Auto-Seeder → 9 Platforms via Blotato",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dfc-event-seed",
+        "responseMode": "onReceived",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "DFC Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "dfc-event-seed"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"TITLE\": $json.title,\n  \"MEDIA_URL\": $json.posterUrl,\n  \"CAPTION\": $json.caption,\n  \"STATUS\": \"Ready to Post\",\n  \"FIGHT_ID\": $json.eventId,\n  \"PRICE\": $json.price,\n  \"BUY_LINK\": $json.buyLink,\n  \"PROMOTER\": $json.promoterName,\n  \"DESCRIPTION\": $json.description,\n  \"EVENT_DATE\": $json.eventDate,\n  \"SOCIAL_POST_ID\": $json.socialPostId\n} }}"
+      },
+      "id": "edit-fields",
+      "name": "Map to Blotato Format",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "spreadsheetId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "DFC_Events",
+        "columns": "TITLE,MEDIA_URL,CAPTION,STATUS,FIGHT_ID,PRICE,BUY_LINK,PROMOTER,EVENT_DATE,SOCIAL_POST_ID",
+        "options": {}
+      },
+      "id": "google-sheet-log",
+      "name": "Log to Google Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [470, 520],
+      "notes": "Optional: logs every seeded event to a Google Sheet for audit trail. Replace YOUR_GOOGLE_SHEET_ID with your actual sheet."
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "upload",
+        "url": "={{ $json.MEDIA_URL }}",
+        "caption": "={{ $json.CAPTION }}"
+      },
+      "id": "blotato-upload",
+      "name": "Blotato Upload Media",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [690, 300],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      },
+      "notes": "Uploads the poster image to Blotato. Requires @blotato/n8n-nodes-blotato community node installed and Blotato Pro API key configured."
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "instagram",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-instagram",
+      "name": "Post → Instagram",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 60],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "tiktok",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-tiktok",
+      "name": "Post → TikTok",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 160],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "youtube_shorts",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-youtube",
+      "name": "Post → YouTube Shorts",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 260],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "facebook",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-facebook",
+      "name": "Post → Facebook",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 360],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "x",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-x",
+      "name": "Post → X (Twitter)",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 460],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "threads",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-threads",
+      "name": "Post → Threads",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [920, 560],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "linkedin",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-linkedin",
+      "name": "Post → LinkedIn",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 60],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "bluesky",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-bluesky",
+      "name": "Post → Bluesky",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 160],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "platform": "pinterest",
+        "mediaId": "={{ $json.mediaId }}",
+        "caption": "={{ $('Map to Blotato Format').item.json.CAPTION }}"
+      },
+      "id": "post-pinterest",
+      "name": "Post → Pinterest",
+      "type": "@blotato/n8n-nodes-blotato.blotato",
+      "typeVersion": 1,
+      "position": [1150, 260],
+      "credentials": {
+        "blotatoApi": {
+          "id": "YOUR_BLOTATO_CREDENTIAL_ID",
+          "name": "Blotato Pro"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"eventId\": $('Map to Blotato Format').item.json.FIGHT_ID,\n  \"socialPostId\": $('Map to Blotato Format').item.json.SOCIAL_POST_ID,\n  \"status\": \"posted\",\n  \"platforms\": {\n    \"instagram\": $('Post → Instagram').item.json.postUrl || '',\n    \"tiktok\": $('Post → TikTok').item.json.postUrl || '',\n    \"youtube_shorts\": $('Post → YouTube Shorts').item.json.postUrl || '',\n    \"facebook\": $('Post → Facebook').item.json.postUrl || '',\n    \"x\": $('Post → X (Twitter)').item.json.postUrl || '',\n    \"threads\": $('Post → Threads').item.json.postUrl || '',\n    \"linkedin\": $('Post → LinkedIn').item.json.postUrl || '',\n    \"bluesky\": $('Post → Bluesky').item.json.postUrl || '',\n    \"pinterest\": $('Post → Pinterest').item.json.postUrl || ''\n  }\n} }}"
+      },
+      "id": "build-postback",
+      "name": "Build Post-Back Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1380, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nPostBack",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "data",
+              "value": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "postback-firebase",
+      "name": "Post-Back to Firebase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1600, 300],
+      "notes": "Calls the n8nPostBack Cloud Function to update the PPV event doc with all live social media URLs. This closes the feedback loop."
+    }
+  ],
+  "connections": {
+    "DFC Webhook Trigger": {
+      "main": [
+        [
+          { "node": "Map to Blotato Format", "type": "main", "index": 0 },
+          { "node": "Log to Google Sheet", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Map to Blotato Format": {
+      "main": [[{ "node": "Blotato Upload Media", "type": "main", "index": 0 }]]
+    },
+    "Blotato Upload Media": {
+      "main": [
+        [
+          { "node": "Post → Instagram", "type": "main", "index": 0 },
+          { "node": "Post → TikTok", "type": "main", "index": 0 },
+          { "node": "Post → YouTube Shorts", "type": "main", "index": 0 },
+          { "node": "Post → Facebook", "type": "main", "index": 0 },
+          { "node": "Post → X (Twitter)", "type": "main", "index": 0 },
+          { "node": "Post → Threads", "type": "main", "index": 0 },
+          { "node": "Post → LinkedIn", "type": "main", "index": 0 },
+          { "node": "Post → Bluesky", "type": "main", "index": 0 },
+          { "node": "Post → Pinterest", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Post → Instagram": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → TikTok": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → YouTube Shorts": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Facebook": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → X (Twitter)": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Threads": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → LinkedIn": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Bluesky": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post → Pinterest": {
+      "main": [
+        [{ "node": "Build Post-Back Payload", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Post-Back Payload": {
+      "main": [
+        [{ "node": "Post-Back to Firebase", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "datafightcentral"
+  },
+  "tags": [
+    { "name": "DFC", "id": "1" },
+    { "name": "auto-seeder", "id": "2" },
+    { "name": "social-media", "id": "3" },
+    { "name": "ppv", "id": "4" }
+  ]
+}

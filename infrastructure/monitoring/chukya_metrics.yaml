@@ -1,0 +1,139 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# CHUKYA 3.0 — Prometheus Metrics & Alert Rules
+# ═══════════════════════════════════════════════════════════════════════════
+# Export from SafetyHubService / ChukyaRadarService.
+# Apply to Prometheus Operator or standalone Prometheus config.
+
+# ── Metrics Definitions ───────────────────────────────────────────────────
+metrics:
+  - name: chukya_detection_rate
+    type: gauge
+    help: "High confidence detections per victim per hour"
+    labels: [victim_id, scan_mode]
+
+  - name: chukya_false_positive_rate
+    type: gauge
+    help: "Fraction of alerts canceled by victim within grace window (0.0-1.0)"
+    labels: [victim_id]
+
+  - name: chukya_battery_impact_percent_24h
+    type: gauge
+    help: "Average battery percent consumed per 24h by Chukya scanning"
+    labels: [device_type, scan_mode]
+
+  - name: chukya_police_notification_latency_seconds
+    type: histogram
+    help: "Latency from detection to police notification delivery"
+    buckets: [1, 5, 10, 15, 30, 60, 120]
+    labels: [region]
+
+  - name: chukya_evidence_upload_latency_seconds
+    type: histogram
+    help: "Latency from detection to evidence stored in Firestore"
+    buckets: [0.5, 1, 2, 5, 10, 30]
+    labels: [evidence_type]
+
+  - name: chukya_detections_total
+    type: counter
+    help: "Total proximity detections"
+    labels: [confidence_bucket, scan_mode, threat_level]
+
+  - name: chukya_scan_cycles_total
+    type: counter
+    help: "Total scan cycles executed"
+    labels: [scan_mode, outcome]
+
+  - name: chukya_watchlist_profiles_total
+    type: gauge
+    help: "Total active threat profiles in watchlist"
+    labels: [region]
+
+  - name: chukya_safe_zones_total
+    type: gauge
+    help: "Total active safe zones"
+    labels: [region]
+
+# ── Alert Rules ───────────────────────────────────────────────────────────
+alert_rules:
+  groups:
+    - name: chukya.rules
+      rules:
+        - alert: ChukyaHighFalsePositiveRate
+          expr: chukya_false_positive_rate > 0.07
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Chukya false positive rate > 7%"
+            description: "False positive rate {{ $value }} exceeds 7% threshold for 10m"
+
+        - alert: ChukyaPoliceLatencyHigh
+          expr: >
+            histogram_quantile(0.5,
+              sum(rate(chukya_police_notification_latency_seconds_bucket[5m])) by (le)
+            ) > 30
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Police notification median latency > 30s"
+            description: "Median police notification latency {{ $value }}s exceeds 30s SLO"
+
+        - alert: ChukyaEvidenceUploadSlow
+          expr: >
+            histogram_quantile(0.95,
+              sum(rate(chukya_evidence_upload_latency_seconds_bucket[5m])) by (le)
+            ) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Evidence upload p95 latency > 10s"
+
+        - alert: ChukyaNoScansDetected
+          expr: increase(chukya_scan_cycles_total[30m]) == 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "No Chukya scan cycles in 30 minutes"
+
+        - alert: ChukyaBatteryImpactHigh
+          expr: chukya_battery_impact_percent_24h > 7
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Chukya battery impact > 7% over 24h"
+
+# ── KPI Targets (Pilot) ──────────────────────────────────────────────────
+kpi_targets:
+  detection_true_positive_rate: ">= 0.85"
+  false_positive_rate: "<= 0.05"
+  police_notification_median_latency_s: "<= 30"
+  evidence_upload_p95_latency_s: "<= 10"
+  battery_impact_24h_percent: "<= 5"
+
+# ── ServiceMonitor (Prometheus Operator) ──────────────────────────────────
+service_monitors:
+  - name: chukya-backend-servicemonitor
+    namespace: monitoring
+    selector:
+      matchLabels:
+        app: chukya-safety
+    endpoints:
+      - port: http
+        path: /metrics
+        interval: 30s
+        scrapeTimeout: 10s
+
+  - name: chukya-api-servicemonitor
+    namespace: monitoring
+    selector:
+      matchLabels:
+        app: chukya-api
+    endpoints:
+      - port: http
+        path: /metrics
+        interval: 30s
+        scrapeTimeout: 10s

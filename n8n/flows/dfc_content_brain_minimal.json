@@ -1,0 +1,115 @@
+{
+  "name": "DFC Content Brain Minimal",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dfc-content-brain",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook Brain Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [220, 260]
+    },
+    {
+      "parameters": {
+        "functionCode": "const body = items[0].json.body ?? items[0].json; const eventData = body.eventData || {}; const incomingMediaPlan = body.mediaPlan || {}; const assetUrls = Array.from(new Set([incomingMediaPlan.posterUrl || '', incomingMediaPlan.primaryAssetUrl || '', ...(Array.isArray(incomingMediaPlan.assetUrls) ? incomingMediaPlan.assetUrls : []), ...(Array.isArray(incomingMediaPlan.mediaUrls) ? incomingMediaPlan.mediaUrls : []), eventData.posterUrl || '', eventData.imageUrl || '', eventData.thumbnailUrl || '', ...(Array.isArray(eventData.assetUrls) ? eventData.assetUrls : []), ...(Array.isArray(eventData.mediaUrls) ? eventData.mediaUrls : [])].map((value) => String(value || '').trim()).filter((value) => value.startsWith('http://') || value.startsWith('https://')))); const posterUrl = String(incomingMediaPlan.posterUrl || eventData.posterUrl || assetUrls[0] || ''); const primaryAssetUrl = String(incomingMediaPlan.primaryAssetUrl || posterUrl || assetUrls[0] || ''); const primaryPreviewAssetUrl = String(incomingMediaPlan.primaryPreviewAssetUrl || posterUrl || primaryAssetUrl || ''); const primaryPublishableAssetUrl = String(incomingMediaPlan.primaryPublishableAssetUrl || assetUrls.find((url) => !/\\.svg(?:$|\\?)/i.test(url)) || ''); const thumbnailUrl = String(incomingMediaPlan.thumbnailUrl || eventData.thumbnailUrl || posterUrl || primaryPreviewAssetUrl || ''); const normalizedEventData = { ...eventData, ...(posterUrl ? { posterUrl } : {}), ...(primaryAssetUrl ? { imageUrl: eventData.imageUrl || primaryAssetUrl } : {}), ...(thumbnailUrl ? { thumbnailUrl: eventData.thumbnailUrl || thumbnailUrl } : {}), ...(assetUrls.length > 0 ? { mediaUrls: assetUrls, assetUrls } : {}) }; const mediaPlan = { posterUrl, primaryAssetUrl, primaryPreviewAssetUrl, primaryPublishableAssetUrl, thumbnailUrl, assetUrls, mediaUrls: assetUrls, assets: assetUrls.map((url, index) => ({ url, role: posterUrl && url === posterUrl ? 'poster' : index === 0 ? 'primary' : 'supporting', type: /\\.svg(?:$|\\?)/i.test(url) ? 'svg' : /\\.(mp4|mov|m4v|webm|m3u8)(?:$|\\?)/i.test(url) ? 'video' : 'image', order: index + 1 })) }; return [{ json: { webInput: String(body.webInput || ''), platform: body.platform || 'all', postType: body.postType || 'text', brandTone: body.brandTone || 'hype', audienceType: body.audienceType || 'fans', niche: body.niche || 'general', objective: body.objective || 'engagement', requestId: body.requestId || ('brain_' + Date.now()), callbackUrl: body.callbackUrl || '', eventData: normalizedEventData, eventTitle: normalizedEventData.title || normalizedEventData.eventName || '', posterUrl, promoterName: normalizedEventData.promoterName || '', mediaPlan, assetUrls } }];"
+      },
+      "name": "Normalize Request",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [460, 260]
+    },
+    {
+      "parameters": {
+        "functionCode": "const input = items[0].json; const schema = { posts: [{ platform: input.platform === 'all' ? 'facebook' : input.platform, caption: '...', postType: input.postType, mediaUrl: input.mediaPlan.primaryPreviewAssetUrl || '', mediaUrls: input.assetUrls || [], thumbnailUrl: input.mediaPlan.thumbnailUrl || '', best_time_to_post: '7:30 PM' }], headline: '...', summary: '...', viralScore: 8, toneSummary: input.brandTone, suggestedMedia: input.posterUrl || '', suggestedMediaAssets: input.assetUrls || [], mediaPlan: input.mediaPlan, pipeline: { engine: 'n8n', model: 'gemini-2.0-flash-exp', workflow: 'dfc_content_brain_minimal' } }; const generationPrompt = 'Return JSON only. Do not use markdown. Follow this schema exactly: ' + JSON.stringify(schema) + '. Build a combat-sports content pack using this request: ' + input.webInput + '. Media plan: ' + JSON.stringify({ posterUrl: input.posterUrl || '', assetUrls: input.assetUrls || [], primaryPublishableAssetUrl: input.mediaPlan.primaryPublishableAssetUrl || '' }); return [{ json: { ...input, generationPrompt } }];"
+      },
+      "name": "Build Generation Prompt",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [700, 260]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gemini-2.0-flash-exp"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.generationPrompt }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": "You are the DFC Content Brain. Return valid JSON only with posts, headline, summary, viralScore, toneSummary, suggestedMedia, suggestedMediaAssets, mediaPlan, and pipeline. Do not wrap JSON in markdown."
+        }
+      },
+      "name": "Generate Structured Content",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [980, 260]
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Normalize Request').item.json; const raw = $json.response || $json.text || '{}'; let parsed = {}; try { parsed = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { parsed = {}; } const platforms = source.platform === 'all' ? ['facebook', 'instagram', 'x'] : [source.platform]; const safeMediaPlan = { ...(source.mediaPlan || {}), ...(parsed.mediaPlan || {}), posterUrl: parsed.suggestedMedia || parsed.posterUrl || (parsed.mediaPlan || {}).posterUrl || source.posterUrl || '', assetUrls: Array.from(new Set([...(Array.isArray((parsed.mediaPlan || {}).assetUrls) ? (parsed.mediaPlan || {}).assetUrls : []), ...(Array.isArray(parsed.suggestedMediaAssets) ? parsed.suggestedMediaAssets : []), ...(Array.isArray(parsed.assetUrls) ? parsed.assetUrls : []), ...(Array.isArray(parsed.mediaUrls) ? parsed.mediaUrls : []), ...(Array.isArray(source.assetUrls) ? source.assetUrls : []), source.posterUrl || ''].map((value) => String(value || '').trim()).filter(Boolean))) }; safeMediaPlan.primaryAssetUrl = safeMediaPlan.primaryAssetUrl || safeMediaPlan.posterUrl || safeMediaPlan.assetUrls[0] || ''; safeMediaPlan.primaryPreviewAssetUrl = safeMediaPlan.primaryPreviewAssetUrl || safeMediaPlan.posterUrl || safeMediaPlan.primaryAssetUrl || ''; safeMediaPlan.primaryPublishableAssetUrl = safeMediaPlan.primaryPublishableAssetUrl || safeMediaPlan.assetUrls.find((url) => !/\\.svg(?:$|\\?)/i.test(url)) || ''; safeMediaPlan.thumbnailUrl = safeMediaPlan.thumbnailUrl || safeMediaPlan.posterUrl || safeMediaPlan.primaryPreviewAssetUrl || ''; safeMediaPlan.assets = Array.isArray(safeMediaPlan.assets) && safeMediaPlan.assets.length > 0 ? safeMediaPlan.assets : safeMediaPlan.assetUrls.map((url, index) => ({ url, role: safeMediaPlan.posterUrl && url === safeMediaPlan.posterUrl ? 'poster' : index === 0 ? 'primary' : 'supporting', type: /\\.svg(?:$|\\?)/i.test(url) ? 'svg' : /\\.(mp4|mov|m4v|webm|m3u8)(?:$|\\?)/i.test(url) ? 'video' : 'image', order: index + 1 })); const posts = Array.isArray(parsed.posts) && parsed.posts.length > 0 ? parsed.posts.map((post) => ({ ...post, mediaUrl: post.mediaUrl || safeMediaPlan.primaryPreviewAssetUrl || '', mediaUrls: Array.isArray(post.mediaUrls) && post.mediaUrls.length > 0 ? post.mediaUrls : safeMediaPlan.assetUrls, thumbnailUrl: post.thumbnailUrl || safeMediaPlan.thumbnailUrl || '' })) : platforms.map((platform) => ({ platform, caption: source.webInput, postType: source.postType, mediaUrl: safeMediaPlan.primaryPreviewAssetUrl || '', mediaUrls: safeMediaPlan.assetUrls, thumbnailUrl: safeMediaPlan.thumbnailUrl || '', best_time_to_post: '7:30 PM' })); return [{ json: { requestId: source.requestId, posts, headline: parsed.headline || source.eventTitle || 'DFC Content Pack', summary: parsed.summary || source.webInput.slice(0, 180), viralScore: parsed.viralScore ?? 7, toneSummary: parsed.toneSummary || source.brandTone, suggestedMedia: parsed.suggestedMedia || safeMediaPlan.primaryPreviewAssetUrl || source.posterUrl || '', suggestedMediaAssets: Array.isArray(parsed.suggestedMediaAssets) && parsed.suggestedMediaAssets.length > 0 ? parsed.suggestedMediaAssets : safeMediaPlan.assetUrls, mediaPlan: safeMediaPlan, pipeline: parsed.pipeline || { engine: 'n8n', model: 'gemini-2.0-flash-exp', workflow: 'dfc_content_brain_minimal' } } }];"
+      },
+      "name": "Parse Structured Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1260, 260]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Respond Brain Output",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1520, 260]
+    }
+  ],
+  "connections": {
+    "Webhook Brain Request": {
+      "main": [[{ "node": "Normalize Request", "type": "main", "index": 0 }]]
+    },
+    "Normalize Request": {
+      "main": [
+        [{ "node": "Build Generation Prompt", "type": "main", "index": 0 }]
+      ]
+    },
+    "Build Generation Prompt": {
+      "main": [
+        [{ "node": "Generate Structured Content", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Structured Content": {
+      "main": [
+        [{ "node": "Parse Structured Output", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Structured Output": {
+      "main": [[{ "node": "Respond Brain Output", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": [
+    {
+      "name": "DFC"
+    },
+    {
+      "name": "content-brain"
+    }
+  ]
+}

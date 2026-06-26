@@ -1,0 +1,11 @@
+# Default owner for all files
+* @DIRTYBOXING
+
+# Critical backend surfaces
+/server/ @DIRTYBOXING
+/monitoring/ @DIRTYBOXING
+/deploy/ @DIRTYBOXING
+
+# CI and repo policy
+/.github/workflows/ @DIRTYBOXING
+/.github/CODEOWNERS @DIRTYBOXING

@@ -1,0 +1,62 @@
+name: DFC Daily Health Report
+
+on:
+  schedule:
+    - cron: "0 20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  daily-health:
+    runs-on: windows-latest
+    env:
+      SENDGRID_API_KEY: ${{ secrets['SENDGRID_API_KEY'] }}
+      FROM_EMAIL: ${{ secrets['FROM_EMAIL'] }}
+      STRIPE_SECRET_KEY: ${{ secrets['STRIPE_SECRET_KEY'] }}
+      DFC_HEALTH_EMAIL_TO: ${{ secrets['DFC_HEALTH_EMAIL_TO'] }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Install root Node dependencies (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install functions dependencies (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+        working-directory: functions
+
+      - name: Run DFC health report
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:DFC_HEALTH_EMAIL_TO)) {
+            pwsh -ExecutionPolicy Bypass -File .\scripts\dfc_health_report.ps1
+          } else {
+            pwsh -ExecutionPolicy Bypass -File .\scripts\dfc_health_report.ps1 -EmailTo "$env:DFC_HEALTH_EMAIL_TO"
+          }
+
+      - name: Upload health artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dfc-health-report-${{ github.run_id }}
+          path: reports/health/

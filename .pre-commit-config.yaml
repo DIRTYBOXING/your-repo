@@ -1,0 +1,41 @@
+repos:
+  # ── Standard file hygiene ──────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '\.md$'
+      - id: end-of-file-fixer
+        exclude: '\.md$'
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-merge-conflict
+      - id: detect-private-key
+
+  # ── Secret scanning ────────────────────────────────────────────────────────
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: '(\.lock|pubspec\.lock|package-lock\.json)$'
+
+  # ── Dart / Flutter ─────────────────────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: dart-format
+        name: dart format
+        language: system
+        entry: dart format --set-exit-if-changed
+        types: [file]
+        files: '\.dart$'
+        pass_filenames: true
+
+      - id: flutter-analyze
+        name: flutter analyze
+        language: system
+        entry: flutter analyze --no-fatal-infos
+        types: [file]
+        files: '\.dart$'
+        pass_filenames: false

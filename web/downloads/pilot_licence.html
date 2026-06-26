@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pilot Licence Agreement — Data Fight Central</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      @media print {
+        body {
+          font-size: 11pt;
+          color: #000;
+        }
+        .no-print {
+          display: none;
+        }
+      }
+      body {
+        font-family: "Georgia", serif;
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        line-height: 1.7;
+        color: #222;
+      }
+      h1 {
+        font-size: 1.6rem;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin-top: 2rem;
+      }
+      .field {
+        border-bottom: 1px solid #999;
+        display: inline-block;
+        min-width: 200px;
+        margin: 0 0.25rem;
+      }
+      .sig-block {
+        margin-top: 2rem;
+      }
+      .sig-line {
+        border-bottom: 1px solid #000;
+        width: 300px;
+        display: inline-block;
+        margin-top: 1.5rem;
+      }
+      .btn-print {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background: #00d9ff;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="no-print" style="text-align: center">
+      <button class="btn-print" onclick="window.print()">
+        Print / Save as PDF
+      </button>
+      <a
+        class="btn-print"
+        href="/promoters.html"
+        style="
+          text-decoration: none;
+          margin-left: 0.5rem;
+          background: #555;
+          color: #fff;
+        "
+        >Back to Promoter Hub</a
+      >
+    </div>
+
+    <h1>PILOT LICENCE AGREEMENT</h1>
+
+    <h2>Parties</h2>
+    <p>
+      <strong>Promoter:</strong> <span class="field"></span> (ABN:
+      <span class="field" style="min-width: 120px"></span>)<br />
+      <strong>Distributor:</strong> Data Fight Central Pty Ltd (DFC)<br />
+      &emsp;Founder: DFC Founder<br />
+      &emsp;ABN: <span class="field" style="min-width: 120px"></span>
+    </p>
+
+    <h2>Event</h2>
+    <p>
+      Name: <span class="field"></span><br />
+      Date: <span class="field"></span><br />
+      Venue: <span class="field" style="min-width: 300px"></span>
+    </p>
+
+    <h2>1. Grant of Rights</h2>
+    <p>
+      Promoter grants DFC the non-exclusive right to transmit, stream, and sell
+      the Event live and as a 30-day VOD highlights package in the Territory on
+      Platforms listed below.
+    </p>
+    <p>
+      <strong>Territory:</strong>
+      <span class="field" style="min-width: 250px"></span><br />
+      <strong>Platforms:</strong> Web (datafightcentral.com), iOS (future),
+      Android (future), Connected TV (future)
+    </p>
+
+    <h2>2. Commercial Terms</h2>
+    <ul>
+      <li>
+        <strong>Revenue split:</strong> Promoter 60% / DFC 40% of PPV gross
+        receipts after payment processing and platform fees.
+      </li>
+      <li>
+        <strong>Alternate link-only split:</strong> Promoter 85% / DFC 15% (if
+        promoter supplies clean stream and no production support is required).
+      </li>
+      <li>
+        <strong>Payment flow:</strong> Promoter to onboard Stripe Connect
+        Express; DFC will create PaymentIntents and route promoter share using
+        transfer_data.destination. DFC will not hold promoter funds except for a
+        short reserve for chargebacks (7–14 days).
+      </li>
+      <li>
+        <strong>Settlement:</strong> Daily reporting; final settlement within 30
+        days of event.
+      </li>
+    </ul>
+
+    <h2>3. Technical and Delivery</h2>
+    <ul>
+      <li>
+        Promoter supplies clean feed (SDI/RTMP/HLS) to DFC ingest endpoint by
+        <span class="field" style="min-width: 120px"></span> (minimum 72 hours
+        before event).
+      </li>
+      <li>Backup feed required.</li>
+      <li>Technical test 72 hours before event.</li>
+      <li>Final run-through 24 hours before event.</li>
+      <li>
+        DFC will apply multi-DRM (Widevine/FairPlay/PlayReady) and server-side
+        forensic watermarking.
+      </li>
+    </ul>
+
+    <h2>4. Warranties and Indemnity</h2>
+    <ul>
+      <li>
+        Promoter warrants it owns or controls the broadcast and distribution
+        rights for the Event and has obtained all necessary fighter releases,
+        music clearances, and sponsor permissions.
+      </li>
+      <li>
+        Promoter indemnifies DFC against third-party claims arising from breach
+        of these warranties.
+      </li>
+      <li>
+        DFC liability limited to fees paid for the event or AUD 50,000,
+        whichever is greater, except for willful misconduct.
+      </li>
+    </ul>
+
+    <h2>5. Termination</h2>
+    <ul>
+      <li>
+        Material breach not cured within 14 days of written notice allows the
+        non-breaching party to terminate.
+      </li>
+      <li>
+        On termination DFC will cease distribution within 14 business days.
+      </li>
+      <li>
+        Final settlement calculated pro rata; outstanding payments still owed.
+      </li>
+      <li>
+        Surviving clauses: indemnity, confidentiality, dispute resolution.
+      </li>
+    </ul>
+
+    <h2>6. Confidentiality</h2>
+    <p>
+      Neither party will disclose commercial terms without prior written
+      consent, except as required by law.
+    </p>
+
+    <h2>7. Dispute Resolution</h2>
+    <ul>
+      <li>Good faith negotiation first (14 days).</li>
+      <li>Mediation second (under ACICA rules).</li>
+      <li>If unresolved, arbitration under Queensland law.</li>
+      <li>Governing law: Queensland, Australia.</li>
+    </ul>
+
+    <h2>8. Entire Agreement</h2>
+    <p>
+      This Agreement constitutes the entire agreement between the parties.
+      Amendments must be in writing and signed by both parties.
+    </p>
+
+    <div class="sig-block">
+      <h2>Signatures</h2>
+      <p>
+        <strong>Promoter:</strong><br />
+        Name: <span class="sig-line"></span><br />
+        Title: <span class="sig-line"></span><br />
+        Signature: <span class="sig-line"></span><br />
+        Date: <span class="sig-line" style="width: 150px"></span>
+      </p>
+      <p>
+        <strong>DFC:</strong><br />
+        Name: DFC Founder<br />
+        Title: Founder<br />
+        Signature: <span class="sig-line"></span><br />
+        Date: <span class="sig-line" style="width: 150px"></span>
+      </p>
+    </div>
+
+    <p style="margin-top: 2rem; font-size: 0.85rem; color: #666">
+      Annex A: Feed specification and ingest endpoints (provided separately).
+    </p>
+  </body>
+</html>

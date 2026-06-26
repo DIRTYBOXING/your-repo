@@ -1,0 +1,148 @@
+name: Mobile Outreach Trigger
+# ─────────────────────────────────────────────────────────────
+# Chukya-friendly: run from GitHub Mobile app or browser.
+# Select an eventId (or "all") and channels to trigger outreach.
+# ─────────────────────────────────────────────────────────────
+on:
+  workflow_dispatch:
+    inputs:
+      eventId:
+        description: 'Event ID to send outreach for (or "all" for every event)'
+        required: true
+        default: "all"
+        type: string
+      channels:
+        description: "Channels to send on"
+        required: true
+        default: "email,messenger,instagram"
+        type: string
+      template:
+        description: "Template to use"
+        required: true
+        default: "initial"
+        type: choice
+        options:
+          - initial
+          - followup
+          - approved
+          - gym_shields_initial
+          - gym_shields_followup
+          - gym_shields_confirm
+
+jobs:
+  outreach:
+    runs-on: ubuntu-latest
+    env:
+      SEND_ENDPOINT: ${{ secrets.SEND_PROMOTER_ENDPOINT }}
+      SOCIAL_ENDPOINT: ${{ secrets.SOCIAL_ENDPOINT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Resolve event files
+        id: events
+        run: |
+          if [ "${{ inputs.eventId }}" = "all" ]; then
+            FILES=$(ls data/events/*.json 2>/dev/null | tr '\n' ' ')
+          else
+            FILES="data/events/${{ inputs.eventId }}.json"
+            if [ ! -f "$FILES" ]; then
+              echo "::error::Event file not found: $FILES"
+              exit 1
+            fi
+          fi
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
+      # ── Email outreach ──
+      - name: Send emails
+        if: contains(inputs.channels, 'email') && env.SEND_ENDPOINT != ''
+        run: |
+          for f in ${{ steps.events.outputs.files }}; do
+            [ -f "$f" ] || continue
+            EVENT_ID=$(jq -r '.eventId // empty' "$f")
+            TO=$(jq -r '.promoterEmail // .contact // empty' "$f")
+            TITLE=$(jq -r '.title // .eventTitle // "Untitled"' "$f")
+            PROMOTER=$(jq -r '.promotion // .promoter // "Promoter"' "$f")
+
+            [ -z "$TO" ] && echo "⏭ No email for $EVENT_ID" && continue
+
+            echo "📧 Email → $TO ($EVENT_ID)"
+            curl -s -X POST "$SEND_ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg to "$TO" \
+                --arg eid "$EVENT_ID" \
+                --arg title "$TITLE" \
+                --arg promoter "$PROMOTER" \
+                --arg tmpl "${{ inputs.template }}" \
+                '{to: $to, eventId: $eid, title: $title, promoter: $promoter, template: $tmpl}'
+              )" || echo "⚠️ Failed for $EVENT_ID"
+          done
+
+      # ── Messenger DM ──
+      - name: Send Messenger DMs
+        if: contains(inputs.channels, 'messenger') && env.SOCIAL_ENDPOINT != ''
+        run: |
+          TMPL="${{ inputs.template }}"
+          # Map email templates to social template names
+          case "$TMPL" in
+            initial|followup) SOCIAL_TMPL="promoter_${TMPL}" ;;
+            gym_shields_*) SOCIAL_TMPL="gym_shields" ;;
+            *) SOCIAL_TMPL="promoter_initial" ;;
+          esac
+
+          for f in ${{ steps.events.outputs.files }}; do
+            [ -f "$f" ] || continue
+            EVENT_ID=$(jq -r '.eventId // empty' "$f")
+            PROMOTER=$(jq -r '.promotion // .promoter // "Promoter"' "$f")
+            TITLE=$(jq -r '.title // .eventTitle // "Untitled"' "$f")
+            RID=$(jq -r '.social_ids.messenger // empty' "$f" 2>/dev/null)
+
+            echo "📨 Messenger DM → $EVENT_ID"
+            curl -s -X POST "$SOCIAL_ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg ch messenger \
+                --arg tmpl "$SOCIAL_TMPL" \
+                --arg rid "$RID" \
+                --arg promoter "$PROMOTER" \
+                --arg title "$TITLE" \
+                '{channel: $ch, template: $tmpl, recipientId: (if $rid == "" then null else $rid end), vars: {PROMOTER_NAME: $promoter, EVENT_TITLE: $title}}'
+              )" || echo "⚠️ Messenger failed for $EVENT_ID"
+          done
+
+      # ── Instagram DM ──
+      - name: Send Instagram DMs
+        if: contains(inputs.channels, 'instagram') && env.SOCIAL_ENDPOINT != ''
+        run: |
+          TMPL="${{ inputs.template }}"
+          case "$TMPL" in
+            initial|followup) SOCIAL_TMPL="promoter_${TMPL}" ;;
+            gym_shields_*) SOCIAL_TMPL="gym_shields" ;;
+            *) SOCIAL_TMPL="promoter_initial" ;;
+          esac
+
+          for f in ${{ steps.events.outputs.files }}; do
+            [ -f "$f" ] || continue
+            EVENT_ID=$(jq -r '.eventId // empty' "$f")
+            PROMOTER=$(jq -r '.promotion // .promoter // "Promoter"' "$f")
+            TITLE=$(jq -r '.title // .eventTitle // "Untitled"' "$f")
+            RID=$(jq -r '.social_ids.instagram // empty' "$f" 2>/dev/null)
+
+            echo "📨 Instagram DM → $EVENT_ID"
+            curl -s -X POST "$SOCIAL_ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg ch instagram \
+                --arg tmpl "$SOCIAL_TMPL" \
+                --arg rid "$RID" \
+                --arg promoter "$PROMOTER" \
+                --arg title "$TITLE" \
+                '{channel: $ch, template: $tmpl, recipientId: (if $rid == "" then null else $rid end), vars: {PROMOTER_NAME: $promoter, EVENT_TITLE: $title}}'
+              )" || echo "⚠️ Instagram failed for $EVENT_ID"
+          done
+
+      - name: Summary
+        run: echo "✅ Outreach complete for eventId=${{ inputs.eventId }} channels=${{ inputs.channels }} template=${{ inputs.template }}"

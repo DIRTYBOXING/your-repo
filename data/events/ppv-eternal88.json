@@ -1,0 +1,54 @@
+{
+  "eventId": "ppv-eternal88",
+  "title": "ETERNAL MMA 88",
+  "subtitle": "Sydney — Stacked MMA Card",
+  "date": "2026-06-14",
+  "time": "18:00 AEST",
+  "price": "24.99",
+  "promoter": "Eternal MMA",
+  "sport": "MMA",
+  "venue": "Aware Super Theatre, Sydney",
+  "currency": "AUD",
+  "streamPlatforms": ["UFC Fight Pass"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Welterweight",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Welterweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Welterweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Bantamweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Flyweight",
+      "rounds": 3
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

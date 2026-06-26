@@ -1,0 +1,18 @@
+{
+  "name": "chuckya-radar-server",
+  "version": "1.0.0",
+  "description": "DFC CHUCKYA Radar — anti-piracy signal ingestion & evidence pipeline",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "uuid": "^9.0.0",
+    "archiver": "^5.3.1",
+    "cors": "^2.8.5",
+    "prom-client": "^15.1.0"
+  }
+}

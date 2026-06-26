@@ -1,0 +1,36 @@
+===========================================================
+ DFC Edge Auth Debug — Paste console output below
+ Run in Edge DevTools Console on:
+   https://www.datafightcentral.com/promoters.html
+===========================================================
+
+--- STEP A: Unregister service workers + hard reload ---
+// Paste this into console:
+//   navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+//   location.reload(true);
+
+Console output:
+
+
+--- STEP B: Force Firebase auth persistence (after reload) ---
+// Paste this into console:
+//   firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+//     .then(()=>console.log('persistence: LOCAL'))
+//     .catch(e=>console.error('persistence error', e));
+
+Console output:
+
+
+--- STEP C: Show current auth state ---
+// Paste this into console:
+//   console.log('currentUser', firebase.auth().currentUser);
+//   firebase.auth().onAuthStateChanged(u => console.log('auth state changed', u));
+
+Console output:
+
+
+===========================================================
+ Date tested: ____-__-__
+ Browser: Edge __.__.____
+ Platform: Windows __
+===========================================================

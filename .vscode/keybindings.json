@@ -1,0 +1,15 @@
+[
+  {
+    "key": "ctrl+alt+r",
+    "command": "workbench.action.tasks.runTask",
+    "args": "run_feed_smoke"
+  },
+  {
+    "key": "ctrl+alt+t",
+    "command": "workbench.action.terminal.toggleTerminal"
+  },
+  {
+    "key": "ctrl+alt+g",
+    "command": "gitlens.showQuickRepoHistory"
+  }
+]

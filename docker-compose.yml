@@ -1,0 +1,173 @@
+version: "3.9"
+
+services:
+  # ============================================
+  # 1. NODE BACKEND
+  # ============================================
+  node_backend:
+    build: ./atlas_backend_node
+    container_name: dfc-node-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - PYTHON_AI_URL=${PYTHON_AI_URL}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    depends_on:
+      - python_ai
+      - postgres
+      - redis
+      - minio
+    networks:
+      - dfc_bridge
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # 2. PYTHON AI ENGINE
+  # ============================================
+  python_ai:
+    build: ./atlas_backend_python
+    container_name: dfc-python-ai
+    ports:
+      - "5000:5000"
+    environment:
+      - PYTHON_ENGINE_PORT=5000
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - REDIS_HOST=${REDIS_HOST}
+    networks:
+      - dfc_bridge
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # 3. POSTGRES DATABASE
+  # ============================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: dfc-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dfc_bridge
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # 4. REDIS CACHE
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: dfc-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - dfc_bridge
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # 5. MINIO OBJECT STORAGE
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: dfc-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - dfc_bridge
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ============================================
+  # 6. INFERENCE ENGINE (HULK)
+  # ============================================
+  inference:
+    build: ./services/inference-service
+    container_name: dfc-inference-service
+    ports:
+      - "8106:8080"
+    environment:
+      - GOOGLE_AI_KEY=${GOOGLE_AI_KEY}
+      - GEMINI_KEY=${GEMINI_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    networks:
+      - dfc_bridge
+    restart: always
+
+  # ============================================
+  # 7. PROMOTION ENGINE (DON KING)
+  # ============================================
+  promotion:
+    build: ./services/promotion-service
+    container_name: dfc-promotion-service
+    ports:
+      - "8107:8080"
+    environment:
+      - INFERENCE_SERVICE_URL=http://inference:8080/infer
+    networks:
+      - dfc_bridge
+    depends_on:
+      - inference
+    restart: always
+
+# ============================================
+# VOLUMES (Persistent Storage)
+# ============================================
+volumes:
+  postgres_data:
+    driver: local
+  minio_data:
+    driver: local
+
+# ============================================
+# NETWORK (Internal Service Communication)
+# ============================================
+networks:
+  dfc_bridge:
+    driver: bridge
+# smoke: trigger docker-build 20260626T072130Z
+# smoke: trigger docker-build 20260626T072217Z

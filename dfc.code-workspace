@@ -1,0 +1,335 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "DFC Root"
+    },
+    {
+      "path": "atlas_backend",
+      "name": "Ingest API (Python)"
+    },
+    {
+      "path": "entitlements-service",
+      "name": "Entitlements (Node.js)"
+    },
+    {
+      "path": "services/predictor",
+      "name": "Predictor (Python)"
+    }
+  ],
+  "settings": {
+    // Editor
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.rulers": [80, 120],
+    "editor.wordWrap": "on",
+    "files.autoSave": "afterDelay",
+
+    // Python
+    "python.defaultInterpreterPath": "${workspaceFolder}/atlas_backend/venv/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--line-length=100"],
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.python",
+      "editor.formatOnSave": true,
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+
+    // Node.js / JavaScript
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "eslint.validate": ["javascript", "typescript"],
+    "eslint.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+
+    // Docker
+    "docker.showContextMenu": true,
+    "docker.commands.attach": "vs-docker",
+
+    // Database connections
+    "sql.connections": [
+      {
+        "name": "DFC PostgreSQL (Local)",
+        "driver": "PostgreSQL",
+        "host": "localhost",
+        "port": 5432,
+        "database": "dfc",
+        "username": "dfc_admin",
+        "password": "${env:DB_PASSWORD}",
+        "options": {
+          "sslmode": "disable"
+        }
+      },
+      {
+        "name": "DFC PostgreSQL (Cloud SQL)",
+        "driver": "PostgreSQL",
+        "host": "${env:CLOUD_SQL_IP}",
+        "port": 5432,
+        "database": "dfc",
+        "username": "${env:CLOUD_SQL_USER}",
+        "password": "${env:CLOUD_SQL_PASSWORD}",
+        "options": {
+          "sslmode": "require"
+        }
+      }
+    ],
+
+    // Redis
+    "redisclient.servers": [
+      {
+        "label": "Local Redis",
+        "host": "localhost",
+        "port": 6379,
+        "db": 0
+      }
+    ],
+
+    // Firestore
+    "firestore.projectId": "datafightcentral",
+    "firestore.databaseId": "(default)",
+
+    // Google Cloud
+    "gcloud.projectId": "datafightcentral",
+    "gcloud.region": "australia-southeast1",
+    "gcloud.zone": "australia-southeast1-a",
+
+    // REST Client
+    "rest-client.environmentVariables": {
+      "$shared": {
+        "baseUrl": "http://localhost",
+        "ingestPort": "8000",
+        "predictorPort": "8090",
+        "entitlementsPort": "4010"
+      },
+      "dev": {
+        "apiKey": "dev-key-12345"
+      },
+      "prod": {
+        "apiKey": "${env:PROD_API_KEY}"
+      }
+    },
+
+    // Git
+    "gitlens.showWelcomeOnInstall": false,
+    "github.copilot.enable": {
+      "*": true
+    },
+
+    // Files
+    "files.exclude": {
+      "**/.env": true,
+      "**/.env.local": true,
+      "**/node_modules": true,
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "**/venv": true,
+      "**/.venv": true
+    },
+    "files.watcherExclude": {
+      "**/.git/objects/**": true,
+      "**/.git/subtree-cache/**": true,
+      "**/node_modules/**": true,
+      "**/.venv/**": true
+    },
+
+    // Terminal
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.defaultProfile.osx": "bash",
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.env.linux": {
+      "HISTCONTROL": "ignoredups"
+    }
+  },
+  
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Python: Ingest API (FastAPI)",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": ["main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"],
+        "jinja": true,
+        "cwd": "${workspaceFolder}/atlas_backend",
+        "env": {
+          "DATABASE_URL": "postgresql://dfc_admin:dfc-local-postgres-change-me@db:5432/dfc",
+          "PYTHONUNBUFFERED": "1"
+        },
+        "console": "integratedTerminal",
+        "preLaunchTask": "start-postgres-redis"
+      },
+      {
+        "name": "Python: Predictor API",
+        "type": "python",
+        "request": "launch",
+        "module": "uvicorn",
+        "args": ["main:app", "--host", "0.0.0.0", "--port", "8090", "--reload"],
+        "cwd": "${workspaceFolder}/services/predictor",
+        "env": {
+          "REDIS_URL": "redis://redis:6379",
+          "PYTHONUNBUFFERED": "1"
+        },
+        "console": "integratedTerminal",
+        "preLaunchTask": "start-redis"
+      },
+      {
+        "name": "Node.js: Entitlements Service",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/entitlements-service/server.js",
+        "restart": true,
+        "runtimeArgs": ["--inspect-brk"],
+        "env": {
+          "NODE_ENV": "development",
+          "PORT": "4010",
+          "REDIS_URL": "redis://redis:6379"
+        },
+        "console": "integratedTerminal",
+        "preLaunchTask": "npm-install-entitlements"
+      },
+      {
+        "name": "Docker: Start All Services",
+        "type": "docker",
+        "request": "launch",
+        "preLaunchTask": "docker-compose-up"
+      }
+    ]
+  },
+
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "docker-compose-up",
+        "type": "shell",
+        "command": "docker",
+        "args": ["compose", "-f", "docker-compose.minimal.yml", "up", "-d"],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+      {
+        "label": "start-postgres-redis",
+        "type": "shell",
+        "command": "docker",
+        "args": ["compose", "-f", "docker-compose.minimal.yml", "up", "-d", "db", "redis"],
+        "problemMatcher": [],
+        "isBackground": true,
+        "presentation": {
+          "reveal": "silent"
+        }
+      },
+      {
+        "label": "start-redis",
+        "type": "shell",
+        "command": "docker",
+        "args": ["compose", "-f", "docker-compose.minimal.yml", "up", "-d", "redis"],
+        "problemMatcher": [],
+        "isBackground": true,
+        "presentation": {
+          "reveal": "silent"
+        }
+      },
+      {
+        "label": "npm-install-entitlements",
+        "type": "shell",
+        "command": "npm",
+        "args": ["install"],
+        "options": {
+          "cwd": "${workspaceFolder}/entitlements-service"
+        },
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "silent"
+        }
+      },
+      {
+        "label": "pytest-ingest",
+        "type": "shell",
+        "command": "python",
+        "args": ["-m", "pytest", "tests/", "-v", "--tb=short"],
+        "options": {
+          "cwd": "${workspaceFolder}/atlas_backend"
+        },
+        "problemMatcher": ["$pyunit"]
+      },
+      {
+        "label": "black-format",
+        "type": "shell",
+        "command": "black",
+        "args": ["--line-length=100", "."],
+        "options": {
+          "cwd": "${workspaceFolder}/atlas_backend"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "deploy-gke",
+        "type": "shell",
+        "command": "bash",
+        "args": ["deploy-gke.sh"],
+        "problemMatcher": [],
+        "presentation": {
+          "reveal": "always"
+        }
+      },
+      {
+        "label": "gcloud-auth",
+        "type": "shell",
+        "command": "gcloud",
+        "args": ["auth", "login"],
+        "problemMatcher": []
+      }
+    ]
+  },
+
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.debugpy",
+      "ms-python.pylance",
+      "ms-python.vscode-pylance",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-vscode.makefile-tools",
+      "docker",
+      "ms-azuretools.vscode-docker",
+      "ms-vscode-remote.remote-containers",
+      "googlecloudtools.cloudcode",
+      "GoogleCloudTools.google-cloud-tools",
+      "redhat.vscode-yaml",
+      "ms-kubernetes-tools.vscode-kubernetes-tools",
+      "redisclient.redis-explorer",
+      "mtxr.sqltools",
+      "mtxr.sqltools-driver-pg",
+      "toba.vsfire",
+      "alesdi.firestore-explorer",
+      "humao.rest-client",
+      "rangav.vscode-thunder-client",
+      "eamodio.gitlens",
+      "GitHub.copilot",
+      "GitHub.copilot-chat",
+      "GitHub.vscode-pull-request-github",
+      "ms-vscode.remote-explorer",
+      "ms-vscode.remote-repositories",
+      "SonarSource.sonarlint-vscode",
+      "usernamehw.errorlens",
+      "streetsidesoftware.code-spell-checker",
+      "christian-kohler.path-intellisense",
+      "ms-vscode.makefile-tools"
+    ]
+  }
+}

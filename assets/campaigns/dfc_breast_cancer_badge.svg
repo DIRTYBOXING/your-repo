@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="gRibbon" x1="0" x2="1">
+      <stop offset="0" stop-color="#FFB6C1"/>
+      <stop offset="1" stop-color="#FF69B4"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <circle cx="512" cy="512" r="448" fill="url(#gRibbon)" stroke="#D94A7A" stroke-width="20"/>
+    <g transform="translate(320,240)" fill="#FFFFFF">
+      <path d="M96 64c0 0 64 64 64 128s-64 128-64 128-64-64-64-128 64-128 64-128z"/>
+      <path d="M160 64c0 0-64 64-64 128s64 128 64 128" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>
+</svg>

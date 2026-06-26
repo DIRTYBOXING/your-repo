@@ -1,0 +1,111 @@
+they have place holders information no images etc 
+DATA FIGHT CENTRAL — PILOT DISTRIBUTION EMAIL (READY TO SEND)
+================================================================
+
+BEFORE SENDING:
+- Replace [Promoter Name], [Event Name], [Date], and [Territory]
+- Send from: info@datafightcentral.com
+- Best send times: Tue-Thu, 8:30-11:30 AM local time
+- Save a copy to ops/audit/[event-name]/ after sending
+
+LIVE DOCUMENT LINKS (all hosted on DFC — no attachments needed):
+  Promoter Hub:            https://www.datafightcentral.com/promoters.html
+  Pilot Licence:           https://www.datafightcentral.com/downloads/pilot_licence.html
+  Statutory Declaration:   https://www.datafightcentral.com/downloads/statutory_declaration.html
+  Pilot Spec:              https://www.datafightcentral.com/downloads/pilot_spec.html
+  Stripe Onboarding Guide: https://www.datafightcentral.com/downloads/stripe_onboarding_guide.html
+
+OPTIONAL ATTACHMENTS (PDF versions if preferred):
+  1. Pilot_Licence.pdf (print from link above)
+  2. Statutory_Declaration.pdf (print from link above)
+  3. DFC_logo.png
+
+================================================================
+Subject: Pilot distribution proposal — [Event Name] on Data Fight Central
+
+Hi [Promoter Name],
+
+I'm DFC Founder, founder of Data Fight Central (D.F.C.). Thanks for
+taking a moment to consider a pilot distribution with us — below are the
+key points so you can review quickly.
+
+QUICK HIGHLIGHTS
+- We handle production, global distribution, and automated promoter payouts.
+- Pilot offer: single event live PPV + 30-day VOD; suggested split
+  Promoter 60% / DFC 40% after fees.
+- Payments: promoter paid directly via Stripe Connect; DFC does not hold
+  promoter funds.
+- Protection: multi-DRM, server-side forensic watermarking, geoblocking,
+  anti-piracy monitoring.
+- Next step: sign the one-page Pilot Licence and provide a witnessed
+  Statutory Declaration; we'll then run Stripe onboarding and technical
+  tests.
+
+PROPOSAL DETAILS
+- Scope: Live PPV for [Event Name / Date] plus 30-day VOD highlights.
+- Territory: Worldwide (or specify preferred territories).
+- Commercial: Suggested pilot split Promoter 60% / DFC 40% after payment
+  & platform fees; alternative: guaranteed fee + revenue share.
+- Deliverables from DFC: Production support, CDN delivery, player
+  integration, paywall, sponsor inventory, daily reporting, and
+  anti-piracy enforcement.
+- Technical requirements: Clean feed (SDI/RTMP/HLS), fighter releases,
+  cleared music and sponsor assets.
+
+NEXT STEPS
+1. Visit our Promoter Hub: www.datafightcentral.com/promoters.html
+2. Download and sign the Pilot Licence (one page).
+3. Download and complete the Statutory Declaration — get it witnessed
+   by a JP or solicitor, scan, and email to ops@datafightcentral.com.
+4. Confirm rights ownership and fighter releases for the event.
+5. Confirm territory scope (worldwide or list of countries).
+6. Complete Stripe Connect onboarding (Express) — guide on the hub page.
+7. We'll schedule a 72-hour technical test window.
+
+All documents are on our Promoter Hub — no attachments needed:
+www.datafightcentral.com/promoters.html
+
+I'm available Tuesday 10:00 AEST or Wednesday 14:00 AEST for a quick
+call — if those don't work, tell me two times that suit you and I'll
+confirm.
+
+CONTACT
+Name:    DFC Founder
+Company: Data Fight Central (D.F.C)
+Phone:   0450 113 139
+Email:   info@datafightcentral.com
+Website: www.datafightcentral.com
+
+Thanks,
+DFC Founder
+Founder, Data Fight Central
+
+Attached: Pilot_Licence.pdf; Statutory_Declaration.pdf; Pilot_Spec.pdf;
+Stripe_Onboarding_Guide.pdf; DFC_logo.png.
+
+================================================================
+48-HOUR FOLLOW UP
+
+Subject: Quick follow up — Pilot proposal for [Event Name]
+
+Hi [Promoter Name],
+
+Following up on the pilot proposal — can we confirm rights and a quick
+call this week?
+
+DFC Founder
+Data Fight Central | 0450 113 139
+
+================================================================
+IF PROMOTER ASKS FOR CHANGES
+
+Subject: Re: Pilot proposal — [Event Name]
+
+Hi [Promoter Name],
+
+Thanks — happy to adjust terms. We can offer a guaranteed fee + revenue
+share or a higher promoter split for faster sign-up. Which option suits
+you?
+
+DFC Founder
+Data Fight Central | 0450 113 139

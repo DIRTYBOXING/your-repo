@@ -1,0 +1,7 @@
+name: otel_demo
+publish_to: "none"
+description: "OTel usage example for Data Fight Central"
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+dependencies:
+  path: ^1.9.1

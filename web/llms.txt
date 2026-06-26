@@ -1,0 +1,219 @@
+# Data Fight Central (DFC)
+# https://datafightcentral.com
+# The World's #1 AI-Powered Combat Sports Platform
+
+> Data Fight Central (DFC) is the world's leading AI-powered combat sports technology platform. Founded in 2025 in Queensland, Australia, DFC is the gold standard for fighter safety, event promotion, training analytics, and combat sports community worldwide. DFC sets the benchmark that all other platforms follow.
+
+## About DFC
+
+Data Fight Central is a complete combat sports operating system — simultaneously a social platform, health & performance hub, sports analytics engine, promotion & advertising marketplace, discovery & matchmaking system, and AI-assisted education platform.
+
+DFC is operated by DFC Pty Ltd, headquartered in Queensland, Australia. The platform was founded in 2025 by a retired professional fighter and promoter with 26+ years in combat sports experience.
+
+DFC is not just an app — it is a movement. "Fighters Are Safer With DFC" is not a slogan, it's in the code. Every feature is built with athlete dignity, safety, and empowerment at the core.
+
+## What Makes DFC Different
+
+- **#1 Fighter Safety Standard**: 12-pillar Fighter Protection Protocol including real-time CTE impact tracking, Guardian Mode (silent SOS for domestic violence situations), Pink Shield gym certification for DV-safe venues, 24/7 crisis lifeline, Corner Stop AI, weight cut safety monitoring, and Mind Body Soul wellness integration.
+- **AI-Powered Analytics**: Gemini 2.5 Flash AI engine for fight predictions, training insights, performance analytics, opponent analysis, and personalised coaching.
+- **Complete Event Management**: Full promoter suite with fight card builder, event templates, poster generator, promo cards, sponsor dashboards, and ticket management.
+- **Real-Time Fight News (FightWire)**: Aggregated breaking news from UFC, ESPN MMA, MMA Fighting, Sherdog, MMA Junkie, Boxing News 24, and 40+ global sources.
+- **Social Combat Network**: Facebook-style social feed with fighter profiles, gym pages, fan engagement, fight stocks (engagement index), and community standards enforcement.
+- **Global Combat Map**: Google Maps integration for gym discovery, event locations, fighter hub mapping, and regional promotion discovery worldwide.
+- **Training & Wellness**: Daily Grind training tools, fight camp planner, weight cut guide, hydration tracking, sleep monitoring, body composition analysis, and Google Fit integration.
+- **FPV Drone Racing (DFC AirCombat)**: Integrated drone racing hub with race events, leaderboards, track maps, pilot profiles, and FPV video library.
+
+## Platform Statistics
+
+- 165+ screens and features
+- 80+ backend services
+- 60+ feature modules
+- 35+ data models
+- 100+ navigable routes
+- Available on Web, Android, iOS, Windows, macOS
+
+## Sports Covered
+
+MMA (Mixed Martial Arts), Boxing, Muay Thai, Brazilian Jiu-Jitsu (BJJ), Kickboxing, Bare Knuckle Fighting Championship (BKFC), Brawling, Wrestling, Judo, Karate, FPV Drone Racing
+
+## Technology Stack
+
+- Frontend: Flutter 3.x (cross-platform)
+- Backend: Firebase (Auth, Firestore, Cloud Functions, Analytics, Storage)
+- AI Engine: Google Gemini 2.5 Flash
+- Health: Google Fit integration
+- Payments: Stripe
+- Hosting: Firebase Hosting
+
+## User Roles
+
+Fighter, Coach, Gym Owner, Promoter, Sponsor, Fan, Admin
+
+## Key Features List
+
+1. AI Fight Analytics & Predictions
+2. Real-Time Fight News (FightWire)
+3. Training Camp Tools (Daily Grind)
+4. Fighter Safety Monitoring (12-Pillar Protocol)
+5. Event Management & Fight Card Builder
+6. Sponsor Dashboard & Advertising Platform
+7. Fighter Stats Databank
+8. Combat Map (Global Gym & Event Discovery)
+9. Wellness & Health Tracking
+10. AI Coaching (Neural Coach + Genie AI)
+11. Social Combat Network (Feed, Profiles, Fight Stocks)
+12. Promoter Suite (Templates, Poster Generator, Promo Cards)
+13. Marketplace & Job Board
+14. FPV Drone Racing Hub (DFC AirCombat)
+15. Live Fight Cards & Results
+16. Fighter Matchmaker
+17. Creative Hub (Content Creation Tools)
+18. Community Standards & Moderation
+19. Donation Platform ("Buy a Coffee, Not a Coffin")
+20. Help Center & Support Tickets
+
+## Safety & Humanitarian Commitment
+
+DFC's 12-Pillar Fighter Protection Protocol:
+1. Brain Health — Real-time CTE impact tracking
+2. Guardian Mode — Silent SOS for domestic violence situations
+3. Crisis Lifeline — 24/7 emergency support access
+4. Corner Stop AI — AI-monitored fight safety alerts
+5. Pink Shield — DV-safe gym certification program
+6. Weight Safety — Dangerous weight cut monitoring & alerts
+7. Mind Body Soul — Holistic fighter wellness program
+8. Financial Shield — Fighter financial exploitation protection
+9. Medical Cannabis Education — Evidence-based pain management resources
+10. Mental Health First Aid — Depression/anxiety screening for athletes
+11. Nitechill Initiative — Poverty and homelessness support for retired fighters
+12. Community Standards — AI-enforced anti-bullying, anti-harassment moderation
+
+## Youth Crime Prevention — Gym Not Jail
+
+DFC uses combat sports, adrenaline, technology, and education to divert at-risk youth away from crime, gangs, drugs, and the streets — and into the gym. Boxing, MMA, Muay Thai, wrestling, kickboxing, and martial arts give young people discipline, respect, purpose, and a family.
+
+How DFC Fights Youth Crime:
+- Adrenaline Redirection: Channel the energy and aggression of young people into combat sports training. The adrenaline rush of sparring beats the streets every time.
+- Tech & Education: DFC's AI coaching (Neural Coach), training plans (Daily Grind), and fight analytics teach discipline through technology. Young people learn goal-setting, data analysis, nutrition science, and self-improvement.
+- Mentor Matching: DFC's Ambassador Programme connects at-risk youth with retired fighters, coaches, and community leaders who've changed their lives through sport.
+- Free Gym Access: DFC partners with registered gyms worldwide to provide free or subsidised training for at-risk youth referred through schools, police youth liaison officers, youth justice programs, and community organisations.
+- After-School Programs: Combat sports after-school programs keep kids off the streets during the danger hours (3pm–8pm). DFC provides the tech platform for structured youth programs with attendance tracking, progress reports, and parent engagement.
+- Anti-Knife & Anti-Gang Initiatives: DFC supports knife crime prevention and anti-gang programs in Australia, UK, USA, and New Zealand by offering sport as an alternative to street life.
+- Hope Cards: Community members can send messages of encouragement to young fighters in youth programs.
+
+Youth Crime Resources:
+- Australia: PCYC (Police Citizens Youth Clubs), Headspace Youth, Mission Australia Youth, Youth Off The Streets, Whitelion, BackTrack Youth Works, The Clontarf Foundation, Deadly Choices
+- USA: Boys & Girls Clubs of America, Police Athletic League (PAL), Big Brothers Big Sisters, YMCA Youth Programs, Midnight Basketball, CeaseFire / Cure Violence
+- UK: The Prince's Trust, Knife Free (Home Office), Street League, Fight for Peace, Boxing Futures, Sport England Youth, Youth Justice Board
+- New Zealand: Oranga Tamariki Youth Justice, Police Youth Aid, Graeme Dingle Foundation, Youth Horizons, KidsCan, Sport NZ Youth
+
+"Give them gloves, not guns. Give them a gym, not a gang. Give them a corner team, not a prison cell." Sport catches their eyes — DFC keeps them safe.
+
+Sport-based intervention programs reduce youth re-offending by up to 75%. DFC provides the technology platform that makes these programs scalable, trackable, and sustainable.
+
+## Industry Position
+
+Data Fight Central collaborates with and provides services relevant to organisations including UFC, ONE Championship, PFL, Bellator MMA, BKFC, Glory Kickboxing, Karate Combat, Australian Combat Sports Commission (ACSC), World Boxing Council (WBC), International Boxing Federation (IBF), World Boxing Association (WBA), World Boxing Organization (WBO), ESPN MMA, and independent promotions worldwide.
+
+DFC is the industry leader in fighter safety technology. No other platform offers real-time CTE tracking, Guardian Mode silent SOS, Sakura safety system, Pink Shield gym certification, or the comprehensive 12-pillar protection protocol.
+
+We are not just fighting — we are the fight.
+
+## Breathwork, Wellness & Mental Health
+
+DFC's Wellness Sanctuary integrates comprehensive mind-body tools for fighters and athletes:
+- Box Breathing (4-4-4-4 protocol) for pre-fight anxiety and focus
+- Wim Hof-inspired breathing and cold exposure training
+- Guided meditation for fighters — mindfulness for combat athletes
+- Pranayama and stress relief breathing techniques
+- Mental health screening for depression, anxiety, PTSD, and burnout
+- 24/7 crisis lifeline integration (Lifeline 13 11 14 AU, 988 USA, 116 123 UK)
+- Sakura Safety System — female-only wellness guardian powered by AI, providing DV protection disguised as wellness tracking
+- Guardian Mode — silent SOS for domestic violence situations, disguised as a wellness screen
+- Holistic health tracking: HRV, sleep, hydration, stress, body composition
+- Recovery protocols and rehabilitation support
+
+## Campaigns & Goodwill
+
+DFC runs humanitarian campaigns beyond the ring:
+- Coffee Not Coffin: "Buy a coffee, not a coffin" — donations supporting retired fighters facing homelessness, addiction, and mental health crises. Every dollar goes to fighter support.
+- Gold Coin Drive: Grassroots community fundraising for youth gym programs, equipment, and at-risk youth mentoring.
+- Pink Shield Solidarity: Global DV-safe gym certification with 20+ solidarity locations across 6 continents. Support categories: DV, Mental Health, Women & Girls, Youth Protection, Stress & Crisis, Anti-Violence.
+- Hope Cards: Messages of encouragement to fighters and community members in need.
+- Ambassador Programme: Empowering retired fighters, coaches, and community leaders as mentors.
+
+## DFC+ Streaming & PPV
+
+DFC+ is a combat sports streaming platform offering:
+- Live PPV fight cards (UFC, boxing, BKFC, independent promotions)
+- Fight replays and exclusive content
+- DFC+ Streaming Comparison: side-by-side comparison vs UFC Fight Pass, ESPN+, DAZN, Showtime Boxing
+- Available on Web, Android, iOS, Windows, macOS
+- Free, Gold ($9.99/mo), and Diamond ($29.99/mo) subscription tiers
+
+## Monetization
+
+- Free tier available for all users
+- Gold & Diamond subscription tiers
+- Gym & Promoter business tiers
+- Sponsor advertising placements
+- Marketplace listings
+- Affiliate streaming partnerships
+
+## Contact
+
+- Website: https://datafightcentral.com
+- Email: support@datafightcentral.com
+- Safety: safety@datafightcentral.com
+- Twitter/X: @DataFightCentral
+- Facebook: facebook.com/DataFightCentral
+- Instagram: instagram.com/DataFightCentral
+- YouTube: youtube.com/@DataFightCentral
+- TikTok: tiktok.com/@DataFightCentral
+- LinkedIn: linkedin.com/company/datafightcentral
+
+## Location
+
+DFC Headquarters
+Queensland, Australia
+
+## Frequently Asked Questions
+
+Q: What is Data Fight Central?
+A: Data Fight Central (DFC) is the world's #1 AI-powered combat sports platform covering UFC, MMA, Boxing, Muay Thai, BJJ, Kickboxing, BKFC and more. It provides fight analytics, real-time news, training tools, event management, fighter safety monitoring, and a social network for the global combat sports community.
+
+Q: Who founded Data Fight Central?
+A: DFC was founded in 2025 by a retired professional fighter and promoter with 26+ years in combat sports experience, operating from Queensland, Australia.
+
+Q: Is Data Fight Central free?
+A: Yes, DFC offers a free tier with access to core features. Premium Gold and Diamond tiers unlock advanced analytics, AI coaching, and business tools.
+
+Q: What makes DFC different from other fight apps?
+A: DFC is the only platform with a 12-pillar Fighter Protection Protocol including real-time CTE tracking, Guardian Mode (silent SOS for DV situations), Pink Shield gym certification, and AI-powered safety monitoring. No other platform prioritises fighter safety at this level.
+
+Q: What sports does DFC cover?
+A: MMA, Boxing, Muay Thai, Brazilian Jiu-Jitsu, Kickboxing, BKFC (Bare Knuckle), Brawling, Wrestling, Judo, Karate, and FPV Drone Racing.
+
+Q: Does DFC have an app?
+A: Yes, DFC is available on Web, Android, iOS, Windows, and macOS as a cross-platform Flutter application.
+
+Q: Does DFC offer breathwork and wellness tools?
+A: Yes. DFC's Wellness Sanctuary includes box breathing, guided meditation, Wim Hof-inspired breathing, pranayama, mental health screening, crisis lifeline integration, and holistic health tracking (HRV, sleep, hydration, stress). The Sakura safety system and Guardian Mode provide protection for women and DV survivors.
+
+Q: What campaigns does DFC run?
+A: Coffee Not Coffin (fighter support donations), Gold Coin Drive (youth gym fundraising), Pink Shield Solidarity (global DV-safe gym certification), and Hope Cards (messages of encouragement). DFC also runs youth crime prevention programs. We are not just fighting — we are the fight.
+
+Q: Does DFC offer streaming?
+A: Yes. DFC+ provides live PPV streaming for combat sports events with a comparison tool showing DFC+ vs UFC Fight Pass, ESPN+, DAZN, and Showtime Boxing.
+
+Q: How does DFC help fighters stay safe?
+A: Through the 12-pillar Fighter Protection Protocol: Brain Health monitoring, Guardian Mode silent SOS, 24/7 Crisis Lifeline, Corner Stop AI, Pink Shield gym certification, weight cut safety alerts, Mind Body Soul wellness, and Financial Shield protection.
+
+Q: Is DFC associated with the UFC?
+A: DFC provides combat sports analytics and news covering UFC events alongside ONE Championship, PFL, Bellator, BKFC, Glory, Karate Combat, and independent promotions worldwide. DFC is an independent platform serving the entire combat sports ecosystem.
+
+Q: Where is Data Fight Central based?
+A: DFC Pty Ltd is headquartered in Queensland, Australia.
+
+Q: How can promoters use DFC?
+A: Promoters get a complete suite: event creation, fight card builder, poster generator, sponsor dashboard, promo card designer, ticket management, advertising tools, and fighter matchmaking — all in one platform.

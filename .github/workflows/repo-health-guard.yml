@@ -1,0 +1,48 @@
+name: Repo Health — Nested Repo Guard
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  nested-repo-guard:
+    name: Block nested git repositories
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect nested .git directories
+        run: |
+          echo "Scanning for nested .git directories..."
+          nested=$(find . -mindepth 2 -name ".git" -not -path "./.git/*" 2>/dev/null)
+          if [ -n "$nested" ]; then
+            echo ""
+            echo "❌ ERROR: Nested git repositories found:"
+            echo "$nested"
+            echo ""
+            echo "Remove the nested repo from the index:"
+            echo "  git rm --cached <path>"
+            echo "Then add the directory to .gitignore."
+            exit 1
+          fi
+          echo "✅ No nested git repositories found."
+
+      - name: Detect gitlinks in index (160000 mode)
+        run: |
+          echo "Scanning index for gitlink entries (mode 160000)..."
+          gitlinks=$(git ls-tree -r HEAD --format='%(objectmode) %(path)' | grep '^160000' || true)
+          if [ -n "$gitlinks" ]; then
+            echo ""
+            echo "❌ ERROR: Gitlink entries found in the index:"
+            echo "$gitlinks"
+            echo ""
+            echo "Remove them with:"
+            echo "  git rm --cached <path>"
+            exit 1
+          fi
+          echo "✅ No gitlinks found in index."

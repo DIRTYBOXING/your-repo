@@ -1,0 +1,16 @@
+{
+  "name": "dfc-media-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DFC S3-based media worker — download → FFmpeg → upload variants → API callback",
+  "scripts": {
+    "start": "node media-worker.js",
+    "dev": "node --watch media-worker.js"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.600.0",
+    "fluent-ffmpeg": "^2.1.3",
+    "redis": "^4.7.0",
+    "uuid": "^10.0.0"
+  }
+}

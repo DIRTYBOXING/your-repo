@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>CHUCKYA Radar — DFC Top-Secret Testing Room</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #050a14;
+        color: #e0e0e0;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        min-height: 100vh;
+      }
+      header {
+        background: linear-gradient(135deg, #0d1b2a 0%, #1b2838 100%);
+        padding: 20px 28px;
+        border-bottom: 1px solid rgba(0, 245, 255, 0.15);
+      }
+      header h1 {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        color: #00f5ff;
+        text-shadow: 0 0 12px rgba(0, 245, 255, 0.4);
+      }
+      header .badge {
+        display: inline-block;
+        background: rgba(255, 0, 255, 0.15);
+        border: 1px solid rgba(255, 0, 255, 0.3);
+        color: #ff00ff;
+        font-size: 10px;
+        letter-spacing: 2px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        margin-left: 12px;
+        vertical-align: middle;
+      }
+      .toolbar {
+        padding: 14px 28px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .toolbar button {
+        background: rgba(0, 245, 255, 0.08);
+        border: 1px solid rgba(0, 245, 255, 0.2);
+        color: #00f5ff;
+        padding: 8px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 1px;
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+      .toolbar button:hover {
+        background: rgba(0, 245, 255, 0.18);
+        box-shadow: 0 0 12px rgba(0, 245, 255, 0.2);
+      }
+      .toolbar .count {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 12px;
+        letter-spacing: 1px;
+      }
+      .grid {
+        padding: 0 28px 28px;
+        display: grid;
+        gap: 12px;
+      }
+      .card {
+        background: rgba(13, 27, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 16px 20px;
+        transition: border-color 0.2s;
+      }
+      .card:hover {
+        border-color: rgba(0, 245, 255, 0.2);
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .alert-id {
+        font-family: monospace;
+        font-size: 14px;
+        color: #00f5ff;
+        font-weight: 700;
+      }
+      .risk {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+      .risk-high {
+        background: rgba(255, 60, 60, 0.15);
+        color: #ff4444;
+        border: 1px solid rgba(255, 60, 60, 0.2);
+      }
+      .risk-med {
+        background: rgba(255, 165, 0, 0.12);
+        color: #ffa500;
+        border: 1px solid rgba(255, 165, 0, 0.2);
+      }
+      .risk-low {
+        background: rgba(0, 255, 136, 0.12);
+        color: #00ff88;
+        border: 1px solid rgba(0, 255, 136, 0.2);
+      }
+      .meta {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.35);
+        margin-bottom: 6px;
+      }
+      .signals {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 8px;
+      }
+      .signal {
+        background: rgba(255, 0, 255, 0.08);
+        border: 1px solid rgba(255, 0, 255, 0.15);
+        color: #ff00ff;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        letter-spacing: 0.5px;
+      }
+      .export-btn {
+        background: rgba(255, 0, 255, 0.08);
+        border: 1px solid rgba(255, 0, 255, 0.2);
+        color: #ff00ff;
+        padding: 5px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: all 0.2s;
+      }
+      .export-btn:hover {
+        background: rgba(255, 0, 255, 0.2);
+        box-shadow: 0 0 10px rgba(255, 0, 255, 0.15);
+      }
+      .empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: rgba(255, 255, 255, 0.2);
+        font-size: 14px;
+        letter-spacing: 2px;
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: rgba(255, 255, 255, 0.12);
+        font-size: 10px;
+        letter-spacing: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CHUCKYA RADAR <span class="badge">DFC TOP SECRET</span></h1>
+    </header>
+    <div class="toolbar">
+      <button id="refresh">&#x21bb; REFRESH</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="grid" id="alerts">
+      <div class="empty">NO ALERTS — POST to /v1/radar/event to begin</div>
+    </div>
+    <footer>
+      DATAFIGHTCENTRAL — CHUCKYA RADAR TESTING ROOM — INTERNAL USE ONLY
+    </footer>
+
+    <script>
+      const API =
+        window.location.port === "8082"
+          ? `${window.location.protocol}//${window.location.hostname}:8081`
+          : "";
+
+      async function refresh() {
+        try {
+          const res = await fetch(`${API}/v1/radar/alerts`);
+          if (!res.ok) throw new Error(res.statusText);
+          const data = await res.json();
+          const grid = document.getElementById("alerts");
+          const count = document.getElementById("count");
+          count.textContent = `${data.length} ALERT${data.length !== 1 ? "S" : ""}`;
+
+          if (!data.length) {
+            grid.innerHTML =
+              '<div class="empty">NO ALERTS — POST to /v1/radar/event to begin</div>';
+            return;
+          }
+
+          grid.innerHTML = data
+            .map((a) => {
+              const riskClass =
+                a.riskScore >= 80
+                  ? "risk-high"
+                  : a.riskScore >= 50
+                    ? "risk-med"
+                    : "risk-low";
+              const signals = (a.topSignals || [])
+                .map((s) => `<span class="signal">${escapeHtml(s)}</span>`)
+                .join("");
+              return `
+        <div class="card">
+          <div class="card-header">
+            <span class="alert-id">${escapeHtml(a.alertId)}</span>
+            <span class="risk ${riskClass}">RISK ${a.riskScore}</span>
+          </div>
+          <div class="meta">TYPE: ${escapeHtml(a.type)} &middot; SOURCE: ${escapeHtml(a.source || "unknown")} &middot; ${escapeHtml(a.createdAt)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="signals">${signals || '<span style="color:rgba(255,255,255,.2);font-size:11px">no signals</span>'}</div>
+            <button class="export-btn" onclick="exportPack('${escapeHtml(a.alertId)}')">&#x1F4E6; EXPORT</button>
+          </div>
+        </div>`;
+            })
+            .join("");
+        } catch (err) {
+          document.getElementById("alerts").innerHTML =
+            `<div class="empty">CONNECTION ERROR — is radar-api running on port 8081?</div>`;
+        }
+      }
+
+      async function exportPack(id) {
+        const res = await fetch(
+          `${API}/v1/radar/alerts/${encodeURIComponent(id)}/export`,
+          { method: "POST" },
+        );
+        if (!res.ok) {
+          alert("Export failed: " + res.statusText);
+          return;
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${id}_evidence.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      document.getElementById("refresh").onclick = refresh;
+      refresh();
+      // Auto-refresh every 10s
+      setInterval(refresh, 10000);
+    </script>
+  </body>
+</html>

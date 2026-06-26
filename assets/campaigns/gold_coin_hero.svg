@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Gold Coin Drive Hero: OPPORTUNITY, DIGNITY, EMPOWERMENT -->
+  <defs>
+    <style>
+      @keyframes spin { 0% { transform: rotateZ(0deg); } 100% { transform: rotateZ(360deg); } }
+      @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+      @keyframes glowPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+      .coinSpin { animation: spin 20s linear infinite; }
+      .coinFloat { animation: float 3s ease-in-out infinite; }
+      .glowPulse { animation: glowPulse 2.5s ease-in-out infinite; }
+    </style>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFA000;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6F00;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="coinGlow">
+      <stop offset="0%" style="stop-color:#FFEB3B;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FFA000;stop-opacity:0" />
+    </radialGradient>
+    <filter id="coinShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <!-- Background: Dawn Sky -->
+  <rect width="800" height="600" fill="#1A237E"/>
+  <rect width="800" height="400" fill="#3949AB" opacity="0.6"/>
+  <rect width="800" height="200" fill="#5C6BC0" opacity="0.4"/>
+  
+  <!-- Rising Coins (Opportunity Rising) -->
+  <g id="coins">
+    <g class="coinFloat" style="animation-delay: 0s;">
+      <circle cx="200" cy="300" r="50" fill="url(#goldGradient)" stroke="#F57F17" stroke-width="4" filter="url(#coinShadow)">
+        <animateTransform attributeName="transform" type="rotate" values="0 200 300; 360 200 300" dur="8s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="200" cy="300" r="55" fill="url(#coinGlow)" class="glowPulse"/>
+      <text x="200" y="315" font-family="Arial" font-size="48" font-weight="bold" text-anchor="middle" fill="#F57F17">🪙</text>
+    </g>
+    
+    <g class="coinFloat" style="animation-delay: 0.6s;">
+      <circle cx="400" cy="250" r="60" fill="url(#goldGradient)" stroke="#F57F17" stroke-width="5" filter="url(#coinShadow)">
+        <animateTransform attributeName="transform" type="rotate" values="0 400 250; 360 400 250" dur="6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="400" cy="250" r="65" fill="url(#coinGlow)" class="glowPulse" style="animation-delay: 0.3s;"/>
+      <text x="400" y="270" font-family="Arial" font-size="56" font-weight="bold" text-anchor="middle" fill="#F57F17">$</text>
+    </g>
+    
+    <g class="coinFloat" style="animation-delay: 1.2s;">
+      <circle cx="600" cy="320" r="45" fill="url(#goldGradient)" stroke="#F57F17" stroke-width="4" filter="url(#coinShadow)">
+        <animateTransform attributeName="transform" type="rotate" values="0 600 320; 360 600 320" dur="10s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="600" cy="320" r="50" fill="url(#coinGlow)" class="glowPulse" style="animation-delay: 0.6s;"/>
+      <text x="600" y="335" font-family="Arial" font-size="44" font-weight="bold" text-anchor="middle" fill="#F57F17">💰</text>
+    </g>
+  </g>
+  
+  <!-- Children Reaching Up (Hope) -->
+  <g transform="translate(300, 450)">
+    <path d="M0 0 L-10 60 L10 60 Z" fill="#FFB300"/>
+    <circle cx="0" cy="-15" r="20" fill="#FFA726"/>
+    <!-- Arms reaching -->
+    <path d="M-10 20 L-30 -10" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+    <path d="M10 20 L30 -25" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  
+  <text x="400" y="530" font-family="Arial" font-size="52" font-weight="bold" 
+        text-anchor="middle" fill="#FFD700" stroke="#F57F17" stroke-width="2">
+    🪙 EVERY COIN COUNTS
+  </text>
+  
+  <text x="400" y="570" font-family="Arial" font-size="22" 
+        text-anchor="middle" fill="#FFE082">
+    950,000 kids need our help. Start with one coin.
+  </text>
+</svg>

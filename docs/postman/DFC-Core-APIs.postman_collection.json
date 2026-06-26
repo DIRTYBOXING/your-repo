@@ -1,0 +1,369 @@
+{
+  "info": {
+    "name": "DFC Atlas Core APIs",
+    "description": "Core endpoints for pipeline, jobs, approvals, distribution, influencer consent, and PPV entitlement validation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Pipeline Sync",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{BOT_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"eventId\":\"evt_test\",\"assetIds\":[\"m_test\"],\"stages\":[\"warroom\",\"review\"],\"ctas\":[{\"type\":\"landing\",\"url\":\"https://fightcentral.com/dragonpass\"}],\"priority\":\"high\",\"metadata\":{\"mainEvent\":\"Dragon vs Titan\",\"region\":\"AU_NZ\"}}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/api/pipeline/sync",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["api", "pipeline", "sync"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('body has accepted', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('status').that.eql('accepted');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fetch Next Job",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{BOT_JWT}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{ATLAS_BASE}}/jobs/next",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["jobs", "next"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('job object present or null', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('job');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fetch Job By ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{BOT_JWT}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{ATLAS_BASE}}/jobs/{{jobId}}",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["jobs", "{{jobId}}"]
+        }
+      }
+    },
+    {
+      "name": "Submit Job Result",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{BOT_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"jobId\":\"job_test\",\"botId\":\"HypeBot_v2\",\"outputs\":[{\"type\":\"clip\",\"url\":\"https://cdn.example/m_test_15s.mp4\",\"format\":\"9:16\"}],\"provenance\":{\"models\":[\"gemini-3-pro\"],\"confidence\":0.92},\"requiresApproval\":false}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/jobs/{{jobId}}/result",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["jobs", "{{jobId}}", "result"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('result accepted', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('accepted').that.is.oneOf([true, false]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Create Approval Ticket",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{ADMIN_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"jobId\":\"job_test\",\"requester\":\"HypeBot_v2\",\"rationale\":{\"reason\":\"High spend\",\"estimatedSpendUsd\":500,\"influencerCount\":12}}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/approvals",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["approvals"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('ticketId returned', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('ticketId').that.is.a('string');",
+              "  pm.environment.set('ticketId', json.ticketId);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "List Pending Approvals",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{ADMIN_JWT}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{ATLAS_BASE}}/approvals?status=pending",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["approvals"],
+          "query": [{ "key": "status", "value": "pending" }]
+        }
+      }
+    },
+    {
+      "name": "Submit Approval Decision",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{ADMIN_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"decision\":\"approve\",\"reviewerId\":\"user_99\",\"comments\":\"Approved with budget cap of $300\",\"budgetOverrideUsd\":300}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/approvals/{{ticketId}}/decision",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["approvals", "{{ticketId}}", "decision"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('status updated', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('status').that.is.oneOf(['approved','rejected','escalated']);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Publish Asset to Platform",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{PROMOTER_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"assetId\":\"m_test\",\"platform\":\"tiktok\",\"format\":\"9:16\",\"caption\":\"Dragon Pass early access — link in bio\",\"scheduledAt\":\"2026-04-01T20:00:00Z\",\"tracking\":{\"utm_source\":\"tiktok\",\"utm_campaign\":\"dragon_launch\"}}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/distribute/publish",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["distribute", "publish"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('publish scheduled or immediate', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('publishId').that.is.a('string');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Capture Influencer Consent",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{ADMIN_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"handle\":\"@influencer1\",\"platform\":\"tiktok\",\"displayName\":\"Jane Doe\",\"contact\":{\"email\":\"jane@example.com\",\"phone\":\"+61412345678\"},\"consent\":true,\"consentScope\":[\"dm_seeding\",\"paid_campaigns\",\"analytics\"],\"consentText\":\"I consent to receive promotional materials and DMs related to FightCentral campaigns.\",\"signedBy\":\"Jane Doe\",\"signedMethod\":\"email_verification\",\"consentId\":\"cons_001\"}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/influencer/consent",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["influencer", "consent"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('consentId present', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('consentId').that.is.a('string');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validate PPV Purchase Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{ATLAS_SERVICE_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"token\":\"{{ENTITLEMENT_TOKEN}}\",\"eventId\":\"evt_test\"}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/ppv/purchase/validate",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["ppv", "purchase", "validate"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('token valid boolean', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json).to.have.property('valid').that.is.a('boolean');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Emit Test Event",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{BOT_JWT}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"type\":\"bot_action\",\"bot\":\"HypeBot_v2\",\"action\":\"test_event\",\"jobId\":\"job_test\",\"assetId\":\"m_test\",\"timestamp\":\"2026-03-21T10:00:00Z\"}"
+        },
+        "url": {
+          "raw": "{{ATLAS_BASE}}/events",
+          "host": ["{{ATLAS_BASE}}"],
+          "path": ["events"]
+        }
+      }
+    }
+  ]
+}

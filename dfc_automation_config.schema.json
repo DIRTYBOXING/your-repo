@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DFC Automation Config Schema",
+  "type": "object",
+  "properties": {
+    "feeds": {
+      "type": "array",
+      "description": "List of content feeds (RSS, API, partner, etc)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["rss", "api", "partner", "native"]
+          },
+          "url": { "type": "string" },
+          "enabled": { "type": "boolean" },
+          "trustScore": { "type": "number", "minimum": 0, "maximum": 1 },
+          "tags": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["name", "type", "enabled"]
+      }
+    },
+    "aiAgents": {
+      "type": "array",
+      "description": "List of AI agents for content creation, moderation, etc.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": ["article", "moderation", "social", "recap", "image"]
+          },
+          "enabled": { "type": "boolean" },
+          "trigger": {
+            "type": "string",
+            "enum": ["event", "schedule", "manual"]
+          },
+          "config": { "type": "object" }
+        },
+        "required": ["id", "role", "enabled", "trigger"]
+      }
+    },
+    "articleEngines": {
+      "type": "array",
+      "description": "Article generation engines (AI, human, hybrid)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "engineId": { "type": "string" },
+          "type": { "type": "string", "enum": ["ai", "human", "hybrid"] },
+          "enabled": { "type": "boolean" },
+          "priority": { "type": "integer", "minimum": 1 },
+          "config": { "type": "object" }
+        },
+        "required": ["engineId", "type", "enabled"]
+      }
+    }
+  },
+  "required": ["feeds", "aiAgents", "articleEngines"]
+}

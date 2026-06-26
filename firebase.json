@@ -1,0 +1,124 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "datafightcentral",
+          "appId": "1:207058799618:android:bff59bf4c0938bbc2d6b1b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "datafightcentral",
+          "configurations": {
+            "android": "1:207058799618:android:bff59bf4c0938bbc2d6b1b",
+            "ios": "1:207058799618:ios:45839e2b5d08bd322d6b1b",
+            "macos": "1:207058799618:ios:6841ac7c7b9aa5e82d6b1b",
+            "web": "1:207058799618:web:3979ebcd7cc695832d6b1b",
+            "windows": "1:207058799618:web:3979ebcd7cc695832d6b1b"
+          }
+        }
+      }
+    }
+  },
+  "hosting": [
+    {
+      "site": "datafightcentral",
+      "public": "build/web",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**/*.html",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        },
+        {
+          "source": "flutter_bootstrap.js",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        },
+        {
+          "source": "flutter_service_worker.js",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        },
+        {
+          "source": "main.dart.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, max-age=0" }
+          ]
+        },
+        {
+          "source": "main.dart.js_*",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, max-age=0" }
+          ]
+        },
+        {
+          "source": "**/*.part.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, max-age=0" }
+          ]
+        }
+      ],
+      "rewrites": [
+        { "source": "/posts/**", "function": "ogDynamicServe" },
+        { "source": "/events/**", "function": "ogDynamicServe" },
+        { "source": "/fighters/**", "function": "ogDynamicServe" },
+        { "source": "**", "destination": "/index.html" }
+      ]
+    },
+    {
+      "site": "datafightcentral-9d036",
+      "public": "build/web",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**/*.html",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        },
+        {
+          "source": "flutter_bootstrap.js",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        },
+        {
+          "source": "flutter_service_worker.js",
+          "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+        },
+        {
+          "source": "main.dart.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, max-age=0" }
+          ]
+        },
+        {
+          "source": "main.dart.js_*",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, max-age=0" }
+          ]
+        },
+        {
+          "source": "**/*.part.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, max-age=0" }
+          ]
+        }
+      ],
+      "rewrites": [
+        { "source": "/posts/**", "function": "ogDynamicServe" },
+        { "source": "/events/**", "function": "ogDynamicServe" },
+        { "source": "/fighters/**", "function": "ogDynamicServe" },
+        { "source": "**", "destination": "/index.html" }
+      ]
+    }
+  ],
+  "functions": { "source": "functions" },
+  "firestore": { "rules": "firestore.rules" },
+  "storage": { "rules": "storage.rules" },
+  "emulators": {
+    "auth": { "port": 9099 },
+    "functions": { "port": 5001 },
+    "firestore": { "port": 8080 },
+    "storage": { "port": 9199 },
+    "ui": { "enabled": true, "port": 4000 },
+    "singleProjectMode": true
+  }
+}

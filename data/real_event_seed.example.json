@@ -1,0 +1,79 @@
+{
+  "event": {
+    "id": "replace_with_event_id",
+    "promoterId": "replace_with_promoter_id",
+    "title": "REPLACE_WITH_REAL_EVENT_TITLE",
+    "description": "REPLACE_WITH_REAL_EVENT_DESCRIPTION",
+    "venue": "REPLACE_WITH_REAL_VENUE",
+    "city": "REPLACE_WITH_REAL_CITY",
+    "state": "REPLACE_WITH_STATE_OR_EMPTY",
+    "country": "REPLACE_WITH_REAL_COUNTRY",
+    "eventDate": "2026-04-24T18:00:00.000Z",
+    "mainCardTime": "2026-04-24T19:00:00.000Z",
+    "sportType": "MMA",
+    "status": "upcoming",
+    "posterUrl": "https://YOUR_BUCKET/events/real_event_poster.jpg",
+    "thumbnailUrl": "https://YOUR_BUCKET/events/real_event_thumb.jpg",
+    "bannerUrl": "https://YOUR_BUCKET/events/real_event_banner.jpg",
+    "broadcastInfo": "REPLACE_WITH_PRIMARY_PLATFORM",
+    "streamUrl": "https://REPLACE_WITH_STREAM_URL",
+    "ticketUrl": "https://REPLACE_WITH_TICKET_URL",
+    "isFeatured": true,
+    "isPublic": true,
+    "latitude": -37.7984,
+    "longitude": 144.936,
+    "streamProviders": ["DFC Live"]
+  },
+  "ppv": {
+    "id": "replace_with_ppv_doc_id",
+    "title": "REPLACE_WITH_REAL_EVENT_TITLE",
+    "subtitle": "REPLACE_WITH_REAL_SUBTITLE",
+    "description": "REPLACE_WITH_PPV_DESCRIPTION",
+    "status": "onSale",
+    "standardPriceCents": 2499,
+    "currency": "AUD",
+    "streamPlatforms": ["DFC Live"],
+    "fightCard": [
+      {
+        "redCorner": "REPLACE_WITH_FIGHTER_ONE",
+        "blueCorner": "REPLACE_WITH_FIGHTER_TWO",
+        "weightClass": "REPLACE_WITH_WEIGHT_CLASS",
+        "boutOrder": 1,
+        "rounds": 5,
+        "isMainEvent": true
+      }
+    ]
+  },
+  "promoter": {
+    "id": "replace_with_promoter_id",
+    "name": "REPLACE_WITH_PROMOTER_NAME",
+    "logoUrl": "https://YOUR_BUCKET/promoters/real_promoter_logo.png",
+    "bannerUrl": "https://YOUR_BUCKET/promoters/real_promoter_banner.jpg",
+    "city": "REPLACE_WITH_REAL_CITY",
+    "state": "REPLACE_WITH_STATE_OR_EMPTY",
+    "country": "REPLACE_WITH_REAL_COUNTRY"
+  },
+  "fighters": [
+    {
+      "id": "replace_with_fighter_one_id",
+      "fullName": "REPLACE_WITH_FIGHTER_ONE",
+      "nickname": "REPLACE_WITH_OPTIONAL_NICKNAME",
+      "record": "10-2-0",
+      "weightClass": "REPLACE_WITH_WEIGHT_CLASS",
+      "sportType": "MMA",
+      "portraitUrl": "https://YOUR_BUCKET/fighters/fighter_one.jpg",
+      "city": "REPLACE_WITH_REAL_CITY",
+      "country": "REPLACE_WITH_REAL_COUNTRY"
+    },
+    {
+      "id": "replace_with_fighter_two_id",
+      "fullName": "REPLACE_WITH_FIGHTER_TWO",
+      "record": "8-1-0",
+      "weightClass": "REPLACE_WITH_WEIGHT_CLASS",
+      "sportType": "MMA",
+      "portraitUrl": "https://YOUR_BUCKET/fighters/fighter_two.jpg",
+      "city": "REPLACE_WITH_REAL_CITY",
+      "country": "REPLACE_WITH_REAL_COUNTRY"
+    }
+  ]
+}

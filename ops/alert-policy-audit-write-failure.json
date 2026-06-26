@@ -1,0 +1,29 @@
+{
+  "displayName": "Audit Write Failure Rate - Critical",
+  "combiner": "OR",
+  "conditions": [
+    {
+      "displayName": "Write failure rate > 1% (5m)",
+      "conditionThreshold": {
+        "filter": "metric.type=\"custom.googleapis.com/audit_write_failure_rate\"",
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 0.01,
+        "duration": "300s",
+        "aggregations": [
+          {
+            "alignmentPeriod": "60s",
+            "perSeriesAligner": "ALIGN_MEAN"
+          }
+        ]
+      }
+    }
+  ],
+  "notificationChannels": [
+    "projects/your-gcp-project/notificationChannels/1234567890123456789"
+  ],
+  "enabled": true,
+  "documentation": {
+    "content": "Alert when audit write failure rate exceeds 1% for 5 minutes. Runbook: check DB connectivity, recent deploys, and CI migration logs.",
+    "mimeType": "text/markdown"
+  }
+}

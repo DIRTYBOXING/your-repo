@@ -1,0 +1,16 @@
+name: projects/PROJECT_ID/locations/REGION/jobs/dfc-webhook-dlq-worker
+schedule: "*/5 * * * *"
+timeZone: "UTC"
+httpTarget:
+  uri: https://REGION-PROJECT_ID.cloudfunctions.net/dlqWorkerRun
+  httpMethod: POST
+  headers:
+    Content-Type: application/json
+  body: e30=
+  oidcToken:
+    serviceAccountEmail: scheduler-invoker@PROJECT_ID.iam.gserviceaccount.com
+    audience: https://REGION-PROJECT_ID.cloudfunctions.net/dlqWorkerRun
+retryConfig:
+  retryCount: 3
+  minBackoffDuration: 10s
+  maxBackoffDuration: 60s

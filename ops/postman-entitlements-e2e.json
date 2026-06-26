@@ -1,0 +1,84 @@
+import { pullJob, ackJob, retryJob, pushDLQ } from './lib/queue';
+import { getCampaign, writeCampaignRun } from './lib/db';
+import { evaluate } from './lib/ruleEngine';
+import { generateAssets } from './lib/aiOrchestrator';
+import { publish } from './lib/distributor';
+import { useState } from 'react';
+import 'dart:developer' as console;
+
+async function mainLoop() {
+  while(true) {
+    const job = await pullJob('promotion_jobs');
+    try {
+      if (job.attempts > 5) {
+        await pushDLQ('promotion_dlq', job);
+        continue;
+      }
+      const campaign = await getCampaign(job.campaign_id);
+      if (!campaign || campaign.status !== 'active') { await ackJob(job); continue; }
+      const resolved = evaluate(campaign.rules, job.context);
+      const assets = await generateAssets(job.media_id, campaign, resolved);
+      const best = selectBest(assets);
+      const result = await publish(best, job.channel, campaign);
+      await writeCampaignRun({ ...job, result, resolved_rules: resolved });
+      await ackJob(job);
+    } catch (err) {
+      if (isTransient(err)) {
+        job.attempts = (job.attempts || 0) + 1;
+        await retryJob(job, exponentialBackoff(job.attempts));
+      } else {
+        await pushDLQ('promotion_dlq', job);
+      }
+    }
+  }
+}
+mainLoop();
+
+// CampaignEditor.jsx
+export default function CampaignEditor({ campaign }) {
+  const [name, setName] = useState(campaign?.name || '');
+  const [markets, setMarkets] = useState(campaign?.markets || []);
+  const [channels, setChannels] = useState(campaign?.channels || []);
+  const [rules, setRules] = useState(campaign?.rules || []);
+  // AI generate variants
+  async function onGenerateVariants() {
+    const res = await api.post('/ai/generate-variants', { campaignId: campaign.id });
+    // update UI with returned variants
+  }
+  return (
+    <div className="campaign-editor">
+      <input value={name} onChange={e => setName(e.target.value)} />
+      <MarketSelector value={markets} onChange={setMarkets} />
+      <ChannelCheckboxes value={channels} onChange={setChannels} />
+      <RuleEditor rules={rules} onChange={setRules} />
+      <button onClick={onGenerateVariants}>AI Generate Variants</button>
+      <PreviewPanel campaign={{name, markets, channels, rules}} />
+    </div>
+  );
+}
+
+// CampaignList extends StatelessWidget
+class CampaignList extends StatelessWidget {
+  final List<Campaign> campaigns;
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: campaigns.length,
+      itemBuilder: (ctx, i) {
+        final c = campaigns[i];
+        return ListTile(
+          title: Text(c.name),
+          subtitle: Text('${c.markets.join(", ")} • ${c.status}'),
+          trailing: PopupMenuButton(
+            itemBuilder: (_) => [
+              PopupMenuItem(child: Text('Preview')),
+              PopupMenuItem(child: Text('Canary')),
+              PopupMenuItem(child: Text('Pause')),
+            ],
+          ),
+          onTap: () => Navigator.pushNamed(context, '/campaign/${c.id}'),
+        );
+      },
+    );
+  }
+}

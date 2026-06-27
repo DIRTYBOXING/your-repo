@@ -1,0 +1,108 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Checkout Success Rate (1h)",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "(sum(rate(checkout_success_total{promoter=~\"$promoter\"}[1h])) / sum(rate(checkout_attempt_total{promoter=~\"$promoter\"}[1h]))) * 100",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Orders Per Hour",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(checkout_success_total{promoter=~\"$promoter\"}[1h]))",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Avg Order Value ($)",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(order_revenue_cents_total{promoter=~\"$promoter\"}[1h])) / sum(rate(checkout_success_total{promoter=~\"$promoter\"}[1h])) / 100",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Webhook Delivery Success (1h)",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "sum(rate(webhook_delivered_total{service=~\"$service\"}[5m])) / sum(rate(webhook_received_total{service=~\"$service\"}[5m])) * 100",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Outbox Unpublished Rows",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 10 },
+      "targets": [
+        { "expr": "dfc_outbox_unpublished_rows", "refId": "A" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Ticket Issuance Latency p95 (s)",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 10 },
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(ticket_issue_duration_seconds_bucket[5m])) by (le))", "refId": "A" }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Recent Errors (logs count)",
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 14 },
+      "targets": [
+        { "expr": "sum by (level) (rate(app_log_messages_total[5m]))", "refId": "A" }
+      ]
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["oneclick", "dfc"],
+  "templating": {
+    "list": [
+      {
+        "name": "promoter",
+        "type": "query",
+        "label": "Promoter",
+        "query": "label_values(checkout_attempt_total, promoter)",
+        "datasource": "Prometheus",
+        "refresh": 1,
+        "includeAll": true
+      },
+      {
+        "name": "service",
+        "type": "query",
+        "label": "Service",
+        "query": "label_values(webhook_received_total, service)",
+        "datasource": "Prometheus",
+        "refresh": 1,
+        "includeAll": true
+      }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": {},
+  "title": "DFC One-Click Buy Overview",
+  "uid": "dfc-oneclick-overview",
+  "version": 1
+}

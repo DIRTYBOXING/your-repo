@@ -1,0 +1,60 @@
+groups:
+  - name: dfc-alerts
+    rules:
+      - alert: CheckoutSuccessRateLow
+        expr: |
+          (sum(rate(checkout_success_total[1h]))
+           /
+           sum(rate(checkout_attempt_total[1h]))) * 100 < 98
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Checkout success rate below 98% (1h)"
+          description: "Checkout success rate is {{ $value }}% over the last hour."
+
+      - alert: WebhookDeliveryFailure
+        expr: |
+          (1 - (sum(rate(webhook_delivered_total[1h]))
+                /
+                sum(rate(webhook_received_total[1h])))) * 100 > 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Webhook delivery failure rate > 1% (1h)"
+          description: "Webhook delivery failures are at {{ $value }}%."
+
+      - alert: OutboxBacklogHigh
+        expr: |
+          dfc_outbox_unpublished_rows > 1000
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Outbox backlog > 1000"
+          description: "Outbox has {{ $value }} unpublished rows."
+
+      - alert: SeatHoldFailureSpike
+        expr: |
+          increase(seat_hold_failures_total[5m])
+          /
+          increase(seat_hold_attempts_total[5m]) > 0.005
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Seat hold failure rate spike"
+          description: "Seat hold failure rate exceeded 0.5% in the last 5 minutes."
+
+      - alert: ChargebackRateHigh
+        expr: |
+          increase(chargebacks_total[24h])
+          /
+          increase(gross_orders_total[24h]) > 0.005
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "Chargeback rate > 0.5% (24h)"
+          description: "Chargeback rate exceeded threshold in the last 24 hours."

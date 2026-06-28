@@ -161,7 +161,7 @@ class _FightCardBuilderScreenState
     Function(String?) onChanged,
   ) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       dropdownColor: const Color(0xFF0A0E17),
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
@@ -171,7 +171,7 @@ class _FightCardBuilderScreenState
         fillColor: const Color(0xFF0A0E17),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: accentColor.withOpacity(0.3)),
+          borderSide: BorderSide(color: accentColor.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -322,7 +322,7 @@ class _FightCardBuilderScreenState
                     margin: const EdgeInsets.only(bottom: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                      side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),

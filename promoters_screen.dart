@@ -52,11 +52,11 @@ class PromotersScreen extends ConsumerWidget {
                 margin: const EdgeInsets.only(bottom: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
                 ),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: Colors.amber.withOpacity(0.2),
+                    backgroundColor: Colors.amber.withValues(alpha: 0.2),
                     child: const Icon(
                       Icons.business_center,
                       color: Colors.amber,

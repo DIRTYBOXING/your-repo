@@ -115,7 +115,6 @@ class _CreativeHubScreenState extends State<CreativeHubScreen> {
               crossAxisCount: 3,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 1,
             ),
             itemCount: 6,
             itemBuilder: (context, index) {
@@ -133,7 +132,6 @@ class _CreativeHubScreenState extends State<CreativeHubScreen> {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: AppColors.neonCyan.withValues(alpha: 0.4),
-                        style: BorderStyle.solid,
                       ),
                     ),
                     child: const Icon(

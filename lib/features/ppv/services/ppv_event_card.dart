@@ -38,7 +38,6 @@ class PpvEventCard extends StatelessWidget {
                 child: DfcNetworkImage(
                   url: posterUrl,
                   width: 140,
-                  fit: BoxFit.cover,
                 ),
               ),
             ),

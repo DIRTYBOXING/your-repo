@@ -31,10 +31,11 @@ class _EconomyControlRoomScreenState extends State<EconomyControlRoomScreen> {
         );
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => _runningSelfCheck = false);
     }
@@ -51,10 +52,11 @@ class _EconomyControlRoomScreenState extends State<EconomyControlRoomScreen> {
         );
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => _runningAutoFix = false);
     }

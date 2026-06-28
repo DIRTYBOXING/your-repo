@@ -28,10 +28,10 @@ class GlassPanel extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(opacity),
+            color: Colors.white.withValues(alpha: opacity),
             borderRadius: radius,
             border: Border.all(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               width: 1.5,
             ),
           ),

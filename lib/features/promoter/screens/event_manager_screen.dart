@@ -34,7 +34,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       if (promoterId == null) throw Exception("Unauthorized: Not logged in.");
 
       final priceCents = (double.parse(_priceCtrl.text) * 100).toInt();
-      
+
       // 1. Create the base event document
       final eventRef = await FirebaseFirestore.instance.collection('events').add({
         'name': _titleCtrl.text,
@@ -161,7 +161,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       title: const Text('GO LIVE NOW', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                       subtitle: const Text('Instantly opens the PPV stream for buyers.', style: TextStyle(color: Colors.white54, fontSize: 12)),
                       value: _isLive,
-                      activeColor: AppColors.neonRed,
+                      activeThumbColor: AppColors.neonRed,
                       onChanged: (val) => setState(() => _isLive = val),
                     ),
                   ],

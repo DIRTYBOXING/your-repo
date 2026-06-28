@@ -14,3 +14,4 @@ google-cloud-storage
 prometheus-client
 psycopg2-binary
 stripe
+redis

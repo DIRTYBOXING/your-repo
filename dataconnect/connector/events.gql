@@ -1,0 +1,33 @@
+# List all upcoming events
+query ListEvents @auth(level: PUBLIC) {
+  events(where: { status: { eq: "scheduled" } }) {
+    id
+    title
+    date
+    location
+    isPPV
+    status
+  }
+}
+
+# Get event details with fighter info
+query GetEvent($id: UUID!) @auth(level: PUBLIC) {
+  event(id: $id) {
+    id
+    title
+    date
+    location
+    status
+    price
+    mainEventFighterA {
+      id
+      name
+      nickname
+    }
+    mainEventFighterB {
+      id
+      name
+      nickname
+    }
+  }
+}

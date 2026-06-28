@@ -6,32 +6,47 @@ set -e
 
 echo "🥊 Setting up Data Fight Central..."
 
-# Install Flutter if not present
+# 1. Install Flutter if not present
 if ! command -v flutter &> /dev/null; then
     echo "📦 Installing Flutter..."
     cd ~
     git clone https://github.com/flutter/flutter.git -b stable --depth 1
     export PATH="$PATH:$HOME/flutter/bin"
+    
+    # Persist Flutter path for subsequent interactive shells
+    if ! grep -q "flutter/bin" ~/.bashrc; then
+        echo 'export PATH="$PATH:$HOME/flutter/bin"' >> ~/.bashrc
+    fi
     flutter precache --web
 fi
 
-# Navigate to project
-cd ~/Data-Fight-Central 2>/dev/null || cd ~/cloudshell_open 2>/dev/null || true
+# 2. Navigate to project directory dynamically
+PROJECT_DIR=$(find ~ -name "pubspec.yaml" -not -path "*/.dart_tool/*" -not -path "*/.pub-cache/*" -print -quit | xargs dirname 2>/dev/null)
+if [ -n "$PROJECT_DIR" ]; then
+    cd "$PROJECT_DIR"
+else
+    cd ~/Data-Fight-Central 2>/dev/null || cd ~/datafightcentral 2>/dev/null || cd ~/cloudshell_open 2>/dev/null || true
+fi
 
-# Install dependencies
+# 3. Install dependencies
 echo "📦 Installing dependencies..."
 flutter pub get
 
-# Install Firebase CLI if not present
+# 4. Install Firebase CLI if not present
 if ! command -v firebase &> /dev/null; then
     echo "📦 Installing Firebase CLI..."
-    npm install -g firebase-tools
+    # Fallback to npm global with sudo if available, or normal npm install
+    if command -v sudo &> /dev/null; then
+        sudo npm install -g firebase-tools
+    else
+        npm install -g firebase-tools
+    fi
 fi
 
-# Login to Firebase (will prompt if not logged in)
+# 5. Login to Firebase (will prompt if not logged in)
 firebase login --no-localhost 2>/dev/null || true
 
-# Set project
+# 6. Set project
 firebase use datafightcentral 2>/dev/null || echo "Run: firebase use datafightcentral"
 
 echo ""

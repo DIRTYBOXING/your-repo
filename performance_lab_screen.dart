@@ -105,18 +105,17 @@ class _PerformanceLabScreenState extends State<PerformanceLabScreen> {
                   gridData: const FlGridData(show: false),
                   titlesData: const FlTitlesData(
                     rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+
                     ),
                     topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+
                     ),
                     leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+
                     ),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 22,
                         interval: 1,
                       ),
                     ),

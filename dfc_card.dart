@@ -35,9 +35,9 @@ class DfcCard extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.12)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
                   ),
                 ),
               ),
@@ -49,7 +49,7 @@ class DfcCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.cyanAccent.withOpacity(0.25),
+                        color: Colors.cyanAccent.withValues(alpha: 0.25),
                         blurRadius: 20,
                         spreadRadius: -4,
                       ),

@@ -32,8 +32,8 @@ class NeonText extends StatelessWidget {
         letterSpacing: letterSpacing,
         shadows: [
           BoxShadow(color: color, blurRadius: blurRadius),
-          BoxShadow(color: color.withOpacity(0.5), blurRadius: blurRadius * 2),
-          BoxShadow(color: color.withOpacity(0.2), blurRadius: blurRadius * 4),
+          BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: blurRadius * 2),
+          BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: blurRadius * 4),
         ],
       ),
     );
@@ -64,7 +64,7 @@ class NeonButton extends StatelessWidget {
           border: Border.all(color: color, width: 2),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.6),
+              color: color.withValues(alpha: 0.6),
               blurRadius: 16,
               spreadRadius: -4,
             ),

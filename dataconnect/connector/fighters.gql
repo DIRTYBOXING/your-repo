@@ -1,0 +1,11 @@
+# Comprehensive fighter directory list
+query ListFighters @auth(level: PUBLIC) {
+  fighters {
+    id
+    name
+    nickname
+    weightClass
+    wins
+    losses
+  }
+}

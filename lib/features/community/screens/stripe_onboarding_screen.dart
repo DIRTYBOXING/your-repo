@@ -24,14 +24,14 @@ class StripeOnboardingScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.04),
+                        color: Colors.white.withValues(alpha: 0.04),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha: 0.08),
                         ),
                       ),
                       child: Icon(
                         Icons.arrow_back,
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                         size: 20,
                       ),
                     ),
@@ -53,16 +53,16 @@ class StripeOnboardingScreen extends StatelessWidget {
               const SizedBox(height: 32),
               DfcCard(
                 height: 220,
-                child: Column(
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.account_balance,
                       color: Color(0xFFFFD700),
                       size: 48,
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
+                    SizedBox(height: 16),
+                    Text(
                       'CONNECT YOUR BANK',
                       style: TextStyle(
                         color: Colors.white,
@@ -70,8 +70,8 @@ class StripeOnboardingScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'DFC uses Stripe Connect to securely route your earnings directly to your bank account. We never hold your funds. You get paid for your real qualities and discipline.',
                       textAlign: TextAlign.center,
                       style: TextStyle(

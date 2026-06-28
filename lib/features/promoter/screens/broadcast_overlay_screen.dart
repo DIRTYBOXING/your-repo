@@ -68,8 +68,8 @@ class _BroadcastOverlayScreenState extends State<BroadcastOverlayScreen> {
       body: Stack(
         children: [
           // 1. MUX VIDEO LAYER (Background)
-          Positioned.fill(
-            child: const Center(
+          const Positioned.fill(
+            child: Center(
               child: Text(
                 'MUX LIVE STREAM PLAYER (Awaiting video_player package)',
                 style: TextStyle(color: Colors.white38, letterSpacing: 2),

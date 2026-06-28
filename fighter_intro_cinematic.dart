@@ -95,7 +95,7 @@ class _FighterIntroCinematicState extends State<FighterIntroCinematic>
                         center: const Alignment(0, -0.2),
                         radius: 1.2,
                         colors: [
-                          Colors.redAccent.withOpacity(0.4),
+                          Colors.redAccent.withValues(alpha: 0.4),
                           const Color(0xFF02030A),
                         ],
                       ),
@@ -105,7 +105,7 @@ class _FighterIntroCinematicState extends State<FighterIntroCinematic>
                             widget.fighter.profileImageUrl,
                             fit: BoxFit.cover,
                             colorBlendMode: BlendMode.dstIn,
-                            color: Colors.black.withOpacity(0.4),
+                            color: Colors.black.withValues(alpha: 0.4),
                           )
                         : const Icon(
                             Icons.sports_mma,
@@ -124,9 +124,9 @@ class _FighterIntroCinematicState extends State<FighterIntroCinematic>
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.8),
+                        Colors.black.withValues(alpha: 0.8),
                         Colors.transparent,
-                        Colors.black.withOpacity(0.95),
+                        Colors.black.withValues(alpha: 0.95),
                       ],
                       stops: const [0.0, 0.4, 1.0],
                     ),

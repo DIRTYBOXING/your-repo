@@ -1,0 +1,70 @@
+# Data Fight Central Schema definition for Firebase DataConnect
+
+type User @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  name: String
+  email: String
+  displayName: String
+  avatarUrl: String
+}
+
+type Gym @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  name: String!
+  address: String
+  city: String
+  website: String
+  latitude: Float
+  longitude: Float
+}
+
+type Fighter @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  name: String!
+  nickname: String
+  weightClass: String
+  wins: Int
+  losses: Int
+  gym: Gym
+}
+
+type Event @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  title: String!
+  date: Timestamp!
+  location: String!
+  isPPV: Boolean!
+  status: String! # e.g. "scheduled", "completed"
+  price: Float
+  mainEventFighterA: Fighter
+  mainEventFighterB: Fighter
+}
+
+type Style @table {
+  id: String! @primaryKey # e.g., "BJJ", "Muay Thai"
+  description: String
+}
+
+type Ranking @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  fighter: Fighter!
+  weightClass: String!
+  rank: Int!
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Payout @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  fighter: Fighter!
+  amount: Float!
+  status: String!
+  processedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Payment @table {
+  id: UUID! @default(expr: "uuid_generate_v4()")
+  event: Event!
+  user: User!
+  amount: Float!
+  status: String!
+}

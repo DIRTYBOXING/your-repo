@@ -20,7 +20,7 @@ class AdminDashboardScreen extends StatelessWidget {
         ),
         elevation: 0,
         border: Border(
-          bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
       ),
       body: SafeArea(
@@ -124,7 +124,7 @@ class AdminDashboardScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF1A1C23),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -166,7 +166,7 @@ class AdminDashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFF0A0E17),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

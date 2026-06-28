@@ -30,14 +30,14 @@ class WomensHavenScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.04),
+                              color: Colors.white.withValues(alpha: 0.04),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.08),
+                                color: Colors.white.withValues(alpha: 0.08),
                               ),
                             ),
                             child: Icon(
                               Icons.arrow_back,
-                              color: Colors.white.withOpacity(0.6),
+                              color: Colors.white.withValues(alpha: 0.6),
                               size: 20,
                             ),
                           ),
@@ -194,12 +194,12 @@ class WomensHavenScreen extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF00F5FF).withOpacity(0.1),
-                const Color(0xFFFF00FF).withOpacity(0.05),
+                const Color(0xFF00F5FF).withValues(alpha: 0.1),
+                const Color(0xFFFF00FF).withValues(alpha: 0.05),
               ],
             ),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFF00F5FF).withOpacity(0.2)),
+            border: Border.all(color: const Color(0xFF00F5FF).withValues(alpha: 0.2)),
           ),
           child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,7 +240,7 @@ class WomensHavenScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.15),
+                  color: accentColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: accentColor, size: 20),
@@ -261,7 +261,7 @@ class WomensHavenScreen extends StatelessWidget {
                   Text(
                     subtitle,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       fontSize: 11,
                     ),
                   ),
@@ -288,9 +288,9 @@ class WomensHavenScreen extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: accentColor.withOpacity(0.1),
+                  color: accentColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: accentColor.withOpacity(0.3)),
+                  border: Border.all(color: accentColor.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   actionLabel,
@@ -410,9 +410,9 @@ class WomensHavenScreen extends StatelessWidget {
       width: 200,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -448,10 +448,9 @@ class WomensHavenScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF0A0E17),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.verified_user, color: Colors.white54, size: 32),
           const SizedBox(height: 16),
@@ -469,7 +468,7 @@ class WomensHavenScreen extends StatelessWidget {
             'We pay women for their qualities — discipline, strength, health, and character.\n\nNever for exploitation.\nNever for compromise.\nNever for anything that harms dignity.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               fontSize: 14,
               height: 1.6,
               fontWeight: FontWeight.w500,

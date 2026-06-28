@@ -40,13 +40,14 @@ class _GymEconomyDashboardState extends State<GymEconomyDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading)
+    if (_loading) {
       return const Scaffold(
         backgroundColor: AppColors.bg,
         body: Center(
           child: CircularProgressIndicator(color: AppColors.neonBlue),
         ),
       );
+    }
 
     final currentBalance = (_balance?['balanceCents'] ?? 0) / 100.0;
 

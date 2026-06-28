@@ -596,7 +596,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
                     ),
                 ],
               ),
-            );
+            )
         },
       ),
     );
@@ -1108,7 +1108,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
                   );
                   return;
                 }
-                
+
                 setState(() {
                   if (_selectedFighterA == i) {
                     _selectedFighterA = null;

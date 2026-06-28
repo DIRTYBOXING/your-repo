@@ -14,7 +14,7 @@ class GymHeader extends ConsumerWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF0A0E17),
         border: Border(
-          bottom: BorderSide(color: Colors.white.withOpacity(0.1)),
+          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
       ),
       child: Row(

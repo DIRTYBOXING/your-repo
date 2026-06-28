@@ -12,7 +12,7 @@ class SmartCoachCard extends StatelessWidget {
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.blueAccent.withOpacity(0.3)),
+        side: BorderSide(color: Colors.blueAccent.withValues(alpha: 0.3)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),

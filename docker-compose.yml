@@ -1,120 +1,191 @@
-version: "3.9"
-
 services:
   # ============================================
-  # 1. NODE BACKEND
+  # DFC GATEWAY (Edge Router)
   # ============================================
-  node_backend:
-    build: ./atlas_backend_node
-    container_name: dfc-node-backend
+  dfc-gateway:
+    image: nginx:1-alpine
+    container_name: dfc-gateway
     ports:
-      - "8080:8080"
-    environment:
-      - NODE_ENV=production
-      - PORT=8080
-      - PYTHON_AI_URL=${PYTHON_AI_URL}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - python_ai
-      - postgres
-      - redis
-      - minio
+      dfc-backend:
+        condition: service_healthy
+      dfc-python-ai:
+        condition: service_healthy
+      dfc-inference:
+        condition: service_healthy
+      dfc-promotion:
+        condition: service_healthy
     networks:
       - dfc_bridge
-    restart: always
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:80/healthz"]
       interval: 30s
       timeout: 10s
       retries: 3
 
   # ============================================
-  # 2. PYTHON AI ENGINE
+  # DFC BACKEND API
   # ============================================
-  python_ai:
-    build: ./atlas_backend_python
+  dfc-backend:
+    build:
+      context: ./atlas_backend
+      dockerfile: Dockerfile
+    container_name: dfc-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=dfc-postgres
+      - POSTGRES_USER=${POSTGRES_USER:-dfc_admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dfc-local-postgres-change-me}
+      - POSTGRES_DB=${POSTGRES_DB:-dfc}
+      - REDIS_HOST=dfc-redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://dfc-redis:6379/0
+      - MINIO_ENDPOINT=dfc-minio:9000
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - PYTHON_AI_URL=http://dfc-python-ai:5000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_KEY=${GEMINI_KEY}
+      - GOOGLE_AI_KEY=${GOOGLE_AI_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OTEL_SERVICE_NAME=dfc-backend
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dfc-otel-collector:4318
+      - STRIPE_SECRET=${STRIPE_SECRET}
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
+    depends_on:
+      dfc-postgres:
+        condition: service_healthy
+      dfc-redis:
+        condition: service_healthy
+      dfc-minio:
+        condition: service_healthy
+    networks:
+      - dfc_bridge
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./atlas_backend:/app
+
+  # ============================================
+  # PYTHON AI ENGINE
+  # ============================================
+  dfc-python-ai:
+    build:
+      context: ./atlas_backend_python
+      dockerfile: Dockerfile
     container_name: dfc-python-ai
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     environment:
       - PYTHON_ENGINE_PORT=5000
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - REDIS_HOST=${REDIS_HOST}
+      - POSTGRES_HOST=dfc-postgres
+      - POSTGRES_USER=${POSTGRES_USER:-dfc_admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dfc-local-postgres-change-me}
+      - POSTGRES_DB=${POSTGRES_DB:-dfc}
+      - REDIS_HOST=dfc-redis
+      - REDIS_PORT=6379
+      - GOOGLE_AI_KEY=${GOOGLE_AI_KEY}
+      - GEMINI_KEY=${GEMINI_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OTEL_SERVICE_NAME=dfc-python-ai
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dfc-otel-collector:4318
+    depends_on:
+      dfc-postgres:
+        condition: service_healthy
+      dfc-redis:
+        condition: service_healthy
     networks:
       - dfc_bridge
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+    volumes:
+      - ./atlas_backend_python:/app
 
   # ============================================
-  # 3. POSTGRES DATABASE
+  # POSTGRES DATABASE
   # ============================================
-  postgres:
-    image: postgres:15-alpine
+  dfc-postgres:
+    image: postgis/postgis:15-3.3
     container_name: dfc-postgres
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER:-dfc_admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-dfc-local-postgres-change-me}
+      - POSTGRES_DB=${POSTGRES_DB:-dfc}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init_schema.sql:/docker-entrypoint-initdb.d/init_schema.sql
     networks:
       - dfc_bridge
-    restart: always
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dfc_admin}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ============================================
-  # 4. REDIS CACHE
+  # REDIS CACHE
   # ============================================
-  redis:
+  dfc-redis:
     image: redis:7-alpine
     container_name: dfc-redis
     ports:
       - "6379:6379"
     networks:
       - dfc_bridge
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/data
 
   # ============================================
-  # 5. MINIO OBJECT STORAGE
+  # MINIO OBJECT STORAGE
   # ============================================
-  minio:
+  dfc-minio:
     image: minio/minio:latest
     container_name: dfc-minio
     ports:
       - "9000:9000"
       - "9001:9001"
+    env_file:
+      - .env
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
     networks:
       - dfc_bridge
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -122,52 +193,157 @@ services:
       retries: 3
 
   # ============================================
-  # 6. INFERENCE ENGINE (HULK)
+  # INFERENCE ENGINE
   # ============================================
-  inference:
-    build: ./services/inference-service
-    container_name: dfc-inference-service
+  dfc-inference:
+    build:
+      context: ./services/inference-service
+      dockerfile: Dockerfile
+    container_name: dfc-inference
     ports:
       - "8106:8080"
+    env_file:
+      - .env
     environment:
       - GOOGLE_AI_KEY=${GOOGLE_AI_KEY}
       - GEMINI_KEY=${GEMINI_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OTEL_SERVICE_NAME=dfc-inference
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dfc-otel-collector:4318
     networks:
       - dfc_bridge
-    restart: always
+    restart: unless-stopped
+    volumes:
+      - ./services/inference-service:/app
 
   # ============================================
-  # 7. PROMOTION ENGINE (DON KING)
+  # PROMOTION ENGINE
   # ============================================
-  promotion:
-    build: ./services/promotion-service
-    container_name: dfc-promotion-service
+  dfc-promotion:
+    build:
+      context: ./services/promotion-service
+      dockerfile: Dockerfile
+    container_name: dfc-promotion
     ports:
       - "8107:8080"
+    env_file:
+      - .env
     environment:
-      - INFERENCE_SERVICE_URL=http://inference:8080/infer
+      - INFERENCE_SERVICE_URL=http://dfc-inference:8080/infer
+      - POSTGRES_HOST=dfc-postgres
+      - REDIS_HOST=dfc-redis
+      - OTEL_SERVICE_NAME=dfc-promotion
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dfc-otel-collector:4318
+    depends_on:
+      - dfc-inference
+      - dfc-postgres
+      - dfc-redis
     networks:
       - dfc_bridge
-    depends_on:
-      - inference
-    restart: always
+    restart: unless-stopped
+    volumes:
+      - ./services/promotion-service:/app
 
-# ============================================
-# VOLUMES (Persistent Storage)
-# ============================================
+  # ============================================
+  # OBSERVABILITY STACK
+  # ============================================
+  dfc-otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: dfc-otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./monitoring/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    networks:
+      - dfc_bridge
+    restart: unless-stopped
+    depends_on:
+      - dfc-gateway
+      - dfc-backend
+      - dfc-python-ai
+      - dfc-inference
+      - dfc-promotion
+
+  dfc-prometheus:
+    image: prom/prometheus:latest
+    container_name: dfc-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - dfc_bridge
+    restart: unless-stopped
+
+  dfc-loki:
+    image: grafana/loki:latest
+    container_name: dfc-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yaml:/etc/loki/local-config.yaml:ro
+      - loki_data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - dfc_bridge
+    restart: unless-stopped
+
+  dfc-tempo:
+    image: grafana/tempo:latest
+    container_name: dfc-tempo
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./monitoring/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo_data:/tmp/tempo
+    command: -config.file=/etc/tempo/tempo.yaml
+    networks:
+      - dfc_bridge
+    restart: unless-stopped
+
+  dfc-grafana:
+    image: grafana/grafana:latest
+    container_name: dfc-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+      - grafana_data:/var/lib/grafana
+    networks:
+      - dfc_bridge
+    restart: unless-stopped
+    depends_on:
+      - dfc-prometheus
+      - dfc-loki
+      - dfc-tempo
+
 volumes:
   postgres_data:
     driver: local
+  redis_data:
+    driver: local
   minio_data:
     driver: local
+  grafana_data:
+    driver: local
+  loki_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  tempo_data:
+    driver: local
 
-# ============================================
-# NETWORK (Internal Service Communication)
-# ============================================
 networks:
   dfc_bridge:
     driver: bridge
-# smoke: trigger docker-build 20260626T072130Z
-# smoke: trigger docker-build 20260626T072217Z

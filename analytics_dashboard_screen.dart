@@ -36,7 +36,7 @@ class AnalyticsDashboardScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               // High-Level Telemetry
-              Row(
+              const Row(
                 children: [
                   Expanded(
                     child: _TelemetryCard(
@@ -47,7 +47,7 @@ class AnalyticsDashboardScreen extends StatelessWidget {
                       icon: Icons.attach_money,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  SizedBox(width: 16),
                   Expanded(
                     child: _TelemetryCard(
                       label: 'ACTIVE GYMS',
@@ -75,12 +75,12 @@ class AnalyticsDashboardScreen extends StatelessWidget {
               DfcCard(
                 height: 240,
                 glow: true,
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
+                      children: [
                         Text(
                           'DFC 1',
                           style: TextStyle(color: Colors.white38, fontSize: 12),
@@ -95,7 +95,7 @@ class AnalyticsDashboardScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const Expanded(
+                    Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
                         child: _NeonChartWidget(),
@@ -119,14 +119,14 @@ class AnalyticsDashboardScreen extends StatelessWidget {
               const SizedBox(height: 12),
               DfcCard(
                 height: 200,
-                child: Column(
+                child: const Column(
                   children: [
                     _HeatmapRow('Heath Ewart', '98%', Colors.redAccent),
-                    const Divider(color: Colors.white10),
+                    Divider(color: Colors.white10),
                     _HeatmapRow('Kai Johnson', '85%', Colors.orangeAccent),
-                    const Divider(color: Colors.white10),
+                    Divider(color: Colors.white10),
                     _HeatmapRow('Mason Lee', '72%', Colors.yellowAccent),
-                    const Divider(color: Colors.white10),
+                    Divider(color: Colors.white10),
                     _HeatmapRow('Alex Torres', '64%', Colors.cyanAccent),
                   ],
                 ),
@@ -171,7 +171,7 @@ class _TelemetryCard extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: color.withOpacity(0.8),
+                  color: color.withValues(alpha: 0.8),
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1,
@@ -224,7 +224,7 @@ class _HeatmapRow extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: intensityColor.withOpacity(0.5),
+                  color: intensityColor.withValues(alpha: 0.5),
                   blurRadius: 6,
                 ),
               ],
@@ -277,7 +277,7 @@ class _NeonChartPainter extends CustomPainter {
     path.lineTo(size.width, 0);
 
     final glowPaint = Paint()
-      ..color = Colors.cyanAccent.withOpacity(0.4)
+      ..color = Colors.cyanAccent.withValues(alpha: 0.4)
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);

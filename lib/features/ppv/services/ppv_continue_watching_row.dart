@@ -19,7 +19,7 @@ class PpvContinueWatchingRow extends StatelessWidget {
         const SizedBox(height: 12),
         SizedBox(
           height: 160,
-          child: Center(child: Text("Watch history will appear here.", style: TextStyle(color: Colors.white.withOpacity(0.5)))),
+          child: Center(child: Text("Watch history will appear here.", style: TextStyle(color: Colors.white.withValues(alpha: 0.5)))),
         ),
       ],
     );

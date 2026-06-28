@@ -61,10 +61,10 @@ class _DfcNavigationShellState extends State<DfcNavigationShell> {
           child: Container(
             height: 72,
             decoration: BoxDecoration(
-              color: const Color(0xFF05060A).withOpacity(0.5),
+              color: const Color(0xFF05060A).withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 width: 1.5,
               ),
             ),
@@ -111,7 +111,7 @@ class _DfcNavigationShellState extends State<DfcNavigationShell> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.cyanAccent.withOpacity(0.1)
+              ? Colors.cyanAccent.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),

@@ -178,13 +178,13 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
                       InkWell(
                         onTap: _pickDateTime,
                         child: InputDecorator(
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Date & Time',
-                            labelStyle: const TextStyle(color: Colors.white54),
-                            enabledBorder: const UnderlineInputBorder(
+                            labelStyle: TextStyle(color: Colors.white54),
+                            enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.white24),
                             ),
-                            focusedBorder: const UnderlineInputBorder(
+                            focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.redAccent),
                             ),
                           ),

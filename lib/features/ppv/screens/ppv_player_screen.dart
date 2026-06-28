@@ -31,9 +31,6 @@ class _PpvPlayerScreenState extends State<PpvPlayerScreen> {
     _chewieController = ChewieController(
       videoPlayerController: _videoController!,
       autoPlay: true,
-      looping: false,
-      allowFullScreen: true,
-      allowMuting: true,
       aspectRatio: _videoController!.value.aspectRatio,
       materialProgressColors: ChewieProgressColors(
         playedColor: Colors.pinkAccent,

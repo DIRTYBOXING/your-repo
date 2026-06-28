@@ -10,7 +10,7 @@ class PromoterApiService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => PromoterModel.fromJson(json)).toList();
+      return data.map(PromoterModel.fromJson).toList();
     } else {
       throw Exception(
         'Failed to load promoters. Status: ${response.statusCode}',

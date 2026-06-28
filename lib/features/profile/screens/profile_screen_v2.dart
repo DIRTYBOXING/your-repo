@@ -106,8 +106,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             trailing: const Icon(Icons.chevron_right, color: Colors.white54),
             onTap: () {
-              if (currentUid != null)
+              if (currentUid != null) {
                 context.push('/finance/fighter/$currentUid');
+              }
             },
           ),
         ],

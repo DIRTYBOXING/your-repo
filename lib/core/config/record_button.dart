@@ -40,7 +40,7 @@ class _RecordButtonState extends State<RecordButton>
     HapticFeedback.heavyImpact();
     Future.delayed(
       const Duration(milliseconds: 120),
-      () => HapticFeedback.lightImpact(),
+      HapticFeedback.lightImpact,
     );
     setState(() => _isRecording = true);
     _controller.repeat(reverse: true);

@@ -5,7 +5,7 @@ class DfcMotion {
   // For standard Navigator.push
   static PageRouteBuilder<T> slide<T>(Widget page) {
     return PageRouteBuilder<T>(
-      pageBuilder: (_, __, ___) => page,
+      pageBuilder: (_, _, _) => page,
       transitionsBuilder: (_, animation, secondaryAnimation, child) {
         final offsetAnim =
             Tween<Offset>(

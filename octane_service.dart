@@ -18,7 +18,7 @@ class OctaneService {
     required String theme, // e.g., 'neon_underground', 'samurai_spirit'
   }) async {
     try {
-      List<String> uploadedUrls = [];
+      final List<String> uploadedUrls = [];
 
       // 1. Upload raw images to Firebase Storage
       for (int i = 0; i < images.length; i++) {

@@ -77,7 +77,7 @@ class EventsScreen extends ConsumerWidget {
                     return ListView.separated(
                       padding: const EdgeInsets.only(bottom: 24),
                       itemCount: events.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 16),
+                      separatorBuilder: (_, _) => const SizedBox(height: 16),
                       itemBuilder: (context, index) {
                         final event = events[index];
                         final formattedDate = DateFormat(

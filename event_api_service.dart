@@ -10,7 +10,7 @@ class EventApiService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((json) => EventModel.fromJson(json)).toList();
+      return data.map(EventModel.fromJson).toList();
     } else {
       throw Exception('Failed to load events. Status: ${response.statusCode}');
     }

@@ -56,11 +56,11 @@ class FightersScreen extends ConsumerWidget {
                 margin: const EdgeInsets.only(bottom: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.white.withOpacity(0.05)),
+                  side: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
                 ),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: Colors.blueAccent.withOpacity(0.2),
+                    backgroundColor: Colors.blueAccent.withValues(alpha: 0.2),
                     backgroundImage: fighter.profileImageUrl.isNotEmpty
                         ? NetworkImage(fighter.profileImageUrl)
                         : null,

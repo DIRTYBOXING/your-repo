@@ -1,13 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../services/ppv_entitlement_service.dart';
-import 'ppv_analytics_service.dart';
 
 class PpvStreamScreen extends StatefulWidget {
   final String eventId;
 
-  const PpvStreamScreen({super.key, required this.eventId});
+  const PpvStreamScreen({
+    super.key,
+    required this.eventId,
+  });
 
   @override
   State<PpvStreamScreen> createState() => _PpvStreamScreenState();
@@ -15,29 +15,6 @@ class PpvStreamScreen extends StatefulWidget {
 
 class _PpvStreamScreenState extends State<PpvStreamScreen> {
   final PpvEntitlementService _entitlementService = PpvEntitlementService();
-
-  bool _watchStarted = false;
-
-  @override
-  void initState() {
-    super.initState();
-    // gate_view
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      Analytics.ppvEvent(
-        funnelStep: 'gate_view',
-        eventId: widget.eventId,
-        userId: uid,
-      );
-
-      // gate_check_access (emitted once, right when we subscribe)
-      Analytics.ppvEvent(
-        funnelStep: 'gate_check_access',
-        eventId: widget.eventId,
-        userId: uid,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,48 +32,13 @@ class _PpvStreamScreenState extends State<PpvStreamScreen> {
 
         final hasAccess = snapshot.data ?? false;
 
-        // gate_access_granted / denied (based on entitlement snapshot)
-        final uid = FirebaseAuth.instance.currentUser?.uid;
-        if (uid != null) {
-          if (hasAccess) {
-            Analytics.ppvEvent(
-              funnelStep: 'gate_access_granted',
-              eventId: widget.eventId,
-              userId: uid,
-            );
-
-            // watch_start (first time only)
-            if (!_watchStarted) {
-              _watchStarted = true;
-              Analytics.ppvEvent(
-                funnelStep: 'watch_start',
-                eventId: widget.eventId,
-                userId: uid,
-              );
-            }
-          } else {
-            Analytics.ppvEvent(
-              funnelStep: 'gate_access_denied',
-              eventId: widget.eventId,
-              userId: uid,
-            );
-
-            if (_watchStarted) {
-              _watchStarted = false;
-              Analytics.ppvEvent(
-                funnelStep: 'watch_complete',
-                eventId: widget.eventId,
-                userId: uid,
-              );
-            }
-          }
-        }
-
         if (!hasAccess) {
+          // Revoke access or fallback to the access pass page
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(
-              context,
-            ).pushReplacementNamed('/access-pass', arguments: widget.eventId);
+            Navigator.of(context).pushReplacementNamed(
+              '/access-pass',
+              arguments: widget.eventId,
+            );
           });
           return const Scaffold(backgroundColor: Color(0xFF05060A));
         }
@@ -132,17 +74,14 @@ class _PpvStreamScreenState extends State<PpvStreamScreen> {
                   ),
                 ),
               ),
-
+              
               // 2. Multi-Cam Options
               Container(
                 height: 60,
                 color: Colors.grey[900],
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 12,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                   children: [
                     _buildCamPill('MAIN CAM', true),
                     _buildCamPill('BLUE CORNER', false),
@@ -194,12 +133,8 @@ class _PpvStreamScreenState extends State<PpvStreamScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: isSelected
-            ? Colors.cyanAccent.withValues(alpha: 0.2)
-            : Colors.transparent,
-        border: Border.all(
-          color: isSelected ? Colors.cyanAccent : Colors.white24,
-        ),
+        color: isSelected ? Colors.cyanAccent.withValues(alpha: 0.2) : Colors.transparent,
+        border: Border.all(color: isSelected ? Colors.cyanAccent : Colors.white24),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -217,10 +152,7 @@ class _PpvStreamScreenState extends State<PpvStreamScreen> {
     return Center(
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.white54,
-          fontStyle: FontStyle.italic,
-        ),
+        style: const TextStyle(color: Colors.white54, fontStyle: FontStyle.italic),
       ),
     );
   }

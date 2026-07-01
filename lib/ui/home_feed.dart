@@ -1,9 +1,10 @@
 // lib/ui/home_feed.dart
 import 'package:flutter/material.dart';
+
 import '../../lib/core/theme/app_colors.dart';
+import '../feed/feed_service.dart';
 import '../models/feed_item.dart';
 import '../services/api_client.dart';
-import '../feed/feed_service.dart';
 
 class HomeFeedPage extends StatefulWidget {
   const HomeFeedPage({Key? key}) : super(key: key);
@@ -56,28 +57,54 @@ class _HomeFeedPageState extends State<HomeFeedPage> {
         elevation: 0,
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.neonCyan))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.neonCyan),
+            )
           : _error != null
-              ? Center(child: Text('Error: $_error', style: const TextStyle(color: Colors.redAccent)))
-              : RefreshIndicator(
-                  onRefresh: _loadFeed,
-                  child: ListView.separated(
-                    itemCount: _feedItems.length,
-                    separatorBuilder: (_, __) => const Divider(color: Colors.white12, height: 1),
-                    itemBuilder: (context, i) {
-                      final item = _feedItems[i];
-                      final isPromotion = item['type'] == 'promotion' || item['promotion'] == true;
-                      return ListTile(
-                        leading: item['image_url'] != null
-                            ? Image.network(item['image_url'] as String, width: 64, fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image))
-                            : const Icon(Icons.feed, color: Colors.white24),
-                        title: Text(item['title'] ?? 'No Title', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        subtitle: Text(item['subtitle'] ?? item['description'] ?? '', style: const TextStyle(color: Colors.white70)),
-                        trailing: isPromotion ? const Icon(Icons.campaign, color: Colors.orange) : null,
-                      );
-                    },
-                  ),
-                ),
+          ? Center(
+              child: Text(
+                'Error: $_error',
+                style: const TextStyle(color: Colors.redAccent),
+              ),
+            )
+          : RefreshIndicator(
+              onRefresh: _loadFeed,
+              child: ListView.separated(
+                itemCount: _feedItems.length,
+                separatorBuilder: (_, __) =>
+                    const Divider(color: Colors.white12, height: 1),
+                itemBuilder: (context, i) {
+                  final item = _feedItems[i];
+                  final isPromotion =
+                      item['type'] == 'promotion' || item['promotion'] == true;
+                  return ListTile(
+                    leading: item['image_url'] != null
+                        ? Image.network(
+                            item['image_url'] as String,
+                            width: 64,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                const Icon(Icons.broken_image),
+                          )
+                        : const Icon(Icons.feed, color: Colors.white24),
+                    title: Text(
+                      item['title'] ?? 'No Title',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      item['subtitle'] ?? item['description'] ?? '',
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                    trailing: isPromotion
+                        ? const Icon(Icons.campaign, color: Colors.orange)
+                        : null,
+                  );
+                },
+              ),
+            ),
     );
   }
 }

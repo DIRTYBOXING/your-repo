@@ -150,6 +150,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\.vscode\scripts\recreate-w
 
 ## Strategic and Operator Docs
 
+- `docs/ONLY_FIT_CREATOR_PLAYBOOK.md`: Brand standards, direct-commerce profiles, and Stripe Express compliance checklists for combat and fitness creators.
 - `docs/DFC_SPINE.md`: Canonical founder and operator definition of the DFC platform spine.
 - `docs/ARCHITECTURE_ONE_PAGER.md`: One-page architecture and deploy summary for partners and funding applications.
 - `docs/ARCHITECTURE_DIAGRAM.mmd`: Mermaid system diagram source for frontend, backend, data, AI, media, and ops.

@@ -29,6 +29,8 @@ class DfcFeedItem {
   static List<DfcFeedItem> listFromJson(String jsonStr) {
     final data = jsonDecode(jsonStr) as Map<String, dynamic>;
     final items = data['items'] as List<dynamic>;
-    return items.map((e) => DfcFeedItem.fromJson(e as Map<String, dynamic>)).toList();
+    return items
+        .map((e) => DfcFeedItem.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 }

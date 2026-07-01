@@ -1,5 +1,6 @@
 // lib/ui/auth_guard.dart
 import 'package:flutter/material.dart';
+
 import '../../lib/shared/services/auth_service.dart';
 
 class AuthGuard extends StatelessWidget {
@@ -17,16 +18,19 @@ class AuthGuard extends StatelessWidget {
     return FutureBuilder<bool>(
       future: _hasToken(),
       builder: (context, snap) {
-        if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+        if (!snap.hasData)
+          return const Center(child: CircularProgressIndicator());
         if (snap.data == true) return child;
         return Scaffold(
           appBar: AppBar(title: const Text('Sign In Required')),
-          body: Center(child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            child: const Text('Sign In'),
-          )),
+          body: Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/login');
+              },
+              child: const Text('Sign In'),
+            ),
+          ),
         );
       },
     );

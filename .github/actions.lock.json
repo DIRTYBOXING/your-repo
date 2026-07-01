@@ -1,0 +1,266 @@
+{
+  "version": 1,
+  "generated": "2026-05-12T00:00:00.000Z",
+  "actions": {
+    "actions/checkout": [
+      {
+        "version": "v4",
+        "sha": "34e114876b0b11c390a56381ad16ebd13914f8d5",
+        "integrity": "sha256-5251829f363b759378b315371864d0080d182ad7a7fe5c54bca83d7b0afb3016",
+        "dependencies": []
+      },
+      {
+        "version": "v3",
+        "sha": "f43a0e5ff2bd294095638e18286ca9a3d1956744",
+        "integrity": "sha256-fae483265ecf97a98ef035586e1249dc7ec6521108ec52ec2b72ace31917d1c2",
+        "dependencies": []
+      }
+    ],
+    "gjtorikian/gh-actions-lockfile": [
+      {
+        "version": "v1",
+        "sha": "8abbeb1fe0a4bf20279c81fa206e6a2fc862a830",
+        "integrity": "sha256-433ba4e791b1c1fe3431e0f0c8766cb1c3823dd7ae8739cb2b9c07c0b023f87f",
+        "dependencies": []
+      }
+    ],
+    "actions/setup-node": [
+      {
+        "version": "v4",
+        "sha": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+        "integrity": "sha256-583278d0d6b00430eb698333f3ed8f32770a487abf7f051681d22a4eb9779f18",
+        "dependencies": []
+      },
+      {
+        "version": "v3",
+        "sha": "3235b876344d2a9aa001b8d1453c930bba69e610",
+        "integrity": "sha256-83920c3956d6323bb824e723b8b368adc8bcd025f0c8081fb5ea2a3486a67f21",
+        "dependencies": []
+      }
+    ],
+    "actions/upload-artifact": [
+      {
+        "version": "v4",
+        "sha": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+        "integrity": "sha256-d5ee64a6e1acd6b34ba789dbae72b073637349d9ac9fb6fe07d5cbcd40768eae",
+        "dependencies": []
+      }
+    ],
+    "actions/download-artifact": [
+      {
+        "version": "v4",
+        "sha": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+        "integrity": "sha256-30dfdaccd01921c2fd144f068d188da3b0b37a5cf427a9ed56fe81a32c6d14b2",
+        "dependencies": []
+      }
+    ],
+    "google-github-actions/auth": [
+      {
+        "version": "v1",
+        "sha": "3a3c4c57d294ef65efaaee4ff17b22fa88dd3c69",
+        "integrity": "sha256-a74db4fd0c7c97ff149828ff018e76a9eeefd9d5a07e5bcea5f1de330bf63cc0",
+        "dependencies": []
+      },
+      {
+        "version": "v2",
+        "sha": "c200f3691d83b41bf9bbd8638997a462592937ed",
+        "integrity": "sha256-ae6f7e3271af1c29c51108e42d8d8590665c5e35b880ffbb62cea800e369d66e",
+        "dependencies": []
+      }
+    ],
+    "docker/login-action": [
+      {
+        "version": "v2",
+        "sha": "465a07811f14bebb1938fbed4728c6a1ff8901fc",
+        "integrity": "sha256-f546c1d701dece0a69b2219679d336feec3973392f0757cd20e7e247f044f049",
+        "dependencies": []
+      }
+    ],
+    "aws-actions/configure-aws-credentials": [
+      {
+        "version": "v2",
+        "sha": "5fd3084fc36e372ff1fff382a39b10d03659f355",
+        "integrity": "sha256-17b06e6544d4a2e2066f3fc122a6c444c78dcf10b132a1283c657297ee1c3614",
+        "dependencies": []
+      },
+      {
+        "version": "v4",
+        "sha": "7474bc4690e29a8392af63c5b98e7449536d5c3a",
+        "integrity": "sha256-3a794db1704dc6c031ac74d9c3595896c891a9c0184ee9608bb58468b6514a1a",
+        "dependencies": []
+      }
+    ],
+    "digitalocean/app_action": [
+      {
+        "version": "v1.1.5",
+        "sha": "e583e1b463e8ac378854c0a01af1de8a5afd836b",
+        "integrity": "sha256-020b610162c98fa7065a0c97510938124ded7ce0e4d0f2280835cf9a667d9bfe",
+        "dependencies": []
+      }
+    ],
+    "dart-lang/setup-dart": [
+      {
+        "version": "v1",
+        "sha": "65eb853c7ba17dde3be364c3d2858773e7144260",
+        "integrity": "sha256-585acd736bfb12a251910d58568c10ab2400044a15f2a966be3d345eeed539fc",
+        "dependencies": []
+      }
+    ],
+    "actions/cache": [
+      {
+        "version": "v5",
+        "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae",
+        "integrity": "sha256-9c70fbdb2e793d6632f3218c034517b65680390b080c08154fb867750dfcee17",
+        "dependencies": []
+      },
+      {
+        "version": "0400d5f644dc74513175e3cd8d07132dd4860809",
+        "sha": "0400d5f644dc74513175e3cd8d07132dd4860809",
+        "integrity": "sha256-38b1dddc9919f32b88160521ed3b6acaf47f1d68eec468dcfcb7147dff31d68f",
+        "dependencies": []
+      }
+    ],
+    "subosito/flutter-action": [
+      {
+        "version": "v2",
+        "sha": "1a449444c387b1966244ae4d4f8c696479add0b2",
+        "integrity": "sha256-95d38f64b7b9ce4d72824fa168519a904f7c5eea5f4a3263d4178437b894c5c1",
+        "dependencies": [
+          {
+            "ref": "actions/cache@v5",
+            "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae",
+            "integrity": "sha256-9c70fbdb2e793d6632f3218c034517b65680390b080c08154fb867750dfcee17"
+          },
+          {
+            "ref": "actions/cache@v5",
+            "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae",
+            "integrity": "sha256-9c70fbdb2e793d6632f3218c034517b65680390b080c08154fb867750dfcee17"
+          }
+        ]
+      }
+    ],
+    "actions/github-script": [
+      {
+        "version": "v7",
+        "sha": "f28e40c7f34bde8b3046d885e986cb6290c5673b",
+        "integrity": "sha256-194653facda2574bd6cb7af20fc0730c3af3c432d1355acc50c7914b4f2cc58f",
+        "dependencies": []
+      }
+    ],
+    "google-github-actions/setup-gcloud": [
+      {
+        "version": "v2",
+        "sha": "e427ad8a34f8676edf47cf7d7925499adf3eb74f",
+        "integrity": "sha256-4d61698e3914a65c6fc1407af3398535e000a3647945476e7d5a46f057d01df9",
+        "dependencies": []
+      }
+    ],
+    "FirebaseExtended/action-hosting-deploy": [
+      {
+        "version": "v0",
+        "sha": "e2eda2e106cfa35cdbcf4ac9ddaf6c4756df2c8c",
+        "integrity": "sha256-147bcd5957cb2930600ae4253dec61fb1f192dc1acf818d01280e0dfc9a9bac7",
+        "dependencies": []
+      }
+    ],
+    "actions/setup-java": [
+      {
+        "version": "v4",
+        "sha": "c1e323688fd81a25caa38c78aa6df2d33d3e20d9",
+        "integrity": "sha256-c061ceada9c27c0109ecfe14663dd3cdfd4bc3ae1194bdb201aeac8960f1e881",
+        "dependencies": []
+      }
+    ],
+    "treosh/lighthouse-ci-action": [
+      {
+        "version": "v12",
+        "sha": "3e7e23fb74242897f95c0ba9cabad3d0227b9b18",
+        "integrity": "sha256-59066169bfb63233a3ab71dd013c37a83a9279cf5b94b41a04d7cf746085cb89",
+        "dependencies": []
+      }
+    ],
+    "grafana/setup-k6-action": [
+      {
+        "version": "v1",
+        "sha": "db07bd9765aac508ef18982e52ab937fe633a065",
+        "integrity": "sha256-9488d72a26741c5ef9af360903e8caddd506ae27ee66b35f4b6b420d8fa97cce",
+        "dependencies": []
+      }
+    ],
+    "LoveToKnow/slackify-markdown-action": [
+      {
+        "version": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+        "sha": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+        "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3",
+        "dependencies": []
+      }
+    ],
+    "rtCamp/action-slack-notify": [
+      {
+        "version": "v2",
+        "sha": "e31e87e03dd19038e411e38ae27cbad084a90661",
+        "integrity": "sha256-7853947ef58f8af37049061e31d1beb18bebeaaa2dca45771266984a89a719ab",
+        "dependencies": [
+          {
+            "ref": "LoveToKnow/slackify-markdown-action@698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "sha": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3"
+          },
+          {
+            "ref": "LoveToKnow/slackify-markdown-action@698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "sha": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3"
+          },
+          {
+            "ref": "LoveToKnow/slackify-markdown-action@698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "sha": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3"
+          },
+          {
+            "ref": "LoveToKnow/slackify-markdown-action@698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "sha": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
+            "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3"
+          }
+        ]
+      }
+    ],
+    "docker/setup-buildx-action": [
+      {
+        "version": "v3",
+        "sha": "8d2750c68a42422c14e847fe6c8ac0403b4cbd6f",
+        "integrity": "sha256-b3d22600b25f4f634875ccf79fb73e3371a3fa0be6e83edee0b56a9733681c99",
+        "dependencies": []
+      }
+    ],
+    "docker/build-push-action": [
+      {
+        "version": "v5",
+        "sha": "ca052bb54ab0790a636c9b5f226502c73d547a25",
+        "integrity": "sha256-ae786f34d8d6f32d6816ac76ae7b1dd15cf50f01a406ab57a1b8dd92cf4adced",
+        "dependencies": []
+      }
+    ],
+    "SonarSource/sonarqube-scan-action": [
+      {
+        "version": "v5",
+        "sha": "2f77a1ec69fb1d595b06f35ab27e97605bdef703",
+        "integrity": "sha256-6170218a68d4259bc8434f3f62937d38dadaedea5e8069adcce1b504992129f2",
+        "dependencies": [
+          {
+            "ref": "actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809",
+            "sha": "0400d5f644dc74513175e3cd8d07132dd4860809",
+            "integrity": "sha256-38b1dddc9919f32b88160521ed3b6acaf47f1d68eec468dcfcb7147dff31d68f"
+          }
+        ]
+      }
+    ],
+    "slackapi/slack-github-action": [
+      {
+        "version": "v1.27.0",
+        "sha": "37ebaef184d7626c5f204ab8d3baff4262dd30f0",
+        "integrity": "sha256-9e77bbf4dd6fe0639f1fde8a7728655071791e9a39be4c6451f45f8a68e610aa",
+        "dependencies": []
+      }
+    ]
+  }
+}

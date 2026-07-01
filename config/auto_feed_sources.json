@@ -1,0 +1,316 @@
+{
+  "sources": [
+    {
+      "id": "ufc_events",
+      "name": "UFC Events",
+      "type": "rss",
+      "url": "https://www.ufc.com/rss/news",
+      "trusted": true,
+      "category": "events"
+    },
+    {
+      "id": "mma_fighting_news",
+      "name": "MMA Fighting News",
+      "type": "rss",
+      "url": "https://www.mmafighting.com/rss/current",
+      "trusted": true,
+      "category": "news"
+    },
+    {
+      "id": "youtube_ufc_official",
+      "name": "YouTube - UFC Official",
+      "type": "youtube_channel",
+      "channel_id": "UCvgfXK4nTYKudb0rFR6noLA",
+      "trusted": true,
+      "category": "media"
+    },
+    {
+      "id": "bare_knuckle_fc",
+      "name": "Bare Knuckle FC",
+      "type": "rss",
+      "url": "https://www.bareknuckle.tv/rss/news",
+      "trusted": true,
+      "category": "events"
+    },
+    {
+      "id": "facebook_shared",
+      "name": "Facebook - Shared by Promoters",
+      "type": "meta_shared",
+      "platform": "facebook",
+      "trusted": true,
+      "promotion_cleared": true,
+      "note": "Content voluntarily shared to DFC by the account holder is lawfully cleared for promotional use — events, posters, fight cards.",
+      "category": "events"
+    },
+    {
+      "id": "instagram_shared",
+      "name": "Instagram - Shared by Promoters",
+      "type": "meta_shared",
+      "platform": "instagram",
+      "trusted": true,
+      "promotion_cleared": true,
+      "note": "Content voluntarily shared to DFC by the account holder is lawfully cleared for promotional use — events, posters, fight cards.",
+      "category": "media"
+    },
+
+    {
+      "id": "one_championship",
+      "name": "ONE Championship",
+      "type": "rss",
+      "url": "https://www.onefc.com/news/feed/",
+      "trusted": true,
+      "category": "events",
+      "regions": ["TH", "SG", "PH", "IN", "PK", "JP", "ID", "MY", "VN"]
+    },
+    {
+      "id": "youtube_one_championship",
+      "name": "YouTube - ONE Championship",
+      "type": "youtube_channel",
+      "channel_id": "UCMnJJbbzBQ3IDBrNpISoO2g",
+      "trusted": true,
+      "category": "media",
+      "regions": ["TH", "SG", "PH", "IN", "JP"]
+    },
+    {
+      "id": "bellator_pfl",
+      "name": "PFL / Bellator MMA",
+      "type": "rss",
+      "url": "https://www.pflmma.com/news/rss",
+      "trusted": true,
+      "category": "events",
+      "regions": ["US", "GB", "SA", "AE"]
+    },
+
+    {
+      "id": "sony_liv_combat",
+      "name": "Sony LIV - Combat Sports India",
+      "type": "web_scrape",
+      "url": "https://www.sonyliv.com/sports",
+      "trusted": true,
+      "category": "events",
+      "regions": ["IN"],
+      "note": "UFC and boxing broadcast partner for India subcontinent"
+    },
+    {
+      "id": "super_fight_league",
+      "name": "Super Fight League India",
+      "type": "web_scrape",
+      "url": "https://www.superfightleague.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["IN", "PK"],
+      "note": "India's premier MMA promotion — Bill Dosanjh & Tiger Shroff"
+    },
+    {
+      "id": "matrix_fight_night",
+      "name": "Matrix Fight Night India",
+      "type": "web_scrape",
+      "url": "https://matrixfightnight.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["IN"],
+      "note": "Indian MMA promotion featuring South Asian fighters"
+    },
+    {
+      "id": "brave_cf",
+      "name": "BRAVE Combat Federation",
+      "type": "rss",
+      "url": "https://www.bravecf.com/news/rss",
+      "trusted": true,
+      "category": "events",
+      "regions": ["BH", "PK", "IN", "SA", "AE", "PH"],
+      "note": "Bahrain-based MMA — strong Pakistan and South Asia fighter pool"
+    },
+    {
+      "id": "pakistan_mma",
+      "name": "Pakistan MMA Federation",
+      "type": "web_scrape",
+      "url": "https://www.pakistanmma.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["PK"],
+      "note": "Official Pakistan Mixed Martial Arts Federation"
+    },
+
+    {
+      "id": "youtube_brave_cf",
+      "name": "YouTube - BRAVE CF",
+      "type": "youtube_channel",
+      "channel_id": "UCTFiEljdLJkqFJSGiYLeTJA",
+      "trusted": true,
+      "category": "media",
+      "regions": ["PK", "IN", "BH", "AE", "SA"]
+    },
+    {
+      "id": "ptv_sports",
+      "name": "PTV Sports Pakistan",
+      "type": "web_scrape",
+      "url": "https://ptvsports.tv",
+      "trusted": true,
+      "category": "events",
+      "regions": ["PK"],
+      "note": "Pakistan Television Corporation sports channel — boxing and combat coverage"
+    },
+
+    {
+      "id": "road_fc",
+      "name": "Road FC Korea",
+      "type": "web_scrape",
+      "url": "https://www.roadfc.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["KR", "JP", "CN"]
+    },
+    {
+      "id": "rizin_ff",
+      "name": "RIZIN Fighting Federation Japan",
+      "type": "web_scrape",
+      "url": "https://www.rizinff.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["JP"],
+      "note": "Japan's premier MMA promotion — successor to PRIDE FC"
+    },
+    {
+      "id": "youtube_rizin",
+      "name": "YouTube - RIZIN FF",
+      "type": "youtube_channel",
+      "channel_id": "UCaYT_KpEoOg5J9RL0eGHuSQ",
+      "trusted": true,
+      "category": "media",
+      "regions": ["JP"]
+    },
+
+    {
+      "id": "efc_worldwide",
+      "name": "EFC Worldwide Africa",
+      "type": "rss",
+      "url": "https://efcworldwide.com/feed/",
+      "trusted": true,
+      "category": "events",
+      "regions": ["ZA", "KE", "NG", "GH"],
+      "note": "Africa's largest MMA promotion — based in South Africa"
+    },
+    {
+      "id": "supersport_combat",
+      "name": "SuperSport Combat Africa",
+      "type": "web_scrape",
+      "url": "https://supersport.com/combat-sport",
+      "trusted": true,
+      "category": "events",
+      "regions": ["ZA", "KE", "NG"]
+    },
+
+    {
+      "id": "combate_global",
+      "name": "Combate Global",
+      "type": "web_scrape",
+      "url": "https://www.combateglobal.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["MX", "BR", "AR", "CO", "US"],
+      "note": "Latin American MMA promotion — Spanish-language combat sports"
+    },
+    {
+      "id": "youtube_combate_global",
+      "name": "YouTube - Combate Global",
+      "type": "youtube_channel",
+      "channel_id": "UCn2Ck4jkhUDY2ixEynJr7eA",
+      "trusted": true,
+      "category": "media",
+      "regions": ["MX", "BR", "US"]
+    },
+
+    {
+      "id": "desert_force_mma",
+      "name": "Desert Force MMA (MENA)",
+      "type": "web_scrape",
+      "url": "https://www.desertforcemma.com",
+      "trusted": true,
+      "category": "events",
+      "regions": ["AE", "SA", "JO", "EG", "BH"],
+      "note": "Middle East MMA promotion — Dubai, Saudi, Jordan events"
+    },
+    {
+      "id": "bein_sports_combat",
+      "name": "beIN Sports Combat",
+      "type": "web_scrape",
+      "url": "https://www.bein.com/en/sport/mma/",
+      "trusted": true,
+      "category": "events",
+      "regions": ["AE", "SA", "QA", "EG", "FR"]
+    },
+    {
+      "id": "riyadh_season_boxing",
+      "name": "Riyadh Season Boxing",
+      "type": "web_scrape",
+      "url": "https://riyadhseason.sa",
+      "trusted": true,
+      "category": "events",
+      "regions": ["SA", "AE", "GB", "US"],
+      "note": "Saudi Arabia mega-events — Matchroom, Queensberry partnerships"
+    },
+
+    {
+      "id": "boxrec_news",
+      "name": "BoxRec Boxing Records",
+      "type": "web_scrape",
+      "url": "https://boxrec.com",
+      "trusted": true,
+      "category": "news",
+      "regions": ["GLOBAL"]
+    },
+    {
+      "id": "sherdog_news",
+      "name": "Sherdog MMA",
+      "type": "rss",
+      "url": "https://www.sherdog.com/rss/news.xml",
+      "trusted": true,
+      "category": "news",
+      "regions": ["GLOBAL"]
+    },
+    {
+      "id": "tapology_events",
+      "name": "Tapology MMA",
+      "type": "web_scrape",
+      "url": "https://www.tapology.com/fightcenter",
+      "trusted": true,
+      "category": "events",
+      "regions": ["GLOBAL"]
+    }
+  ],
+  "refresh_interval_minutes": 15,
+  "allowlist_domains": [
+    "ufc.com",
+    "mmafighting.com",
+    "bareknuckle.tv",
+    "youtube.com",
+    "facebook.com",
+    "instagram.com",
+    "fbcdn.net",
+    "cdninstagram.com",
+    "onefc.com",
+    "pflmma.com",
+    "sonyliv.com",
+    "superfightleague.com",
+    "matrixfightnight.com",
+    "bravecf.com",
+    "pakistanmma.com",
+    "ptvsports.tv",
+    "roadfc.com",
+    "rizinff.com",
+    "efcworldwide.com",
+    "supersport.com",
+    "combateglobal.com",
+    "desertforcemma.com",
+    "bein.com",
+    "riyadhseason.sa",
+    "boxrec.com",
+    "sherdog.com",
+    "tapology.com"
+  ],
+  "shared_content_policy": {
+    "rule": "Any content shared to DFC by a promoter or account holder via Facebook or Instagram is voluntarily submitted and lawfully cleared for promotional use on the DFC platform including redistribution as event promotion, fight posters, and media amplification.",
+    "contact": "info@datafightcentral.com"
+  }
+}

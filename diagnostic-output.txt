@@ -1,0 +1,44 @@
+
+> test:visual:ppv-maps-social
+> playwright test test/visual/dfc_platform_audit.spec.ts --grep "PPV|Social|Maps" --grep Diagnostics --project=desktop
+
+
+Running 1 test using 1 worker
+
+  Γ£ÿ  1 [desktop] ΓÇ║ test\visual\dfc_platform_audit.spec.ts:89:3 ΓÇ║ Diagnostics ΓÇ║ inspect DOM for aria-label and data-test attributes on PPV hub (3.0s)
+
+
+  1) [desktop] ΓÇ║ test\visual\dfc_platform_audit.spec.ts:89:3 ΓÇ║ Diagnostics ΓÇ║ inspect DOM for aria-label and data-test attributes on PPV hub 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8088/#/ppv
+    Call log:
+    [2m  - navigating to "http://127.0.0.1:8088/#/ppv", waiting until "domcontentloaded"[22m
+
+
+      49 | // ΓöÇΓöÇ Helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+      50 | async function loadRoute(page: Page, route: string) {
+    > 51 |   await page.goto(`${BASE}${route}`, { waitUntil: "domcontentloaded" });
+         |              ^
+      52 |   await enterDemoModeIfAvailable(page);
+      53 |   await waitForFlutterReady(page);
+      54 |   await page.waitForTimeout(1500);
+        at loadRoute (C:\Users\User\Documents\GitHub\Data-Fight-Central\test\visual\dfc_platform_audit.spec.ts:51:14)
+        at C:\Users\User\Documents\GitHub\Data-Fight-Central\test\visual\dfc_platform_audit.spec.ts:93:11
+
+    attachment #1: screenshot (image/png) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\dfc_platform_audit-Diagnos-d9887--test-attributes-on-PPV-hub-desktop\test-failed-1.png
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    attachment #2: video (video/webm) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    test-results\dfc_platform_audit-Diagnos-d9887--test-attributes-on-PPV-hub-desktop\video.webm
+    ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+    Error Context: test-results\dfc_platform_audit-Diagnos-d9887--test-attributes-on-PPV-hub-desktop\error-context.md
+
+  1 failed
+    [desktop] ΓÇ║ test\visual\dfc_platform_audit.spec.ts:89:3 ΓÇ║ Diagnostics ΓÇ║ inspect DOM for aria-label and data-test attributes on PPV hub 
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report[39m
+[36m[39m

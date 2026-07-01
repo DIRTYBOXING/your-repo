@@ -1,0 +1,135 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "functions/**"
+      - "serverless/**"
+      - "services/**"
+      - "package.json"
+      - "package-lock.json"
+      - "Dockerfile"
+      - "docker-compose.yml"
+      - ".github/workflows/ci-cd.yml"
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      MUX_TOKEN: ${{ secrets.MUX_TOKEN }}
+      MUX_SECRET: ${{ secrets.MUX_SECRET }}
+      GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+      BACKEND_BASE_URL: ${{ secrets.BACKEND_BASE_URL }}
+      FRONTEND_BASE_URL: ${{ secrets.FRONTEND_BASE_URL }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate required C1 secrets on main branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        shell: bash
+        run: |
+          missing=0
+          for var in FIREBASE_TOKEN FIREBASE_SERVICE_ACCOUNT_KEY STRIPE_SECRET_KEY MUX_TOKEN MUX_SECRET GOOGLE_MAPS_API_KEY BACKEND_BASE_URL FRONTEND_BASE_URL; do
+            if [ -z "${!var}" ]; then
+              echo "::error::Missing required secret: $var"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+      - name: Install dependencies (secure — ignore scripts)
+        shell: bash
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --ignore-scripts
+          else
+            npm ci --no-optional --prefer-offline --ignore-scripts
+          fi
+      - name: Run tests (if configured)
+        shell: bash
+        run: |
+          if npm run | grep -q " test"; then
+            npm test
+          else
+            echo "::notice::No npm test script configured — skipping test step"
+          fi
+
+  docker-build:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .
+      - name: Log in to DockerHub
+        if: env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != ''
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Push Docker image
+        if: env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != ''
+        run: docker push myapp:${{ github.sha }}
+      - name: Skip Docker push notice
+        if: env.DOCKERHUB_USERNAME == '' || env.DOCKERHUB_TOKEN == ''
+        run: echo "::notice::DockerHub secrets missing — built image locally but skipped push"
+
+  deploy-aws:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    env:
+      AWS_ACCESS_KEY_ID_VALUE: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY_VALUE: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION_VALUE: ${{ secrets.AWS_REGION }}
+      ECS_CLUSTER_VALUE: ${{ secrets.ECS_CLUSTER }}
+      ECS_SERVICE_VALUE: ${{ secrets.ECS_SERVICE }}
+    steps:
+      - name: Configure AWS credentials
+        if: env.AWS_ACCESS_KEY_ID_VALUE != '' && env.AWS_SECRET_ACCESS_KEY_VALUE != '' && env.AWS_REGION_VALUE != ''
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Deploy to ECS
+        if: env.AWS_ACCESS_KEY_ID_VALUE != '' && env.AWS_SECRET_ACCESS_KEY_VALUE != '' && env.AWS_REGION_VALUE != '' && env.ECS_CLUSTER_VALUE != '' && env.ECS_SERVICE_VALUE != ''
+        run: |
+          # Update ECS service/task definition here
+          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER }} --service ${{ secrets.ECS_SERVICE }} --force-new-deployment
+      - name: Skip AWS deploy notice
+        if: env.AWS_ACCESS_KEY_ID_VALUE == '' || env.AWS_SECRET_ACCESS_KEY_VALUE == '' || env.AWS_REGION_VALUE == '' || env.ECS_CLUSTER_VALUE == '' || env.ECS_SERVICE_VALUE == ''
+        run: echo "::notice::AWS/ECS secrets missing — skipping AWS deploy"
+
+  deploy-digitalocean:
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    env:
+      DO_APP_NAME_VALUE: ${{ secrets.DO_APP_NAME }}
+      DO_API_TOKEN_VALUE: ${{ secrets.DO_API_TOKEN }}
+    steps:
+      - name: Deploy to DigitalOcean App Platform
+        if: env.DO_APP_NAME_VALUE != '' && env.DO_API_TOKEN_VALUE != ''
+        uses: digitalocean/app_action@v1.1.5
+        with:
+          app_name: ${{ secrets.DO_APP_NAME }}
+          token: ${{ secrets.DO_API_TOKEN }}
+      - name: Skip DigitalOcean deploy notice
+        if: env.DO_APP_NAME_VALUE == '' || env.DO_API_TOKEN_VALUE == ''
+        run: echo "::notice::DigitalOcean secrets missing — skipping DO deploy"

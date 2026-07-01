@@ -1,0 +1,91 @@
+{
+  "eventId": "korakuen-apr-2026",
+  "title": "KORAKUEN HALL: IBF WORLD ATOMWEIGHT TITLE",
+  "subtitle": "Yamanaka vs Ugawa — Tokyo, Japan",
+  "date": "2026-04-07",
+  "time": "18:00 JST",
+  "price": "19.99",
+  "promoter": "JBC / Korakuen Hall",
+  "sport": "Boxing",
+  "venue": "Korakuen Hall, Tokyo",
+  "currency": "JPY",
+  "streamPlatforms": ["DAZN Japan"],
+  "fighters": [
+    {
+      "name": "Sumire Yamanaka",
+      "record": "9-1-0",
+      "weightClass": "Atomweight",
+      "corner": "left"
+    },
+    {
+      "name": "Nao Ugawa",
+      "record": "6-0-0",
+      "weightClass": "Atomweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Sumire Yamanaka",
+      "fighter1Record": "9-1-0",
+      "fighter2": "Nao Ugawa",
+      "fighter2Record": "6-0-0",
+      "weightClass": "Atomweight",
+      "rounds": 10,
+      "isMainEvent": true,
+      "isTitleFight": true,
+      "titleName": "IBF World Atom (vacant)"
+    },
+    {
+      "fighter1": "Shiori Yotsumoto",
+      "fighter1Record": "2-0-0",
+      "fighter2": "Mao Kamada",
+      "fighter2Record": "5-0-3",
+      "weightClass": "Atomweight",
+      "rounds": 10,
+      "isTitleFight": true,
+      "titleName": "WBO Asia Pacific Atom (vacant)"
+    },
+    {
+      "fighter1": "Honoka Kano",
+      "fighter1Record": "10-1-3",
+      "fighter2": "Komi Sato",
+      "fighter2Record": "4-0-0",
+      "weightClass": "Atomweight",
+      "rounds": 10,
+      "isTitleFight": true,
+      "titleName": "OPBF Atom"
+    },
+    {
+      "fighter1": "Nana Yamashita",
+      "fighter1Record": "7-2-0",
+      "fighter2": "Terumi Nuki",
+      "fighter2Record": "16-7-1",
+      "weightClass": "Bantamweight",
+      "rounds": 10,
+      "isTitleFight": true,
+      "titleName": "JBC Japanese Bantam + OPBF Bantam"
+    },
+    {
+      "fighter1": "Nanako Suzuki",
+      "fighter1Record": "9-4-0",
+      "fighter2": "Riyuna Yoshikawa",
+      "fighter2Record": "7-2-2",
+      "weightClass": "Minimumweight",
+      "rounds": 10,
+      "isTitleFight": true,
+      "titleName": "WBO Asia Pacific Minimum (vacant)"
+    },
+    {
+      "fighter1": "Rin Fukui",
+      "fighter1Record": "0-0-1",
+      "fighter2": "Miki Matsui",
+      "fighter2Record": "debut",
+      "weightClass": "Super Bantamweight",
+      "rounds": 4,
+      "isTitleFight": false
+    }
+  ],
+  "safetyFlags": { "ageRestricted": false },
+  "source": "boxrec.com/en/results — April 7, 2026"
+}

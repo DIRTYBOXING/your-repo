@@ -1,0 +1,12 @@
+{
+  "title": "REPLACE_WITH_REAL_EVENT_TITLE",
+  "promoterId": "replace_with_promoter_id",
+  "date": "2026-04-24",
+  "time": "19:00",
+  "venue": "REPLACE_WITH_REAL_VENUE",
+  "city": "REPLACE_WITH_REAL_CITY",
+  "country": "REPLACE_WITH_REAL_COUNTRY",
+  "posterUrl": "https://YOUR_BUCKET/events/real_event_poster.jpg",
+  "price": 24.99,
+  "platforms": ["DFC Live"]
+}

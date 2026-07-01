@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Asset License Metadata",
+  "type": "object",
+  "properties": {
+    "assetId": { "type": "string" },
+    "assetUrl": { "type": "string", "format": "uri" },
+    "isFinalPoster": { "type": "boolean" },
+    "posterKind": {
+      "type": "string",
+      "enum": ["finalPoster", "backgroundArt", "generatedFallback"]
+    },
+    "license": {
+      "type": "object",
+      "properties": {
+        "licenseId": { "type": "string" },
+        "licenseType": {
+          "type": "string",
+          "enum": ["owned", "licensed", "userProvided", "publicDomain"]
+        },
+        "licensedTo": { "type": "string" },
+        "validFrom": { "type": "string", "format": "date-time" },
+        "validUntil": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" }
+      },
+      "required": ["licenseId", "licenseType"]
+    },
+    "uploadedBy": { "type": "string" },
+    "uploadedAt": { "type": "string", "format": "date-time" }
+  },
+  "required": [
+    "assetId",
+    "assetUrl",
+    "isFinalPoster",
+    "posterKind",
+    "license",
+    "uploadedBy",
+    "uploadedAt"
+  ]
+}

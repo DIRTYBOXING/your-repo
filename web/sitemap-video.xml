@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <!--
+  ═══════════════════════════════════════════════════════════════
+  DATA FIGHT CENTRAL — Google Video Sitemap
+  Submit to Google Search Console for Video tab indexing
+  DFC Pty Ltd · #1 AI Combat Sports Platform
+  ═══════════════════════════════════════════════════════════════
+  -->
+
+  <!-- FightWire News — Video content from YouTube API -->
+  <url>
+    <loc>https://datafightcentral.com/#/fightwire</loc>
+    <video:video>
+      <video:thumbnail_loc>https://datafightcentral.com/icons/Icon-512.png</video:thumbnail_loc>
+      <video:title>DFC FightWire — UFC, MMA &amp; Boxing Fight News Videos</video:title>
+      <video:description>Watch the latest UFC, MMA, Boxing, Muay Thai and combat sports news videos on Data Fight Central's FightWire. Real-time fight highlights, post-fight interviews, weigh-ins, press conferences and breaking combat sports coverage from 40+ sources worldwide.</video:description>
+      <video:content_loc>https://www.youtube.com/@DataFightCentral</video:content_loc>
+      <video:category>Sports</video:category>
+      <video:tag>UFC</video:tag>
+      <video:tag>MMA</video:tag>
+      <video:tag>Boxing</video:tag>
+      <video:tag>fight news</video:tag>
+      <video:tag>combat sports</video:tag>
+      <video:tag>Data Fight Central</video:tag>
+      <video:tag>DFC</video:tag>
+      <video:tag>fight highlights</video:tag>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <!-- FPV Drone Racing Videos -->
+  <url>
+    <loc>https://datafightcentral.com/#/drone-racing</loc>
+    <video:video>
+      <video:thumbnail_loc>https://datafightcentral.com/icons/Icon-512.png</video:thumbnail_loc>
+      <video:title>DFC AirCombat — FPV Drone Racing Videos, Freestyle &amp; Technology</video:title>
+      <video:description>Watch FPV drone racing videos on DFC AirCombat. Featuring DRL (Drone Racing League), Red Bull FPV, MultiGP Championship, JohnnyFPV freestyle, Mr Steele, Kabab FPV, Joshua Bardwell tutorials, and DFC AirCombat original content. Race events, freestyle tricks, cinematic flights, and FPV technology explained.</video:description>
+      <video:content_loc>https://www.youtube.com/@DataFightCentral</video:content_loc>
+      <video:category>Sports</video:category>
+      <video:tag>FPV drone racing</video:tag>
+      <video:tag>drone racing</video:tag>
+      <video:tag>FPV freestyle</video:tag>
+      <video:tag>DRL</video:tag>
+      <video:tag>Red Bull FPV</video:tag>
+      <video:tag>MultiGP</video:tag>
+      <video:tag>DFC AirCombat</video:tag>
+      <video:tag>FPV technology</video:tag>
+      <video:tag>drone racing league</video:tag>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <!-- Training & Coaching Videos -->
+  <url>
+    <loc>https://datafightcentral.com/#/daily-grind</loc>
+    <video:video>
+      <video:thumbnail_loc>https://datafightcentral.com/icons/Icon-512.png</video:thumbnail_loc>
+      <video:title>DFC Training Hub — MMA, Boxing &amp; Muay Thai Training Videos</video:title>
+      <video:description>Professional combat sports training content on Data Fight Central. MMA technique breakdowns, boxing training drills, Muay Thai pad work, BJJ tutorials, fight camp preparation, weight cutting guides, and AI-powered coaching sessions. Train like a champion with DFC.</video:description>
+      <video:content_loc>https://www.youtube.com/@DataFightCentral</video:content_loc>
+      <video:category>Sports</video:category>
+      <video:tag>MMA training</video:tag>
+      <video:tag>boxing training</video:tag>
+      <video:tag>Muay Thai training</video:tag>
+      <video:tag>BJJ tutorial</video:tag>
+      <video:tag>fight camp</video:tag>
+      <video:tag>combat sports training</video:tag>
+      <video:tag>Data Fight Central</video:tag>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <!-- Fighter Safety Videos -->
+  <url>
+    <loc>https://datafightcentral.com/#/fighter-safety</loc>
+    <video:video>
+      <video:thumbnail_loc>https://datafightcentral.com/icons/Icon-512.png</video:thumbnail_loc>
+      <video:title>Fighters Are Safer With DFC — 12-Pillar Fighter Protection Protocol</video:title>
+      <video:description>Learn about Data Fight Central's revolutionary 12-pillar Fighter Protection Protocol. Real-time CTE impact tracking, Guardian Mode silent SOS for domestic violence, Pink Shield gym certification, 24/7 crisis lifeline, Corner Stop AI, weight cut safety monitoring, and Mind Body Soul wellness. No other platform protects fighters like DFC.</video:description>
+      <video:content_loc>https://www.youtube.com/@DataFightCentral</video:content_loc>
+      <video:category>Sports</video:category>
+      <video:tag>fighter safety</video:tag>
+      <video:tag>CTE prevention</video:tag>
+      <video:tag>Guardian Mode</video:tag>
+      <video:tag>Pink Shield</video:tag>
+      <video:tag>athlete safety</video:tag>
+      <video:tag>combat sports safety</video:tag>
+      <video:tag>DFC safety</video:tag>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <!-- Event Promotion Videos -->
+  <url>
+    <loc>https://datafightcentral.com/#/promoter/event-manager</loc>
+    <video:video>
+      <video:thumbnail_loc>https://datafightcentral.com/icons/Icon-512.png</video:thumbnail_loc>
+      <video:title>DFC Event Command Centre — Build, Manage &amp; Promote Fight Shows</video:title>
+      <video:description>See how promoters use Data Fight Central's Event Command Centre to build professional fight cards, generate event posters, create promo materials, manage sponsors, and promote combat sports events worldwide. The most powerful event management tool in the fight industry.</video:description>
+      <video:content_loc>https://www.youtube.com/@DataFightCentral</video:content_loc>
+      <video:category>Sports</video:category>
+      <video:tag>fight promotion</video:tag>
+      <video:tag>event management</video:tag>
+      <video:tag>fight card builder</video:tag>
+      <video:tag>MMA promotion</video:tag>
+      <video:tag>boxing promotion</video:tag>
+      <video:tag>combat sports events</video:tag>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+  <!-- AI Analytics Videos -->
+  <url>
+    <loc>https://datafightcentral.com/#/combat-analytics</loc>
+    <video:video>
+      <video:thumbnail_loc>https://datafightcentral.com/icons/Icon-512.png</video:thumbnail_loc>
+      <video:title>AI Fight Analytics — Predictions, Stats &amp; Performance Breakdowns</video:title>
+      <video:description>Data Fight Central's AI-powered combat analytics in action. Watch fight predictions, fighter performance breakdowns, statistical analysis, opponent scouting reports, and AI coaching sessions powered by Google Gemini 2.5 Flash. The smartest fight analytics engine ever built.</video:description>
+      <video:content_loc>https://www.youtube.com/@DataFightCentral</video:content_loc>
+      <video:category>Sports</video:category>
+      <video:tag>fight analytics</video:tag>
+      <video:tag>AI predictions</video:tag>
+      <video:tag>MMA statistics</video:tag>
+      <video:tag>fight predictions</video:tag>
+      <video:tag>UFC predictions</video:tag>
+      <video:tag>combat sports data</video:tag>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:live>no</video:live>
+    </video:video>
+  </url>
+
+</urlset>

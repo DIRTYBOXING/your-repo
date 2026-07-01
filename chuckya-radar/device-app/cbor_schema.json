@@ -1,0 +1,50 @@
+{
+  "title": "CHUCKYA RawProximity CBOR Schema",
+  "version": "1.0",
+  "description": "Compact binary schema for bracelet → phone BLE notifications. Integer keys minimize payload size.",
+  "type": "map",
+  "integerKeyMapping": {
+    "1": { "name": "id", "type": "text", "description": "bracelet deviceId" },
+    "2": {
+      "name": "ts",
+      "type": "text",
+      "description": "ISO8601 timestamp UTC"
+    },
+    "3": { "name": "nid", "type": "text", "description": "nonce UUID v4" },
+    "4": {
+      "name": "d",
+      "type": "number",
+      "description": "distance in metres (float)"
+    },
+    "5": {
+      "name": "dir",
+      "type": "integer",
+      "description": "direction in degrees 0-359"
+    },
+    "6": {
+      "name": "sig",
+      "type": "text",
+      "description": "signal type: panic | auto_proximity | heartbeat | tamper"
+    },
+    "7": {
+      "name": "bat",
+      "type": "integer",
+      "description": "battery percent 0-100 (optional)"
+    },
+    "8": {
+      "name": "att",
+      "type": "bytes",
+      "description": "attestation token from secure element (optional)"
+    }
+  },
+  "required": ["1", "2", "3", "4", "6"],
+  "encodingNotes": [
+    "Use CBOR major types with small integer keys for minimum payload size.",
+    "Negotiate MTU on BLE connect; keep payload <= MTU (typically 244 bytes).",
+    "If attestation (key 8) is present and large, send via separate read characteristic.",
+    "Distance (key 4) is float for sub-metre precision; direction (key 5) is uint 0-359.",
+    "Use COSE wrapper only if device-level signing is needed (secure element present)."
+  ],
+  "examplePseudo": "{1:\"bracelet_01\",2:\"2026-03-27T23:00:00Z\",3:\"uuid-v4\",4:6.2,5:270,6:\"panic\",7:92}",
+  "exampleHex": "a7 01 6c 62726163656c65745f3031 02 78 18 323032362d30332d32375432333a30303a30305a 03 68 757569642d7634 04 fa 40c66666 05 19 010e 06 65 70616e6963 07 18 5c"
+}

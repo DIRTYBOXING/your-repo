@@ -1,0 +1,9 @@
+  evidence:
+    build: 
+      context: ./evidence
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+      - ENVIRONMENT=production

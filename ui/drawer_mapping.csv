@@ -1,0 +1,24 @@
+control_id,control_label,current_location,recommended_drawer,reason,notes
+start_stream,Start Stream,toolbar,dashboard,Session action; immediate effect,No confirmation; reversible
+stop_stream,Stop Stream,toolbar,dashboard,Session action; immediate effect,Show toast on stop
+create_clip,Create Clip,toolbar,dashboard,Ephemeral content creation; used during session,Quick modal for clip params
+publish_highlight,Publish Highlight,toolbar,dashboard,Session action that publishes now,Show preview before publish
+viewer_count,Viewer Count,toolbar,dashboard,Live metric for current session,Live update only
+stream_health,Stream Health,toolbar,dashboard,Session metric for troubleshooting,Link to detailed logs
+ack_radar_alert,Acknowledge Alert,alert_panel,dashboard,Immediate session/ops action,Record audit entry
+quick_share,Share Link,toolbar,dashboard,One-time share action,Generate short URL
+mute_audio,Mute Audio,toolbar,dashboard,Session toggle,Persist only for session
+toggle_camera,Camera On/Off,toolbar,dashboard,Session toggle,Persist only for session
+default_stream_quality,Default Stream Quality,settings_page,settings,Long-term preference,Dashboard can show one-time override
+stripe_connect,Stripe Connect,settings_page,settings,Account configuration,Sensitive; requires onboarding flow
+ppv_price,Default PPV Price,settings_page,settings,Billing preference,Affects future events only
+watermark_sensitivity,Watermark Sensitivity,settings_page,settings,Policy setting; affects packaging,Advanced; admin only
+drm_provider,DRM Provider,settings_page,settings,Platform config; admin only,Requires confirmation
+retention_policy,Data Retention,settings_page,settings,Legal/policy setting,Show audit trail
+notifications_quick,Notifications Quick Toggle,toolbar,dashboard,Session mute/unmute,Settings holds granular prefs
+notifications_settings,Notification Preferences,settings_page,settings,Granular long-term preferences,Email/SMS/webhook toggles
+api_keys,API Keys,settings_page,settings,Developer config; sensitive,Require 2FA to view
+legal_docs_upload,Pilot Licence Upload,upload_page,settings,Legal document storage,Show upload status and verification
+assign_moderator,Assign Moderator,toolbar,dashboard,Session action to assign role,Quick modal to select user
+open_chat,Open Chat,toolbar,dashboard,Session communication,Keep chat pinned during session
+advanced_dev_toggle,Developer Mode,hidden,settings,Long-term developer setting,Admin only; audit changes

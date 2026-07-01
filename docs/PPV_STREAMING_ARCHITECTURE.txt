@@ -1,0 +1,261 @@
+============================================================
+ DATA FIGHT CENTRAL — PPV STREAMING ARCHITECTURE
+ Version 1.0 | March 2026
+ Classification: INTERNAL — Engineering & Legal
+============================================================
+
+EXECUTIVE SUMMARY
+-----------------
+DFC enables small promoters to sell live/ticketed PPV streams
+WITHOUT DFC holding customer money, using Stripe Connect
+(Direct charges / Standard accounts), token-gated streaming
+with DRM + forensic watermarking, and a clear promoter
+agreement that assigns merchant responsibility.
+
+============================================================
+ 1. PAYMENTS MODEL — STRIPE CONNECT
+============================================================
+
+RECOMMENDED: Direct charges with Standard accounts
+
+WHY:
+  - Charges created on promoter's Stripe account
+  - Funds settle directly to promoter
+  - DFC collects commission via application_fee_amount
+  - Minimizes DFC custody of funds
+  - Reduces money-transmitter risk
+
+FLOW:
+  1. Promoter creates Stripe Standard account via Connect onboarding link
+  2. Promoter creates event in DFC dashboard, links connected account ID
+  3. Customer buys ticket -> backend creates direct charge on promoter's
+     connected account with application_fee_amount = DFC commission
+  4. Stripe settles funds to promoter; DFC receives commission automatically
+
+PAYMENT FLOW COMPARISON:
+  | Flow                      | Who holds funds | Platform liability | Best when                    |
+  |---------------------------|-----------------|-------------------|------------------------------|
+  | Direct (Standard)         | Promoter        | Low               | DFC doesn't hold money       |
+  | Destination               | Platform first  | High              | Branded checkout needed      |
+  | Separate charges+transfer | Platform first  | High              | Multi-recipient splits       |
+
+VERDICT: Direct charges + Standard accounts is cleanest for DFC's goal.
+
+IF PROMOTERS CAN'T CREATE STANDARD ACCOUNTS:
+  Use Express onboarding with:
+  - Stricter vetting and minimum reserve rules
+  - Fraud monitoring and chargeback reserves
+  - Clear contract assigning dispute responsibility to promoter
+
+WEBHOOKS TO WIRE:
+  - charge.succeeded      -> mark entitlement active
+  - charge.refunded       -> revoke entitlement
+  - charge.dispute.created -> flag entitlement, notify promoter
+  - payout.paid           -> reconciliation
+
+PSEUDOCODE (Node.js):
+  const charge = await stripe.charges.create({
+    amount: ticketAmountCents,
+    currency: 'usd',
+    source: token,
+    description: `Ticket for ${eventId}`,
+    application_fee_amount: dfcCommissionCents
+  }, { stripeAccount: connectedAccountId });
+
+============================================================
+ 2. STREAMING & ANTI-PIRACY ARCHITECTURE
+============================================================
+
+COMPONENTS:
+  | Component        | Purpose                                       |
+  |------------------|-----------------------------------------------|
+  | Auth service     | Issue short JWT entitlements after purchase    |
+  | CDN (signed URLs)| Serve manifests/segments only with valid token |
+  | Packager / DRM   | Encrypt segments; license server issues keys  |
+  | Watermarking     | Embed forensic watermark per session          |
+  | Player           | Request manifest + DRM license using token    |
+  | Webhooks         | Stripe + CDN + DRM events for reconciliation  |
+
+TOKEN-GATED PLAYBACK FLOW:
+  1. User buys ticket -> backend records entitlement
+  2. Backend mints short-lived JWT (5-15 min TTL):
+     {
+       "iss": "dfc-backend",
+       "sub": "user:12345",
+       "ent": "entitlement:abc123",
+       "evt": "event:abc123",
+       "dev": "deviceFingerprintOrId",
+       "iat": 1700000000,
+       "exp": 1700000900,
+       "jti": "uuid-0001",
+       "aud": "cdn.example.com"
+     }
+  3. Player requests manifest URL with token
+  4. CDN validates signature + expiry before serving
+  5. Player requests DRM license with token
+  6. License server validates entitlement and issues key
+  7. Packager inserts forensic watermark per session
+  8. Stream plays; server logs playback events + concurrency
+
+DRM STACK:
+  - Widevine  : Chrome, Android
+  - FairPlay  : iOS, Safari
+  - PlayReady : Windows, some smart TVs
+  - Provider  : Castlabs, Verimatrix, or Axinom
+
+FORENSIC WATERMARKING:
+  - Embed per-viewer identifiers in stream
+  - If pirated, trace leak to specific viewer/account
+  - Vendors: NexGuard, Verimatrix, Castlabs
+
+CDN SIGNED URL EXAMPLE (CloudFront style):
+  https://cdn.example.com/event/abc/playlist.m3u8
+    ?token=<JWT>
+    &cdn_sig=<SIGNED_PAYLOAD>
+    &expires=1700000900
+
+LOW-LATENCY OPTIONS:
+  - Low-Latency HLS (LL-HLS) with DRM support
+  - WebRTC for sub-second latency
+  - Ensure DRM and watermarking work with chosen path
+
+WHY BOTH SIGNED URLs + DRM:
+  - Signed URLs stop casual hotlinking
+  - DRM + watermarking deter and trace piracy across devices
+  - Use both for premium PPV content
+
+============================================================
+ 3. BACKEND ENDPOINTS (HTTP)
+============================================================
+
+POST /api/purchase
+  Purpose : Create order, charge via Stripe Connect, record entitlement
+  Body    : { "eventId", "userId", "paymentToken" }
+  Response: { "orderId", "entitlementId" }
+
+POST /api/entitlement/:id/token
+  Purpose : Mint short-lived playback JWT for an entitlement
+  Auth    : User session required
+  Response: { "playbackToken": "<JWT>", "manifestUrl": "https://..." }
+
+GET /api/entitlement/:id/status
+  Purpose : Check entitlement validity, concurrency, expiry
+  Response: { "valid": true, "concurrency": 1, "expiresAt": 1700003600 }
+
+POST /webhooks/stripe
+  Handles : charge.succeeded, charge.dispute.created, payout.paid
+
+POST /webhooks/cdn
+  Handles : stream health, signed URL abuse alerts
+
+POST /webhooks/drm
+  Handles : license errors, device attestation failures
+
+============================================================
+ 4. PLAYER INTEGRATION (CLIENT)
+============================================================
+
+  1. User buys ticket -> store entitlement server-side
+  2. Player requests token: POST /api/entitlement/:id/token
+  3. Receive { playbackToken, manifestUrl }
+  4. Initialize player (Shaka/Bitmovin/THEOplayer) with manifest URL
+  5. On DRM license request: attach Authorization: Bearer <playbackToken>
+  6. License server validates entitlement and issues key
+  7. Monitor playback events (play, error, license failure)
+
+RECOMMENDED PLAYERS:
+  - Shaka Player : open source, Widevine support
+  - THEOplayer   : cross-DRM, commercial
+  - Bitmovin     : enterprise, analytics built-in
+
+============================================================
+ 5. ANTI-FRAUD & PIRACY RESPONSE
+============================================================
+
+ANTI-FRAUD:
+  - KYC via Stripe for Standard accounts
+  - Rate limits, concurrency caps, device fingerprinting
+  - Monitor unusual playback patterns
+  - Block suspicious sessions
+
+DISPUTES:
+  - Webhook for charge.dispute.created -> notify promoter
+  - Promoter is MOR, handles refunds
+  - DFC assists with evidence (watermark logs, playback tokens)
+
+PIRACY RESPONSE:
+  - Forensic watermarking identifies leakers
+  - Pre-prepared takedown templates (DMCA/notice)
+  - Legal evidence packages
+  - Rapid takedown + legal trace for major leaks
+
+CONCURRENCY CONTROLS:
+  - Default: 1 concurrent stream per entitlement
+  - Token includes device fingerprint
+  - Server tracks active sessions
+  - Revoke token on logout or new device
+
+============================================================
+ 6. SECURITY BEST PRACTICES
+============================================================
+
+  - Store private keys in secrets vault; never commit to repo
+  - Short TTLs: manifest tokens 5-15 min; license tokens shorter
+  - Device binding via fingerprint claim in JWT
+  - Rate limits and anomaly detection on CDN
+  - DRM + signed URLs together (defense in depth)
+  - Audit logs: jti, userId, deviceFP, watermarkId, start/stop times
+  - Rotate signing keys regularly
+
+============================================================
+ 7. TESTING CHECKLIST (pre-launch)
+============================================================
+
+  [ ] Token TTL: confirmed playback stops after expiry
+  [ ] Concurrent sessions: enforced limits work as expected
+  [ ] Signed URL tamper: modified token -> CDN denies access
+  [ ] DRM license flow: valid token = license; invalid = denied
+  [ ] Watermark trace: controlled leak identifies session
+  [ ] Chargeback sim: dispute flags entitlement, notifies promoter
+  [ ] Low-latency: LL-HLS or WebRTC with DRM if sub-second needed
+  [ ] Cross-browser: Chrome, Safari, Firefox, mobile browsers
+  [ ] Edge cases: offline, network drop, token refresh
+
+============================================================
+ 8. 30/60/90 DAY SPRINT PLAN
+============================================================
+
+DAY 0-7:
+  [ ] Choose Stripe model (Standard preferred)
+  [ ] Implement Stripe Connect onboarding links
+  [ ] Build token minting endpoint (/api/entitlement/:id/token)
+  [ ] Test signed URL flow on CDN
+
+DAY 8-30:
+  [ ] Integrate DRM provider; test license issuance for short clip
+  [ ] Add forensic watermarking to live packaging pipeline
+  [ ] Onboard first promoter in private beta
+  [ ] Run private test stream end-to-end
+
+DAY 31-60:
+  [ ] Public pilot event with 1-3 promoters
+  [ ] Run co-promotion and creator seeding
+  [ ] Harden fraud detection and dispute playbook
+
+DAY 61-90:
+  [ ] Scale promoter onboarding
+  [ ] Add regional partners
+  [ ] Expand marketing in metaverse + WebXR channels
+
+============================================================
+ RELATED ARTIFACTS
+============================================================
+
+  Promoter agreement : docs/PROMOTER_AGREEMENT_TEMPLATE.txt
+  Playbook v3        : ops/launch/global_growth_metaverse_playbook.txt
+  PPV pipeline status : /memories/repo/ppv-pipeline-status.md
+  Stripe tasks        : .vscode/tasks.json (Stripe: Run/Build/Deploy)
+
+============================================================
+ END OF PPV STREAMING ARCHITECTURE
+============================================================

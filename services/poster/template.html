@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFC Poster</title>
+    <style>
+      :root {
+        --bg-a: #050609;
+        --bg-b: #101726;
+        --line: #2ef4ff;
+        --line-soft: rgba(46, 244, 255, 0.28);
+        --accent: #ff553c;
+        --ink: #eef5ff;
+        --muted: #95a7c9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1350px;
+        overflow: hidden;
+        color: var(--ink);
+        font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 18% 20%, rgba(255, 85, 60, 0.2), transparent 35%),
+          radial-gradient(circle at 88% 70%, rgba(46, 244, 255, 0.24), transparent 40%),
+          linear-gradient(145deg, var(--bg-a) 0%, var(--bg-b) 100%);
+      }
+
+      .frame {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 72px;
+      }
+
+      .frame::before,
+      .frame::after {
+        content: "";
+        position: absolute;
+        border: 2px solid var(--line-soft);
+        pointer-events: none;
+      }
+
+      .frame::before {
+        inset: 26px;
+      }
+
+      .frame::after {
+        inset: 42px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--line);
+        margin-bottom: 26px;
+      }
+
+      h1 {
+        margin: 0 0 26px;
+        font-size: 84px;
+        line-height: 0.92;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .title-accent {
+        color: var(--accent);
+      }
+
+      .fighters {
+        margin-top: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .fighter {
+        font-size: 58px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
+      .versus {
+        display: inline-block;
+        margin: 8px 0;
+        width: fit-content;
+        padding: 8px 20px;
+        border: 1px solid var(--line-soft);
+        color: var(--line);
+        font-size: 26px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .meta {
+        position: absolute;
+        left: 72px;
+        right: 72px;
+        bottom: 70px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .event {
+        font-size: 34px;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .brand {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--line);
+      }
+
+      .cut {
+        position: absolute;
+        width: 200px;
+        height: 24px;
+        background: var(--accent);
+        transform: skewX(-35deg);
+      }
+
+      .cut.top {
+        right: 72px;
+        top: 84px;
+      }
+
+      .cut.bottom {
+        left: 72px;
+        bottom: 170px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="cut top"></div>
+      <div class="eyebrow">Main Event</div>
+      <h1>
+        {{TITLE_MAIN}}<br />
+        <span class="title-accent">{{TITLE_ACCENT}}</span>
+      </h1>
+
+      <div class="fighters">
+        {{FIGHTERS_BLOCK}}
+      </div>
+
+      <div class="cut bottom"></div>
+      <div class="meta">
+        <div class="event">Event {{EVENT_ID}}</div>
+        <div class="brand">Data Fight Central</div>
+      </div>
+    </div>
+  </body>
+</html>

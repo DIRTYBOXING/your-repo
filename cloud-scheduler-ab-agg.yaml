@@ -1,0 +1,16 @@
+name: projects/PROJECT_ID/locations/REGION/jobs/dfc-ab-results-aggregation
+schedule: "*/15 * * * *"
+timeZone: "UTC"
+httpTarget:
+  uri: https://REGION-PROJECT_ID.cloudfunctions.net/abResultsAggregation
+  httpMethod: POST
+  headers:
+    Content-Type: application/json
+  body: eyJ1cGRhdGVNZXRyaWNzIjp0cnVlfQ==
+  oidcToken:
+    serviceAccountEmail: scheduler-invoker@PROJECT_ID.iam.gserviceaccount.com
+    audience: https://REGION-PROJECT_ID.cloudfunctions.net/abResultsAggregation
+retryConfig:
+  retryCount: 2
+  minBackoffDuration: 5s
+  maxBackoffDuration: 30s

@@ -1,0 +1,103 @@
+STRIPE SANDBOX TEST COMMANDS — DATA FIGHT CENTRAL
+===================================================
+Run these in a secure environment. NEVER commit real secret keys.
+Replace placeholder values before running.
+
+SETUP
+-----
+1. Create a Stripe platform account at https://dashboard.stripe.com
+2. Enable Connect Express in Dashboard > Connect > Settings
+3. Have the promoter complete Express onboarding in TEST mode
+4. Capture the Connected Account ID (starts with acct_)
+
+ENVIRONMENT VARIABLES
+---------------------
+Set these in your terminal session (do NOT save to files):
+
+  export STRIPE_SECRET_KEY_TEST="sk_test_REPLACE_ME"
+  export CONNECTED_ACCOUNT_ID="acct_testPromoter123"
+
+CREATE A TEST PAYMENTINTENT
+----------------------------
+This simulates a $50.00 AUD PPV purchase with $20.00 DFC commission
+(40% of $50) and $30.00 routed to promoter.
+
+  curl -s -X POST https://api.stripe.com/v1/payment_intents \
+    -u ${STRIPE_SECRET_KEY_TEST}: \
+    -d amount=5000 \
+    -d currency=aud \
+    -d "payment_method_types[]=card" \
+    -d "transfer_data[destination]=${CONNECTED_ACCOUNT_ID}" \
+    -d application_fee_amount=2000
+
+  # amount=5000       = $50.00 AUD total
+  # application_fee   = $20.00 DFC commission (40%)
+  # promoter receives = $30.00 (60%) via transfer_data.destination
+
+CONFIRM WITH TEST CARD
+-----------------------
+Use Stripe test card: 4242 4242 4242 4242
+Expiry: any future date
+CVC: any 3 digits
+
+VERIFY TRANSFER AND PAYOUT
+----------------------------
+List recent PaymentIntents:
+
+  curl -s -u ${STRIPE_SECRET_KEY_TEST}: \
+    https://api.stripe.com/v1/payment_intents?limit=5
+
+List transfers created by the platform:
+
+  curl -s -u ${STRIPE_SECRET_KEY_TEST}: \
+    https://api.stripe.com/v1/transfers?limit=5
+
+Check Connected Account balance:
+
+  curl -s -u ${STRIPE_SECRET_KEY_TEST}: \
+    https://api.stripe.com/v1/balance \
+    -H "Stripe-Account: ${CONNECTED_ACCOUNT_ID}"
+
+SANDBOX VERIFICATION CHECKLIST
+-------------------------------
+- [ ] PaymentIntent created successfully (status: requires_payment_method)
+- [ ] transfer_data.destination matches promoter Connected Account ID
+- [ ] application_fee_amount matches agreed DFC commission percentage
+- [ ] After test payment: transfer appears in Connected Account dashboard
+- [ ] After test payment: application fee appears in platform dashboard
+- [ ] Payout schedule visible in Connected Account settings
+- [ ] Webhook events received (payment_intent.succeeded, transfer.created)
+
+WEBHOOK TESTING
+----------------
+Set up a webhook endpoint for test mode at:
+Dashboard > Developers > Webhooks > Add endpoint
+
+Events to listen for:
+- payment_intent.succeeded
+- payment_intent.payment_failed
+- transfer.created
+- transfer.failed
+- account.updated (Connect account status changes)
+- charge.dispute.created (chargeback alerts)
+
+Use Stripe CLI for local testing:
+
+  stripe listen --forward-to localhost:5001/datafightcentral/us-central1/stripeWebhook
+
+GOING LIVE CHECKLIST
+---------------------
+- [ ] Switch from sk_test_ to sk_live_ key
+- [ ] Promoter has completed LIVE Express onboarding (not test)
+- [ ] Webhook endpoint switched to production URL
+- [ ] application_fee_amount matches signed Pilot Licence split
+- [ ] First real PaymentIntent tested with a small amount ($1.00)
+- [ ] Payout confirmed in promoter's real bank account
+
+SECURITY NOTES
+--------------
+- NEVER log or commit Stripe secret keys
+- Use environment variables or Firebase secrets for keys
+- Rotate keys if accidentally exposed
+- All API calls must use HTTPS
+- Store webhook signing secret in Firebase secrets

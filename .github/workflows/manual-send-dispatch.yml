@@ -1,0 +1,81 @@
+name: Manual Send Dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      eventId:
+        description: "Event ID (or 'all' for every event)"
+        required: true
+        default: "all"
+      channels:
+        description: "Channels to use (comma-separated: email,messenger,instagram)"
+        required: true
+        default: "email,messenger,instagram"
+      template:
+        description: "Email template to use"
+        required: true
+        type: choice
+        options:
+          - initial
+          - followup
+          - approved
+          - gym_shields_initial
+          - gym_shields_followup
+          - gym_shields_confirm
+
+jobs:
+  send-outreach:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve event files
+        id: events
+        run: |
+          if [ "${{ github.event.inputs.eventId }}" = "all" ]; then
+            FILES=$(find data/events -name '*.json' | tr '\n' ',')
+          else
+            FILES="data/events/${{ github.event.inputs.eventId }}.json"
+          fi
+          echo "files=${FILES}" >> "$GITHUB_OUTPUT"
+
+      - name: Send email outreach
+        if: contains(github.event.inputs.channels, 'email')
+        env:
+          ENDPOINT: ${{ secrets.SEND_PROMOTER_ENDPOINT }}
+        run: |
+          IFS=',' read -ra EVENT_FILES <<< "${{ steps.events.outputs.files }}"
+          for f in "${EVENT_FILES[@]}"; do
+            [ -z "$f" ] && continue
+            echo "Sending email for $f with template ${{ github.event.inputs.template }}"
+            curl -sf -X POST "$ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "{\"eventJsonPath\":\"$(pwd)/$f\",\"template\":\"${{ github.event.inputs.template }}\"}" || echo "Failed: $f"
+          done
+
+      - name: Send Messenger DMs
+        if: contains(github.event.inputs.channels, 'messenger')
+        env:
+          ENDPOINT: ${{ secrets.SOCIAL_ENDPOINT || secrets.SEND_PROMOTER_ENDPOINT }}
+        run: |
+          IFS=',' read -ra EVENT_FILES <<< "${{ steps.events.outputs.files }}"
+          for f in "${EVENT_FILES[@]}"; do
+            [ -z "$f" ] && continue
+            echo "Sending Messenger DM for $f"
+            curl -sf -X POST "${ENDPOINT%/*}/sendSocialOutreach" \
+              -H "Content-Type: application/json" \
+              -d "{\"eventJsonPath\":\"$(pwd)/$f\",\"channel\":\"messenger\",\"template\":\"promoter_initial\"}" || echo "Failed: $f"
+          done
+
+      - name: Send Instagram DMs
+        if: contains(github.event.inputs.channels, 'instagram')
+        env:
+          ENDPOINT: ${{ secrets.SOCIAL_ENDPOINT || secrets.SEND_PROMOTER_ENDPOINT }}
+        run: |
+          IFS=',' read -ra EVENT_FILES <<< "${{ steps.events.outputs.files }}"
+          for f in "${EVENT_FILES[@]}"; do
+            [ -z "$f" ] && continue
+            echo "Sending Instagram DM for $f"
+            curl -sf -X POST "${ENDPOINT%/*}/sendSocialOutreach" \
+              -H "Content-Type: application/json" \
+              -d "{\"eventJsonPath\":\"$(pwd)/$f\",\"channel\":\"instagram\",\"template\":\"promoter_initial\"}" || echo "Failed: $f"
+          done

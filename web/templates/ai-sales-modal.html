@@ -1,0 +1,172 @@
+<dialog id="ai-sales-modal" class="dfc-modal" aria-label="DFC AI Sales Modal">
+  <div class="dfc-modal-inner">
+    <h3>Sell with DFC AI</h3>
+    <p class="dfc-modal-copy">Pick your audience and offer. DFC AI will generate a short sales message and checkout path.</p>
+
+    <label for="ai-audience">Audience</label>
+    <input id="ai-audience" placeholder="email_list or segment" />
+
+    <label for="ai-price">Price (USD)</label>
+    <input id="ai-price" type="number" step="0.01" value="49.99" />
+
+    <label for="ai-bundle">Bundle</label>
+    <input id="ai-bundle" placeholder="poster, merch" />
+
+    <div class="dfc-actions">
+      <button id="ai-preview" type="button">Preview Message</button>
+      <button id="ai-send" type="button">Generate Checkout</button>
+      <button id="ai-close" type="button">Close</button>
+    </div>
+
+    <pre id="ai-preview-output" aria-live="polite"></pre>
+  </div>
+</dialog>
+
+<style>
+  .dfc-modal {
+    position: fixed;
+    right: 20px;
+    bottom: 88px;
+    width: min(420px, calc(100vw - 24px));
+    background: #0e1526;
+    border: 1px solid #22365f;
+    border-radius: 12px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.38);
+    color: #f3f7ff;
+    z-index: 9998;
+  }
+
+  .dfc-modal-inner {
+    padding: 16px;
+  }
+
+  .dfc-modal h3 {
+    margin: 0 0 8px;
+    color: #00d9ff;
+  }
+
+  .dfc-modal-copy {
+    margin: 0 0 12px;
+    color: #b6c4db;
+    font-size: 13px;
+  }
+
+  .dfc-modal label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    color: #b6c4db;
+  }
+
+  .dfc-modal input {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #2a3b61;
+    background: #0a1020;
+    color: #f3f7ff;
+    padding: 8px 10px;
+  }
+
+  .dfc-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .dfc-actions button {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  #ai-preview,
+  #ai-send {
+    background: #00d9ff;
+    color: #06101b;
+  }
+
+  #ai-close {
+    background: #253757;
+    color: #f3f7ff;
+  }
+
+  #ai-preview-output {
+    margin-top: 10px;
+    max-height: 180px;
+    overflow: auto;
+    background: #060b16;
+    border: 1px solid #1d2c4b;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 12px;
+  }
+</style>
+
+<script>
+  (function initDfcAiSalesModal() {
+    const modal = document.getElementById('ai-sales-modal');
+    const previewOutput = document.getElementById('ai-preview-output');
+    const audienceInput = document.getElementById('ai-audience');
+    const priceInput = document.getElementById('ai-price');
+    const bundleInput = document.getElementById('ai-bundle');
+
+    let eventId = null;
+    let eventTitle = 'Event';
+
+    globalThis.DFC = globalThis.DFC || {};
+    globalThis.DFC.openAISales = function openAISales(id, title) {
+      eventId = id;
+      eventTitle = title || eventTitle;
+      previewOutput.textContent = '';
+      modal.showModal();
+      audienceInput.focus();
+    };
+
+    async function callAiSell() {
+      const payload = {
+        eventId,
+        audience: audienceInput.value || 'email_list',
+        offer: {
+          title: eventTitle,
+          price: priceInput.value,
+          bundle: bundleInput.value,
+        },
+      };
+
+      const response = await fetch('/api/ai/sell', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return response.json();
+    }
+
+    document.getElementById('ai-preview').addEventListener('click', async () => {
+      const result = await callAiSell();
+      previewOutput.textContent = JSON.stringify(result, null, 2);
+    });
+
+    document.getElementById('ai-send').addEventListener('click', async () => {
+      const result = await callAiSell();
+      const createSessionResponse = await fetch('/api/ppv/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventId,
+          priceCents: Math.round(Number(priceInput.value || 0) * 100),
+          currency: 'USD',
+        }),
+      });
+      const session = await createSessionResponse.json();
+      previewOutput.textContent = JSON.stringify({ result, session }, null, 2);
+    });
+
+    document.getElementById('ai-close').addEventListener('click', () => {
+      modal.close();
+    });
+  })();
+</script>

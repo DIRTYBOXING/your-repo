@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datafightcentral.com/schemas/dfc-social-messaging.contracts.json",
+  "title": "DFC Social Messaging Contracts",
+  "type": "object",
+  "required": ["feedResponse", "messageEnvelope", "presenceEvent"],
+  "properties": {
+    "feedResponse": {
+      "type": "object",
+      "required": ["userId", "items", "nextCursor"],
+      "properties": {
+        "userId": { "type": "string", "minLength": 1 },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type", "authorId", "createdAt", "visibility"],
+            "properties": {
+              "id": { "type": "string" },
+              "type": {
+                "type": "string",
+                "enum": ["post", "clip", "event", "sponsored"]
+              },
+              "authorId": { "type": "string" },
+              "body": { "type": "string" },
+              "clipUrl": { "type": "string" },
+              "thumbnailUrl": { "type": "string" },
+              "createdAt": { "type": "string" },
+              "visibility": {
+                "type": "string",
+                "enum": ["public", "followers", "private"]
+              },
+              "moderationState": {
+                "type": "string",
+                "enum": ["pending", "approved", "rejected"]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "nextCursor": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "messageEnvelope": {
+      "type": "object",
+      "required": [
+        "type",
+        "threadId",
+        "messageId",
+        "senderId",
+        "body",
+        "sentAt"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["message", "receipt", "typing", "presence"]
+        },
+        "threadId": { "type": "string" },
+        "messageId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "recipientId": { "type": "string" },
+        "body": { "type": "string" },
+        "sentAt": { "type": "string" },
+        "deliveryState": {
+          "type": "string",
+          "enum": ["sent", "delivered", "read"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "presenceEvent": {
+      "type": "object",
+      "required": ["userId", "state", "expiresAt"],
+      "properties": {
+        "userId": { "type": "string" },
+        "state": {
+          "type": "string",
+          "enum": ["online", "offline", "away", "typing"]
+        },
+        "device": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "expiresAt": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

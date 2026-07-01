@@ -1,0 +1,33 @@
+{
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "stripe": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@stripe/mcp", "--api-key=${input:stripe_secret_key}"]
+    },
+    "com.figma.mcp/mcp": {
+      "type": "http",
+      "url": "https://mcp.figma.com/mcp",
+      "gallery": "https://api.mcp.github.com",
+      "version": "1.0.3"
+    }
+  },
+  "inputs": [
+    {
+      "id": "github_token",
+      "type": "promptString",
+      "description": "GitHub Personal Access Token",
+      "password": true
+    },
+    {
+      "id": "stripe_secret_key",
+      "type": "promptString",
+      "description": "Stripe Secret Key (sk_test_...)",
+      "password": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "logBasedMetrics": [
+    {
+      "name": "ppv/entitlement_granted",
+      "description": "New entitlement writes — use for purchase funnel success rate",
+      "filter": "jsonPayload.metric=\"entitlement_granted\" AND jsonPayload.service=\"createEntitlement\"",
+      "metricDescriptor": {
+        "metricKind": "DELTA",
+        "valueType": "INT64",
+        "unit": "1"
+      },
+      "labelExtractors": {
+        "userId": "EXTRACT(jsonPayload.userId)",
+        "eventId": "EXTRACT(jsonPayload.eventId)",
+        "tierId": "EXTRACT(jsonPayload.tierId)",
+        "source": "EXTRACT(jsonPayload.source)"
+      }
+    },
+    {
+      "name": "ppv/entitlement_idempotent",
+      "description": "Idempotent entitlement replays — expected on retries, alert if > 20% of total",
+      "filter": "jsonPayload.metric=\"entitlement_idempotent\" AND jsonPayload.service=\"createEntitlement\"",
+      "metricDescriptor": {
+        "metricKind": "DELTA",
+        "valueType": "INT64",
+        "unit": "1"
+      },
+      "labelExtractors": {
+        "source": "EXTRACT(jsonPayload.source)"
+      }
+    },
+    {
+      "name": "ppv/revenue_split_calculated",
+      "description": "Revenue split calculations — one per purchase flow",
+      "filter": "jsonPayload.metric=\"revenue_split_calculated\" AND jsonPayload.service=\"calcRevenueSplit\"",
+      "metricDescriptor": {
+        "metricKind": "DELTA",
+        "valueType": "INT64",
+        "unit": "1"
+      },
+      "labelExtractors": {
+        "tierId": "EXTRACT(jsonPayload.tierId)",
+        "rateKey": "EXTRACT(jsonPayload.rateKey)"
+      }
+    },
+    {
+      "name": "ppv/webhook_dlq_reprocessed",
+      "description": "Successfully retried webhook DLQ items",
+      "filter": "jsonPayload.metric=\"webhook_dlq_reprocessed\" AND jsonPayload.service=\"dlqWorker\"",
+      "metricDescriptor": {
+        "metricKind": "DELTA",
+        "valueType": "INT64",
+        "unit": "1"
+      },
+      "labelExtractors": {}
+    },
+    {
+      "name": "ppv/webhook_dlq_exhausted",
+      "description": "DLQ items that exhausted all retry attempts — page immediately",
+      "filter": "jsonPayload.metric=\"webhook_dlq_exhausted\" AND jsonPayload.service=\"dlqWorker\"",
+      "metricDescriptor": {
+        "metricKind": "DELTA",
+        "valueType": "INT64",
+        "unit": "1"
+      },
+      "labelExtractors": {
+        "orderId": "EXTRACT(jsonPayload.orderId)"
+      }
+    }
+  ],
+  "howToApply": [
+    "1. Open GCP Console → Logging → Log-based metrics",
+    "2. For each entry in logBasedMetrics above, create a metric using the filter string",
+    "3. Set label extractors as shown — these become Monitoring labels you can group by",
+    "4. After creation, metrics appear under logging.googleapis.com/user/ in Cloud Monitoring",
+    "5. Reference them in Grafana data source using stackdriver:// or Cloud Monitoring connector",
+    "6. Alternatively, run the GCP CLI commands: gcloud logging metrics create <name> --description='...' --log-filter='...'"
+  ],
+  "gcpCliExample": {
+    "description": "Create the entitlement_granted metric via gcloud",
+    "command": "gcloud logging metrics create ppv_entitlement_granted --description='New PPV entitlement grants' --log-filter='jsonPayload.metric=\"entitlement_granted\" AND jsonPayload.service=\"createEntitlement\"'"
+  }
+}

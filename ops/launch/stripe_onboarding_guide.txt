@@ -1,0 +1,85 @@
+STRIPE CONNECT ONBOARDING GUIDE — DATA FIGHT CENTRAL
+=====================================================
+For promoters receiving PPV payouts through DFC.
+
+OVERVIEW
+--------
+DFC uses Stripe Connect (Express) so promoter funds route directly to
+your bank account. DFC does NOT hold your funds — Stripe splits the
+payment at the moment of purchase.
+
+HOW IT WORKS
+1. You complete Stripe Express onboarding (5-10 minutes).
+2. Stripe verifies your identity (KYC) and bank details.
+3. When a fan buys PPV access to your event, Stripe automatically:
+   - Sends your share (e.g. 60%) to your connected account
+   - Retains DFC's commission (e.g. 40%) as application fee
+4. You see payouts in your Stripe dashboard within 2-7 business days.
+
+STEP-BY-STEP FOR PROMOTERS
+---------------------------
+Step 1: Click the onboarding link DFC sends you by email.
+Step 2: Enter your business details:
+        - Business name and ABN (Australian promoters)
+        - Business address
+        - Representative details (name, DOB, ID)
+Step 3: Enter your bank account details for payouts.
+Step 4: Agree to Stripe's terms of service.
+Step 5: Submit — Stripe will verify within 1-2 business days.
+Step 6: Confirmation email from Stripe when your account is active.
+
+SANDBOX TESTING (BEFORE LIVE EVENT)
+-------------------------------------
+- DFC will create a test PaymentIntent using Stripe test mode.
+- You will see a test payout appear in your Stripe test dashboard.
+- Confirm the amount matches expected split.
+- Report any issues to ops@datafightcentral.com.
+
+LIVE PAYMENT FLOW
+------------------
+1. Fan visits event PPV page on datafightcentral.com.
+2. Fan clicks "Buy PPV Access" and enters card details.
+3. Stripe creates a PaymentIntent with:
+   - transfer_data.destination = [your connected account ID]
+   - application_fee_amount = [DFC commission in cents]
+4. Stripe charges the fan, routes your share instantly.
+5. Stripe holds a short reserve (7-14 days) for chargebacks.
+6. Payout arrives in your bank account per your Stripe payout schedule.
+
+REPORTING
+---------
+- DFC provides daily email reports during event window.
+- Final settlement report within 7 days of event.
+- Full payout reconciliation within 30 days.
+- You can also view all transactions in your Stripe dashboard at
+  https://dashboard.stripe.com
+
+CHARGEBACKS AND DISPUTES
+--------------------------
+- If a buyer disputes a charge, Stripe notifies both DFC and you.
+- DFC will respond to disputes using purchase evidence and DRM logs.
+- If a chargeback is upheld, the amount is deducted from the reserve.
+- DFC documents chargeback handling in the Pilot Licence.
+
+FAQ
+---
+Q: Does DFC hold my money?
+A: No. Stripe routes your share directly to your connected account.
+   DFC only receives the agreed commission via application_fee.
+
+Q: What fees does Stripe charge?
+A: Standard Stripe processing: ~2.9% + $0.30 per transaction.
+   These are deducted before the revenue split calculation.
+
+Q: How long until I get paid?
+A: Stripe's standard rolling payout schedule (typically 2-7 business
+   days depending on your country and account age).
+
+Q: What if I need to change my bank details?
+A: Log into your Stripe dashboard and update under Settings > Payouts.
+
+SUPPORT
+-------
+- Onboarding issues: ops@datafightcentral.com
+- Payment queries: info@datafightcentral.com
+- Phone: 0450 113 139

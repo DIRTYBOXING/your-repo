@@ -1,0 +1,153 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA PERSONAL SAFETY RADAR — TRAINING + TABLETOP DRILL     ║
+║  DataFightCentral Ops Team                                      ║
+╚══════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════
+SECTION A — PRE-SHIFT CHECKLIST (5 minutes before every shift)
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Docker stack healthy:  docker-compose ps  (all services Up)
+  [ ] Redis connected:       redis-cli ping  → PONG
+  [ ] Control room loads:    http://localhost (nginx) or :3000
+  [ ] WebSocket connected:   green "LIVE" badge in dashboard header
+  [ ] Grafana accessible:    http://localhost:3000/d/chuckya-control-room
+  [ ] Test alert flows:      run publish-loop.sh --count 1
+  [ ] Evidence export test:  request + approve + download zip
+  [ ] Verify signature:      run verification one-liner on test zip
+  [ ] Bracelet paired:       BLE pairing confirmed, notifications active
+  [ ] Battery check:         bracelet > 30%, phones charged
+
+═══════════════════════════════════════════════════════════════════
+SECTION B — DURING-SHIFT PROCEDURES
+═══════════════════════════════════════════════════════════════════
+
+  ALERT TRIAGE
+  ─────────────────────────────────────────────────────────────────
+  1. New alert appears → note mode (code_red / code_black / etc.)
+  2. If code_red or code_black:
+     a. Verify alert on Situational Overview map
+     b. Check Threat Radar for proximity and direction
+     c. Cross-reference Device Fleet for device status
+     d. If legitimate → proceed to export workflow
+     e. If false positive → mark in Approval Console, log reason
+  3. If code_yellow or code_green:
+     a. Monitor for escalation (5-minute window)
+     b. Log in shift notes
+
+  EVIDENCE EXPORT (TWO-PERSON APPROVAL)
+  ─────────────────────────────────────────────────────────────────
+  1. Ops operator clicks "Request Export" on alert
+  2. Legal/supervisor receives notification in Approval Console
+  3. Legal reviews consent flags, payload integrity, risk score
+  4. Legal clicks "Approve" → evidence zip becomes downloadable
+  5. Download zip, verify signature with CLI, hand to police
+
+  ESCALATION PATH
+  ─────────────────────────────────────────────────────────────────
+  code_green  →  Log only, no action required
+  code_yellow →  Monitor, notify shift lead if persistent
+  code_red    →  Immediate triage, prepare evidence export
+  code_black  →  Emergency: export evidence, contact police, notify
+                 all operators, activate silent mode on target device
+
+═══════════════════════════════════════════════════════════════════
+SECTION C — 30-MINUTE TABLETOP DRILL SCRIPT
+═══════════════════════════════════════════════════════════════════
+
+GOAL: Validate full pipeline from wearable trigger to police
+handover in a controlled environment with timed phases.
+
+PARTICIPANTS: 2-4 operators (Ops, Legal, Observer, Optional: Police)
+
+PREPARATION (5 min)
+  - Ensure local stack running: docker-compose up -d
+  - Open control room in browser
+  - Open Grafana dashboard in second tab
+  - Have bracelet powered and paired to test phone
+  - Have evidence verification tools ready (jq, openssl, sha256sum)
+
+PHASE 1 — TRIGGER (0:00 – 0:05)
+  Ops:     "Initiating drill. Triggering wearable panic."
+  Action:  Press bracelet panic button (or run demo trigger below)
+  Verify:  Alert appears on Situational Overview within 5 seconds
+  Note:    Record exact time of button press and alert appearance
+
+  DEMO TRIGGER (if no physical bracelet):
+    curl -X POST http://localhost/v1/radar/event \
+      -H "Content-Type: application/json" \
+      -d '{
+        "appInstanceId":"drill_phone_01",
+        "timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+        "nonce":"'$(uuidgen)'",
+        "mode":"code_red",
+        "proximity":{"distance_m":4,"direction_deg":180},
+        "signals":["panic_button"],
+        "consent":{"location":false,"imei":false}
+      }'
+
+PHASE 2 — TRIAGE (0:05 – 0:10)
+  Ops:     "Alert received. Classifying threat."
+  Action:  Click alert on map, review details in side panel
+  Check:   Mode correct? Risk score reasonable? Device ID valid?
+  Verify:  Threat Radar shows blip at correct proximity/direction
+
+PHASE 3 — EVIDENCE EXPORT REQUEST (0:10 – 0:15)
+  Ops:     "Threat confirmed. Requesting evidence export."
+  Action:  Click "Request Export" on the alert
+  Verify:  Export request appears in Approval Console
+  Legal:   "Export request received. Reviewing consent and payload."
+
+PHASE 4 — TWO-PERSON APPROVAL (0:15 – 0:20)
+  Legal:   Review consent flags (location: false, imei: false)
+  Legal:   Review payload integrity (signature status: verified)
+  Legal:   Click "Approve"
+  Verify:  Evidence zip becomes downloadable
+  Action:  Download evidence zip
+
+PHASE 5 — SIGNATURE VERIFICATION (0:20 – 0:25)
+  Action:  Unzip evidence package
+  Run:
+    jq -S . payload.json > payload.canon
+    jq -r '.signatureBase64' signed_payload.json | base64 -d > sig.bin
+    openssl dgst -sha256 -verify public.pem -signature sig.bin payload.canon
+    sha256sum payload.canon
+
+  Verify:  "Verified OK" output
+  Verify:  SHA256 matches entry in chain_of_custody.json
+  Ops:     "Evidence verified. Chain of custody intact."
+
+PHASE 6 — DEBRIEF (0:25 – 0:30)
+  Review:
+    [ ] Alert latency (button press to dashboard): _____ seconds
+    [ ] Export approval time: _____ seconds
+    [ ] Signature verification: PASS / FAIL
+    [ ] SHA256 chain match:    PASS / FAIL
+    [ ] Grafana metrics visible (alerts/min, latency, etc.): YES/NO
+
+  Discussion:
+    - Any delays or failures?
+    - Consent model clear to all participants?
+    - Would a police officer understand the evidence package?
+    - Action items for improvement?
+
+  Sign-off:
+    Ops Lead:    ________________  Date: ________
+    Legal Lead:  ________________  Date: ________
+    Observer:    ________________  Date: ________
+
+═══════════════════════════════════════════════════════════════════
+SECTION D — SHIFT HANDOVER NOTES TEMPLATE
+═══════════════════════════════════════════════════════════════════
+
+  Date:       _______________
+  Outgoing:   _______________
+  Incoming:   _______________
+
+  Active alerts:     ___
+  Pending exports:   ___
+  False positives:   ___
+  Issues:            _______________________________________________
+  Notes:             _______________________________________________
+
+═══════════════════════════════════════════════════════════════════

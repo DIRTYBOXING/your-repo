@@ -1,0 +1,276 @@
+================================================================
+ DATA FIGHT CENTRAL — CONTENT MARKETING PLAYBOOK
+ Version 1.0 | March 2026
+ Classification: MARKETING / GROWTH
+================================================================
+
+================================================================
+ 1. CONTENT TYPES AND PURPOSE
+================================================================
+
+| Content type       | Purpose                                          | Primary CTA              |
+|--------------------|--------------------------------------------------|--------------------------|
+| Landing page       | Convert visitors into ticket buyers or signups   | Buy ticket / Join waitlist|
+| Athlete profile    | Build credibility and emotional connection       | Follow athlete / Share   |
+| Feature story      | Longform narrative to create shareable authority  | Read more / Subscribe    |
+| Short social clip  | Viral discovery and creator seeding              | Watch full / Buy ticket  |
+| Email newsletter   | Nurture and convert warm leads                   | Buy ticket / RSVP        |
+
+================================================================
+ 2. EVERY PAGE MUST INCLUDE
+================================================================
+
+- Hero statement — one bold sentence that explains the value (who, what, why)
+- Proof — match results, verified quotes, photos with signed releases
+- Social proof — creator endorsements, short testimonials, view counts
+- Clear CTA — ticket, join list, or watch demo; most visible element
+- Legal line — short note about rights and endorsements if applicable
+- Tracking — Pixel, GA4, UTM parameters for every outbound link
+
+================================================================
+ 3. LEGAL AND IMAGE PERMISSIONS (GET FIRST)
+================================================================
+
+- Athlete release — signed consent for use of name, image, and likeness
+- Photographer licence — written permission or assignment from image owner
+- Endorsement agreement — required if implying sponsorship or paid partnership
+- Minor consent — parent/guardian signature for anyone under 18
+- Disclosure — label paid posts clearly with "Paid partnership" or #ad
+
+RULE: Do NOT publish any commercial post with athlete image until
+you have BOTH the athlete release AND photographer licence stored
+in your vault.
+
+================================================================
+ 4. SEO BASICS FOR EACH LANDING PAGE
+================================================================
+
+- Title tag: include athlete name + event + city
+- Meta description: 1-2 lines selling the benefit with CTA
+- URL: short, readable, includes event slug
+- Schema: event schema for ticketed shows to surface in search
+
+================================================================
+ 5. CONTENT CALENDAR (per event)
+================================================================
+
+Week -4: Athlete profile + teaser clip
+Week -3: Feature story about training and backstory
+Week -2: Behind-the-scenes WebXR teaser and creator challenge
+Week -1: Countdown posts, ticket scarcity messaging
+Day 0:   Live stream + highlights + immediate replay CTA
+
+================================================================
+ 6. REPURPOSE STRATEGY
+================================================================
+
+- Turn longform into 3 short clips, 5 social cards, 1 email sequence
+- Use WebXR hero demo as a landing page embed and link to pairing flow
+
+================================================================
+ 7. DISTRIBUTION CHANNELS
+================================================================
+
+- Post to Instagram Reels, YouTube Shorts, TikTok, regional platforms
+- Seed creators with a promo pack and paid boosts for top posts
+- Use targeted ads with UTM tags to measure promoter ROI
+
+================================================================
+ 8. CONVERSION AND ANALYTICS
+================================================================
+
+Events to track:
+- page view, CTA click, ticket purchase, entitlement issued, playback start
+
+KPIs:
+- Conversion rate (landing -> ticket)
+- Cost per acquisition
+- Email open rate
+- Replay watch time
+
+Dashboards:
+- GA4 for funnels
+- Meta Pixel for ads
+- Stripe for payments
+- Grafana for backend health
+
+A/B tests:
+- Hero headline, CTA color/text, price points, scarcity messaging
+
+================================================================
+ 9. COPY-READY ASSETS
+================================================================
+
+LANDING PAGE HERO HEADLINE:
+  Headline: Watch [Athlete Name] Fight Live — Exclusive PPV Event
+  Subheadline: One night. One ring. Global audience. Secure your ticket now.
+  CTA button: Buy Ticket
+
+SHORT ATHLETE PROFILE INTRO:
+  [Name] — [Record]. From [hometown] to the ring. Trained by [coach].
+  Known for [signature move]. Join their journey and watch them live on [date].
+
+FEATURE STORY OPENER:
+  They call her the storm. At 22, [Athlete Name] left everything behind
+  to chase one dream: to become the champion her neighborhood never
+  believed in. This is how she trains, what she eats, and why this
+  fight matters.
+
+SOCIAL POST SNIPPETS:
+  Organic admiration: "Respect to [Athlete Name] — relentless training
+  and heart. Watch the full story on our site."
+  Paid disclosure: "Paid partnership with [Athlete Name]. Watch their
+  exclusive fight on DFC. #ad"
+  Creator hook: "Can you recreate [Athlete Name]'s signature move?
+  Tag us and win free tickets."
+
+DM TO ATHLETE/MANAGER:
+  Hi [Name], I'm [Your name] from Data Fight Central. We'd love to
+  feature you in a promotional story and a paid live event. We cover
+  production and promotion. Can we send a short release and discuss
+  compensation? Reply with best contact or manager details.
+  Thanks — [Your name], admin@datafightcentral.com
+
+MINIMAL PHOTO RELEASE:
+  PHOTO RELEASE
+  I, [Name], grant Data Fight Central permission to use my image and
+  likeness in photos and video for promotional and event purposes
+  worldwide for [X years]. I confirm I am over 18 or my guardian has
+  signed.
+  Signed: ______ Date: ______
+
+EMAIL SUBJECT LINES:
+  - "Exclusive: [Athlete Name] Live This Saturday — Tickets Inside"
+  - "Behind the Scenes with [Athlete Name] — Watch the Teaser"
+  - "Limited Tickets: [Event Name] — Don't Miss Out"
+
+================================================================
+ 10. IMMEDIATE 7-STEP CHECKLIST
+================================================================
+
+1. [ ] Pick 3 athletes/images to promote and list contact details
+2. [ ] Send DM to each athlete/manager and photographer checklist
+3. [ ] Collect signed releases and licences — store in vault
+4. [ ] Create one landing page using hero copy and add Pixel + GA4
+5. [ ] Publish one athlete profile and one feature story; schedule clips
+6. [ ] Seed 5 creators with promo pack and offer paid boosts
+7. [ ] Run a small paid ad test to landing page and measure for 48 hours
+
+================================================================
+ 11. PROMOTION CHANNELS COMPARISON
+================================================================
+
+| Channel                          | Reach         | Cost          | Speed    | Best use                                    |
+|----------------------------------|---------------|---------------|----------|---------------------------------------------|
+| Social ads (Meta, TikTok, YT)   | Broad/targeted| Medium/scale  | Fast     | Drive ticket sales and landing conversions  |
+| Influencers and creators         | Niche to broad| Variable      | Medium   | Authentic discovery and local activation    |
+| Landing pages and blogs          | Organic + paid| Low to medium | Fast     | Capture emails, tell stories, convert       |
+| Creator seeding and UGC          | Viral potential| Low to medium | Fast     | Social proof and shareable clips            |
+| WebXR / Metaverse placements     | Emerging/niche| Medium to high| Medium   | Brand differentiation and immersive previews|
+
+================================================================
+ 12. OUTREACH TEMPLATES
+================================================================
+
+DM TO PHOTOGRAPHER:
+  Hi [Name], we'd like to use your photo of [Athlete] for a paid event
+  landing page and ads. Please confirm you own copyright and can grant a
+  worldwide licence for promotional use for [X years], and state any fees
+  or attribution requirements.
+
+CREATOR OUTREACH DM:
+  Hi [Name], DFC is running a private pilot event featuring [Athlete].
+  We'll cover production and promotion. Interested in creating a short
+  clip and sharing with your audience for paid collaboration or revenue
+  share? Reply with rates and availability.
+
+POSTER HEADLINE:
+  Watch [Athlete Name] Live — [Event Name] — [Date]
+  Subhead: One night. One ring. Limited tickets.
+  Body:
+  - Live PPV with exclusive WebXR preview
+  - Behind the scenes story and athlete profile on our site
+  - Secure your ticket now — limited seats
+  CTA: Buy Ticket
+
+SHORT SOCIAL CAPTION (ORGANIC):
+  Admiring [Athlete Name]'s journey — read their story and grab a
+  ticket for the live fight at [link]
+
+PAID CAPTION (WITH DISCLOSURE):
+  Paid partnership with [Athlete Name]. Watch them live on [date].
+  Tickets at [link] #ad
+
+================================================================
+ 13. METRICS, BUDGET AND QUICK TESTS
+================================================================
+
+Primary metrics:
+- Landing page conversion rate
+- CPA (cost per acquisition)
+- Ticket sales
+- Playback starts
+- Retention
+
+Initial budget test:
+- $300-$1,000 across Meta and TikTok
+- Split into 3 ad sets for 3-7 days:
+  1. Cold lookalike audience
+  2. Retargeting (site visitors)
+  3. Creator boosted posts
+
+Creator seeding:
+- 5-10 creators: free tickets + $50-$300 depending on reach
+- Track promo codes per creator
+
+================================================================
+ 14. 30-DAY ROLLOUT CHECKLIST
+================================================================
+
+Days 0-3:
+  [ ] Secure releases and licences for 3 athletes
+  [ ] Build landing page and blog story
+
+Days 4-7:
+  [ ] Seed 10 creators with promo packs
+  [ ] Run small paid ad test ($300 across 3 ad sets)
+
+Days 8-14:
+  [ ] Analyze results, scale winning ad sets
+  [ ] Onboard 2 more promoters
+
+Days 15-30:
+  [ ] Run first paid pilot event
+  [ ] Collect analytics
+  [ ] Publish highlights and case studies to attract more promoters
+
+================================================================
+ 15. ONE-PAGE STRATEGY (RUN TONIGHT)
+================================================================
+
+1. Pick story and permission status
+   - List 3 athletes: mark each as Permission Ready / Need Photo
+     Release / Need Photographer Licence
+   - Only promote commercially when both releases are secured
+
+2. Build single conversion funnel per event
+   - Landing page: hero, athlete profile, proof, CTA Buy Ticket, legal line
+   - Short story blog linked from landing page for engagement and SEO
+
+3. Seed creators and influencers
+   - Nano/micro creators for authenticity and high engagement
+   - Offer free tickets + promo fee or revenue share
+   - Provide promo pack: 15s clip, 30s clip, 3 captions, poster, UTM links
+
+4. Run a small paid test
+   - 3 ad sets: cold lookalike, retargeting, creator boosted
+   - Measure CPA to ticket conversion and scale winner
+
+5. Use WebXR as premium hook
+   - Embed WebXR teaser on landing page
+   - Offer exclusive metaverse preview for early buyers
+   - Increases perceived value and social shareability
+
+================================================================
+END OF CONTENT MARKETING PLAYBOOK v2.0
+================================================================

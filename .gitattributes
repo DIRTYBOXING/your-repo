@@ -1,0 +1,72 @@
+# .gitattributes — https://git-scm.com/docs/gitattributes
+# Normalise line endings to LF in the repo; checkout as native on Windows.
+
+# ── Default: normalise everything ───────────────────────────────────────────
+* text=auto eol=lf
+
+# ── Source code ─────────────────────────────────────────────────────────────
+*.dart     text eol=lf
+*.ts       text eol=lf
+*.tsx      text eol=lf
+*.js       text eol=lf
+*.mjs      text eol=lf
+*.cjs      text eol=lf
+*.json     text eol=lf
+*.yaml     text eol=lf
+*.yml      text eol=lf
+*.md       text eol=lf
+*.html     text eol=lf
+*.css      text eol=lf
+*.sh       text eol=lf
+*.rules    text eol=lf
+*.env      text eol=lf
+
+# ── Windows scripts — keep CRLF ─────────────────────────────────────────────
+*.bat      text eol=crlf
+*.cmd      text eol=crlf
+*.ps1      text eol=crlf
+*.psm1     text eol=crlf
+*.psd1     text eol=crlf
+
+# ── Binary assets — never diff or merge ─────────────────────────────────────
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.webp     binary
+*.ico      binary
+*.svg      text eol=lf
+*.ttf      binary
+*.otf      binary
+*.woff     binary
+*.woff2    binary
+*.mp4      binary
+*.mov      binary
+*.mp3      binary
+*.aac      binary
+*.zip      binary
+*.tar      binary
+*.gz       binary
+*.jar      binary
+*.aar      binary
+*.apk      binary
+*.aab      binary
+*.ipa      binary
+*.xcarchive binary
+*.keystore  binary
+*.jks       binary
+*.p12       binary
+*.pem       binary
+
+# ── Dart-generated / lockfiles ───────────────────────────────────────────────
+pubspec.lock  text eol=lf
+package-lock.json text eol=lf
+yarn.lock     text eol=lf
+
+# ── Linguist overrides (GitHub language stats) ───────────────────────────────
+*.dart        linguist-language=Dart
+functions/**  linguist-language=JavaScript
+src/**        linguist-language=TypeScript
+android/**    linguist-vendored
+ios/**        linguist-vendored
+build/**      linguist-vendored

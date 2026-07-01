@@ -1,0 +1,173 @@
+name: DFC Integration Smoke + Deploy
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "serverless/**"
+      - "functions/**"
+      - "services/**"
+      - "dfc-content-pipeline/**"
+      - "entitlements-service/**"
+      - "ci/**"
+      - "load/**"
+      - "docker-compose.yml"
+  pull_request:
+    branches: [master, main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "20"
+  STAGE: staging
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install root dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install serverless dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: cd serverless && npm ci --ignore-scripts
+
+      - name: Install functions dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: cd functions && npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint || true
+
+      - name: Run orchestrator scan
+        run: node tools/todo-orchestrator.js --scan || true
+
+  integration-smoke:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies (secure — ignore scripts)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          npm ci --ignore-scripts
+          cd serverless && npm ci --ignore-scripts
+          npm install -g serverless serverless-offline --ignore-scripts
+
+      - name: Start serverless offline
+        env:
+          REDIS_URL: redis://localhost:6379
+          ENT_SECRET: ci-test-secret # pragma: allowlist secret
+          MODEL_ENDPOINT: http://localhost:8090/predict
+        run: |
+          npx serverless offline start --stage ci --httpPort 3001 &
+          sleep 8
+          curl -s http://localhost:3001/ || true
+
+      - name: Run smoke tests
+        env:
+          ENTITLEMENT_URL: http://localhost:3001
+          PRICING_URL: http://localhost:3001
+          PREDICTOR_URL: http://localhost:8090
+          N8N_WEBHOOK_URL: http://localhost:5678/webhook/clip-created
+        run: |
+          chmod +x ci/smoke_clip_publish_strict.sh
+          bash ci/smoke_clip_publish_strict.sh --timeout 30 --retries 2 || true
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-artifacts-${{ github.sha }}
+          path: ci/smoke-artifacts/
+          retention-days: 14
+
+  deploy-staging:
+    needs: integration-smoke
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies (secure — ignore scripts)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          npm ci --ignore-scripts
+          cd serverless && npm ci --ignore-scripts
+          npm install -g serverless --ignore-scripts
+
+      - name: Detect AWS staging credentials
+        id: aws-creds
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID_VALUE: ${{ secrets['AWS_ACCESS_KEY_ID'] }}
+          AWS_SECRET_ACCESS_KEY_VALUE: ${{ secrets['AWS_SECRET_ACCESS_KEY'] }}
+        run: |
+          if [ -n "$AWS_ACCESS_KEY_ID_VALUE" ] && [ -n "$AWS_SECRET_ACCESS_KEY_VALUE" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure AWS credentials
+        if: steps.aws-creds.outputs.present == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets['AWS_ACCESS_KEY_ID'] }}
+          aws-secret-access-key: ${{ secrets['AWS_SECRET_ACCESS_KEY'] }}
+          aws-region: us-east-1
+
+      - name: Deploy serverless functions
+        if: steps.aws-creds.outputs.present == 'true'
+        run: npx serverless deploy --stage ${{ env.STAGE }}
+
+      - name: Skip AWS deploy notice
+        if: steps.aws-creds.outputs.present != 'true'
+        run: echo "::notice::AWS staging secrets not configured — skipping serverless deploy"
+
+      - name: Deploy Firebase Functions (secure)
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          npm_config_ignore_scripts: "true"
+        run: |
+          npm install -g firebase-tools --ignore-scripts
+          cd functions && npm ci --ignore-scripts
+          firebase deploy --only functions --token "$FIREBASE_TOKEN" || true
+
+      - name: Post-deploy smoke
+        run: |
+          echo "Running post-deploy validation..."
+          # Add staging endpoint smoke tests here

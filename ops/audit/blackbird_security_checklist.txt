@@ -1,0 +1,70 @@
+BLACKBIRD PILOT — SECURITY CHECKLIST
+=====================================
+Date: 2026-03-29  |  Owner: Operator  |  Version: 1.0
+
+SECRETS & CREDENTIALS
+[ ] Rotate ALL API keys (Twilio, OpenAI, Google Maps, Firebase, Stripe) immediately.
+[ ] Move all secrets from .env files to GCP Secret Manager or equivalent.
+[ ] Remove any hardcoded credentials from source code and git history.
+[ ] Confirm .gitignore covers: .env, *.pem, *credentials*.json, google-services.json.
+[ ] Enable Secret Manager audit logging in GCP console.
+
+AUTHENTICATION & ACCESS
+[ ] MFA enabled for all admin and operator accounts.
+[ ] IAM roles assigned using least-privilege (operator vs admin roles per Terraform).
+[ ] Service accounts have no owner/editor roles — scoped permissions only.
+[ ] No API endpoints are unauthenticated except /health and /metrics (internal only).
+[ ] JWT tokens expire in <= 1 hour; refresh tokens rotated on use.
+
+NETWORK & TRANSPORT
+[ ] All external traffic is HTTPS/TLS 1.2+; HTTP redirected.
+[ ] mTLS client certificates provisioned for each edge node (Blackbird device).
+[ ] Firewall rules restrict DB access to API service only (no public DB exposure).
+[ ] VPC private subnets used for all internal services (per Terraform config).
+[ ] CORS restricted to known origins only.
+
+DATA PROTECTION
+[ ] Evidence packages encrypted at rest (AES-256 or GCP CMEK).
+[ ] PII (phone numbers, GPS) encrypted in DB using pgcrypto extension.
+[ ] Evidence export decryption keys stored separately from exported bundles.
+[ ] Data retention: evidence auto-deleted after 30 days (lifecycle rule in GCS bucket).
+[ ] Face/phone redaction applied by default before any evidence export.
+
+AUDIT & MONITORING
+[ ] Immutable audit_log table writes enforced (no UPDATE/DELETE by operators).
+[ ] Prometheus /metrics endpoint restricted to internal network only.
+[ ] Grafana admin password changed from default.
+[ ] Alert on: ingest error spike, failed exports, auth failures > 5/min.
+[ ] Weekly security review scheduled.
+
+COMPLIANCE
+[ ] Consent form signed by all enrolled users (see evidence_consent_form.txt).
+[ ] Evidence retention policy documented and reviewed by legal advisor.
+[ ] Escalation SOP (Verify → Action → Export → Handoff) documented and drilled.
+[ ] Police handoff playbook prepared and key exchange procedure documented.
+
+INCIDENT RESPONSE
+[ ] Kill switch procedure documented: how to isolate a compromised node.
+[ ] On-call rotation set up for critical alerts.
+[ ] Evidence backup procedure tested end-to-end at least once.
+
+SECRET MANAGER MIGRATION STEPS
+================================
+1. Install gcloud CLI: https://cloud.google.com/sdk/docs/install
+2. Authenticate:  gcloud auth login && gcloud config set project YOUR_PROJECT_ID
+3. Enable Secret Manager API:
+   gcloud services enable secretmanager.googleapis.com
+4. Create secrets (run once per secret):
+   echo -n "YOUR_VALUE" | gcloud secrets create SECRET_NAME --data-file=-
+5. Grant access to service account:
+   gcloud secrets add-iam-policy-binding SECRET_NAME \
+     --member="serviceAccount:SA_EMAIL" \
+     --role="roles/secretmanager.secretAccessor"
+6. Read secret in code (Python):
+   from google.cloud import secretmanager
+   client = secretmanager.SecretManagerServiceClient()
+   name = f"projects/PROJECT_ID/secrets/SECRET_NAME/versions/latest"
+   response = client.access_secret_version(request={"name": name})
+   value = response.payload.data.decode("UTF-8")
+7. Remove .env variables and test the application.
+8. Rotate the old credentials immediately after migration.

@@ -1,0 +1,27 @@
+{
+  "name": "DFC Dev",
+  "dockerFile": "Dockerfile",
+  "extensions": [
+    "ms-python.python",
+    "ms-azuretools.vscode-docker",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "GitHub.copilot",
+    "eamodio.gitlens",
+    "redhat.vscode-yaml",
+    "esbenp.prettier-vscode"
+  ],
+  "postCreateCommand": "pip install -r atlas_backend/requirements.txt",
+  "settings": {
+    "python.pythonPath": "/usr/local/bin/python",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    },
+    "python.linting.enabled": true,
+    "python.linting.ruffEnabled": true
+  },
+  "forwardPorts": [8000, 9090, 9093, 3100, 3200],
+  "mounts": [
+    "source=${localEnv:HOME}/.kube,target=/root/.kube,type=bind"
+  ]
+}

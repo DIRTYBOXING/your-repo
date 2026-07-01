@@ -1,0 +1,89 @@
+BLACKBIRD PILOT — EVIDENCE PACKAGE MANIFEST
+============================================
+Version: 1.0  |  Date: 2026-03-29
+
+EVIDENCE PACKAGE ID:      __________________________
+EXPORT TIMESTAMP:         __________________________
+EXPORTED BY (OPERATOR):   __________________________
+ALERT ID:                 __________________________
+ALERT LEVEL:              [ ] Verify   [ ] Action
+INCIDENT DATE/TIME:       __________________________
+NODE ID:                  __________________________
+
+─── PACKAGE CONTENTS ─────────────────────────────────
+[ ] alert_record.json       — Full alert record from DB (alert_id, level, reason, score, evidence)
+[ ] track_snapshot.json     — Raw radar track payload (origin, bearing, range, confidence)
+[ ] device_match.json       — Matched device location record (device_id, ts, dist_m)
+[ ] watchlist_match.json    — Watchlist hit record (if applicable; phone/device redacted)
+[ ] audit_trail.json        — Operator audit log entries for this incident
+[ ] export_signature.txt    — SHA-256 hash of all above files for integrity verification
+
+─── REDACTION APPLIED ────────────────────────────────
+[ ] Phone numbers hashed/redacted in all exports
+[ ] GPS coordinates rounded to 10m precision for non-essential records
+[ ] Faces blurred if video/image included (not applicable for radar-only export)
+
+─── CHAIN OF CUSTODY ─────────────────────────────────
+Exported by:    __________________________ (Operator ID)
+Export method:  [ ] System auto-export   [ ] Manual operator export
+Recipient:      __________________________
+Handoff method: [ ] Encrypted email   [ ] Secure portal   [ ] In-person
+Recipient acknowledged: [ ] Yes   [ ] No   Date: ______________
+
+─── INTEGRITY ────────────────────────────────────────
+SHA-256 of package zip:  __________________________
+Encryption key ID:       __________________________  (stored in Secret Manager)
+Verified by operator:    __________________________
+
+─── NOTES ────────────────────────────────────────────
+__________________________________________________________
+__________________________________________________________
+
+
+====================================================
+BLACKBIRD PILOT — PARTICIPANT CONSENT FORM
+====================================================
+Version: 1.0  |  Date: 2026-03-29
+
+PARTICIPANT INFORMATION
+Name (optional):          __________________________
+Contact (operator use):   __________________________
+Enrollment Date:          __________________________
+
+I, the undersigned, consent to participate in the Blackbird Pilot program operated
+by DataFightCentral / Chukya Radar AI ("the Platform") under the following terms:
+
+1. PURPOSE
+   The Platform uses radar sensors, GPS, and AI-driven matching to detect proximity
+   threats and generate alerts intended to improve personal safety.
+
+2. DATA COLLECTED
+   - BLE/GPS device location (approximate; rounded to 10m precision)
+   - Radar track data (bearing, range, confidence score)
+   - Phone number (watchlist matching only; hashed in storage)
+   - Operator audit logs related to alerts involving my device
+
+3. DATA USE
+   - Data is used solely for threat detection, alert generation, and evidence export
+     to authorised law enforcement or safety partners.
+   - Data is NOT sold, shared with advertisers, or used for profiling.
+
+4. RETENTION
+   - Evidence data retained for a maximum of 30 days unless required for an active
+     law enforcement investigation, in which case retention is extended per legal hold.
+   - I may request deletion of my data at any time by contacting the operator.
+
+5. EXPORTS & DISCLOSURES
+   - Evidence packages may be shared with law enforcement with my prior consent,
+     or without consent where legally required (e.g., imminent threat or court order).
+   - I will be notified of any disclosure where legally permissible.
+
+6. WITHDRAWAL
+   - I may withdraw from the pilot at any time. Withdrawal stops future data collection
+     but does not retroactively delete data already used in active investigations.
+
+7. LEGAL REVIEW
+   - This form has been reviewed by legal counsel. A copy will be provided to me.
+
+Participant Signature: ______________________  Date: ______________
+Operator Witness:      ______________________  Date: ______________

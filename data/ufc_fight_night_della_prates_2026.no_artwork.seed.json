@@ -1,0 +1,67 @@
+{
+  "event": {
+    "id": "ufc_fight_night_della_prates_2026_05_02",
+    "promoterId": "ufc",
+    "promotionName": "Ultimate Fighting Championship",
+    "title": "UFC Fight Night",
+    "description": "UFC Fight Night featuring Jack Della Maddalena vs Carlos Prates at RAC Arena in Perth, Western Australia.",
+    "venue": "RAC Arena",
+    "venueName": "RAC Arena",
+    "city": "Perth",
+    "state": "WA",
+    "country": "Australia",
+    "eventDate": "2026-05-02T18:00:00+08:00",
+    "mainCardTime": "2026-05-02T18:00:00+08:00",
+    "sportType": "MMA",
+    "status": "upcoming",
+    "broadcastInfo": "Main Event",
+    "streamProviders": ["Main Event", "Kayo", "UFC Fight Pass", "DFC Live"],
+    "isFeatured": true,
+    "isPublic": true
+  },
+  "ppv": {
+    "id": "ufc_fight_night_della_prates_2026_05_02",
+    "promoterId": "ufc",
+    "title": "UFC Fight Night",
+    "subtitle": "Della Maddalena vs Prates",
+    "description": "Jack Della Maddalena vs Carlos Prates from RAC Arena in Perth, Western Australia.",
+    "sport": "MMA",
+    "promotion": "Ultimate Fighting Championship",
+    "eventDate": "2026-05-02T18:00:00+08:00",
+    "status": "onSale",
+    "price": 79.95,
+    "currency": "AUD",
+    "streamPlatforms": ["Main Event", "Kayo", "UFC Fight Pass", "DFC Live"],
+    "fightCard": [
+      {
+        "redCorner": "Jack Della Maddalena",
+        "blueCorner": "Carlos Prates",
+        "weightClass": "Welterweight",
+        "boutOrder": 1,
+        "rounds": 5,
+        "isMainEvent": true
+      }
+    ]
+  },
+  "promoter": {
+    "id": "ufc",
+    "name": "Ultimate Fighting Championship",
+    "displayName": "UFC"
+  },
+  "fighters": [
+    {
+      "id": "jack_della_maddalena",
+      "fullName": "Jack Della Maddalena",
+      "weightClass": "Welterweight",
+      "sportType": "MMA",
+      "country": "Australia"
+    },
+    {
+      "id": "carlos_prates",
+      "fullName": "Carlos Prates",
+      "weightClass": "Welterweight",
+      "sportType": "MMA",
+      "country": "Brazil"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+╔══════════════════════════════════════════════════════════════╗
+║  DFC CHUCKYA — Two-Minute Police Demo Script                 ║
+║  For Commissioner and Law Enforcement Demonstrations         ║
+╚══════════════════════════════════════════════════════════════╝
+
+GOAL: Show a complete end-to-end flow in under 2 minutes:
+      signed device ping → alert on dashboard → evidence export with chain of custody.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TIMELINE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+00:00 — INTRO (10 seconds)
+  SAY: "This is CHUCKYA. It protects people by sending signed
+       safety pings and producing auditable evidence for
+       lawful response."
+
+00:10 — SHOW TEST ROOM AND CONSENT (20 seconds)
+  ACTION: Open staging dashboard on video wall.
+          Point to the Test Room label.
+          Show consent record in ops-audit/consents/ folder.
+  SAY: "Consent is recorded and immutable. The device
+       generated its own keypair and registered its public
+       key with our server."
+
+00:30 — TRIGGER THE PING (10 seconds)
+  ACTION: On demo phone, press one-tap emergency button.
+  SAY: "This ping is signed by the device key. No location
+       is shown to civilians — only proximity and direction."
+
+00:40 — WATCH THE ALERT APPEAR (20 seconds)
+  ACTION: Refresh dashboard. Highlight new alert row.
+          Click to show alertId, riskScore, topSignals.
+          Briefly open alert.json.
+  SAY: "Signature verified. Payload stored immutably.
+       Risk score auto-calculated from mode and signals."
+
+01:00 — EXPORT EVIDENCE REQUEST (20 seconds)
+  ACTION: From Ops workstation, request export.
+          (Click Export button or run curl command.)
+  SAY: "Two-person approval is required. Ops requests,
+       Legal approves."
+
+01:20 — LEGAL APPROVAL AND ZIP GENERATION (20 seconds)
+  ACTION: From Legal workstation, approve the export.
+          Show system generating the evidence zip.
+          Open zip and show: payload.json, consent_record.json,
+          chain_of_custody.json.
+          Read aloud one SHA256 hash line.
+  SAY: "Every file is hashed. The manifest is tamper-evident."
+
+01:40 — VERIFY SIGNATURE AND HASH (20 seconds)
+  ACTION: Run verification command:
+          sha256sum evidence/payload.json
+          Compare to chain_of_custody.json hash.
+  SAY: "Hashes match. Chain of custody intact."
+
+02:00 — CLOSE (10 seconds)
+  SAY: "That's the flow: consented signed ping, fast detection,
+       auditable evidence, and controlled police handover."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ONE-LINE COMMANDS TO RUN DURING DEMO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Trigger ping from phone (or laptop alternative):
+node tools/sign_payload.js tools/demo_private.pem tools/payload.json > tools/token.txt
+curl -X POST "https://<SERVICE_URL>/v1/radar/event/verified" \
+  -H "Content-Type: application/json" \
+  -d @tools/signed_payload.json
+
+# Ops requests export:
+curl -X POST "https://<SERVICE_URL>/v1/radar/alerts/<ALERT_ID>/export-requests" \
+  -H "X-DFC-Approver: ops_demo" \
+  -H "Content-Type: application/json" \
+  -d '{"reason":"police_demo"}'
+
+# Legal approves:
+curl -X POST "https://<SERVICE_URL>/v1/radar/alerts/<ALERT_ID>/police-export" \
+  -H "X-DFC-Approver: legal_demo" \
+  -o "<ALERT_ID>_evidence.zip"
+
+# Download zip directly:
+curl -o evidence.zip "https://<SERVICE_URL>/v1/radar/alerts/<ALERT_ID>/export"
+
+# Verify hashes after unzip:
+sha256sum evidence_*/payload.json
+cat evidence_*/chain_of_custody.json | jq '.items[] | select(.filename=="payload.json") | .sha256'
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRE-DEMO CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[ ] Staging URL reachable (Cloud Run or ngrok)
+[ ] Demo device public key registered (check ops-audit/device_pubkeys/)
+[ ] Consent record present (check ops-audit/consents/)
+[ ] Dashboard accessible on video wall
+[ ] Two workstations ready (Ops + Legal)
+[ ] Demo phone charged and app installed
+[ ] tools/demo_private.pem available on laptop
+[ ] Two approvers logged in and available
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHAT TO HAND POLICE AFTER DEMO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Evidence zip file (USB drive or secure transfer)
+2. Printed one-page Police Brief (see ops/launch/)
+3. Explanation: "The payload was signed by the device,
+   verified by our server, and every file in this zip
+   is hash-verified in the chain of custody manifest."

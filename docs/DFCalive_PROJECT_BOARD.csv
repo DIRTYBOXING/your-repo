@@ -1,0 +1,36 @@
+Epic,Task,Owner,Estimate (days),Priority,Acceptance Criteria
+Lock Production,Freeze hosting config and verify live build,DevOps,1,P0,firebase deploy --only hosting succeeds; preview URL matches production
+Lock Production,Rotate temporary keys and move secrets to Secret Manager,Security,1,P0,No plaintext keys in repo or env files; all secrets in GCP Secret Manager
+Lock Production,Tighten CORS and storage rules to production origins only,DevOps,0.5,P0,CORS allows only datafightcentral.com and datafightcentral.web.app
+Payments,Stripe Connect Express promoter onboarding page,Frontend,3,P0,Promoter completes Express onboarding in sandbox; connected account ID captured
+Payments,PaymentIntent creation with transfer_data and application_fee,Backend,2,P0,PaymentIntent test passes; ops/audit/stripe_paymentintent.json saved
+Payments,Stripe webhook handler with signature verification,Backend,2,P0,payment_intent.succeeded triggers sessionId creation and audit write
+Payments,Payout dashboard for promoters,Frontend,3,P1,Promoter can view payout history and pending balance
+Playback Security,Playback token mint service (RS256 JWT),Backend,2,P0,POST /mint returns valid JWT; TTL 10 minutes; RS256 signature verifiable
+Playback Security,CDN edge token validation (Lambda@Edge or Fastly VCL),DevOps,2,P0,Invalid token returns 403; valid token allows manifest fetch
+Playback Security,Token refresh flow in player client,Frontend,2,P1,Player auto-refreshes token before expiry without interrupting playback
+DRM,Integrate Widevine license server,Backend/Security,3,P1,Widevine license issued for valid session; Shaka player decrypts and plays
+DRM,Integrate FairPlay license server,Backend/Security,3,P1,FairPlay license issued for valid session; Safari/iOS player decrypts and plays
+DRM,DRM key rotation and revocation,Security,2,P2,Keys rotate on schedule; revoked sessions cannot obtain new license
+Watermarking,Server-side forensic watermark insertion at packaging,Backend/Forensics,5,P1,Watermark embedded in packaged segments; not visible to viewer
+Watermarking,Watermark extraction tool,Backend/Forensics,4,P1,Given leaked clip extraction recovers sessionId with >= 95% accuracy
+Watermarking,Audit mapping (sessionId -> buyerId) storage,Backend,1,P1,Mapping stored in audit DB and exported to ops/audit/<event>/watermark_log.json
+AI Marketing,Auto-clip generator (serverless FFmpeg),Backend,3,P1,Given eventId produces 15s clip and thumbnail within 3 minutes
+AI Marketing,OG image auto-generator,Growth/Backend,2,P1,OG image generated on event publish; curl -I returns 200
+AI Marketing,LLM caption engine (3 variants + hashtags),Growth/Backend,2,P1,Given event title and date returns JSON with 3 captions and 5 hashtags
+AI Marketing,A/B social post scheduler,Growth/Backend,3,P2,Variant A posted to Facebook and variant B to X; CTR tracked per variant
+AI Marketing,Retargeting orchestration (Pixel events),Growth,2,P2,ViewContent and Purchase events fire in Events Manager; UTM mapping >= 95%
+SEO,SSR event pages with JSON-LD (schema.org Event),Frontend,4,P1,Event pages pass Google Rich Results Test; server-rendered for crawlers
+SEO,Auto-sitemap update on event publish,Backend,1,P1,Event URL added to sitemap.xml; ping sent to Google and Bing
+SEO,VideoObject markup for highlights,Frontend,2,P2,Highlight clips have VideoObject JSON-LD; appear in video sitemap
+Promoter Tools,Promoter portal (upload assets and sign docs),Frontend,4,P1,Promoter uploads pilot_licence.pdf and statdec.pdf; files in ops/audit/<event>
+Promoter Tools,Shared calendar and production checklist,Frontend,3,P2,Promoter and DFC ops see shared calendar with tech call booking
+Promoter Tools,Asset manager with versioning,Frontend,3,P2,Logos and thumbnails stored with version history; approval workflow triggers
+Promoter Tools,Approval workflow (upload -> review -> publish),Backend,2,P2,Promoter upload triggers ops notification; ops approves -> auto-publish
+Ops and Monitoring,Sentry integration (client + server),SRE,1,P0,Errors logged to Sentry; alert on playback failures
+Ops and Monitoring,Grafana dashboards (playback success and latency),SRE,2,P1,Dashboard shows playback success rate and token latency per event
+Ops and Monitoring,BigQuery event analytics pipeline,SRE/Backend,3,P2,Event views and purchases exported to BigQuery daily
+Ops and Monitoring,Audit bundle automation per event,DevOps,2,P1,ops/audit/<event> auto-populated with signed docs and Stripe CSV and watermark logs
+Ops and Monitoring,DMCA takedown automation script,Legal/Backend,2,P2,Script composes DMCA notice with watermark evidence; saves to ops/audit/takedown_<leakId>.json
+Pilot Event,Run pilot event checklist end-to-end,Ops/All,2,P0,All items in ops_runbook.md verified and signed off
+Pilot Event,Export and archive audit bundle,Ops,0.5,P0,Audit bundle stored in secure bucket with versioning

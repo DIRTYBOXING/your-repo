@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dfc-wallet-reconciliation
+  namespace: dfc-production
+  labels:
+    app: dfc-platform
+    component: reconciliation-worker
+spec:
+  # 02:00 UTC daily
+  schedule: "0 2 * * *"
+  # Prevent a new run from starting while the previous one is still running
+  concurrencyPolicy: Forbid
+  # Keep the last 3 successful and 1 failed job for log inspection
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  # If missed by more than 2h, skip (prevents pile-up after cluster downtime)
+  startingDeadlineSeconds: 7200
+  jobTemplate:
+    spec:
+      # Fail fast — do not retry reconciliation automatically (investigate first)
+      backoffLimit: 0
+      activeDeadlineSeconds: 300
+      template:
+        metadata:
+          labels:
+            app: dfc-platform
+            component: reconciliation-worker
+        spec:
+          restartPolicy: Never
+          serviceAccountName: dfc-reconciliation-sa
+          containers:
+            - name: reconciliation-runner
+              image: ghcr.io/dirtyboxing/data-fight-central/server:latest
+              imagePullPolicy: Always
+              command: ["node", "jobs/reconciliation-runner.js"]
+              env:
+                - name: NODE_ENV
+                  value: production
+                - name: REDIS_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: dfc-redis-credentials
+                      key: url
+                - name: RECON_LOCK_TTL_MS
+                  value: "300000"
+                # Pull Prometheus push-gateway URL if you want push-based metrics
+                # from batch jobs (optional — scrape from /metrics works too)
+                - name: PUSH_GATEWAY_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: dfc-observability
+                      key: prometheus_push_gateway_url
+                      optional: true
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 200m
+                  memory: 256Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                runAsUser: 1000
+                capabilities:
+                  drop:
+                    - ALL
+          # Ensure the job has access to Redis and Firestore but not the
+          # public internet — adjust networkPolicy accordingly.
+          securityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault

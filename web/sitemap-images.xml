@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!--
+  ═══════════════════════════════════════════════════════════════
+  DATA FIGHT CENTRAL — Google Images Sitemap
+  Submit to Google Search Console for Images tab indexing
+  DFC Pty Ltd · #1 AI Combat Sports Platform
+  ═══════════════════════════════════════════════════════════════
+  -->
+
+  <!-- Main app page -->
+  <url>
+    <loc>https://datafightcentral.com/</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>Data Fight Central Logo — #1 AI Combat Sports Platform</image:title>
+      <image:caption>Data Fight Central (DFC) — The world's leading AI-powered combat sports platform. UFC, MMA, Boxing, Muay Thai, BJJ, BKFC. Fighters Are Safer With DFC. Founded 2025, DFC Pty Ltd, Queensland Australia.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-192.png</image:loc>
+      <image:title>Data Fight Central App Icon</image:title>
+      <image:caption>DFC mobile app icon — AI-powered combat sports analytics, fight news, training tools and fighter safety for UFC, MMA, Boxing and all combat sports.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-maskable-512.png</image:loc>
+      <image:title>Data Fight Central Maskable Icon</image:title>
+      <image:caption>DFC platform icon — Combat sports technology platform with 165+ screens, 80+ services, and AI-powered analytics.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Fighter Safety -->
+  <url>
+    <loc>https://datafightcentral.com/#/fighter-safety</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>Fighters Are Safer With DFC — 12-Pillar Fighter Protection Protocol</image:title>
+      <image:caption>Data Fight Central's 12-Pillar Fighter Protection Protocol: Brain Health CTE tracking, Guardian Mode silent SOS, Pink Shield gym certification, Crisis Lifeline, Corner Stop AI, Weight Safety, Mind Body Soul wellness, Financial Shield. No other platform protects fighters like DFC.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Events -->
+  <url>
+    <loc>https://datafightcentral.com/#/events</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC Event Manager — UFC, MMA &amp; Boxing Fight Events</image:title>
+      <image:caption>Data Fight Central event management — fight cards, event posters, promotional materials for UFC, MMA, Boxing, Muay Thai and all combat sports events worldwide.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- FightWire News -->
+  <url>
+    <loc>https://datafightcentral.com/#/fightwire</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC FightWire — Real-Time Combat Sports News</image:title>
+      <image:caption>FightWire by Data Fight Central — breaking UFC news, MMA fight results, boxing highlights, Muay Thai events, and combat sports coverage from 40+ global sources.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Drone Racing -->
+  <url>
+    <loc>https://datafightcentral.com/#/drone-racing</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC AirCombat — FPV Drone Racing Hub</image:title>
+      <image:caption>DFC AirCombat FPV drone racing hub — race events, leaderboards, track maps, FPV video library, technology guides, and pilot profiles. Drone racing by Data Fight Central.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Combat Map -->
+  <url>
+    <loc>https://datafightcentral.com/#/map</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC Combat Map — Find Gyms &amp; Events Worldwide</image:title>
+      <image:caption>Data Fight Central's Global Combat Map — discover boxing gyms, MMA training centers, fight events, and Pink Shield certified DV-safe venues on an interactive map powered by Google Maps.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Training -->
+  <url>
+    <loc>https://datafightcentral.com/#/daily-grind</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC Daily Grind — Combat Sports Training Tools</image:title>
+      <image:caption>Daily Grind training tools by Data Fight Central — MMA training plans, boxing drills, Muay Thai pad work, BJJ techniques, fight camp preparation, weight cutting guides, and AI coaching.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Analytics -->
+  <url>
+    <loc>https://datafightcentral.com/#/combat-analytics</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC AI Combat Analytics — Fight Predictions &amp; Stats</image:title>
+      <image:caption>AI-powered combat analytics by Data Fight Central — fight predictions, fighter statistics, performance data, opponent analysis, and scouting reports powered by Google Gemini 2.5 Flash AI.</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Marketplace -->
+  <url>
+    <loc>https://datafightcentral.com/#/marketplace</loc>
+    <image:image>
+      <image:loc>https://datafightcentral.com/icons/Icon-512.png</image:loc>
+      <image:title>DFC Marketplace — Combat Sports Gear &amp; Opportunities</image:title>
+      <image:caption>Data Fight Central Marketplace — combat sports gear, MMA equipment, boxing gloves, training gear, fighter jobs, coaching positions, and industry opportunities.</image:caption>
+    </image:image>
+  </url>
+
+</urlset>

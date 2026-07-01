@@ -1,0 +1,60 @@
+name: ppv-commerce-e2e
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "lib/features/ppv/**"
+      - "lib/features/admin/screens/sales_admin_screen.dart"
+      - "lib/services/sales_service.dart"
+      - "functions/create_entitlement/**"
+      - "server/**"
+      - "api/**"
+      - "assets/poster_templates/**"
+      - "web/css/vars.css"
+      - "test/visual/ppv_*.spec.ts"
+      - "test/visual/admin_offers.spec.ts"
+      - "docs/BLUEPRINT_QA_CHECKLIST.md"
+      - "config/lighthouse.thresholds.json"
+      - ".github/workflows/ppv-commerce-e2e.yml"
+  workflow_dispatch:
+
+jobs:
+  ppv-commerce-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install npm dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install Playwright browsers
+        run: ./node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Validate PPV Playwright discovery
+        run: ./node_modules/.bin/playwright test test/visual/ppv_surfaces.spec.ts test/visual/ppv_purchase_e2e.spec.ts test/visual/admin_offers.spec.ts --project=mobile --project=tablet768 --project=desktop --list
+
+      - name: Run staging PPV smoke when URLs are configured
+        if: ${{ vars.STAGING_URL != '' }}
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ vars.STAGING_URL }}
+          PLAYWRIGHT_API_BASE: ${{ vars.PLAYWRIGHT_API_BASE != '' && vars.PLAYWRIGHT_API_BASE || vars.STAGING_URL }}
+          PLAYWRIGHT_PPV_DETAIL_ROUTE: ${{ vars.PLAYWRIGHT_PPV_DETAIL_ROUTE }}
+          PLAYWRIGHT_PPV_WATCH_ROUTE: ${{ vars.PLAYWRIGHT_PPV_WATCH_ROUTE }}
+        run: ./node_modules/.bin/playwright test test/visual/ppv_surfaces.spec.ts test/visual/ppv_purchase_e2e.spec.ts --project=mobile --project=tablet768 --project=desktop
+
+      - name: Run Lighthouse assertions on staging event page
+        if: ${{ vars.STAGING_URL != '' }}
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            ${{ vars.STAGING_URL }}/events/demo-eternal-80
+          configPath: ./config/lighthouse.thresholds.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

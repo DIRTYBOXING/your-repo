@@ -1,0 +1,25 @@
+# Dockerfile.media-worker
+# ═══════════════════════════════════════════════════════════════════════════
+# DFC Media Worker — S3-based download → FFmpeg → S3 upload → API callback
+# Build: docker build -t <REGISTRY>/dfc-media-worker:latest -f Dockerfile.media-worker .
+# ═══════════════════════════════════════════════════════════════════════════
+
+FROM node:20-slim
+
+# Install FFmpeg
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install only the dependencies required by the media worker
+COPY src/workers/package.json ./
+RUN npm install --omit=dev
+
+# Copy worker source
+COPY src/workers/media-worker.js ./
+
+ENV NODE_ENV=production
+
+CMD ["node", "media-worker.js"]

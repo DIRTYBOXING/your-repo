@@ -1,0 +1,292 @@
+{
+  "name": "DFC Publisher Minimal",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dfc-publisher",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook Publish Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [220, 320]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "requestId",
+              "value": "={{ $json.body.requestId || $json.requestId || ('publish_' + Date.now()) }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "contentDocId",
+              "value": "={{ $json.body.contentDocId || $json.contentDocId || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "platform",
+              "value": "={{ $json.body.platform || $json.platform || 'facebook' }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "headline",
+              "value": "={{ $json.body.headline || $json.headline || 'DFC Published Post' }}",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "caption",
+              "value": "={{ $json.body.caption || $json.caption || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "6",
+              "name": "mediaUrl",
+              "value": "={{ $json.body.mediaUrl || $json.mediaUrl || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "linkUrl",
+              "value": "={{ $json.body.linkUrl || $json.linkUrl || $json.body.mediaUrl || $json.mediaUrl || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "operatorEmail",
+              "value": "={{ $json.body.operatorEmail || $json.operatorEmail || 'info@datafightcentral.com' }}",
+              "type": "string"
+            },
+            {
+              "id": "9",
+              "name": "facebookTargetKey",
+              "value": "={{ $json.body.facebookTargetKey || $json.facebookTargetKey || $json.body.metaTargetKey || $json.metaTargetKey || 'datafightcentral' }}",
+              "type": "string"
+            },
+            {
+              "id": "10",
+              "name": "facebookPageId",
+              "value": "={{ $json.body.facebookPageId || $json.facebookPageId || $env.FACEBOOK_PAGE_ID || '997025300171474' }}",
+              "type": "string"
+            },
+            {
+              "id": "11",
+              "name": "facebookPageLabel",
+              "value": "={{ $json.body.facebookPageLabel || $json.facebookPageLabel || $env.FACEBOOK_PAGE_LABEL || 'Data Fight Central' }}",
+              "type": "string"
+            },
+            {
+              "id": "12",
+              "name": "facebookOwnerProfile",
+              "value": "={{ $json.body.facebookOwnerProfile || $json.facebookOwnerProfile || $env.FACEBOOK_OWNER_PROFILE || 'Heath Ewart' }}",
+              "type": "string"
+            },
+            {
+              "id": "13",
+              "name": "facebookBusinessPortfolio",
+              "value": "={{ $json.body.facebookBusinessPortfolio || $json.facebookBusinessPortfolio || $env.FACEBOOK_BUSINESS_PORTFOLIO || 'Dirty Boxer Australia' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Normalize Publish Request",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [500, 320]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v23.0",
+        "node": "={{ $json.facebookPageId || $env.FACEBOOK_PAGE_ID || '997025300171474' }}",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $json.caption }}"
+              },
+              {
+                "name": "link",
+                "value": "={{ $json.linkUrl }}"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Post to Facebook Page",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [760, 220]
+    },
+    {
+      "parameters": {
+        "resource": "mail",
+        "fromEmail": "info@datafightcentral.com",
+        "fromName": "DFC Publisher",
+        "toEmail": "={{ $('Normalize Publish Request').item.json.operatorEmail }}",
+        "subject": "=Published: {{ $('Normalize Publish Request').item.json.headline }}",
+        "contentType": "text/html",
+        "contentValue": "=<h2>{{ $('Normalize Publish Request').item.json.headline }}</h2><p><strong>Platform:</strong> {{ $('Normalize Publish Request').item.json.platform }}</p><p><strong>Facebook target:</strong> {{ $('Normalize Publish Request').item.json.facebookPageLabel }} ({{ $('Normalize Publish Request').item.json.facebookTargetKey }})</p><p><strong>Business portfolio:</strong> {{ $('Normalize Publish Request').item.json.facebookBusinessPortfolio }}</p><p><strong>Admin profile:</strong> {{ $('Normalize Publish Request').item.json.facebookOwnerProfile }}</p><p><strong>Caption:</strong></p><p>{{ $('Normalize Publish Request').item.json.caption }}</p><p><strong>Link:</strong> {{ $('Normalize Publish Request').item.json.linkUrl }}</p>",
+        "additionalFields": {}
+      },
+      "name": "Send Operator Email",
+      "type": "n8n-nodes-base.sendGrid",
+      "typeVersion": 1,
+      "position": [760, 420]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "name": "Combine Publish Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [1020, 320]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "success",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "2",
+              "name": "requestId",
+              "value": "={{ $('Normalize Publish Request').item.json.requestId }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "contentDocId",
+              "value": "={{ $('Normalize Publish Request').item.json.contentDocId }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "platform",
+              "value": "={{ $('Normalize Publish Request').item.json.platform }}",
+              "type": "string"
+            },
+            {
+              "id": "5",
+              "name": "postId",
+              "value": "={{ $json.id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "6",
+              "name": "emailMessageId",
+              "value": "={{ $json.messageId || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "7",
+              "name": "facebookTargetKey",
+              "value": "={{ $('Normalize Publish Request').item.json.facebookTargetKey }}",
+              "type": "string"
+            },
+            {
+              "id": "8",
+              "name": "facebookPageId",
+              "value": "={{ $('Normalize Publish Request').item.json.facebookPageId }}",
+              "type": "string"
+            },
+            {
+              "id": "9",
+              "name": "facebookPageLabel",
+              "value": "={{ $('Normalize Publish Request').item.json.facebookPageLabel }}",
+              "type": "string"
+            },
+            {
+              "id": "10",
+              "name": "facebookOwnerProfile",
+              "value": "={{ $('Normalize Publish Request').item.json.facebookOwnerProfile }}",
+              "type": "string"
+            },
+            {
+              "id": "11",
+              "name": "facebookBusinessPortfolio",
+              "value": "={{ $('Normalize Publish Request').item.json.facebookBusinessPortfolio }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Format Publish Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1280, 320]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "name": "Respond Publish Result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [1540, 320]
+    }
+  ],
+  "connections": {
+    "Webhook Publish Request": {
+      "main": [
+        [{ "node": "Normalize Publish Request", "type": "main", "index": 0 }]
+      ]
+    },
+    "Normalize Publish Request": {
+      "main": [
+        [
+          { "node": "Post to Facebook Page", "type": "main", "index": 0 },
+          { "node": "Send Operator Email", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Post to Facebook Page": {
+      "main": [
+        [{ "node": "Combine Publish Results", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send Operator Email": {
+      "main": [
+        [{ "node": "Combine Publish Results", "type": "main", "index": 1 }]
+      ]
+    },
+    "Combine Publish Results": {
+      "main": [
+        [{ "node": "Format Publish Result", "type": "main", "index": 0 }]
+      ]
+    },
+    "Format Publish Result": {
+      "main": [
+        [{ "node": "Respond Publish Result", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": ["DFC", "publisher"]
+}

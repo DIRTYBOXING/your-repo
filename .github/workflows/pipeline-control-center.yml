@@ -1,0 +1,261 @@
+name: DFC Pipeline Control Center
+
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: Pipeline lane to run
+        required: true
+        type: choice
+        default: quick-health
+        options:
+          - quick-health
+          - flutter-quality
+          - integration-smoke
+          - staging-deploy
+          - full-orchestra
+      strict_mode:
+        description: Fail the run when a selected lane fails
+        required: true
+        type: boolean
+        default: true
+      deploy_project:
+        description: Firebase/GCP project id for deploy lane
+        required: false
+        type: string
+        default: datafightcentral
+
+concurrency:
+  group: pipeline-control-${{ github.ref }}-${{ github.event.inputs.lane || 'lane' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  context:
+    name: Control Context
+    runs-on: ubuntu-latest
+    outputs:
+      lane: ${{ steps.meta.outputs.lane }}
+      strict_mode: ${{ steps.meta.outputs.strict_mode }}
+      deploy_project: ${{ steps.meta.outputs.deploy_project }}
+    steps:
+      - name: Resolve inputs
+        id: meta
+        shell: bash
+        run: |
+          echo "lane=${{ github.event.inputs.lane }}" >> "$GITHUB_OUTPUT"
+          echo "strict_mode=${{ github.event.inputs.strict_mode }}" >> "$GITHUB_OUTPUT"
+          echo "deploy_project=${{ github.event.inputs.deploy_project }}" >> "$GITHUB_OUTPUT"
+
+  quick-health:
+    name: Quick Health
+    needs: context
+    if: needs.context.outputs.lane == 'quick-health' || needs.context.outputs.lane == 'full-orchestra'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        shell: bash
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          flutter pub get
+          if [ -f package-lock.json ]; then npm ci --ignore-scripts; fi
+
+      - name: Quick health checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          flutter --version
+          flutter analyze --no-fatal-infos --no-fatal-warnings
+          echo "Quick health checks passed"
+
+  flutter-quality:
+    name: Flutter Quality Lane
+    needs: context
+    if: needs.context.outputs.lane == 'flutter-quality' || needs.context.outputs.lane == 'full-orchestra'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Test
+        shell: bash
+        run: |
+          if [ "${{ needs.context.outputs.strict_mode }}" = "true" ]; then
+            flutter test
+          else
+            flutter test || echo "::warning::flutter test failed (strict_mode=false)"
+          fi
+
+  integration-smoke:
+    name: Integration Smoke Lane
+    needs: context
+    if: needs.context.outputs.lane == 'integration-smoke' || needs.context.outputs.lane == 'full-orchestra'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 3s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        shell: bash
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ -f package-lock.json ]; then npm ci --ignore-scripts; fi
+          if [ -d serverless ] && [ -f serverless/package-lock.json ]; then
+            cd serverless && npm ci --ignore-scripts
+          fi
+
+      - name: Run smoke script
+        shell: bash
+        run: |
+          if [ -f ci/smoke_clip_publish_strict.sh ]; then
+            chmod +x ci/smoke_clip_publish_strict.sh
+            if [ "${{ needs.context.outputs.strict_mode }}" = "true" ]; then
+              bash ci/smoke_clip_publish_strict.sh --timeout 45 --retries 2
+            else
+              bash ci/smoke_clip_publish_strict.sh --timeout 45 --retries 2 || echo "::warning::Smoke script failed (strict_mode=false)"
+            fi
+          else
+            echo "::notice::Smoke script not found at ci/smoke_clip_publish_strict.sh"
+          fi
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: control-center-smoke-${{ github.run_id }}
+          path: ci/smoke-artifacts/
+          retention-days: 7
+
+  staging-deploy:
+    name: Staging Deploy Lane
+    needs: context
+    if: needs.context.outputs.lane == 'staging-deploy' || needs.context.outputs.lane == 'full-orchestra'
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      AWS_ACCESS_KEY_ID_VALUE: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY_VALUE: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION_VALUE: ${{ secrets.AWS_REGION }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install deploy dependencies (secure — ignore scripts)
+        shell: bash
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ -f package-lock.json ]; then npm ci --ignore-scripts; fi
+          npm install -g firebase-tools serverless --ignore-scripts
+
+      - name: Deploy Firebase Functions (if token present)
+        shell: bash
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ -n "$FIREBASE_TOKEN" ] && [ -d functions ]; then
+            cd functions
+            if [ -f package-lock.json ]; then npm ci --ignore-scripts; fi
+            firebase deploy --only functions --project "${{ needs.context.outputs.deploy_project }}"
+          else
+            echo "::notice::Skipping Firebase deploy (token or functions directory missing)"
+          fi
+
+      - name: Deploy Serverless (if AWS secrets present)
+        shell: bash
+        env:
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ -n "$AWS_ACCESS_KEY_ID_VALUE" ] && [ -n "$AWS_SECRET_ACCESS_KEY_VALUE" ] && [ -n "$AWS_REGION_VALUE" ] && [ -d serverless ]; then
+            cd serverless
+            if [ -f package-lock.json ]; then npm ci --ignore-scripts; fi
+            npx serverless deploy --stage staging
+          else
+            echo "::notice::Skipping serverless deploy (AWS secrets or serverless directory missing)"
+          fi
+
+  summary:
+    name: Control Summary
+    if: always()
+    needs:
+      - context
+      - quick-health
+      - flutter-quality
+      - integration-smoke
+      - staging-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish run summary
+        shell: bash
+        run: |
+          {
+            echo "## DFC Pipeline Control Center"
+            echo "- Lane: ${{ needs.context.outputs.lane }}"
+            echo "- Strict mode: ${{ needs.context.outputs.strict_mode }}"
+            echo "- Project: ${{ needs.context.outputs.deploy_project }}"
+            echo "- Quick health: ${{ needs.quick-health.result }}"
+            echo "- Flutter quality: ${{ needs.flutter-quality.result }}"
+            echo "- Integration smoke: ${{ needs.integration-smoke.result }}"
+            echo "- Staging deploy: ${{ needs.staging-deploy.result }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enforce strict mode
+        shell: bash
+        run: |
+          if [ "${{ needs.context.outputs.strict_mode }}" != "true" ]; then
+            echo "strict_mode=false: allowing warnings without failing run"
+            exit 0
+          fi
+
+          for result in "${{ needs.quick-health.result }}" "${{ needs.flutter-quality.result }}" "${{ needs.integration-smoke.result }}" "${{ needs.staging-deploy.result }}"; do
+            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+              echo "A selected lane failed under strict mode"
+              exit 1
+            fi
+          done
+
+          echo "Strict mode passed"

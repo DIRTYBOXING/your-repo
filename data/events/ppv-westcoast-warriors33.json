@@ -1,0 +1,54 @@
+{
+  "eventId": "ppv-westcoast-warriors33",
+  "title": "WEST COAST WARRIORS 33",
+  "subtitle": "Perth — WA's Toughest Night",
+  "date": "2026-05-30",
+  "time": "18:00 AWST",
+  "price": "19.99",
+  "promoter": "West Coast Warriors",
+  "sport": "MMA",
+  "venue": "HBF Stadium, Perth",
+  "currency": "AUD",
+  "streamPlatforms": ["DFC"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Welterweight",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Welterweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Welterweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Middleweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Flyweight",
+      "rounds": 3
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

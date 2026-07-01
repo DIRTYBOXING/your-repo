@@ -1,0 +1,43 @@
+# Cloud Shell Configuration for Data Fight Central
+# This file is sourced when Cloud Shell starts
+
+# Set project
+export GOOGLE_CLOUD_PROJECT="datafightcentral"
+export FIREBASE_PROJECT="datafightcentral"
+
+# Flutter path (Cloud Shell)
+export PATH="$PATH:$HOME/flutter/bin"
+
+# Helpful aliases
+alias fb="firebase"
+alias fbd="firebase deploy"
+alias fbh="firebase deploy --only hosting"
+alias fbf="firebase deploy --only functions"
+alias fbe="firebase emulators:start"
+
+# Flutter aliases
+alias flr="flutter run -d chrome"
+alias flb="flutter build web"
+alias flg="flutter pub get"
+alias flc="flutter clean"
+
+# Quick deploy function
+deploy_web() {
+    echo "🏗️  Building Flutter web..."
+    flutter build web --release
+    echo "🚀 Deploying to Firebase Hosting..."
+    firebase deploy --only hosting
+    echo "✅ Done!"
+}
+
+# Show help on shell start
+echo ""
+echo "🥊 Data Fight Central - Cloud Shell Ready"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Commands:"
+echo "  deploy_web  - Build & deploy to Firebase"
+echo "  flr         - Run Flutter web (chrome)"
+echo "  flb         - Build Flutter web"
+echo "  fbd         - Firebase deploy all"
+echo "  fbh         - Firebase deploy hosting only"
+echo ""

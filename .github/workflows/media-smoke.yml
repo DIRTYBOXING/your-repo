@@ -1,0 +1,118 @@
+name: Media Smoke
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "functions/streaming/media_scaffold.js"
+      - ".github/workflows/media-smoke.yml"
+
+concurrency:
+  group: media-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  media-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify required secrets are configured
+        id: secret_check
+        run: |
+          missing=0
+          for key in UPLOAD_URL_ENDPOINT MEDIA_SMOKE_STATUS_ENDPOINT MEDIA_SMOKE_TOKEN; do
+            if [ -z "${!key}" ]; then
+              echo "::warning::Missing secret: $key"
+              missing=1
+            fi
+          done
+
+          if [ "$missing" -eq 1 ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping media smoke because required secrets are missing."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          UPLOAD_URL_ENDPOINT: ${{ secrets.UPLOAD_URL_ENDPOINT }}
+          MEDIA_SMOKE_STATUS_ENDPOINT: ${{ secrets.MEDIA_SMOKE_STATUS_ENDPOINT }}
+          MEDIA_SMOKE_TOKEN: ${{ secrets.MEDIA_SMOKE_TOKEN }}
+
+      - name: Create tiny smoke fixture
+        if: steps.secret_check.outputs.ready == 'true'
+        run: |
+          mkdir -p test/fixtures
+          printf 'dfc-media-smoke' > test/fixtures/smoke.mp4
+
+      - name: Request signed upload URL
+        if: steps.secret_check.outputs.ready == 'true'
+        run: |
+          curl -sS -X POST "$UPLOAD_URL_ENDPOINT" \
+            -H "Content-Type: application/json" \
+            -H "x-media-smoke-token: $MEDIA_SMOKE_TOKEN" \
+            -d '{"filename":"smoke.mp4","contentType":"video/mp4","folder":"smoke"}' > upload.json
+          cat upload.json
+        env:
+          UPLOAD_URL_ENDPOINT: ${{ secrets.UPLOAD_URL_ENDPOINT }}
+          MEDIA_SMOKE_TOKEN: ${{ secrets.MEDIA_SMOKE_TOKEN }}
+
+      - name: Upload smoke fixture
+        if: steps.secret_check.outputs.ready == 'true'
+        run: |
+          UPLOAD_URL=$(jq -r '.uploadUrl' upload.json)
+          if [ -z "$UPLOAD_URL" ] || [ "$UPLOAD_URL" = "null" ]; then
+            echo "Signed URL missing in response" >&2
+            exit 1
+          fi
+
+          curl -sS -X PUT \
+            -H "Content-Type: video/mp4" \
+            --data-binary @test/fixtures/smoke.mp4 \
+            "$UPLOAD_URL"
+
+      - name: Poll for HLS manifest
+        if: steps.secret_check.outputs.ready == 'true'
+        run: |
+          KEY=$(jq -r '.key' upload.json)
+          if [ -z "$KEY" ] || [ "$KEY" = "null" ]; then
+            echo "Storage key missing in response" >&2
+            exit 1
+          fi
+
+          for i in {1..30}; do
+            STATUS=$(curl -sS -G "$MEDIA_SMOKE_STATUS_ENDPOINT" \
+              -H "x-media-smoke-token: $MEDIA_SMOKE_TOKEN" \
+              --data-urlencode "key=$KEY")
+
+            echo "$STATUS" > manifest-status.json
+            cat manifest-status.json
+
+            EXISTS=$(jq -r '.exists // false' manifest-status.json)
+            if [ "$EXISTS" = "true" ]; then
+              echo "Manifest detected for key: $KEY"
+              exit 0
+            fi
+
+            echo "Waiting for manifest... ($i/30)"
+            sleep 10
+          done
+
+          echo "Manifest not found before timeout" >&2
+          exit 1
+        env:
+          MEDIA_SMOKE_STATUS_ENDPOINT: ${{ secrets.MEDIA_SMOKE_STATUS_ENDPOINT }}
+          MEDIA_SMOKE_TOKEN: ${{ secrets.MEDIA_SMOKE_TOKEN }}
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-smoke-${{ github.run_id }}
+          path: |
+            upload.json
+            manifest-status.json
+          if-no-files-found: ignore
+          retention-days: 30

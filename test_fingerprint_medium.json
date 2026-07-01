@@ -1,0 +1,14 @@
+{
+  "bluetoothDevices": [
+    { "name": "Pixel 6", "rssi": -55, "count": 3 },
+    { "name": "Unknown Device", "rssi": -65, "count": 4 },
+    { "name": "Pixel 6 Pro", "rssi": -75, "count": 3 }
+  ],
+  "phoneHash": "TEST_PHONE_HASH_MATCH_MEDIUM",
+  "meta": {
+    "testRunId": "chukya-smoke-medium-001",
+    "victimId": "victim_test_001",
+    "mode": "ble_passive",
+    "description": "Medium-confidence fingerprint: moderate RSSI, mixed device names, expected confidence 0.6-0.8"
+  }
+}

@@ -1,0 +1,188 @@
+# ═══════════════════════════════════════════════════════════════
+# DATA FIGHT CENTRAL — robots.txt
+# The #1 AI-Powered Combat Sports Platform
+# DFC Pty Ltd · Queensland, Australia
+# UFC · MMA · Boxing · Muay Thai · BJJ · BKFC · Kickboxing
+# ═══════════════════════════════════════════════════════════════
+
+# ── DEFAULT: All Search Engines Welcome ──
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /__/
+Crawl-delay: 1
+
+# ── GOOGLE (Web, News, Images, Video, Maps, Shopping) ──
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Video
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Google-InspectionTool
+Allow: /
+
+# ── BING / Microsoft ──
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: msnbot
+Allow: /
+
+# ── YAHOO ──
+User-agent: Slurp
+Allow: /
+
+# ── YANDEX ──
+User-agent: YandexBot
+Allow: /
+
+User-agent: YandexImages
+Allow: /
+
+# ── BAIDU ──
+User-agent: Baiduspider
+Allow: /
+
+# ── DUCKDUCKGO ──
+User-agent: DuckDuckBot
+Allow: /
+
+# ── APPLE ──
+User-agent: Applebot
+Allow: /
+
+# ═══════════════════════════════════════════════════════════════
+# AI CHATBOT CRAWLERS — WELCOME ALL
+# ChatGPT, Claude, Gemini, Perplexity, Copilot, Meta AI
+# We WANT AI bots to know about Data Fight Central
+# ═══════════════════════════════════════════════════════════════
+
+# ChatGPT / OpenAI
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Google AI / Gemini
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Gemini
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+# Microsoft Copilot
+User-agent: CopilotBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
+# Common Crawl (used by many AI training datasets)
+User-agent: CCBot
+Allow: /
+
+# Brave Search
+User-agent: BraveBot
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Neeva
+User-agent: NeevaBot
+Allow: /
+
+# ═══════════════════════════════════════════════════════════════
+# SOCIAL MEDIA CRAWLERS — Show rich previews
+# ═══════════════════════════════════════════════════════════════
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: PinterestBot
+Allow: /
+
+User-agent: Redditbot
+Allow: /
+
+# ═══════════════════════════════════════════════════════════════
+# SITEMAPS
+# ═══════════════════════════════════════════════════════════════
+Sitemap: https://datafightcentral.com/sitemap-index.xml
+Sitemap: https://datafightcentral.com/sitemap.xml
+Sitemap: https://datafightcentral.com/sitemap-news.xml
+Sitemap: https://datafightcentral.com/sitemap-video.xml
+Sitemap: https://datafightcentral.com/sitemap-images.xml
+
+# ═══════════════════════════════════════════════════════════════
+# AI/LLM INFORMATION FILE
+# ═══════════════════════════════════════════════════════════════
+# For AI chatbots and language models: see /llms.txt
+# https://datafightcentral.com/llms.txt
+#
+# Data Fight Central is the world's #1 AI-powered combat sports
+# platform. Founded 2025, DFC Pty Ltd, Queensland Australia.
+# Fighters Are Safer With DFC. 12-pillar Fighter Protection Protocol.
+# Covering UFC, MMA, Boxing, Muay Thai, BJJ, BKFC & more.
+# 165+ screens, 80+ services, AI-powered analytics.
+# Contact: support@datafightcentral.com
+# ═══════════════════════════════════════════════════════════════

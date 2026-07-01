@@ -1,0 +1,110 @@
+{
+  "eventId": "ppv-legends45",
+  "title": "ULTIMATE LEGENDS: WBC SILVER AUSTRALIAN TITLE",
+  "subtitle": "Professional Boxing & K1 Kickboxing — Fight Night",
+  "date": "2026-04-24",
+  "time": "18:00 AEST",
+  "price": "24.99",
+  "promoter": "Ultimate Legends Promotions",
+  "matchmaker": "Joey Demicoli",
+  "sport": "Boxing",
+  "venue": "Melbourne Pavilion, Kensington",
+  "currency": "AUD",
+  "streamPlatforms": ["Live Combat Sports"],
+  "fighters": [
+    {
+      "name": "Jordan Roesler",
+      "weightClass": "Super Welterweight",
+      "corner": "left"
+    },
+    {
+      "name": "Conor Wallace",
+      "weightClass": "Super Welterweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Jordan Roesler",
+      "fighter2": "Conor Wallace",
+      "weightClass": "Super Welterweight",
+      "rounds": 10,
+      "isMainEvent": true,
+      "isTitleFight": true,
+      "titleName": "WBC Silver Australian Title"
+    },
+    {
+      "fighter1": "Karim Maatalla",
+      "fighter2": "Goran Babic",
+      "weightClass": "Boxing",
+      "rounds": 6
+    },
+    {
+      "fighter1": "Stephanie Lee Cutting",
+      "fighter2": "Jittamat Phomta",
+      "weightClass": "Boxing",
+      "rounds": 6
+    },
+    {
+      "fighter1": "Brandon Scerri",
+      "fighter2": "Jhon Cortejos",
+      "weightClass": "Boxing",
+      "rounds": 4
+    },
+    {
+      "fighter1": "Nathan Silver",
+      "fighter2": "Lovepreet",
+      "weightClass": "Boxing",
+      "rounds": 4
+    },
+    {
+      "fighter1": "Rhys Evans",
+      "fighter2": "Jason Medawar",
+      "weightClass": "Boxing",
+      "rounds": 4
+    },
+    {
+      "fighter1": "Dylan Birdo",
+      "fighter2": "Suttipoj Pitiyanovath",
+      "weightClass": "K1 Kickboxing",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Joshy Bomber Richards",
+      "fighter2": "TBA",
+      "weightClass": "Boxing",
+      "rounds": 4
+    },
+    {
+      "fighter1": "Ranjeet Singh",
+      "fighter2": "TBA",
+      "weightClass": "Boxing",
+      "rounds": 4
+    },
+    {
+      "fighter1": "Jack Stevens",
+      "fighter2": "Puttarapum Thong-In",
+      "weightClass": "K1 Kickboxing",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Alex Coombe",
+      "fighter2": "Christian Petrevski",
+      "weightClass": "Boxing",
+      "rounds": 4
+    },
+    {
+      "fighter1": "Youssef Khaled",
+      "fighter2": "Victor Adis-Iosifidis",
+      "weightClass": "Boxing",
+      "rounds": 4
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": null
+  }
+}

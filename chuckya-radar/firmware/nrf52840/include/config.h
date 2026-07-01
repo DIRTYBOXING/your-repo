@@ -1,0 +1,26 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define DEVICE_ID "bracelet_01"
+#define BUFFER_SIZE 10
+
+/* BLE Service UUIDs (replace with vendor UUIDs in production) */
+#define CHUCKYA_SERVICE_UUID \
+    BT_UUID_128_ENCODE(0x0000CCHK, 0x0000, 0x1000, 0x8000, 0x00805F9B34FB)
+#define CHAR_RAW_UUID \
+    BT_UUID_128_ENCODE(0x0000C001, 0x0000, 0x1000, 0x8000, 0x00805F9B34FB)
+#define CHAR_PAIR_UUID \
+    BT_UUID_128_ENCODE(0x0000C002, 0x0000, 0x1000, 0x8000, 0x00805F9B34FB)
+
+/* Proximity thresholds */
+#define AUTO_THRESHOLD_M 10.0f
+#define SCAN_INTERVAL_MS 10000
+#define PANIC_DEBOUNCE_MS 500
+
+/* Advertising intervals */
+#define ADV_INTERVAL_ACTIVE_MS 500
+#define ADV_INTERVAL_IDLE_MS 2000
+#define ADV_INTERVAL_PANIC_MS 100
+#define ADV_PANIC_DURATION_MS 30000
+
+#endif /* CONFIG_H */

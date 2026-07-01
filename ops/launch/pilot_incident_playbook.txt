@@ -1,0 +1,196 @@
+============================================================
+ DATA FIGHT CENTRAL — INCIDENT PLAYBOOK (PILOT)
+ Date: 28 March 2026
+ For: Moderators, Legal, Ops during live pilot events
+============================================================
+
+PURPOSE: Quick-reference playbook for handling incidents
+during live pilot streams. Print or keep open during events.
+
+============================================================
+ SEVERITY LEVELS
+============================================================
+
+  | Level    | Definition                              | Response Time |
+  |----------|-----------------------------------------|---------------|
+  | CRITICAL | Stream down, key leak, legal risk       | Immediate     |
+  | HIGH     | DRM failures, payment errors, abuse     | <5 minutes    |
+  | MEDIUM   | Quality issues, minor mod reports        | <15 minutes   |
+  | LOW      | Feature requests, cosmetic issues        | Post-event    |
+
+============================================================
+ INCIDENT 1: STREAM DOWN / CDN FAILURE
+============================================================
+
+  Severity: CRITICAL
+  Owner   : CDN / Backend Lead
+  Steps   :
+    1. Check CDN health dashboard (CloudFront/Cloudflare)
+    2. Check if signed URLs are still valid
+    3. Check backend token endpoint health
+    4. If CDN down: switch to backup CDN or pause stream
+    5. Notify viewers via in-app banner or social media
+    6. Log incident with timestamps
+  Escalate: If not resolved in 5 min -> page DevOps lead
+
+============================================================
+ INCIDENT 2: DRM LICENSE FAILURES
+============================================================
+
+  Severity: HIGH
+  Owner   : Media Engineer
+  Steps   :
+    1. Check license server health
+    2. Check DRM provider status page
+    3. Verify token validation is not rejecting valid tokens
+    4. Check browser/device compatibility (Widevine vs FairPlay)
+    5. If widespread: disable DRM temporarily and log for post-mortem
+  Escalate: If >5% failure rate -> CRITICAL
+
+============================================================
+ INCIDENT 3: PAYMENT/CHARGE FAILURE
+============================================================
+
+  Severity: HIGH
+  Owner   : Payments Engineer
+  Steps   :
+    1. Check Stripe dashboard for charge status
+    2. Verify webhook endpoint is responding
+    3. Check connected account status (not suspended)
+    4. If systemic: pause new ticket sales, investigate
+    5. Refund affected viewers and apologize
+  Escalate: If affecting >10% of purchases -> CRITICAL
+
+============================================================
+ INCIDENT 4: PIRACY / UNAUTHORIZED RESTREAM
+============================================================
+
+  Severity: HIGH
+  Owner   : Legal / Ops
+  Steps   :
+    1. Capture evidence (screenshots, URLs, timestamps)
+    2. Extract forensic watermark from pirated content
+    3. Look up watermark ID -> identify source viewer
+    4. Revoke that viewer's entitlement immediately
+    5. Send DMCA takedown notice to hosting platform:
+
+       DMCA TAKEDOWN TEMPLATE:
+       "This is a formal notification under the Digital
+       Millennium Copyright Act (DMCA). The content at
+       [URL] infringes the copyright of Data Fight Central,
+       ABN [number]. The original content is streamed
+       exclusively on datafightcentral.web.app. I request
+       immediate removal. Contact: admin@datafightcentral.com
+       Signed: [Your name], [Date]"
+
+    6. Preserve all evidence in ops-audit/piracy/<timestamp>/
+    7. Consider legal action for major leaks
+  Escalate: If mass piracy -> CRITICAL, contact counsel
+
+============================================================
+ INCIDENT 5: VIEWER ABUSE / CODE OF CONDUCT VIOLATION
+============================================================
+
+  Severity: MEDIUM-HIGH
+  Owner   : Community / Mod Lead
+  Steps   :
+    1. Document the violation (screenshot, log, user ID)
+    2. Issue warning via platform messaging
+    3. If severe or repeated: mute/ban user
+    4. If illegal content: escalate to Legal immediately
+    5. Log in moderation queue with timestamps
+  Escalate: Illegal content -> CRITICAL, notify legal
+
+============================================================
+ INCIDENT 6: CHARGEBACK / DISPUTE
+============================================================
+
+  Severity: MEDIUM
+  Owner   : Payments Engineer + Legal
+  Steps   :
+    1. Receive charge.dispute.created webhook
+    2. Flag entitlement and suspend access
+    3. Notify promoter (they are MOR)
+    4. Prepare evidence package:
+       - Playback start/stop timestamps
+       - Watermark assignment logs
+       - Token validation logs
+       - Purchase confirmation details
+    5. Submit evidence via Stripe dispute dashboard
+    6. Assist promoter with response
+  Escalate: If chargeback rate >1% -> HIGH
+
+============================================================
+ INCIDENT 7: TOKEN/CREDENTIAL SHARING
+============================================================
+
+  Severity: MEDIUM
+  Owner   : Backend Lead
+  Steps   :
+    1. Detect: multiple IPs using same token
+    2. Detect: concurrent session limit exceeded
+    3. Revoke active tokens for that entitlement
+    4. Notify user of terms violation
+    5. If persistent: suspend account
+  Escalate: If mass credential sharing -> HIGH
+
+============================================================
+ INCIDENT 8: SIGNING KEY COMPROMISE
+============================================================
+
+  Severity: CRITICAL
+  Owner   : DevOps / Security Lead
+  Steps   :
+    1. IMMEDIATELY rotate signing key in vault
+    2. Deploy new public key to all verification services
+    3. Invalidate all existing tokens
+    4. Re-mint tokens for all active viewers
+    5. Check audit logs for unauthorized access
+    6. Notify affected parties
+    7. Full security review within 24 hours
+  Escalate: Always CRITICAL — page security lead immediately
+
+============================================================
+ COMMUNICATION TEMPLATES
+============================================================
+
+VIEWER NOTIFICATION (stream issue):
+  "We're experiencing a temporary issue with the stream.
+   Our team is working to resolve it. Please stand by.
+   — DFC Team"
+
+VIEWER NOTIFICATION (piracy warning):
+  "Unauthorized redistribution of this stream is prohibited
+   and monitored. Violators will have access revoked and
+   may face legal action."
+
+PROMOTER NOTIFICATION (dispute):
+  "A chargeback has been filed for [event name]. As Merchant
+   of Record, please review and respond. DFC has prepared
+   evidence to assist. Contact: admin@datafightcentral.com"
+
+POST-INCIDENT REPORT TEMPLATE:
+  Incident ID   : INC-YYYYMMDD-###
+  Severity      : [CRITICAL/HIGH/MEDIUM/LOW]
+  Time detected : [timestamp]
+  Time resolved : [timestamp]
+  Owner         : [name]
+  Summary       : [what happened]
+  Root cause    : [why it happened]
+  Actions taken : [what was done]
+  Follow-up     : [what needs to happen next]
+
+============================================================
+ ESCALATION CHAIN
+============================================================
+
+  Level 1: On-call moderator / ops person
+  Level 2: Backend Lead / DevOps Lead
+  Level 3: Head of Dev / Founder
+  Level 4: Legal counsel (for legal/IP issues)
+
+  Contact method: [Define — Slack channel, phone, email]
+
+============================================================
+ END OF INCIDENT PLAYBOOK
+============================================================

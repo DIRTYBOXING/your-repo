@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "sourceDocument": "docs/DFC_MASTER_COMMUNICATIONS_SUITE_2026.md",
+  "assistant": {
+    "name": "DFC Sales Assistant",
+    "defaultReviewMode": "human_support_available",
+    "fallbackCta": "Need help? We can route you to a human operator."
+  },
+  "prompts": {
+    "offerGeneration": "Generate 4 monetization offers for event {eventId}. For each offer return JSON: {type, priceCents, uiLabel, description, predictedConversionScore, rationale}. Use event metadata and promoter goals. Mark each offer with requiresReview=true and reviewStatus=pending.",
+    "creativeGeneration": "Produce 3 poster copy variants for event {eventId} using template {templateKey}. Tone: cinematic, urgent. Return JSON: {templateKey, copyVariants:[{id, headline, subhead, cta}], suggestedImageKeywords:[...]}",
+    "purchaseFlow": "You are DFC Sales Assistant. User intent: {intent}. If intent is purchase, present top 2 offers with short benefits and price. If user confirms, call /api/orders/create and return payment link. Use canonical messaging from docs/DFC_MASTER_COMMUNICATIONS_SUITE_2026.md. Always show Need help? option to route to human support."
+  },
+  "flows": [
+    {
+      "id": "buy_event",
+      "intent": "purchase_event",
+      "steps": [
+        "show_top_two_offers",
+        "explain_short_benefits",
+        "create_payment_intent",
+        "confirm_webhook_entitlement",
+        "show_watch_now"
+      ],
+      "campaignPillars": ["Coffee Not a Coffin", "Mentor Meetups", "Safety Zones"]
+    },
+    {
+      "id": "buy_highlight",
+      "intent": "purchase_highlight",
+      "steps": [
+        "show_highlight_offer",
+        "create_payment_intent",
+        "confirm_entitlement",
+        "offer_social_share"
+      ],
+      "campaignPillars": ["Coffee Not a Coffin"]
+    },
+    {
+      "id": "refund_info",
+      "intent": "refund_info",
+      "steps": [
+        "check_order_status",
+        "show_policy_summary",
+        "route_to_human_support"
+      ],
+      "campaignPillars": []
+    },
+    {
+      "id": "find_safety_zone",
+      "intent": "community_support",
+      "steps": [
+        "acknowledge_request",
+        "use_safety_zone_messaging",
+        "offer_human_support",
+        "provide_local_pathways"
+      ],
+      "campaignPillars": ["Safety Zones", "Mentor Meetups"]
+    }
+  ]
+}

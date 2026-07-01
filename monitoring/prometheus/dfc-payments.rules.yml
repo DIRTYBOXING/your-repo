@@ -1,0 +1,52 @@
+groups:
+  - name: dfc-payments.rules
+    rules:
+      - alert: PPVCheckoutSuccessDrop
+        expr: 1 - (sum(rate(ppv_checkout_success_total[5m])) / clamp_min(sum(rate(ppv_checkout_sessions_total[5m])), 1)) > 0.02
+        for: 5m
+        labels:
+          severity: critical
+          service: payments
+        annotations:
+          summary: PPV checkout success rate below 98% over 5m
+          description: Investigate payment provider health and webhook validation failures.
+
+      - alert: WebhookSignatureFailuresHigh
+        expr: sum(rate(webhook_signature_failures_total[5m])) / clamp_min(sum(rate(dfc_webhook_verification_total[5m])), 1) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+          service: payments
+        annotations:
+          summary: Webhook signature failures exceed 1% over 5m
+          description: Check webhook secrets/headers and review recent forensic entries at /api/kpis/summary.
+
+      - alert: EntitlementGrantLatencyHigh
+        expr: histogram_quantile(0.95, sum(rate(entitlement_grant_latency_seconds_bucket[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          service: payments
+        annotations:
+          summary: Entitlement grant p95 latency above 500ms
+          description: Investigate API latency and downstream entitlement persistence.
+
+      - alert: PosterGenerationErrorsHigh
+        expr: sum(rate(poster_generation_errors_total[10m])) > 0
+        for: 10m
+        labels:
+          severity: warning
+          service: media
+        annotations:
+          summary: Poster/media generation errors detected
+          description: Check media worker queue health and internal callback payloads.
+
+      - alert: WalletReconciliationMismatchHigh
+        expr: dfc_wallet_reconciliation_mismatch_ratio > 0.01
+        for: 5m
+        labels:
+          severity: warning
+          service: payments
+        annotations:
+          summary: Wallet reconciliation mismatch ratio exceeds 1%
+          description: More than 1% of checked accounts have a discrepancy between purchase totals and wallet debits. Trigger a manual review via POST /api/admin/reconciliation/run and inspect mismatches at GET /api/admin/reconciliation/latest.

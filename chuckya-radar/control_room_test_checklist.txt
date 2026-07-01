@@ -1,0 +1,160 @@
+╔══════════════════════════════════════════════════════════════╗
+║  CHUCKYA CONTROL ROOM — END-TO-END TEST CHECKLIST           ║
+║  Run before every demo / deployment                         ║
+╚══════════════════════════════════════════════════════════════╝
+
+──────────────────────────────────────────
+ 1. INFRASTRUCTURE
+──────────────────────────────────────────
+[ ] Redis running and reachable
+    → docker compose up redis
+    → redis-cli ping → PONG
+
+[ ] Docker Compose stack healthy
+    → cd chuckya-radar && docker compose up -d
+    → docker compose ps (all 6 services UP)
+
+[ ] Ports open and not conflicting:
+    8081 → radar-api
+    8082 → static dashboard
+    8083 → device-verifier
+    8084 → ws-server
+    9091 → metrics-server
+    6379 → redis
+
+──────────────────────────────────────────
+ 2. BACKEND API SMOKE TESTS
+──────────────────────────────────────────
+[ ] Health check
+    curl http://localhost:8081/healthz
+    → {"status":"ok","service":"chuckya-radar"}
+
+[ ] Unsigned ingest
+    curl -X POST http://localhost:8081/v1/radar/event \
+      -H "Content-Type: application/json" \
+      -d '{"type":"manual","riskScore":75,"source":"test"}'
+    → {"id":"R-...","status":"ingested",...}
+
+[ ] List alerts
+    curl http://localhost:8081/v1/radar/alerts
+    → JSON array with at least 1 alert
+
+[ ] Device public key registration
+    curl -X POST http://localhost:8083/v1/device/registerPublicKey \
+      -H "Content-Type: application/json" \
+      -d '{"appInstanceId":"test-dev-1","publicKeyBase64":"<base64-pem>"}'
+    → {"status":"registered",...}
+
+[ ] Consent storage
+    curl -X POST http://localhost:8083/v1/device/consent \
+      -H "Content-Type: application/json" \
+      -d '{"appInstanceId":"test-dev-1","consent":{"appId":true,"imei":false,"location":true}}'
+    → {"status":"consent_stored",...}
+
+[ ] Metrics endpoint
+    curl http://localhost:8081/metrics
+    → Prometheus text format with radar_alerts_total, radar_ingest_latency_seconds, etc.
+
+──────────────────────────────────────────
+ 3. WEBSOCKET SERVER
+──────────────────────────────────────────
+[ ] WS health check
+    curl http://localhost:8084/healthz
+    → {"status":"ok","clients":0}
+
+[ ] WS connect + auth (use wscat or similar)
+    wscat -c ws://localhost:8084
+    → Send: {"type":"auth","token":"<jwt-with-regions>"}
+    → Receive: {"type":"auth_ok",...}
+    → Send: {"type":"subscribe","region":"brisbane"}
+    → Receive: {"type":"subscribed","region":"brisbane"}
+
+[ ] Admin publish → WS delivery
+    (Keep wscat open, in another terminal:)
+    curl -X POST http://localhost:8084/publish \
+      -H "Authorization: Bearer admintoken" \
+      -H "Content-Type: application/json" \
+      -d '{"region":"brisbane","payload":{"alertId":"test-1","mode":"code_black","riskScore":95}}'
+    → wscat receives: {"type":"alert","region":"brisbane","payload":{...}}
+
+[ ] Latency < 1 second (visual check in wscat timestamps)
+
+──────────────────────────────────────────
+ 4. DASHBOARDS
+──────────────────────────────────────────
+[ ] HTML control room
+    Open http://localhost:8082/control_room.html
+    → 6 panels visible, neon theme, radar sweep animating
+
+[ ] Simple dashboard
+    Open http://localhost:8082/
+    → Alert list populates after ingest
+
+[ ] React control room (if built)
+    cd chuckya-radar/control-room-frontend
+    npm install && npm run dev
+    → Opens on http://localhost:3000
+    → 6-panel grid with live data from API
+
+──────────────────────────────────────────
+ 5. EVIDENCE & POLICE EXPORT
+──────────────────────────────────────────
+[ ] Export evidence ZIP
+    curl -X POST http://localhost:8081/v1/radar/alerts/<alertId>/export \
+      --output evidence.zip
+    → ZIP contains alert.json, manifest.json, chain_of_custody.json
+
+[ ] Verify SHA256 integrity
+    unzip evidence.zip -d evidence_check/
+    sha256sum evidence_check/alert.json
+    → Matches hash in manifest.json
+
+──────────────────────────────────────────
+ 6. LOAD TEST (optional)
+──────────────────────────────────────────
+[ ] Artillery test
+    cd chuckya-radar/load-test
+    → Edit artillery.yml to set a valid JWT token
+    artillery run artillery.yml
+    → Check summary: p95 < 500ms, no errors
+
+[ ] Publish loop
+    ./publish-loop.sh
+    → 1000 alerts published, connected WS clients receive all
+
+──────────────────────────────────────────
+ 7. KUBERNETES (production)
+──────────────────────────────────────────
+[ ] Secrets created
+    kubectl create secret generic jwt-secret --from-literal=secret='<STRONG_SECRET>' -n dfc
+    kubectl create secret generic admin-token --from-literal=token='<STRONG_TOKEN>' -n dfc
+
+[ ] Manifests applied
+    kubectl apply -f k8s/redis.yaml
+    kubectl apply -f k8s/ws-server.yaml
+    kubectl apply -f k8s/metrics.yaml
+    kubectl apply -f k8s/hpa-ws.yaml
+
+[ ] Pods healthy
+    kubectl get pods -n dfc → All Running
+
+[ ] HPA active
+    kubectl get hpa -n dfc → ws-server-hpa shows READY
+
+──────────────────────────────────────────
+ 8. GRAFANA (production)
+──────────────────────────────────────────
+[ ] Import dashboard
+    Grafana UI → Dashboards → Import → upload grafana-dashboard.json
+    → "CHUCKYA Control Room" dashboard appears
+
+[ ] Prometheus data source configured
+    → Points to metrics-server.dfc.svc.cluster.local:9091
+
+[ ] Panels populate with live data after load test
+
+══════════════════════════════════════════
+ PASS / FAIL NOTES:
+──────────────────────────────────────────
+
+

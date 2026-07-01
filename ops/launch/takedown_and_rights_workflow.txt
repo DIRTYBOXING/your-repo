@@ -1,0 +1,81 @@
+TAKEDOWN, RIGHTS VERIFICATION, AND OPERATIONAL WORKFLOW
+========================================================
+Data Fight Central (DFC) — Internal and publishable reference.
+
+TAKEDOWN WORKFLOW (PUBLIC)
+---------------------------
+Step 1: Report takedown to legal@datafightcentral.com with:
+        - Timestamp of infringing content
+        - URL or stream reference
+        - Evidence of rights ownership (contracts, releases)
+
+Step 2: DFC suspends the stream or VOD pending verification within
+        4 hours of receipt during event windows, 24 hours otherwise.
+
+Step 3: DFC requests proof of rights from the content provider
+        (statutory declaration, licence, fighter releases).
+
+Step 4: If the provider cannot produce proof within 48 hours, DFC
+        removes the content permanently and initiates refund/settlement
+        per the Pilot Licence terms.
+
+Step 5: If the claim is disputed, DFC follows the dispute resolution
+        clause in the Pilot Licence and preserves watermark logs for
+        forensic tracing. Both parties are notified of the dispute
+        process timeline.
+
+RIGHTS VERIFICATION CHECKLIST (INTERNAL — BEFORE EVERY EVENT)
+---------------------------------------------------------------
+- [ ] Witnessed Statutory Declaration present and scanned
+- [ ] Pilot Licence signed by both parties and stored
+- [ ] Fighter releases attached, signed, and dated
+- [ ] Sponsor clearances attached
+- [ ] Music licence confirmations attached
+- [ ] Stripe Connected Account ID recorded
+- [ ] DRM test evidence stored (screenshots, licence issuance logs)
+- [ ] Watermark test evidence stored (extraction verification)
+- [ ] Watermark logs retained for minimum 12 months
+- [ ] All documents saved to ops/audit/[event-name]/
+
+PRE-SALE GATE (MUST ALL BE TRUE BEFORE PUBLIC PPV SALE)
+---------------------------------------------------------
+1. Pilot Licence signed: YES / NO
+2. Statutory Declaration witnessed and received: YES / NO
+3. Stripe Connect account active and verified: YES / NO
+4. DRM test passed (FairPlay + Widevine): YES / NO
+5. Watermark test passed and extraction verified: YES / NO
+6. Technical test passed (clean feed, no dropped frames, 30 min): YES / NO
+7. All fighter releases on file: YES / NO
+
+If ANY item is NO, do not open public PPV sales.
+
+EVENT AUDIT LOG (CSV FORMAT — ONE ROW PER EVENT)
+--------------------------------------------------
+Fields:
+Event, Promoter, Stripe_Connected_ID, Licence_Signed, StatDec_Received,
+DRM_Test_Date, Watermark_Test_Date, Tech_Test_Date, Live_Date,
+Gross_Buys, Gross_Revenue, Net_To_Promoter, DFC_Commission, Notes
+
+Save as: ops/audit/event_audit_log.csv
+
+FORENSIC WATERMARK RETENTION
+------------------------------
+- All watermark extraction logs retained for 12 months minimum.
+- Logs include: viewer ID, session ID, timestamp, extraction result.
+- Used for: piracy tracing, takedown evidence, legal proceedings.
+- Storage: encrypted, access restricted to DFC legal and ops team.
+
+ANTI-PIRACY MONITORING (DURING AND POST-EVENT)
+-------------------------------------------------
+- Active monitoring during live event window.
+- Automated scanning for restreams on major platforms (YouTube, Twitch,
+  Facebook Live) during event.
+- DMCA/takedown notices sent within 1 hour of detection.
+- Post-event monitoring for 30 days (VOD window).
+- Monthly summary report to promoter.
+
+CONTACT
+-------
+- Takedown / Legal: legal@datafightcentral.com
+- Onboarding / Ops: ops@datafightcentral.com
+- General: info@datafightcentral.com | 0450 113 139

@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    { "src": "/sendPromoterEmail", "dest": "/server.js" },
+    { "src": "/sendSocialOutreach", "dest": "/server.js" },
+    { "src": "/sms", "dest": "/server.js" },
+    { "src": "/health", "dest": "/server.js" },
+    { "src": "/", "dest": "/server.js" }
+  ],
+  "env": {
+    "SENDGRID_API_KEY": "@sendgrid-api-key",
+    "FROM_EMAIL": "legal@datafightcentral.com",
+    "FB_PAGE_ID": "@fb-page-id",
+    "FB_PAGE_ACCESS_TOKEN": "@fb-page-access-token",
+    "IG_BUSINESS_ACCOUNT_ID": "@ig-business-account-id",
+    "IG_ACCESS_TOKEN": "@ig-access-token",
+    "TWILIO_AUTH_TOKEN": "@twilio-auth-token"
+  }
+}

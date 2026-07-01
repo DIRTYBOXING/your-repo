@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Pink Shield Hero: PROTECTION, STRENGTH, RECOVERY -->
+  <defs>
+    <style>
+      @keyframes shieldPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+      @keyframes glowRadiate { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+      @keyframes heartbeat { 0%, 100% { opacity: 0.8; } 25% { opacity: 1; } 50% { opacity: 0.8; } }
+      .shieldPulse { animation: shieldPulse 3s ease-in-out infinite; }
+      .glowRadiate { animation: glowRadiate 3s ease-in-out infinite; }
+      .heartbeat { animation: heartbeat 2s ease-in-out infinite; }
+    </style>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F48FB1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C2185B;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="shieldGlow">
+      <stop offset="0%" style="stop-color:#F06292;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#C2185B;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shieldShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="6" stdDeviation="4" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Background: Protective Gradient -->
+  <rect width="800" height="600" fill="#1A1A2E"/>
+  <circle cx="400" cy="300" r="300" fill="url(#shieldGlow)" class="glowRadiate"/>
+  
+  <!-- Shield (Protection) -->
+  <g transform="translate(400, 280)" class="shieldPulse">
+    <path d="M0 -150 L120 -120 L140 0 L120 120 L60 150 L0 160 L-60 150 L-120 120 L-140 0 L-120 -120 Z" 
+          fill="url(#shieldGradient)" stroke="#880E4F" stroke-width="6" filter="url(#shieldShadow)"/>
+    
+    <!-- Shield Center Symbol: Heart + Fist (Love + Strength) -->
+    <circle cx="0" cy="0" r="60" fill="#AD1457" opacity="0.6"/>
+    
+    <!-- Heart -->
+    <path d="M-20 -10 Q-30 -25, -20 -35 Q-10 -40, 0 -30 Q10 -40, 20 -35 Q30 -25, 20 -10 L0 10 Z" 
+          fill="#F8BBD0" class="heartbeat"/>
+    
+    <!-- Fist (Strength) -->
+    <rect x="-15" y="10" width="30" height="35" rx="8" fill="#F8BBD0"/>
+    <circle cx="-10" cy="15" r="6" fill="#F06292"/>
+    <circle cx="0" cy="12" r="6" fill="#F06292"/>
+    <circle cx="10" cy="15" r="6" fill="#F06292"/>
+  </g>
+  
+  <!-- Broken Chain (Freedom from Violence) -->
+  <g transform="translate(150, 150)">
+    <ellipse cx="0" cy="0" rx="15" ry="25" fill="none" stroke="#757575" stroke-width="5"/>
+    <line x1="15" y1="0" x2="35" y2="0" stroke="#757575" stroke-width="5"/>
+    <!-- Broken link -->
+    <line x1="35" y1="-10" x2="45" y2="-20" stroke="#E0E0E0" stroke-width="4"/>
+    <line x1="35" y1="10" x2="45" y2="20" stroke="#E0E0E0" stroke-width="4"/>
+  </g>
+  
+  <!-- Rising Phoenix Silhouette (Recovery) -->
+  <g transform="translate(650, 200)" opacity="0.4">
+    <path d="M0 0 Q-30 -40, -50 -60 Q-20 -50, 0 -70 Q20 -50, 50 -60 Q30 -40, 0 0" 
+          fill="#F48FB1"/>
+    <path d="M-15 -10 L-40 20" stroke="#F48FB1" stroke-width="3"/>
+    <path d="M15 -10 L40 20" stroke="#F48FB1" stroke-width="3"/>
+  </g>
+  
+  <text x="400" y="520" font-family="Arial" font-size="52" font-weight="bold" 
+        text-anchor="middle" fill="#F48FB1" stroke="#880E4F" stroke-width="2">
+    🛡️ PINK SHIELD
+  </text>
+  
+  <text x="400" y="560" font-family="Arial" font-size="24" 
+        text-anchor="middle" fill="#F8BBD0">
+    Protection. Strength. Recovery. You are not alone.
+  </text>
+</svg>

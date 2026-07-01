@@ -1,0 +1,129 @@
+# REST Client configuration for VSCode
+
+### Environment Variables
+@baseUrl = http://localhost
+@ingestPort = 8000
+@predictorPort = 8090
+@entitlementsPort = 4010
+@apiKey = dev-key-12345
+
+### Local Development Endpoints
+
+## Ingest API Health
+GET {{baseUrl}}:{{ingestPort}}/health
+
+### List Events
+GET {{baseUrl}}:{{ingestPort}}/events
+
+### Create Event
+POST {{baseUrl}}:{{ingestPort}}/events
+Content-Type: application/json
+
+{
+  "name": "UFC Fight Night",
+  "status": "scheduled",
+  "start_at": "2026-05-15T18:00:00Z"
+}
+
+---
+
+## Predictor API Health
+GET {{baseUrl}}:{{predictorPort}}/health
+
+### Get Fight Prediction
+POST {{baseUrl}}:{{predictorPort}}/predict
+Content-Type: application/json
+
+{
+  "fighter_a": {
+    "name": "Alex Silva",
+    "stats": {
+      "wins": 15,
+      "losses": 2,
+      "strike_accuracy": 0.65,
+      "takedown_accuracy": 0.72
+    }
+  },
+  "fighter_b": {
+    "name": "Jordan Davis",
+    "stats": {
+      "wins": 12,
+      "losses": 3,
+      "strike_accuracy": 0.58,
+      "takedown_accuracy": 0.65
+    }
+  }
+}
+
+---
+
+## Entitlements API Health
+GET {{baseUrl}}:{{entitlementsPort}}/health
+
+### Create Checkout Session (Stripe)
+POST {{baseUrl}}:{{entitlementsPort}}/checkout/session
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "user_id": "user-123",
+  "event_id": "event-456",
+  "price_tier": "standard"
+}
+
+### Issue Entitlement Token
+POST {{baseUrl}}:{{entitlementsPort}}/tokens/issue
+Content-Type: application/json
+X-API-Key: {{apiKey}}
+
+{
+  "user_id": "user-123",
+  "event_id": "event-456",
+  "token_ttl": 3600
+}
+
+---
+
+## Monitoring & Observability
+
+### Prometheus Metrics
+GET http://localhost:9090/api/v1/query?query=up
+
+### Grafana Dashboard
+GET http://localhost:3001
+
+### Vault Secrets
+GET http://localhost:8200/v1/secret/dfc
+X-Vault-Token: root
+
+---
+
+## Database Queries (via REST)
+
+### Get Database Health
+GET {{baseUrl}}:{{ingestPort}}/health/db
+
+### Get Event Count
+GET {{baseUrl}}:{{ingestPort}}/events/count
+
+---
+
+## Production Cloud Endpoints
+
+@cloudBaseUrl = https://api.datafightcentral.com
+@prodApiKey = {{env PROD_API_KEY}}
+
+### Production: Ingest Health
+GET {{cloudBaseUrl}}/ingest/health
+Authorization: Bearer {{prodApiKey}}
+
+### Production: Create Event
+POST {{cloudBaseUrl}}/ingest/events
+Authorization: Bearer {{prodApiKey}}
+Content-Type: application/json
+
+{
+  "name": "PPV Event",
+  "status": "live",
+  "start_at": "2026-06-01T20:00:00Z"
+}

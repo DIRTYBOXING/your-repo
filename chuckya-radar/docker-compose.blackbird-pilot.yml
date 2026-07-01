@@ -1,0 +1,92 @@
+# chuckya-radar/docker-compose.blackbird-pilot.yml
+# Blackbird Pilot: FastAPI ingest + PostGIS + Redis + Prometheus + Grafana
+# Usage: docker-compose -f docker-compose.blackbird-pilot.yml up
+
+version: "3.9"
+
+services:
+  # ─── PostGIS Database ─────────────────────────────────────────────────────
+  db:
+    image: postgis/postgis:15-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: controlroom
+      POSTGRES_USER: controlroomuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../migrations/20260329_blackbird_pilot_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U controlroomuser -d controlroom"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis (background task queue) ───────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ─── FastAPI Ingest & Matching Service ───────────────────────────────────
+  api:
+    build:
+      context: ../atlas_backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://controlroomuser:${DB_PASSWORD:-changeme}@db:5432/controlroom
+      REDIS_URL: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_APPLICATION_CREDENTIALS: /secrets/firebase.json
+    volumes:
+      - ../atlas_backend:/app
+      - ${FIREBASE_CRED_PATH:-/dev/null}:/secrets/firebase.json:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn atlas_backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ─── Prometheus ──────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+
+  # ─── Grafana ─────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana-provisioning/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./grafana-provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./grafana-dashboard.json:/etc/grafana/provisioning/dashboards/blackbird.json:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  pgdata:
+  grafana_data:

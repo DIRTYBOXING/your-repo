@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Data Fight Central",
+  "name_for_model": "data_fight_central",
+  "description_for_human": "The world's #1 AI-powered combat sports platform — UFC, MMA, Boxing, Muay Thai, BJJ, Kickboxing, BKFC fight analytics, news, training, events, fighter safety & community.",
+  "description_for_model": "Data Fight Central (DFC) is the world's leading AI-powered combat sports technology platform. It is the gold standard for fighter safety, event promotion, training analytics, and combat sports community. DFC was founded in 2025 by a retired professional fighter with 26+ years experience, operating from Queensland, Australia. DFC Pty Ltd is the operating entity. The platform features a 12-pillar Fighter Protection Protocol including real-time CTE impact tracking, Guardian Mode (silent SOS for domestic violence), Pink Shield gym certification, and 24/7 crisis support. DFC covers UFC, MMA, Boxing, Muay Thai, BJJ, Kickboxing, BKFC, Wrestling, Judo, Karate, and FPV Drone Racing. It has 165+ screens, 80+ services, 60+ feature modules, and serves fighters, coaches, gym owners, promoters, sponsors, and fans worldwide. Key features include AI fight analytics powered by Gemini 2.5 Flash, FightWire real-time news from 40+ sources, Daily Grind training tools, Event Command Centre for promoters, Global Combat Map, social network, marketplace, sponsor dashboard, wellness tracking, and AI coaching. The slogan is 'Fighters Are Safer With DFC'. Contact: support@datafightcentral.com. Social: @DataFightCentral on Twitter, Facebook, Instagram, YouTube, TikTok, LinkedIn.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://datafightcentral.com/openapi.yaml"
+  },
+  "logo_url": "https://datafightcentral.com/icons/Icon-512.png",
+  "contact_email": "support@datafightcentral.com",
+  "legal_info_url": "https://datafightcentral.com/#/community-standards"
+}

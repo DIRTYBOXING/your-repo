@@ -1,0 +1,179 @@
+============================================================
+ DATA FIGHT CENTRAL
+ CONFIDENTIALITY, IP ASSIGNMENT & WORK FOR HIRE AGREEMENT
+ Version 1.0 | March 2026
+ Classification: LEGAL — Require Signature Before Any Work
+============================================================
+
+NOTE: Adapted for sole trader / ABN structure. Update entity
+references when Pty Ltd is formed.
+
+============================================================
+
+CONFIDENTIALITY, INTELLECTUAL PROPERTY ASSIGNMENT
+AND WORK FOR HIRE AGREEMENT
+
+This Agreement is between:
+
+  Data Fight Central, ABN [INSERT ABN]
+  operated by [YOUR LEGAL NAME] ("Company")
+
+and the individual or entity identified below ("Worker").
+
+------------------------------------------------------------
+ 1. DEFINITIONS
+------------------------------------------------------------
+
+"Confidential Information" means all nonpublic technical,
+business, financial, creative, and operational information
+disclosed by Company to Worker, including but not limited to:
+source code, algorithms, designs, business plans, customer
+data, pricing, strategies, prototypes, firmware, and trade
+secrets.
+
+"Work Product" means all code, designs, models, inventions,
+discoveries, improvements, documentation, and deliverables
+created by Worker in connection with Company work.
+
+------------------------------------------------------------
+ 2. CONFIDENTIALITY OBLIGATIONS
+------------------------------------------------------------
+
+2.1. Worker will keep all Confidential Information strictly
+     confidential and will not disclose it to any third party
+     without prior written consent from Company.
+
+2.2. Worker will use Confidential Information only for the
+     purpose of performing work for Company.
+
+2.3. Worker will restrict access to Confidential Information
+     to those who need to know and who are bound by similar
+     confidentiality obligations.
+
+2.4. Confidentiality obligations survive termination of this
+     Agreement for five (5) years, or indefinitely for
+     information that constitutes trade secrets.
+
+2.5. Upon termination or Company's request, Worker will
+     return or destroy all copies of Confidential Information.
+
+------------------------------------------------------------
+ 3. ASSIGNMENT OF IP AND WORK FOR HIRE
+------------------------------------------------------------
+
+3.1. Worker assigns to Company all rights, title, and interest
+     in and to all Work Product created during the engagement,
+     including all intellectual property rights (copyright,
+     patent, trade mark, trade secret, and all other rights).
+
+3.2. Worker agrees that all Work Product is a "work made for
+     hire" and Company is the sole owner of all copyrights.
+     If any Work Product is determined not to be a work made
+     for hire, Worker hereby assigns all rights to Company.
+
+3.3. Worker will execute any documents and take any actions
+     necessary to perfect Company's ownership of Work Product.
+
+3.4. Worker will not use Work Product for any purpose other
+     than Company work without prior written consent.
+
+------------------------------------------------------------
+ 4. MORAL RIGHTS
+------------------------------------------------------------
+
+4.1. To the maximum extent permitted by law, Worker consents
+     to Company's use of Work Product without attribution and
+     waives any moral rights in the Work Product.
+
+4.2. Where moral rights cannot be waived by law, Worker agrees
+     not to assert them against Company.
+
+------------------------------------------------------------
+ 5. PRE-EXISTING IP
+------------------------------------------------------------
+
+5.1. Worker lists below any pre-existing intellectual property
+     that Worker intends to use in connection with Company work.
+     If none, write "None."
+
+     Pre-existing IP: ________________________________________
+
+5.2. Worker grants Company a nonexclusive, royalty-free,
+     perpetual license to use any listed pre-existing IP
+     incorporated into Work Product.
+
+------------------------------------------------------------
+ 6. COMPENSATION
+------------------------------------------------------------
+
+6.1. Worker acknowledges that agreed compensation for services
+     fully covers the assignment obligations in this Agreement.
+
+6.2. Any additional IP-related payments must be agreed in a
+     separate written agreement.
+
+------------------------------------------------------------
+ 7. NON-SOLICITATION
+------------------------------------------------------------
+
+7.1. For twelve (12) months after termination, Worker will not
+     directly or indirectly solicit Company employees,
+     contractors, or clients for competitive purposes.
+
+------------------------------------------------------------
+ 8. REMEDIES
+------------------------------------------------------------
+
+8.1. Worker acknowledges that breach of this Agreement may
+     cause irreparable harm to Company.
+
+8.2. Company may seek injunctive relief in addition to any
+     other remedies available at law or in equity.
+
+8.3. Worker will be liable for all damages, costs, and
+     reasonable legal expenses arising from breach.
+
+------------------------------------------------------------
+ 9. TERM AND TERMINATION
+------------------------------------------------------------
+
+9.1. This Agreement takes effect on the date signed and
+     remains in effect for the duration of the engagement.
+
+9.2. Sections 2, 3, 4, 7, and 8 survive termination.
+
+------------------------------------------------------------
+ 10. GENERAL
+------------------------------------------------------------
+
+10.1. Governing Law: [INSERT JURISDICTION, e.g., Queensland,
+      Australia]
+
+10.2. Entire Agreement: This is the entire agreement between
+      the parties on this subject matter.
+
+10.3. Amendments: Must be in writing signed by both parties.
+
+10.4. Severability: If any provision is unenforceable, the
+      remainder continues in full force.
+
+------------------------------------------------------------
+ SIGNATURES
+------------------------------------------------------------
+
+Worker:
+  Name      : ________________________________________
+  ABN (if applicable): _______________________________
+  Address   : ________________________________________
+  Date      : ________________________________________
+  Signature : ________________________________________
+
+Company (Data Fight Central):
+  Name      : ________________________________________
+  ABN       : ________________________________________
+  Date      : ________________________________________
+  Signature : ________________________________________
+
+============================================================
+ END OF NDA + IP ASSIGNMENT TEMPLATE
+============================================================

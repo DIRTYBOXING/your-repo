@@ -1,0 +1,59 @@
+name: actions-lockfile-maintenance
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".github/actions.lock.json"
+
+jobs:
+  verify:
+    name: verify-actions-lockfile
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip if lockfile absent
+        id: lockfile_check
+        run: |
+          if [ ! -f ".github/actions.lock.json" ]; then
+            echo "::warning::actions.lock.json not yet generated — run actions-lockfile-maintenance (workflow_dispatch) to bootstrap"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify actions lockfile
+        if: steps.lockfile_check.outputs.skip == 'false'
+        uses: gjtorikian/gh-actions-lockfile@v1
+        continue-on-error: true
+        with:
+          mode: verify
+          comment: false
+
+  bootstrap-or-refresh:
+    name: bootstrap-or-refresh
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate actions lockfile
+        uses: gjtorikian/gh-actions-lockfile@v1
+        with:
+          mode: generate
+      - name: Commit actions lockfile if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/actions.lock.json
+          if git diff --cached --quiet; then
+            echo "No actions lockfile changes to commit"
+          else
+            git commit -m "chore(ci): refresh actions lockfile"
+            git push
+          fi

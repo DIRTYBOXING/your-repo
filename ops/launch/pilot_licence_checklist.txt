@@ -1,0 +1,97 @@
+PILOT LICENCE CHECKLIST — DATA FIGHT CENTRAL
+=============================================
+Give this checklist to your lawyer to convert into a short pilot licence
+template you can sign quickly.
+
+PARTIES AND DEFINITIONS
+- Promoter: [Name, ABN/ACN]
+- Distributor: Data Fight Central (D.F.C) [ABN]
+- Event definition: [Event name, date, venue]
+- Content: live broadcast feed, VOD highlights, fighter imagery, logos
+
+GRANT OF RIGHTS
+- [ ] Live transmission rights
+- [ ] VOD highlights rights (30-day window)
+- [ ] Exclusivity scope (if any — recommend non-exclusive for pilot)
+- [ ] Sublicensing rights (if applicable)
+
+TERRITORY
+- [ ] Explicit country list OR "worldwide"
+- [ ] Geoblocking obligations per territory
+
+PLATFORMS
+- [ ] Web (datafightcentral.web.app)
+- [ ] iOS (future)
+- [ ] Android (future)
+- [ ] Connected TV (future)
+
+TERM AND WINDOWS
+- [ ] Live date and time
+- [ ] VOD window length (e.g., 30 days post-event)
+- [ ] Replay rights duration
+
+COMMERCIAL TERMS
+- [ ] Revenue split: Promoter 60% / DFC 40% (or negotiated)
+- [ ] Alternative: Guaranteed fee + revenue share
+- [ ] Fees and deductions (Stripe processing ~2.9% + 30c)
+- [ ] Reserve for chargebacks (7-14 days)
+- [ ] Settlement schedule (net 30)
+
+PAYMENT FLOW
+- [ ] Promoter to onboard Stripe Connect (Express account)
+- [ ] DFC routes promoter share automatically via transfer_data
+- [ ] DFC takes commission via application_fee only
+- [ ] DFC does NOT hold promoter funds
+- [ ] Dispute and refund handling process
+- [ ] Audit rights — promoter can request transaction logs
+
+TECHNICAL DELIVERY
+- [ ] Feed format (SDI/RTMP/HLS) and delivery endpoint
+- [ ] Delivery deadline (minimum 48-72 hours before event for testing)
+- [ ] Metadata and graphics timing
+- [ ] Encoder redundancy requirements
+
+PROTECTION REQUIREMENTS
+- [ ] DRM: FairPlay (iOS/Safari) / Widevine (Android/Chrome) / PlayReady (Edge)
+- [ ] Server-side forensic watermarking
+- [ ] Geoblocking per territory specified in licence
+- [ ] Takedown cooperation and response time obligations
+
+REPORTING AND AUDIT
+- [ ] Daily/weekly view and revenue reports
+- [ ] Watermark logs provided post-event
+- [ ] Audit rights and access to logs (upon reasonable request)
+- [ ] Post-event report delivered within 7 days
+
+ANCILLARY CLEARANCES
+- [ ] Promoter warrants they hold fighter releases
+- [ ] Music clearances obtained
+- [ ] Sponsor permissions confirmed
+- [ ] No third-party claims on content
+
+INDEMNITIES AND LIABILITY
+- [ ] Mutual indemnities for IP infringement
+- [ ] Liability caps (recommend proportional to deal value)
+- [ ] Insurance requirements (if applicable)
+
+TERMINATION
+- [ ] Breach remedies (cure period: 14 days)
+- [ ] Takedown obligations on termination (14 business days)
+- [ ] Effect on settlement — outstanding payments still owed
+- [ ] Surviving clauses (indemnity, confidentiality)
+
+CONFIDENTIALITY AND PUBLICITY
+- [ ] Permitted announcements and marketing rights
+- [ ] Use of promoter's name/logo in DFC marketing (with approval)
+- [ ] Non-disclosure of commercial terms
+
+GOVERNING LAW AND DISPUTE RESOLUTION
+- [ ] Jurisdiction: Queensland, Australia
+- [ ] Dispute resolution: mediation first, then arbitration
+- [ ] Legal costs allocation
+
+SIGNATURES
+- [ ] Promoter authorised signatory
+- [ ] DFC authorised signatory (DFC Founder, Founder)
+- [ ] Date of execution
+- [ ] Witness (recommended)

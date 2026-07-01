@@ -1,0 +1,260 @@
+name: Visual Audit — PPV / Social / Maps
+
+on:
+  pull_request:
+    branches: [master, feat/**]
+    paths:
+      - "lib/**"
+      - "test/visual/**"
+      - "web/**"
+      - "pubspec.yaml"
+      - ".github/workflows/visual-audit.yml"
+  schedule:
+    # Nightly at 02:00 UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      full_matrix:
+        description: "Run all 8 viewport projects (slow)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: visual-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  visual-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+
+      - name: Ensure CI-only env asset exists
+        run: |
+          mkdir -p assets
+          test -f assets/.env || echo "# CI placeholder" > assets/.env
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Flutter build web (release)
+        run: |
+          flutter build web --release \
+            --dart-define=USE_FIREBASE_EMULATOR=false
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: npm ci (secure — no lifecycle scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Install Playwright browsers (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: node ./node_modules/playwright/cli.js install --with-deps chromium
+
+      - name: Serve Flutter web
+        run: python3 -m http.server 8088 --directory build/web &
+        # Give server time to start
+      - run: sleep 3
+
+      - name: Run Visual Audit (desktop — PR gate)
+        if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && !inputs.full_matrix)
+        run: node scripts/run_visual_audit_gate.mjs
+        env:
+          VISUAL_DUPLICATE_THRESHOLD: "12"
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8088
+          PLAYWRIGHT_ENTER_DEMO: "1"
+
+      - name: Run Visual Audit (full matrix — nightly / manual)
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.full_matrix)
+        run: node scripts/run_visual_audit_gate.mjs
+        env:
+          VISUAL_DUPLICATE_THRESHOLD: "30"
+          VISUAL_FULL_MATRIX: "1"
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8088
+          PLAYWRIGHT_ENTER_DEMO: "1"
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test results + screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results-${{ github.run_id }}
+          path: test-results/
+          retention-days: 30
+
+      - name: Upload visual duplicates summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-duplicates-${{ github.run_id }}
+          path: test-results/visual-duplicates.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Post PR comment with duplicate summary
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const dupPath = 'test-results/visual-duplicates.json';
+            const summaryPath = 'test-results/visual-gate-summary.json';
+            const marker = '<!-- visual-duplicates-report -->';
+            const threshold = Number.parseInt(process.env.VISUAL_DUPLICATE_THRESHOLD || '12', 10);
+            const dups = fs.existsSync(dupPath)
+              ? JSON.parse(fs.readFileSync(dupPath, 'utf8'))
+              : [];
+            const currentCount = Array.isArray(dups) ? dups.length : 0;
+            const summary = fs.existsSync(summaryPath)
+              ? JSON.parse(fs.readFileSync(summaryPath, 'utf8'))
+              : {};
+
+            const currentResult = summary?.result ?? 'UNKNOWN';
+            const hardFailures = Number.isFinite(summary?.hardFailures)
+              ? Number(summary.hardFailures)
+              : 0;
+            const currentThreshold = Number.isFinite(summary?.threshold)
+              ? Number(summary.threshold)
+              : threshold;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+
+            const existing = comments
+              .filter(c => c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker))
+              .sort((a, b) => a.id - b.id)
+              .pop();
+
+            let previousCount = null;
+            if (existing?.body) {
+              const m = existing.body.match(/Duplicate Count:\s*(\d+)/i);
+              if (m) previousCount = Number.parseInt(m[1], 10);
+            }
+
+            let previousWeekCount = null;
+            if (existing?.body) {
+              const m = existing.body.match(/Week Baseline:\s*(\d+)/i);
+              if (m) previousWeekCount = Number.parseInt(m[1], 10);
+            }
+
+            const trend = previousCount == null
+              ? 'new baseline'
+              : `${currentCount - previousCount >= 0 ? '+' : ''}${currentCount - previousCount} vs previous bot report`;
+
+            const wow = previousWeekCount == null
+              ? 'n/a (first weekly baseline)'
+              : `${currentCount - previousWeekCount >= 0 ? '+' : ''}${currentCount - previousWeekCount}`;
+
+            let body = `${marker}\n## Visual Audit Duplicate Diagnostics\n\n`;
+            body += `Duplicate Count: ${currentCount}\n\n`;
+            body += `Threshold: ${currentThreshold}\n\n`;
+            body += `Result: ${currentResult}\n\n`;
+            body += `Hard Failures: ${hardFailures}\n\n`;
+            body += `Trend: ${trend}\n\n`;
+            body += `Week Baseline: ${currentCount}\n\n`;
+            body += `Week-over-Week Delta: ${wow}\n\n`;
+
+            if (currentCount > 0) {
+              body += '| Duplicate Route | Matches | Project |\n|---|---|---|\n';
+              dups.slice(0, 25).forEach(d => {
+                body += `| ${d.duplicateRoute} | ${d.firstRoute} | ${d.project} |\n`;
+              });
+              if (dups.length > 25) {
+                body += `\n...and ${dups.length - 25} more (see artifact visual-duplicates).\n`;
+              }
+              body += '\nNon-blocking when only duplicate diagnostics are present and count is within threshold.';
+            } else {
+              body += 'No duplicate screenshots detected.';
+            }
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Alert on duplicate spike (Slack)
+        if: always() && github.event_name == 'schedule'
+        env:
+          VISUAL_DUPLICATE_SPIKE_THRESHOLD: "20"
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          SUMMARY="test-results/visual-gate-summary.json"
+          if [[ ! -f "$SUMMARY" ]]; then
+            echo "No visual gate summary found; skipping duplicate spike alert."
+            exit 0
+          fi
+
+          DUP_COUNT=$(node -e "const fs=require('fs');const s=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));console.log(Number(s.duplicateCount||0));" "$SUMMARY")
+          THRESH=${VISUAL_DUPLICATE_SPIKE_THRESHOLD:-20}
+
+          if [[ "$DUP_COUNT" -lt "$THRESH" ]]; then
+            echo "Duplicate count $DUP_COUNT is below spike threshold $THRESH."
+            exit 0
+          fi
+
+          echo "::warning::Visual duplicate spike detected: $DUP_COUNT >= $THRESH"
+          if [[ -z "${SLACK_WEBHOOK_URL}" ]]; then
+            echo "SLACK_WEBHOOK_URL not configured; warning emitted only."
+            exit 0
+          fi
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "text": "🚨 DFC visual-gate duplicate spike: ${DUP_COUNT} (threshold ${THRESH}). Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }
+          EOF
+          )
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "$SLACK_WEBHOOK_URL"
+
+      - name: Notify on failure (Slack)
+        if: failure() && github.event_name == 'schedule'
+        uses: slackapi/slack-github-action@v1.27.0
+        with:
+          payload: |
+            {
+              "text": "⚠️ DFC Visual Audit FAILED on nightly run. Branch: ${{ github.ref }}. <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View report>"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

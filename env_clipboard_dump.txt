@@ -1,0 +1,13 @@
+# Save clipboard
+Get-Clipboard -Raw | Out-File -FilePath .\env_clipboard_dump.txt -Encoding utf8
+
+# Show head/tail to inspect
+Get-Content .\env_clipboard_dump.txt -TotalCount 200
+Get-Content .\env_clipboard_dump.txt -Tail 200
+
+# Extract env lines to .env for manual edit
+Get-Content .\env_clipboard_dump.txt | Where-Object { $_ -match '^\s*[A-Za-z0-9_]+\s*=' } | Set-Content .\.env -Encoding utf8
+
+# Open .env in VS Code to remove anything sensitive or wrong
+code .\.env
+

@@ -1,0 +1,350 @@
+<!-- Promoter onboarding page for Data Fight Central -->
+<!-- Replace [STRIPE_ONBOARDING_LINK] and [CALENDAR_LINK] before publishing -->
+<!-- Replace /assets/ paths with your actual hosted asset URLs -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Partner with Data Fight Central — Promote free, sell PPV securely
+    </title>
+    <meta
+      name="description"
+      content="Data Fight Central — free promotion for combat sports promoters. Sell PPV securely with DRM, watermarking, and Stripe Connect payouts."
+    />
+    <meta
+      name="keywords"
+      content="combat sports, PPV, fight promotion, live stream, DRM, watermarking, Stripe Connect"
+    />
+    <meta
+      property="og:title"
+      content="Partner with Data Fight Central — Promote free, sell PPV securely"
+    />
+    <meta
+      property="og:description"
+      content="Free promotion for fight promoters. Sell PPV with DRM and direct Stripe payouts. Download licence and stat dec to get started."
+    />
+    <meta property="og:image" content="/assets/hero_crowd_event.jpg" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://www.datafightcentral.com/promoters" />
+    <style>
+      :root {
+        --neon-cyan: #00d9ff;
+        --neon-magenta: #ff00ff;
+        --bg-dark: #0d0d0d;
+        --bg-card: #1a1a2e;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+      .hero {
+        position: relative;
+        padding: 4rem 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      .hero .lead {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        max-width: 700px;
+        margin: 0 auto 2rem;
+      }
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: opacity 0.2s;
+      }
+      .btn:hover {
+        opacity: 0.85;
+      }
+      .btn-primary {
+        background: var(--neon-cyan);
+        color: var(--bg-dark);
+      }
+      .btn-secondary {
+        background: var(--neon-magenta);
+        color: var(--text-primary);
+      }
+      .btn-outline {
+        border: 2px solid var(--neon-cyan);
+        color: var(--neon-cyan);
+        background: transparent;
+      }
+      .btn-ghost {
+        border: 1px solid var(--text-secondary);
+        color: var(--text-secondary);
+        background: transparent;
+      }
+      .trust {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .hero-image img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 2rem;
+        border-radius: 8px;
+      }
+      .content {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+      }
+      .content h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: var(--neon-cyan);
+      }
+      .content ul,
+      .content ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .content li {
+        margin-bottom: 0.5rem;
+      }
+      .content li strong {
+        color: var(--neon-cyan);
+      }
+      .note {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 1rem;
+      }
+      .disclaimer {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        border-top: 1px solid #333;
+        padding-top: 1rem;
+        margin-top: 2rem;
+      }
+      .contact {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-top: 2rem;
+      }
+      .contact h3 {
+        color: var(--neon-magenta);
+        margin-bottom: 0.5rem;
+      }
+      .contact a {
+        color: var(--neon-cyan);
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="promoter-hero" class="hero">
+      <div class="hero-inner">
+        <h1>
+          Partner with Data Fight Central — Promote free, sell PPV securely
+        </h1>
+        <p class="lead">
+          Free promotion for every event. If you want to sell paid access (PPV)
+          through DFC, complete a short rights declaration and one-page pilot
+          licence — we handle production, DRM, watermarking, and promoter
+          payouts via Stripe Connect.
+        </p>
+        <div class="cta-row">
+          <a
+            class="btn btn-primary"
+            href="/downloads/pilot_licence.pdf"
+            download
+            >Download Pilot Licence</a
+          >
+          <a
+            class="btn btn-secondary"
+            href="/downloads/statutory_declaration.pdf"
+            download
+            >Download Statutory Declaration</a
+          >
+          <a class="btn btn-outline" href="[STRIPE_ONBOARDING_LINK]"
+            >Start Stripe Onboarding</a
+          >
+          <a class="btn btn-ghost" href="[CALENDAR_LINK]"
+            >Book a 15-minute tech call</a
+          >
+        </div>
+        <p class="trust">
+          DFC does <strong>not</strong> hold promoter funds; payouts route
+          directly to your Stripe Connect account. We require a signed licence
+          before any public PPV sale.
+        </p>
+      </div>
+      <figure class="hero-image">
+        <img
+          src="/assets/hero_crowd_event.jpg"
+          alt="Cheering crowd at a live combat sports event"
+          width="1600"
+          height="600"
+        />
+      </figure>
+    </section>
+
+    <section id="requirements" class="content">
+      <h2>What we require before public PPV sales</h2>
+      <ul>
+        <li>
+          <strong>Signed one-page Pilot Licence</strong> granting DFC the right
+          to stream and sell the Event.
+        </li>
+        <li>
+          <strong>Witnessed Statutory Declaration or Affidavit</strong> from an
+          authorised promoter representative confirming rights and attaching
+          supporting documents.
+        </li>
+        <li>
+          <strong>Stripe Connect Express onboarding</strong> so promoter
+          receives payouts directly; DFC does not hold promoter funds.
+        </li>
+        <li>
+          <strong>Technical test pass</strong> for DRM and forensic
+          watermarking.
+        </li>
+      </ul>
+      <p class="note">
+        Download the templates, get the Stat Dec witnessed by a JP or solicitor
+        in Queensland, upload the scanned copy, then book a tech call.
+      </p>
+    </section>
+
+    <section id="how-to" class="content">
+      <h2>How to sign and upload</h2>
+      <ol>
+        <li>
+          Download the <strong>Pilot Licence</strong> and
+          <strong>Statutory Declaration</strong>.
+        </li>
+        <li>
+          Get the Statutory Declaration witnessed by a JP or solicitor in
+          Queensland; scan and upload.
+        </li>
+        <li>Complete Stripe Connect onboarding (Express).</li>
+        <li>Book a tech call and schedule the 72-hour test window.</li>
+        <li>
+          We run DRM + watermark tests; once passed and licence is signed, you
+          may go public.
+        </li>
+      </ol>
+    </section>
+
+    <section id="downloads" class="content">
+      <h2>Downloadable documents</h2>
+      <ul>
+        <li>
+          <a
+            class="btn btn-primary"
+            href="/downloads/pilot_licence.pdf"
+            download
+            >Pilot Licence (PDF)</a
+          >
+        </li>
+        <li>
+          <a
+            class="btn btn-primary"
+            href="/downloads/statutory_declaration.pdf"
+            download
+            >Statutory Declaration (PDF)</a
+          >
+        </li>
+        <li>
+          <a class="btn btn-primary" href="/downloads/pilot_spec.pdf" download
+            >Pilot Spec (PDF)</a
+          >
+        </li>
+        <li>
+          <a
+            class="btn btn-primary"
+            href="/downloads/stripe_onboarding_guide.pdf"
+            download
+            >Stripe Onboarding Guide (PDF)</a
+          >
+        </li>
+      </ul>
+    </section>
+
+    <section id="contact" class="content">
+      <div class="contact">
+        <h3>Contact</h3>
+        <p>
+          <strong>Onboarding / Ops:</strong>
+          <a href="mailto:ops@datafightcentral.com">ops@datafightcentral.com</a>
+        </p>
+        <p>
+          <strong>Legal / Takedown:</strong>
+          <a href="mailto:legal@datafightcentral.com"
+            >legal@datafightcentral.com</a
+          >
+        </p>
+        <p>
+          <strong>General:</strong>
+          <a href="mailto:info@datafightcentral.com"
+            >info@datafightcentral.com</a
+          >
+          | <strong>Phone:</strong> 0450 113 139
+        </p>
+      </div>
+      <p class="disclaimer">
+        This page provides onboarding materials and templates for promoters.
+        <strong>This is not legal advice.</strong> A statutory declaration or
+        affidavit is evidence of a promoter's claim of rights but does
+        <strong>not</strong> itself transfer copyright or licence rights. DFC
+        requires a signed Pilot Licence before any public PPV sale. Promoters
+        should seek independent legal advice if unsure.
+      </p>
+    </section>
+
+    <!-- JSON-LD Event schema — replace bracketed fields per event -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SportsEvent",
+        "name": "[Event Name]",
+        "startDate": "[YYYY-MM-DDThh:mm:ssZ]",
+        "location": {
+          "@type": "Place",
+          "name": "[Venue]",
+          "address": "[Venue address]"
+        },
+        "image": [
+          "https://www.datafightcentral.com/assets/hero_crowd_event.jpg"
+        ],
+        "description": "Live PPV event available via Data Fight Central. Promotion free; PPV requires signed licence.",
+        "organizer": {
+          "@type": "Organization",
+          "name": "[Promoter entity name]",
+          "url": "[Promoter website]"
+        }
+      }
+    </script>
+  </body>
+</html>

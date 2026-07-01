@@ -1,0 +1,7 @@
+FROM node:20-alpine
+RUN apk add --no-cache ffmpeg
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
+COPY src/ ./src/
+CMD ["node", "src/worker.js"]

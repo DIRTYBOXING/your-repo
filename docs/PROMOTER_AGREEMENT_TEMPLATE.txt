@@ -1,0 +1,244 @@
+============================================================
+ DATA FIGHT CENTRAL — PROMOTER AGREEMENT TEMPLATE
+ Version 2.0 | March 2026
+ Classification: LEGAL — For Review by Counsel
+ Structure: Sole Trader / ABN (update when Pty Ltd formed)
+============================================================
+
+NOTE: This is a TEMPLATE for internal planning. Must be
+reviewed and adapted by qualified legal counsel before use.
+Entity references use ABN (sole trader). When Pty Ltd is
+formed, update DFC entity name and add ACN.
+
+============================================================
+ 1. DEFINITIONS
+============================================================
+
+"DFC"        — Data Fight Central, ABN [INSERT ABN],
+               operated by [YOUR LEGAL NAME]
+"Promoter"   — The event promoter using DFC platform to sell PPV
+"Event"      — A live combat sports event streamed via DFC
+"MOR"        — Merchant of Record (the party liable for charges)
+"Viewer"     — End customer who purchases a ticket
+"Platform"   — DFC website, apps, and streaming infrastructure
+
+============================================================
+ 2. MERCHANT OF RECORD (MOR)
+============================================================
+
+2.1. The Promoter acknowledges and agrees that they are the
+     Merchant of Record for all transactions related to their
+     Events on the Platform.
+
+2.2. The Promoter's Stripe Connected Account (Standard) will
+     be the receiving account for all charges. DFC collects
+     its commission via application_fee_amount.
+
+2.3. The Promoter is solely responsible for:
+     (a) Customer service and refund decisions
+     (b) Chargebacks and dispute resolution
+     (c) Compliance with applicable consumer protection laws
+     (d) Tax collection and remittance in all applicable jurisdictions
+
+2.4. DFC may assist with chargeback evidence (playback logs,
+     watermark data) but bears no liability for dispute outcomes.
+
+============================================================
+ 3. KYC / IDENTITY VERIFICATION
+============================================================
+
+3.1. The Promoter must complete Stripe Connect onboarding,
+     which includes identity verification (KYC/AML).
+
+3.2. The Promoter must provide:
+     (a) Legal name and business registration (if applicable)
+     (b) Government-issued photo ID
+     (c) Tax identification number (SSN/EIN or equivalent)
+     (d) Business address and contact information
+     (e) Banking information for payout
+
+3.3. DFC reserves the right to require additional verification
+     for promoters with high transaction volumes or flagged risk.
+
+3.4. Promoter represents that all information provided is true
+     and current, and agrees to update DFC promptly upon change.
+
+============================================================
+ 4. IP WARRANTY & CONTENT RIGHTS
+============================================================
+
+4.1. The Promoter warrants that they hold all necessary rights,
+     licenses, and permissions to stream the Event content.
+
+4.2. The Promoter grants DFC a non-exclusive, worldwide license
+     to distribute the Event stream via the Platform for the
+     duration of the ticketed viewing window.
+
+4.3. The Promoter agrees not to upload, stream, or distribute
+     any content that:
+     (a) Infringes third-party intellectual property rights
+     (b) Contains unlicensed music, commentary, or footage
+     (c) Violates any applicable laws or regulations
+
+4.4. The Promoter shall indemnify and hold harmless DFC from
+     any claims arising from IP infringement in Event content.
+
+============================================================
+ 5. INDEMNIFICATION
+============================================================
+
+5.1. The Promoter shall indemnify, defend, and hold harmless
+     DFC, its officers, directors, employees, and agents from
+     and against any and all claims, damages, losses, costs,
+     and expenses (including reasonable attorney's fees) arising
+     from or related to:
+     (a) The Promoter's breach of this Agreement
+     (b) Any claims by Viewers related to the Event
+     (c) Any IP infringement claims
+     (d) Chargebacks, fraud, or payment disputes
+     (e) Any injury, damage, or harm related to the Event
+     (f) Violations of applicable laws or regulations
+
+============================================================
+ 6. REVENUE SPLIT & COMMISSION
+============================================================
+
+6.1. DFC commission is collected via Stripe's application_fee_amount
+     at the time of each charge. The split is as follows:
+
+     | Party     | Share                              |
+     |-----------|------------------------------------|
+     | Promoter  | Ticket price minus DFC commission   |
+     | DFC       | [X]% commission (application fee)   |
+     | Stripe    | Standard processing fees            |
+
+6.2. The exact commission percentage shall be agreed in writing
+     in a Schedule attached to this Agreement.
+
+6.3. DFC may offer promotional reduced commission rates for
+     early partners, subject to separate written agreement.
+
+6.4. Commission is non-refundable once earned, except where
+     required by law or in cases of DFC platform failure.
+
+============================================================
+ 7. REFUND POLICY
+============================================================
+
+7.1. As MOR, the Promoter sets refund policy for their Events
+     and must clearly communicate it to Viewers at purchase.
+
+7.2. Minimum refund standards (required by DFC):
+     (a) Full refund if event cancelled by Promoter
+     (b) Full refund if stream fails due to DFC infrastructure
+     (c) Proportional refund for significant stream interruptions
+     (d) Refund window of at least 24 hours post-event for
+         documented stream quality issues
+
+7.3. DFC may process refunds on Promoter's behalf if:
+     (a) Promoter fails to respond to refund requests within 48 hours
+     (b) Chargeback risk is imminent
+     (c) Required by law or payment processor
+
+============================================================
+ 8. CODE OF CONDUCT
+============================================================
+
+8.1. The Promoter agrees to:
+     (a) Comply with all applicable laws and regulations
+     (b) Ensure fighter safety, proper medical staff, and
+         compliance with athletic commission requirements
+     (c) Not promote hate speech, discrimination, or violence
+         outside of sanctioned competition
+     (d) Maintain professional communication with DFC staff
+     (e) Not engage in fraudulent, deceptive, or misleading
+         practices
+
+8.2. DFC reserves the right to remove any Event or suspend
+     any Promoter account that violates this Code of Conduct.
+
+============================================================
+ 9. TERMINATION & RESERVES
+============================================================
+
+9.1. Either party may terminate this Agreement with 30 days
+     written notice.
+
+9.2. DFC may immediately suspend or terminate Promoter access
+     if:
+     (a) Promoter materially breaches this Agreement
+     (b) Promoter's Stripe account is suspended or terminated
+     (c) Fraud or illegal activity is detected
+     (d) Chargeback rate exceeds 1% of transactions
+
+9.3. Upon termination:
+     (a) Promoter's events are removed from the Platform
+     (b) Pending payouts for completed events are released
+         per Stripe's standard schedule
+     (c) DFC may hold reserves for 90 days to cover potential
+         chargebacks and refund claims
+
+9.4. Sections 4, 5, 9.3, and 10 survive termination.
+
+============================================================
+ 10. GOVERNING LAW & DISPUTES
+============================================================
+
+10.1. This Agreement is governed by the laws of [JURISDICTION].
+
+10.2. Any disputes shall first be addressed through good-faith
+      negotiation for 30 days.
+
+10.3. If negotiation fails, disputes shall be resolved through
+      binding arbitration under [ARBITRATION BODY] rules.
+
+10.4. The prevailing party in any dispute shall be entitled to
+      recover reasonable attorney's fees and costs.
+
+============================================================
+ 11. MISCELLANEOUS
+============================================================
+
+11.1. Entire Agreement: This Agreement constitutes the entire
+      agreement between the parties regarding its subject matter.
+
+11.2. Amendments: Must be in writing and signed by both parties.
+
+11.3. Force Majeure: Neither party is liable for delays or
+      failures due to events beyond their reasonable control.
+
+11.4. Assignment: Promoter may not assign this Agreement without
+      DFC's prior written consent.
+
+11.5. Notices: Must be in writing and delivered to the addresses
+      on file with DFC.
+
+============================================================
+ SIGNATURES
+============================================================
+
+Promoter:
+  Name       : ___________________________________
+  Title      : ___________________________________
+  Company    : ___________________________________
+  Date       : ___________________________________
+  Signature  : ___________________________________
+
+DFC:
+  Name       : ___________________________________
+  Title      : ___________________________________
+  Date       : ___________________________________
+  Signature  : ___________________________________
+
+============================================================
+ SCHEDULE A — COMMISSION RATE
+============================================================
+
+  Event tier     : ___________________________________
+  Commission %   : ___________________________________
+  Effective date : ___________________________________
+  Special terms  : ___________________________________
+
+============================================================
+ END OF PROMOTER AGREEMENT TEMPLATE
+============================================================

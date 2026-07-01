@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <!--
+  ═══════════════════════════════════════════════════════════════
+  DATA FIGHT CENTRAL — Google News Sitemap
+  Submit to Google Search Console for News tab indexing
+  DFC Pty Ltd · #1 AI Combat Sports Platform
+  ═══════════════════════════════════════════════════════════════
+  -->
+
+  <url>
+    <loc>https://datafightcentral.com/#/fightwire</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>DFC FightWire — Real-Time UFC, MMA, Boxing &amp; Combat Sports News</news:title>
+      <news:keywords>UFC news, MMA news, boxing news, fight results, combat sports, Data Fight Central, DFC, fight news today</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/social</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>DFC Social Combat Network — Fighter Community &amp; Discussion Forum</news:title>
+      <news:keywords>MMA forum, boxing forum, combat sports community, fighter social network, DFC social, fight discussion</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/fighter-safety</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>Fighters Are Safer With DFC — 12-Pillar Fighter Protection Protocol</news:title>
+      <news:keywords>fighter safety, CTE tracking, Guardian Mode, Pink Shield, combat sports safety, fighter protection, DFC safety</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/events</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>UFC, MMA &amp; Boxing Events — Fight Cards, Results &amp; Schedules</news:title>
+      <news:keywords>UFC events, MMA events, boxing events, fight cards, fight schedule, upcoming fights, fight results tonight</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/drone-racing</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>DFC AirCombat — FPV Drone Racing Hub, Events &amp; Technology</news:title>
+      <news:keywords>FPV drone racing, drone racing league, FPV freestyle, drone racing news, DFC AirCombat, FPV technology</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/combat-analytics</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>AI Combat Analytics — Fighter Stats, Predictions &amp; Performance Data</news:title>
+      <news:keywords>fight analytics, MMA statistics, boxing stats, fighter stats, AI fight predictions, combat sports data, UFC stats</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/promoter/event-manager</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>DFC Event Command Centre — The World's Best Fight Promotion Platform</news:title>
+      <news:keywords>fight promotion, event management, fight card builder, MMA promoter, boxing promoter, fight event organizer</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/marketplace</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05</news:publication_date>
+      <news:title>DFC Marketplace — Combat Sports Gear, Jobs &amp; Opportunities</news:title>
+      <news:keywords>MMA gear, boxing equipment, combat sports marketplace, fighter jobs, coaching jobs, fight industry jobs</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- Humanitarian & Mental Health -->
+  <url>
+    <loc>https://datafightcentral.com/#/nitechill</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>NiteChill — Fighter Wellness, Crisis Support &amp; Homelessness Resources</news:title>
+      <news:keywords>fighter mental health, crisis support, homelessness support, suicide prevention, fighter wellness, athlete mental health, DFC NiteChill, build peace not war</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/nitechill/crisis</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Crisis Support — Mental Health Helplines, Suicide Prevention &amp; Emergency Resources</news:title>
+      <news:keywords>crisis support, mental health helpline, suicide prevention, Lifeline 13 11 14, Beyond Blue, 988 Suicide Prevention, Samaritans, athlete crisis, fighter mental health</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/nitechill/homeless-support</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Homelessness Support — Shelters, Food Banks &amp; Recovery Resources for Athletes</news:title>
+      <news:keywords>homelessness support, homeless shelter, food bank, athlete homelessness, retired fighter support, poverty support, Ask Izzy, HUD, Shelter UK</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/nitechill/dv-protection</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Guardian Mode &amp; DV Protection — Silent SOS for Domestic Violence Situations</news:title>
+      <news:keywords>domestic violence protection, Guardian Mode, silent SOS, DV helpline, 1800 RESPECT, DV protection, Pink Shield, DV safe gym, domestic abuse support</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/mind-body-soul</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>Mind Body Soul — Holistic Fighter Wellness, Meditation &amp; Mental Health</news:title>
+      <news:keywords>fighter wellness, athlete mental health, meditation for fighters, mindfulness, depression screening, anxiety support, PTSD athletes, mind body soul, holistic wellness</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/donate</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Donations — Buy a Coffee Not a Coffin, Support Fighters in Need</news:title>
+      <news:keywords>fighter charity, donate to fighters, buy a coffee not a coffin, save a fighter, combat sports donation, fighter support, fighter poverty, humanitarian aid</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/hope-cards</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Hope Cards — Send Encouragement to Fighters &amp; Community Members</news:title>
+      <news:keywords>hope cards, encouragement, fighter support, community building, peace not war, humanitarian, mental health support, build peace</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- IBC III Event -->
+  <url>
+    <loc>https://datafightcentral.com/#/ibc</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>IBC III — International Boxing Classic at South Bank Convention Centre, Brisbane QLD</news:title>
+      <news:keywords>IBC III, International Boxing Classic, boxing Brisbane, South Bank Convention Centre, Australian boxing, Brisbane boxing event, Queensland boxing</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- AI Predictions -->
+  <url>
+    <loc>https://datafightcentral.com/#/ai-fight-predictions</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC AI Fight Predictions — UFC, Boxing &amp; MMA Predictions Powered by Gemini AI</news:title>
+      <news:keywords>AI fight predictions, UFC predictions, boxing predictions, MMA predictions, fight odds, Gemini AI, machine learning, combat sports AI, Data Fight Central</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- Training -->
+  <url>
+    <loc>https://datafightcentral.com/#/daily-grind</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Daily Grind — AI-Powered MMA, Boxing &amp; Muay Thai Training Plans</news:title>
+      <news:keywords>MMA training, boxing training, Muay Thai training, fight camp, training plan, AI coaching, combat sports workout, fighter training app</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- Rankings -->
+  <url>
+    <loc>https://datafightcentral.com/#/rankings</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Fighter Rankings — UFC Rankings, Boxing P4P Rankings &amp; MMA Rankings</news:title>
+      <news:keywords>UFC rankings, MMA rankings, boxing rankings, pound for pound, P4P rankings, fighter rankings, combat sports rankings, Data Fight Central rankings</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- Youth Crime Prevention -->
+  <url>
+    <loc>https://datafightcentral.com/#/ambassador</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Youth Crime Prevention — Sport Stops Crime, Gym Not Jail, At-Risk Youth Diversion Through Combat Sports</news:title>
+      <news:keywords>youth crime prevention, at risk youth, youth diversion, sport stops crime, gym not jail, boxing for youth, MMA for kids, martial arts youth, anti knife crime, anti gang, youth justice, youth mentoring, PCYC, Police Athletic League, Fight for Peace, youth intervention sport</news:keywords>
+    </news:news>
+  </url>
+
+  <url>
+    <loc>https://datafightcentral.com/#/hope-cards</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>DFC Hope Cards — Messages of Encouragement for At-Risk Youth &amp; Fighters in Need</news:title>
+      <news:keywords>hope cards, encouragement, at risk youth support, youth empowerment, fighter support, community encouragement, DFC hope, gym not jail</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- Australia Youth Crime -->
+  <url>
+    <loc>https://datafightcentral.com/#/ambassador</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>Australia Youth Crime Crisis — DFC Combat Sports Solution for Queensland, NSW, Victoria &amp; NT Youth Offending</news:title>
+      <news:keywords>Australia youth crime, Queensland youth crime, Brisbane youth crime, Townsville youth crime, Logan youth crime, Cairns youth crime, Gold Coast youth crime, car theft youth Australia, ram raids, youth justice QLD, Indigenous youth crime, Aboriginal youth, PCYC, DFC gym not jail, sport stops crime Australia</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- NZ Youth Crime & Gangs -->
+  <url>
+    <loc>https://datafightcentral.com/#/ambassador</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>New Zealand Youth Crime &amp; Gang Crisis — DFC Sport Diversion for Auckland, Hamilton &amp; NZ Ram Raid Epidemic</news:title>
+      <news:keywords>NZ youth crime, New Zealand youth crime, Auckland youth crime, South Auckland youth crime, ram raids NZ, NZ gangs, Mongrel Mob, Black Power, Comancheros NZ, 501 deportees, Maori youth, Pasifika youth, Oranga Tamariki, gym not gang NZ, sport stops crime NZ</news:keywords>
+    </news:news>
+  </url>
+
+  <!-- Toxic Streams / Positive Media -->
+  <url>
+    <loc>https://datafightcentral.com/#/nitechill</loc>
+    <news:news>
+      <news:publication>
+        <news:name>Data Fight Central</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-07</news:publication_date>
+      <news:title>Change Your Mind From Toxic Streams — DFC Positive Combat Sports Media Replacing Social Media Harm for Youth</news:title>
+      <news:keywords>toxic social media, toxic streams, social media harm youth, online radicalisation, crime glorification, gang content, screen time youth, positive sport media, fighter role models, DFC positive content, change your mind, healthy content youth, combat sports mentorship, safe digital platform</news:keywords>
+    </news:news>
+  </url>
+
+</urlset>

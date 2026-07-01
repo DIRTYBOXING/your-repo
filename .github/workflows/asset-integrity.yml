@@ -1,0 +1,164 @@
+name: Asset Integrity Gate
+
+on:
+  push:
+    paths:
+      - 'assets/**'
+      - 'docs/**/*.svg'
+      - 'docs/**/*.png'
+      - 'test/**/*.png'
+  pull_request:
+    paths:
+      - 'assets/**'
+      - 'docs/**/*.svg'
+      - 'docs/**/*.png'
+      - 'test/**/*.png'
+
+permissions:
+  contents: read
+
+jobs:
+  svg-safety-scan:
+    name: SVG Safety Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan SVGs for active content
+        id: svg_scan
+        run: |
+          set -euo pipefail
+          FAILED=0
+          REPORT=""
+
+          while IFS= read -r -d '' f; do
+            ISSUES=""
+
+            grep -qiE '<script\b'                  "$f" && ISSUES="$ISSUES script_tag"
+            grep -qiE 'on(load|error)\s*='         "$f" && ISSUES="$ISSUES onload_handler"
+            grep -qiE 'foreignObject'              "$f" && ISSUES="$ISSUES foreignObject"
+            grep -qiE 'xlink:href\s*=\s*"https?:' "$f" && ISSUES="$ISSUES external_xlink"
+            grep -qiE '\bhref\s*=\s*"https?:'      "$f" && ISSUES="$ISSUES external_href"
+            grep -qiE 'javascript:'               "$f" && ISSUES="$ISSUES javascript_uri"
+            grep -qiE 'data:text/html'             "$f" && ISSUES="$ISSUES data_uri"
+
+            if [ -n "$ISSUES" ]; then
+              FAILED=1
+              SHA=$(sha256sum "$f" | cut -d' ' -f1)
+              REPORT="$REPORT\n  FAIL  [$SHA] $f — $ISSUES"
+            fi
+          done < <(find assets docs test -name '*.svg' -print0 2>/dev/null)
+
+          if [ $FAILED -ne 0 ]; then
+            echo -e "\n❌ Unsafe SVG(s) detected:$REPORT\n"
+            exit 1
+          else
+            echo "✅ All SVGs clean."
+          fi
+
+  poster-sha256-gate:
+    name: Poster Asset SHA256 Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check known-good SHA256 manifest
+        run: |
+          set -euo pipefail
+
+          MANIFEST=".github/asset_sha256_manifest.txt"
+
+          # If no manifest yet, generate one and pass (first-run bootstrap)
+          if [ ! -f "$MANIFEST" ]; then
+            echo "No manifest found — generating baseline (first run)."
+            find assets/poster_templates -type f \( -name '*.svg' -o -name '*.png' \) -print0 \
+              | sort -z \
+              | xargs -0 sha256sum > "$MANIFEST" 2>/dev/null || true
+            echo "Baseline manifest written:"
+            cat "$MANIFEST"
+            exit 0
+          fi
+
+          echo "Verifying against manifest..."
+          FAILED=0
+          while IFS= read -r line; do
+            EXPECTED_HASH=$(echo "$line" | awk '{print $1}')
+            FILEPATH=$(echo "$line" | awk '{print $2}')
+            if [ ! -f "$FILEPATH" ]; then
+              echo "  MISSING: $FILEPATH"
+              FAILED=1
+              continue
+            fi
+            ACTUAL_HASH=$(sha256sum "$FILEPATH" | awk '{print $1}')
+            if [ "$EXPECTED_HASH" != "$ACTUAL_HASH" ]; then
+              echo "  CHANGED: $FILEPATH"
+              echo "    expected: $EXPECTED_HASH"
+              echo "    actual  : $ACTUAL_HASH"
+              FAILED=1
+            else
+              echo "  OK: $FILEPATH"
+            fi
+          done < "$MANIFEST"
+
+          # Detect new unmanifested files
+          while IFS= read -r -d '' f; do
+            if ! grep -qF "$f" "$MANIFEST"; then
+              echo "  NEW (unmanifested): $f"
+              FAILED=1
+            fi
+          done < <(find assets/poster_templates -type f \( -name '*.svg' -o -name '*.png' \) -print0 2>/dev/null)
+
+          if [ $FAILED -ne 0 ]; then
+            echo ""
+            echo "❌ Poster asset integrity check FAILED."
+            echo "   If changes are intentional, run: find assets/poster_templates -type f | xargs sha256sum > .github/asset_sha256_manifest.txt"
+            exit 1
+          fi
+          echo "✅ All poster assets match manifest."
+
+  magic-byte-check:
+    name: Image Magic Byte Verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify image file signatures match extensions
+        run: |
+          set -euo pipefail
+          FAILED=0
+
+          check_magic() {
+            local file="$1"
+            local ext="${file##*.}"
+            local header
+            header=$(xxd -p -l 8 "$file" 2>/dev/null || true)
+
+            case "${ext,,}" in
+              png)  [[ "$header" == 89504e47* ]] || { echo "  BAD MAGIC: $file (got $header, expected PNG)"; return 1; } ;;
+              jpg|jpeg) [[ "$header" == ffd8ff* ]] || { echo "  BAD MAGIC: $file (got $header, expected JPEG)"; return 1; } ;;
+              gif)  [[ "$header" == 47494638* ]] || { echo "  BAD MAGIC: $file (got $header, expected GIF)"; return 1; } ;;
+              webp) [[ "$header" == 52494646* ]] || { echo "  BAD MAGIC: $file (got $header, expected WebP/RIFF)"; return 1; } ;;
+              ico)  [[ "$header" == 00000100* ]] || { echo "  BAD MAGIC: $file (got $header, expected ICO)"; return 1; } ;;
+              svg)
+                local txt
+                txt=$(head -c 64 "$file" | tr -d '\0')
+                if ! echo "$txt" | grep -qE '(<\?xml|<svg|<!--)'; then
+                  echo "  BAD SVG HEADER: $file"
+                  return 1
+                fi ;;
+            esac
+            return 0
+          }
+
+          while IFS= read -r -d '' f; do
+            check_magic "$f" || FAILED=1
+          done < <(find assets docs test -type f \
+            \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \
+               -o -iname '*.gif' -o -iname '*.webp' -o -iname '*.svg' -o -iname '*.ico' \) \
+            -print0 2>/dev/null)
+
+          if [ $FAILED -ne 0 ]; then
+            echo "❌ One or more image files have mismatched magic bytes."
+            exit 1
+          fi
+          echo "✅ All image signatures verified."

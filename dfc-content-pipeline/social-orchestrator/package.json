@@ -1,0 +1,20 @@
+{
+  "name": "dfc-social-orchestrator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DFC Social Orchestrator — auto-clip → OG → caption → cross-platform publish",
+  "scripts": {
+    "start": "node src/orchestrator.js",
+    "dev": "node --watch src/orchestrator.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "firebase-admin": "^12.6.0",
+    "bullmq": "^5.20.0",
+    "ioredis": "^5.4.1",
+    "uuid": "^10.0.0",
+    "node-fetch": "^2.7.0"
+  }
+}

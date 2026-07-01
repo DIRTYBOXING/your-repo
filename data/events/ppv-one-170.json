@@ -1,0 +1,57 @@
+{
+  "eventId": "ppv-one-170",
+  "title": "ONE 170: BANGKOK",
+  "subtitle": "Stamp Fairtex vs Ham Seo Hee",
+  "date": "2026-04-18",
+  "time": "19:00 ICT",
+  "price": "29.99",
+  "promoter": "ONE Championship",
+  "sport": "Muay Thai",
+  "venue": "Impact Arena, Bangkok",
+  "currency": "USD",
+  "streamPlatforms": ["Prime Video", "ONE App"],
+  "fighters": [
+    {
+      "name": "Stamp Fairtex",
+      "record": "9-2-0 MMA",
+      "weightClass": "Atomweight MMA",
+      "corner": "left"
+    },
+    {
+      "name": "Ham Seo Hee",
+      "record": "28-9-0",
+      "weightClass": "Atomweight MMA",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Stamp Fairtex",
+      "fighter2": "Ham Seo Hee",
+      "weightClass": "Atomweight MMA",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Rodtang Jitmuangnon",
+      "fighter2": "Superlek Kiatmoo9",
+      "weightClass": "Flyweight Muay Thai",
+      "rounds": 5,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Marcus Almeida",
+      "fighter2": "Oumar Kane",
+      "weightClass": "Heavyweight MMA",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Tawanchai PK Saenchai",
+      "fighter2": "Sitthichai Sitsongpeenong",
+      "weightClass": "Featherweight Kickboxing",
+      "rounds": 5,
+      "isTitleFight": true
+    }
+  ]
+}

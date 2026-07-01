@@ -1,0 +1,19 @@
+# Mutation to log a new payment intent for an event
+mutation CreatePayment($eventId: UUID!, $userId: UUID!, $status: String!, $amount: Float!) @auth(level: USER) {
+  payment_insert(data: {
+    event: { id: $eventId },
+    user: { id: $userId },
+    amount: $amount,
+    status: $status
+  })
+}
+
+# Query to list payout history for an athlete, ensuring transparency
+query ListPayoutsForFighter($fighterId: UUID!) @auth(level: USER) {
+  payouts(where: { fighter: { id: { eq: $fighterId } } }, orderBy: [{ processedAt: DESC }]) {
+    id
+    amount
+    status
+    processedAt
+  }
+}

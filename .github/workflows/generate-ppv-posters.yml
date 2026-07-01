@@ -1,0 +1,52 @@
+name: Generate PPV Posters
+on:
+  push:
+    paths:
+      - "data/events/**.json"
+      - "tools/generate_ppv_posters_gritty.sh"
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y imagemagick jq
+
+      - name: Make generator executable
+        run: chmod +x tools/generate_ppv_posters_gritty.sh
+
+      - name: Find changed event files
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD | grep '^data/events/.*\.json$' || true)
+          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          if [ -z "$CHANGED" ]; then
+            echo "No event JSONs changed."
+          else
+            echo "Changed events:"
+            echo "$CHANGED"
+          fi
+
+      - name: Generate posters for changed events
+        if: steps.changed.outputs.files != ''
+        run: |
+          for f in ${{ steps.changed.outputs.files }}; do
+            echo "Generating posters for $f"
+            ./tools/generate_ppv_posters_gritty.sh "$f" || echo "WARN: Failed for $f"
+          done
+
+      - name: Commit generated posters
+        if: steps.changed.outputs.files != ''
+        run: |
+          git config user.name "dfc-bot"
+          git config user.email "bot@datafightcentral.com"
+          git add assets/ppv/* || true
+          if git diff --cached --quiet; then
+            echo "No new posters generated."
+          else
+            git commit -m "CI: generate posters for updated events"
+            git push origin HEAD:${{ github.ref_name }}
+          fi

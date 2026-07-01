@@ -1,0 +1,102 @@
+PILOT LICENCE AGREEMENT
+=======================
+
+Parties
+-------
+Promoter: [Promoter entity name] (ABN: [ABN])
+Distributor: Data Fight Central Pty Ltd (DFC)
+            Founder: DFC Founder
+            ABN: [DFC ABN]
+
+Event
+-----
+Name: [Event Name]
+Date: [Event Date]
+Venue: [Venue Name and Address]
+
+1. Grant of Rights
+-------------------
+Promoter grants DFC the non-exclusive right to transmit, stream, and
+sell the Event live and as a 30-day VOD highlights package in the
+Territory on Platforms listed below.
+
+Territory: [Worldwide / list of countries]
+Platforms: Web (datafightcentral.com), iOS (future), Android (future),
+           Connected TV (future)
+
+2. Commercial Terms
+--------------------
+- Revenue split: Promoter 60% / DFC 40% of PPV gross receipts after
+  payment processing and platform fees.
+- Alternate link-only split: Promoter 85% / DFC 15% (if promoter
+  supplies clean stream and no production support is required).
+- Payment flow: Promoter to onboard Stripe Connect Express; DFC will
+  create PaymentIntents and route promoter share using
+  transfer_data.destination. DFC will not hold promoter funds except
+  for a short reserve for chargebacks (7-14 days).
+- Settlement: daily reporting; final settlement within 30 days of event.
+
+3. Technical and Delivery
+--------------------------
+- Promoter supplies clean feed (SDI/RTMP/HLS) to DFC ingest endpoint
+  by [deadline — minimum 72 hours before event].
+- Backup feed required.
+- Technical test 72 hours before event.
+- Final run-through 24 hours before event.
+- DFC will apply multi-DRM (Widevine/FairPlay/PlayReady) and
+  server-side forensic watermarking.
+
+4. Warranties and Indemnity
+----------------------------
+- Promoter warrants it owns or controls the broadcast and distribution
+  rights for the Event and has obtained all necessary fighter releases,
+  music clearances, and sponsor permissions.
+- Promoter indemnifies DFC against third-party claims arising from
+  breach of these warranties.
+- DFC liability limited to fees paid for the event or AUD 50,000,
+  whichever is greater, except for willful misconduct.
+
+5. Termination
+---------------
+- Material breach not cured within 14 days of written notice allows
+  the non-breaching party to terminate.
+- On termination DFC will cease distribution within 14 business days.
+- Final settlement calculated pro rata; outstanding payments still owed.
+- Surviving clauses: indemnity, confidentiality, dispute resolution.
+
+6. Confidentiality
+-------------------
+- Neither party will disclose commercial terms without prior written
+  consent, except as required by law.
+
+7. Dispute Resolution
+----------------------
+- Good faith negotiation first (14 days).
+- Mediation second (under ACICA rules).
+- If unresolved, arbitration under Queensland law.
+- Governing law: Queensland, Australia.
+
+8. Entire Agreement
+--------------------
+This Agreement constitutes the entire agreement between the parties.
+Amendments must be in writing and signed by both parties.
+
+Signatures
+----------
+Promoter:
+Name: ______________________
+Title: ______________________
+Signature: ______________________
+Date: __________
+
+DFC:
+Name: DFC Founder
+Title: Founder
+Signature: ______________________
+Date: __________
+
+Annexes
+-------
+- Annex A: Feed specification and ingest endpoints.
+- Annex B: Test schedule and production run-book.
+- Annex C: Payment flow diagram and Stripe Connect instructions.

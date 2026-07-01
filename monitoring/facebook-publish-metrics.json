@@ -1,0 +1,32 @@
+[
+  {
+    "name": "projects/PROJECT_ID/metricDescriptors/logging.googleapis.com%2Fuser%2Ffacebook_publish_success",
+    "description": "Count of successful Facebook posts published by promotion-worker.",
+    "filter": "resource.type=\"cloud_run_revision\" jsonPayload.metric=\"facebook_publish_success\"",
+    "metricDescriptor": {
+      "type": "logging.googleapis.com/user/facebook_publish_success",
+      "labels": [
+        { "key": "market", "valueType": "STRING", "description": "Target market (e.g. AU, US)" }
+      ],
+      "metricKind": "DELTA",
+      "valueType": "INT64",
+      "unit": "1",
+      "description": "Successful Facebook Graph API publishes"
+    }
+  },
+  {
+    "name": "projects/PROJECT_ID/metricDescriptors/logging.googleapis.com%2Fuser%2Ffacebook_publish_failure",
+    "description": "Count of failed Facebook posts in promotion-worker.",
+    "filter": "resource.type=\"cloud_run_revision\" jsonPayload.metric=\"facebook_publish_failure\"",
+    "metricDescriptor": {
+      "type": "logging.googleapis.com/user/facebook_publish_failure",
+      "labels": [
+        { "key": "market", "valueType": "STRING", "description": "Target market (e.g. AU, US)" }
+      ],
+      "metricKind": "DELTA",
+      "valueType": "INT64",
+      "unit": "1",
+      "description": "Failed Facebook Graph API publishes (before DLQ)"
+    }
+  }
+]

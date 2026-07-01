@@ -1,0 +1,215 @@
+name: CI Unit + Playwright Smoke
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: Gitleaks (PR delta)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz -o /tmp/gitleaks.tgz
+          tar -xzf /tmp/gitleaks.tgz -C /tmp
+          sudo mv /tmp/gitleaks /usr/local/bin/gitleaks
+
+      - name: Run gitleaks on changed commits only
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            RANGE="${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
+          else
+            RANGE="${{ github.event.before }}..${{ github.sha }}"
+          fi
+
+          echo "Scanning commit range: $RANGE"
+          gitleaks detect --source . --log-opts "$RANGE" --report-format json --report-path gitleaks-report.json
+
+      - name: Upload gitleaks report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: npm audit fix (safe auto-upgrades)
+        run: npm audit fix --omit=dev || true
+
+      - name: npm audit (production, high+)
+        # handlebars@4.7.8 (genkit/dotprompt) and path-to-regexp@0.1.13 (firebase-functions)
+        # are unfixable transitive deps with no upstream fix available.
+        # Tracked as accepted risks. CI reports but does not block on these.
+        run: |
+          npm audit --omit=dev --json > audit-prod.json 2>/dev/null || true
+          npm audit --omit=dev --audit-level=high 2>&1 || \
+            echo "::warning::Unfixable transitive vulns present (handlebars via genkit, path-to-regexp via firebase-functions). See SECURITY_ROTATION.md."
+        continue-on-error: true
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-prod
+          path: audit-prod.json
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Run lint (npm script with fallback)
+        shell: bash
+        run: |
+          ESLINT_USE_FLAT_CONFIG=false npm run lint || ESLINT_USE_FLAT_CONFIG=false npx --yes eslint . --ext .js,.ts
+
+  unit-tests:
+    name: Unit Tests
+    needs: [gitleaks, dependency-audit, lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Run unit tests
+        run: node --test server/test/*.test.js
+
+  playwright-smoke:
+    name: Playwright Smoke (${{ matrix.browser }})
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci --ignore-scripts
+
+      - name: Install Playwright browsers
+        run: ./node_modules/.bin/playwright install --with-deps
+
+      - name: Start API and static servers
+        shell: bash
+        run: |
+          node server/index.js > /tmp/dfc-api.log 2>&1 & echo $! > .api-server.pid
+          python3 -m http.server 8088 --directory web > /tmp/dfc-static.log 2>&1 & echo $! > .static-server.pid
+
+      - name: Wait for readiness
+        shell: bash
+        run: |
+          for _ in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:3000/health >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          for _ in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:8088/promoters.html >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl -fsS http://127.0.0.1:3000/health >/dev/null
+          curl -fsS http://127.0.0.1:8088/promoters.html >/dev/null
+
+      - name: Run Playwright smoke for ${{ matrix.browser }}
+        env:
+          REQUIRE_AUTH_FOR_PPV: "true"
+          TEST_BASE_URL: http://127.0.0.1:8088
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8088
+          PLAYWRIGHT_STATIC_WEB_BASE: http://127.0.0.1:8088
+          PLAYWRIGHT_API_BASE: http://127.0.0.1:3000
+          PLAYWRIGHT_POSTER_BASE: http://127.0.0.1:3000
+          PLAYWRIGHT_EXPECT_AUTH: "1"
+          PLAYWRIGHT_STRICT_SMOKE: "1"
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          PAYPAL_CLIENT_ID: ${{ secrets.PAYPAL_CLIENT_ID }}
+          PAYPAL_CLIENT_SECRET: ${{ secrets.PAYPAL_CLIENT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          CHECKOUT_BASE_URL: ${{ secrets.CHECKOUT_BASE_URL }}
+        shell: bash
+        run: |
+          chmod +x test/visual/preflight.sh
+          ./test/visual/preflight.sh
+          ./node_modules/.bin/playwright test test/visual/wallet_ai_shakura_smoke.spec.ts --project=${{ matrix.browser }} --grep "@smoke" --reporter=json > playwright-results-${{ matrix.browser }}.json
+
+      - name: Fail if smoke tests were skipped
+        shell: bash
+        run: |
+          SKIPPED=$(jq '[.suites[].specs[].tests[] | select(.status=="skipped")] | length' playwright-results-${{ matrix.browser }}.json)
+          if [ "$SKIPPED" -gt 0 ]; then
+            echo "Playwright smoke tests had $SKIPPED skipped tests. Failing CI."
+            exit 1
+          fi
+
+      - name: Upload Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.browser }}
+          path: |
+            playwright-report
+            test-results
+            playwright-results-${{ matrix.browser }}.json
+            /tmp/dfc-api.log
+            /tmp/dfc-static.log
+
+      - name: Stop servers
+        if: always()
+        shell: bash
+        run: |
+          if [ -f .api-server.pid ]; then kill $(cat .api-server.pid) || true; fi
+          if [ -f .static-server.pid ]; then kill $(cat .static-server.pid) || true; fi

@@ -1,0 +1,237 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — UWB FIELD TEST CHECKLIST                            ║
+║  One-page reference for techs validating radar behavior         ║
+║  Print this and carry on-site                                   ║
+╚══════════════════════════════════════════════════════════════════╝
+
+PRE-TEST SETUP
+═══════════════════════════════════════════════════════════════════
+
+  Equipment needed:
+  [ ] 3-4 UWB anchors (DW3000 or equivalent), fully charged
+  [ ] 2 CHUCKYA bracelets, charged >80%
+  [ ] 1 Android phone with CHUCKYA app installed (debug APK)
+  [ ] 1 laptop with Docker Compose stack running
+  [ ] Tape measure or laser rangefinder
+  [ ] Masking tape for anchor positions
+
+  Services running on laptop:
+  [ ] docker compose up -d  (all services healthy)
+  [ ] Verify: curl http://localhost:8081/healthz → 200
+  [ ] Control room open in browser (http://localhost:3000 or :80)
+
+ANCHOR PLACEMENT
+═══════════════════════════════════════════════════════════════════
+
+  Recommended layout (rectangular area, ~40m x 20m):
+
+      A1 ─────────── 20m ─────────── A2
+      │                                │
+      │                                │
+     40m          TEST AREA           40m
+      │                                │
+      │                                │
+      A3 ─────────── 20m ─────────── A4
+
+  Rules:
+  [ ] Mount anchors at 2.5-3.0m height (tripod or wall mount)
+  [ ] Line of sight between anchors and test positions
+  [ ] Avoid metal walls, large glass panels, water features
+  [ ] 15-20m spacing in open aisles; 10m in cluttered spaces
+  [ ] Record exact anchor positions (x,y,z) in meters from A1
+
+  Anchor positions (fill in):
+  A1: x=____  y=____  z=____
+  A2: x=____  y=____  z=____
+  A3: x=____  y=____  z=____
+  A4: x=____  y=____  z=____
+
+═══════════════════════════════════════════════════════════════════
+TEST 1: BLE DISCOVERY AND PAIRING
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Open CHUCKYA app → Pair Bracelet → Scan
+  [ ] Bracelet appears as "CHUCKYA-<id>" within 5 seconds
+  [ ] Complete numeric comparison and bond
+  [ ] App shows "Paired" + battery level
+
+  PASS: ___  FAIL: ___  Notes: ____________________________
+
+═══════════════════════════════════════════════════════════════════
+TEST 2: UWB RANGING — 1 METER
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Place bracelet exactly 1.0m from phone (measured)
+  [ ] Press panic button
+  [ ] Phone receives event within 1 second
+  [ ] Record distance reading: ________ m
+  [ ] Expected: 0.8 - 1.2 m (±20cm tolerance)
+  [ ] Record direction reading: ________ degrees
+  [ ] Repeat 3 times. Readings: _____ / _____ / _____
+
+  PASS: ___  FAIL: ___  Avg error: ________ cm
+
+═══════════════════════════════════════════════════════════════════
+TEST 3: UWB RANGING — 5 METERS
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Place bracelet exactly 5.0m from phone (measured)
+  [ ] Press panic button
+  [ ] Phone receives event within 1 second
+  [ ] Record distance reading: ________ m
+  [ ] Expected: 4.5 - 5.5 m (±50cm tolerance)
+  [ ] Record direction reading: ________ degrees
+  [ ] Repeat 3 times. Readings: _____ / _____ / _____
+
+  PASS: ___  FAIL: ___  Avg error: ________ cm
+
+═══════════════════════════════════════════════════════════════════
+TEST 4: UWB RANGING — 20 METERS
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Place bracelet exactly 20.0m from phone (measured)
+  [ ] Press panic button
+  [ ] Phone receives event within 1 second
+  [ ] Record distance reading: ________ m
+  [ ] Expected: 19.0 - 21.0 m (±1m tolerance)
+  [ ] Record direction reading: ________ degrees
+  [ ] Repeat 3 times. Readings: _____ / _____ / _____
+
+  PASS: ___  FAIL: ___  Avg error: ________ cm
+
+═══════════════════════════════════════════════════════════════════
+TEST 5: UWB RANGING — MAX RANGE
+═══════════════════════════════════════════════════════════════════
+
+  Walk bracelet away from phone in 10m increments until signal lost.
+
+  10m:  Reading _____ m  Signal: strong / weak / lost
+  20m:  Reading _____ m  Signal: strong / weak / lost
+  30m:  Reading _____ m  Signal: strong / weak / lost
+  40m:  Reading _____ m  Signal: strong / weak / lost
+  50m:  Reading _____ m  Signal: strong / weak / lost
+  60m+: Reading _____ m  Signal: strong / weak / lost
+
+  Maximum reliable range: ________ m
+  PASS criteria: >30m with <2m error
+
+  PASS: ___  FAIL: ___
+
+═══════════════════════════════════════════════════════════════════
+TEST 6: DIRECTION ACCURACY
+═══════════════════════════════════════════════════════════════════
+
+  At 5m distance, place bracelet at known angles from phone:
+
+  0° (directly ahead):    Reported ______°  Error ______°
+  90° (right):            Reported ______°  Error ______°
+  180° (behind):          Reported ______°  Error ______°
+  270° (left):            Reported ______°  Error ______°
+
+  Expected: ±15° tolerance at 3-5m range
+  PASS: ___  FAIL: ___
+
+═══════════════════════════════════════════════════════════════════
+TEST 7: MULTI-ANCHOR TRIANGULATION (if edge hub running)
+═══════════════════════════════════════════════════════════════════
+
+  [ ] All 4 anchors reporting to edge hub
+  [ ] Bracelet placed at known position (center of test area)
+  [ ] Edge hub computed position: x=_____ y=_____
+  [ ] Actual position: x=_____ y=_____
+  [ ] Error: ________ m
+  [ ] Expected: <0.5m error with 4 anchors, line of sight
+
+  Repeat at 3 different positions:
+  Position 1: Computed ______  Actual ______  Error ______
+  Position 2: Computed ______  Actual ______  Error ______
+  Position 3: Computed ______  Actual ______  Error ______
+
+  PASS: ___  FAIL: ___
+
+═══════════════════════════════════════════════════════════════════
+TEST 8: END-TO-END PIPELINE (panic → control room)
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Control room dashboard open on laptop
+  [ ] Press bracelet panic button
+  [ ] Bracelet vibrates/LED
+  [ ] Phone shows alert UI (record timestamp): ________
+  [ ] Backend returns alertId: ________
+  [ ] Control room shows alert on map (record timestamp): ________
+  [ ] Total latency (button → control room): ________ seconds
+  [ ] Expected: < 2 seconds end-to-end
+
+  PASS: ___  FAIL: ___
+
+═══════════════════════════════════════════════════════════════════
+TEST 9: EVIDENCE EXPORT AND VERIFICATION
+═══════════════════════════════════════════════════════════════════
+
+  [ ] Export evidence for alertId from Test 8
+  [ ] Unzip and verify contents (payload, signed_payload, chain_of_custody)
+  [ ] Run signature verification (openssl dgst)
+  [ ] SHA256 in manifest matches computed hash
+  [ ] Or run: ./chuckya-radar/scripts/chuckya_e2e_test.sh
+
+  PASS: ___  FAIL: ___
+
+═══════════════════════════════════════════════════════════════════
+TEST 10: ENVIRONMENTAL INTERFERENCE
+═══════════════════════════════════════════════════════════════════
+
+  Repeat Test 3 (5m) under each condition:
+
+  Open area (baseline):     Distance _____ m  Error _____ cm
+  Through glass partition:  Distance _____ m  Error _____ cm
+  Through drywall:          Distance _____ m  Error _____ cm
+  Crowd of 10+ people:      Distance _____ m  Error _____ cm
+  Near metal shelving:      Distance _____ m  Error _____ cm
+
+  Note which conditions degrade accuracy:
+  ____________________________________________________________
+
+═══════════════════════════════════════════════════════════════════
+RESULTS SUMMARY
+═══════════════════════════════════════════════════════════════════
+
+  Test 1  BLE Discovery:      PASS / FAIL
+  Test 2  UWB 1m:             PASS / FAIL
+  Test 3  UWB 5m:             PASS / FAIL
+  Test 4  UWB 20m:            PASS / FAIL
+  Test 5  Max Range:          PASS / FAIL   Max: _____ m
+  Test 6  Direction:          PASS / FAIL
+  Test 7  Triangulation:      PASS / FAIL
+  Test 8  End-to-End:         PASS / FAIL   Latency: _____ s
+  Test 9  Evidence:           PASS / FAIL
+  Test 10 Interference:       PASS / FAIL
+
+  Overall: _____ / 10 passed
+
+  Tested by: ________________  Date: ________  Time: ________
+  Venue: ____________________  Conditions: __________________
+
+═══════════════════════════════════════════════════════════════════
+TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════
+
+  UWB range too short:
+  - Raise anchor height; ensure line of sight
+  - Check antenna orientation (vertical preferred)
+  - Reduce interference from metal/water
+
+  Distance readings jumpy:
+  - Average 3-5 readings per test
+  - Check for multipath reflections (glass, metal)
+  - Firmware: increase ranging interval for stability
+
+  Direction inaccurate:
+  - Ensure bracelet orientation consistent between tests
+  - AoA requires 2+ anchors; single anchor gives distance only
+
+  No BLE notification:
+  - Check phone BLE is ON and app has permissions
+  - Verify bracelet is advertising (use nRF Connect app)
+  - Re-pair if bond was lost
+
+═══════════════════════════════════════════════════════════════════

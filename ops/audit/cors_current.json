@@ -1,0 +1,25 @@
+[
+  {
+    "maxAgeSeconds": 3600,
+    "method": ["GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS"],
+    "origin": [
+      "https://datafightcentral.com",
+      "https://www.datafightcentral.com",
+      "https://datafightcentral.web.app",
+      "https://datafightcentral.firebaseapp.com",
+      "http://localhost:*"
+    ],
+    "responseHeader": [
+      "Content-Type",
+      "Content-Length",
+      "Content-Range",
+      "Accept-Ranges",
+      "Authorization",
+      "X-Requested-With",
+      "x-goog-resumable",
+      "x-goog-meta-firebaseStorageDownloadTokens",
+      "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Credentials"
+    ]
+  }
+]

@@ -1,0 +1,95 @@
+CHUCKYA OPERATOR QUICK CARD
+============================
+Print on A4 or laminate as badge card.
+Last updated: 2026-03-28
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IMMEDIATE ACTIONS ON ALERT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. ACKNOWLEDGE alert in Ops console.
+   → Record time and operator ID.
+
+2. CHECK CONFIDENCE
+   → Read riskScore, UWB vector, BLE sightings.
+
+3. NOTIFY WEARER (if imminent approach)
+   → System sends silent haptic + escape arrow.
+
+4. CONTACT VENUE SECURITY
+   → Provide location sector and intercept path.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ESCALATION LEVELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CODE AMBER — Suspicious proximity
+  → Log event, increase monitoring, NO export.
+
+CODE RED — Confirmed approach with supporting signals
+  → Notify venue security, prepare export request,
+    inform Legal.
+
+CODE BLACK — Imminent danger
+  → Ops requests export IMMEDIATELY.
+  → Legal must approve.
+  → Call police.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EXPORT CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Ops clicks "Request Export" — record reason.
+2. Legal approves in UI — record justification.
+3. Generate export — download evidence.zip.
+4. Run verification (terminal or tools script).
+
+VERIFICATION ONE-LINER:
+  jq -S . evidence/payload.json > evidence/payload.canon && \
+  jq -r '.signatureBase64' evidence/signed_payload.json | \
+  base64 -d > evidence/sig.bin && \
+  openssl dgst -sha256 -verify public.pem \
+  -signature evidence/sig.bin evidence/payload.canon
+
+  → Must print "Verified OK" or "signature OK"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DO NOT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✗ Do NOT include GPS or IMEI unless Legal
+  approved AND consent recorded.
+
+✗ Do NOT hand over evidence without verifying
+  signature and manifest.
+
+✗ Do NOT act on a single low-confidence alert
+  without corroborating signals.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTACTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ops Lead:        ops_lead@example.com
+Legal Approver:  legal_approver@example.com
+                 Phone: +61-400-000-000
+Police Liaison:  police_liaison@example.com
+                 Phone: +61-400-111-111
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QUICK TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+No evidence zip  → Check verifier logs, retry export.
+Signature fails  → Do NOT hand over. Escalate to
+                   Backend Engineer and Security.
+High false pos   → Pause automated escalations,
+                   open incident review.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This system is a warning tool.
+Protect privacy by default.
+Follow two-person export rules.
+Your calm, correct actions save lives
+and preserve trust.

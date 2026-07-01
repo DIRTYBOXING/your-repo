@@ -1,0 +1,68 @@
+DATA FIGHT CENTRAL — CONTENT LICENSE AGREEMENT
+
+This Content License Agreement ("Agreement") is entered into between:
+
+Licensor (Promoter): __________________________
+Contact Email:       __________________________
+ABN / Tax ID:        __________________________
+
+Licensee: DataFight Central Pty Ltd ("DFC")
+ABN: __________________________
+Contact: legal@datafightcentral.com
+
+Event: __________________________
+Event ID: __________________________
+Event Date: __________________________
+
+1. GRANT OF LICENSE
+   Licensor grants DFC a non-exclusive, worldwide, royalty-bearing license to:
+   (a) Reproduce, distribute, and publicly display the Licensed Materials
+       (posters, fighter photos, logos, event copy) on the DFC platform;
+   (b) Create derivative promotional materials (thumbnails, banners, social
+       media crops) from the Licensed Materials;
+   (c) Sell Pay-Per-View access to the Event stream through the DFC platform.
+
+2. LICENSED MATERIALS
+   The following materials are covered by this Agreement:
+   [ ] Official event poster (high-res, min 1600×2400)
+   [ ] Fighter headshots / promo photos
+   [ ] Sponsor logos (transparent PNG)
+   [ ] Event copy, venue details, and approved legal text
+   [ ] Broadcast stream URL or API key
+   [ ] Other: __________________________
+
+3. TERM
+   This license is effective from the date of signing until 12 months after
+   the Event Date, unless terminated earlier by either party with 30 days'
+   written notice. Replay rights survive for the term of this Agreement.
+
+4. COMPENSATION
+   DFC will pay Licensor __% of net PPV revenue (after payment processing
+   fees) within 30 days of each calendar month end. Default split: 85%
+   Licensor / 15% DFC platform fee.
+
+5. REPRESENTATIONS & WARRANTIES
+   Licensor represents that:
+   (a) They own or have authority to license the Licensed Materials;
+   (b) The Licensed Materials do not infringe any third-party IP rights;
+   (c) All persons depicted have signed model releases (attached separately);
+   (d) The Licensed Materials comply with applicable laws and regulations.
+
+6. INDEMNIFICATION
+   Licensor shall indemnify DFC against claims arising from breach of
+   Section 5. DFC shall indemnify Licensor against claims arising from
+   DFC's unauthorized use of the Licensed Materials beyond this Agreement.
+
+7. TERMINATION
+   Either party may terminate with 30 days' written notice. Upon
+   termination, DFC will remove Licensed Materials within 14 business days,
+   except for archived purchase records required by law.
+
+8. GOVERNING LAW
+   This Agreement is governed by the laws of Queensland, Australia.
+
+SIGNATURES
+
+Licensor: __________________________ Date: __________
+
+DFC Authorized Representative: __________________________ Date: __________

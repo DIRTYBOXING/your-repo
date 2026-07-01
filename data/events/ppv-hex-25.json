@@ -1,0 +1,49 @@
+{
+  "eventId": "ppv-hex-25",
+  "title": "HEX FIGHT SERIES 25",
+  "subtitle": "Melbourne — Australian MMA Championships",
+  "date": "2026-05-16",
+  "time": "18:30 AEST",
+  "price": "19.99",
+  "promoter": "Hex Fight Series",
+  "sport": "MMA",
+  "venue": "Melbourne Convention Centre",
+  "currency": "AUD",
+  "streamPlatforms": ["UFC Fight Pass"],
+  "fighters": [
+    {
+      "name": "Jacob Malkoun",
+      "record": "10-3-0",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "Shannon Ross",
+      "record": "12-5-0",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Jacob Malkoun",
+      "fighter2": "Shannon Ross",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "JP Buys",
+      "fighter2": "Shane Canney",
+      "weightClass": "Flyweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Loma Lookboonmee",
+      "fighter2": "Nyrene Crowley",
+      "weightClass": "Strawweight",
+      "rounds": 3
+    }
+  ]
+}

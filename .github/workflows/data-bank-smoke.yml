@@ -1,0 +1,238 @@
+name: Data-Bank Smoke
+
+on:
+  pull_request:
+    branches: [master, feat/**]
+    paths:
+      - "web/promoters.html"
+      - "test/visual/promoter_how_we_work.spec.ts"
+      - "test/fixtures/**"
+      - "scripts/run_data_bank_smoke.sh"
+      - "playwright.config.ts"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/data-bank-smoke.yml"
+  schedule:
+    # Nightly at 02:00 UTC — full cloud-backed run when credits are fresh
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data-bank-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  data-bank-smoke:
+    name: data-bank-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Deterministic install (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --prefer-offline --no-audit --progress=false --ignore-scripts
+
+      - name: Install Playwright browser (chromium)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: node ./node_modules/playwright/cli.js install --with-deps chromium
+
+      # Pull fixtures from dev bucket when the secret is configured.
+      # Falls back to generating a placeholder so the job never hard-fails due
+      # to missing credentials in fork / draft PRs.
+      - name: Pull fixtures from dev bucket (if configured)
+        id: pull_fixtures
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          FIXTURE_BUCKET: ${{ secrets.FIXTURE_BUCKET }}
+        run: |
+          mkdir -p dfc-data-bank/fixtures
+
+          if [[ -z "${GCP_SA_KEY}" || -z "${FIXTURE_BUCKET}" ]]; then
+            echo "::warning::GCP_SA_KEY or FIXTURE_BUCKET not set — using repo or generated fixture"
+            echo "from_bucket=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "$GCP_SA_KEY" > /tmp/gcp-key.json
+          gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
+          gsutil -m rsync -r "gs://${FIXTURE_BUCKET}/fixtures" dfc-data-bank/fixtures
+          echo "from_bucket=true" >> "$GITHUB_OUTPUT"
+
+      - name: Verify fixture checksum (if from bucket)
+        if: steps.pull_fixtures.outputs.from_bucket == 'true'
+        run: |
+          cd dfc-data-bank/fixtures
+          if [[ -f smoke.mp4.sha256 ]]; then
+            sha256sum -c smoke.mp4.sha256
+          else
+            echo "::warning::No checksum file found for smoke.mp4 — skipping verification"
+          fi
+
+      - name: Ensure smoke fixture exists (fallback)
+        if: steps.pull_fixtures.outputs.from_bucket != 'true'
+        run: |
+          mkdir -p dfc-data-bank/fixtures
+          if [[ -f test/fixtures/smoke.mp4 ]]; then
+            cp test/fixtures/smoke.mp4 dfc-data-bank/fixtures/smoke.mp4
+          else
+            # Minimal placeholder — enough for URL/manifest path tests
+            printf 'dfc-media-smoke-placeholder' > dfc-data-bank/fixtures/smoke.mp4
+          fi
+          sha256sum dfc-data-bank/fixtures/smoke.mp4 > dfc-data-bank/fixtures/smoke.mp4.sha256
+
+      - name: Start fixture server
+        run: |
+          python3 -m http.server 9000 --directory dfc-data-bank/fixtures \
+            > /tmp/fixture-server.log 2>&1 &
+          echo "FIXTURE_PID=$!" >> "$GITHUB_ENV"
+          # brief wait for the server to bind
+          for i in $(seq 1 20); do
+            bash -c '>/dev/tcp/127.0.0.1/9000' 2>/dev/null && break || sleep 0.3
+          done
+
+      - name: Start web server
+        run: |
+          python3 -m http.server 8088 --directory web \
+            > /tmp/web-server.log 2>&1 &
+          echo "WEB_PID=$!" >> "$GITHUB_ENV"
+          for i in $(seq 1 20); do
+            bash -c '>/dev/tcp/127.0.0.1/8088' 2>/dev/null && break || sleep 0.3
+          done
+
+      - name: Run promoter smoke against local server
+        id: promoter_smoke
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:8088
+        run: |
+          node ./node_modules/playwright/cli.js \
+            test test/visual/promoter_how_we_work.spec.ts --project=desktop
+
+      - name: Archive Playwright report to data bank
+        if: always()
+        run: |
+          STAMP="$(date -u +%Y%m%d-%H%M%S)"
+          mkdir -p dfc-data-bank/reports
+          if [[ -d playwright-report ]]; then
+            zip -qr "dfc-data-bank/reports/promoter-playwright-report-${STAMP}.zip" playwright-report/
+          fi
+          if [[ -d test-results ]]; then
+            zip -qr "dfc-data-bank/reports/promoter-test-results-${STAMP}.zip" test-results/
+          fi
+          FIXTURE_HASH="$(sha256sum dfc-data-bank/fixtures/smoke.mp4 | awk '{print $1}')"
+          cat > "dfc-data-bank/reports/data-bank-smoke-summary-${STAMP}.json" <<JSON
+          {
+            "generatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "runId": "${{ github.run_id }}",
+            "runUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "fromBucket": "${{ steps.pull_fixtures.outputs.from_bucket }}",
+            "fixtureSha256": "${FIXTURE_HASH}",
+            "playwrightOutcome": "${{ steps.promoter_smoke.outcome }}"
+          }
+          JSON
+
+      - name: Stop local servers
+        if: always()
+        run: |
+          [[ -n "${FIXTURE_PID:-}" ]] && kill "${FIXTURE_PID}" 2>/dev/null || true
+          [[ -n "${WEB_PID:-}"     ]] && kill "${WEB_PID}"     2>/dev/null || true
+
+      - name: Upload Playwright report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-bank-playwright-report-${{ github.run_id }}
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Upload data-bank reports artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-bank-reports-${{ github.run_id }}
+          path: dfc-data-bank/reports/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Post data-bank smoke verdict on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- data-bank-smoke-report -->';
+            const outcome = '${{ steps.promoter_smoke.outcome }}';
+            const fromBucket = '${{ steps.pull_fixtures.outputs.from_bucket }}' === 'true';
+            const icon = outcome === 'success' ? '✅' : '❌';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const artifactsUrl = `${runUrl}#artifacts`;
+
+            const body = [
+              marker,
+              `## ${icon} Data-Bank Smoke: ${outcome.toUpperCase()}`,
+              '',
+              `| | |`,
+              `|--|--|`,
+              `| Fixture source | ${fromBucket ? 'dev bucket ✅' : 'repo / generated ⚠️'} |`,
+              `| Playwright | \`${outcome}\` |`,
+              `| Run | ${runUrl} |`,
+              `| Artifacts | ${artifactsUrl} |`,
+              '',
+              fromBucket ? '' : '> ⚠️ **Note**: `GCP_SA_KEY` / `FIXTURE_BUCKET` not configured — fixtures were generated locally. Results may differ from a full cloud run.',
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+
+            const existing = comments
+              .filter(c => c.user?.type === 'Bot' && typeof c.body === 'string' && c.body.includes(marker))
+              .sort((a, b) => a.id - b.id)
+              .pop();
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          if [[ -z "${SLACK_WEBHOOK_URL}" ]]; then
+            echo "SLACK_WEBHOOK_URL not configured; skipping Slack notify."
+            exit 0
+          fi
+
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ARTIFACTS_URL="${RUN_URL}#artifacts"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"⚠️ DFC data-bank-smoke FAILED. Run: ${RUN_URL} | Artifacts: ${ARTIFACTS_URL}\"}" \
+            "$SLACK_WEBHOOK_URL"

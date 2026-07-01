@@ -1,0 +1,159 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  CHUCKYA — EMERGENCY SOP                                       ║
+║  Standard Operating Procedure for detected approaching threat  ║
+║  Print and post at every operator station                       ║
+╚══════════════════════════════════════════════════════════════════╝
+
+THREAT LEVEL DEFINITIONS
+═══════════════════════════════════════════════════════════════════
+
+  CODE BLACK — Panic button pressed by wearer
+  ──────────────────────────────────────────────
+  Highest priority. Wearer is in immediate distress.
+  Response: IMMEDIATE action required.
+
+  CODE RED — Auto-proximity < 3m, multi-signal confirmed
+  ──────────────────────────────────────────────
+  Known threat within close range, confirmed by fusion.
+  Response: Urgent action within 30 seconds.
+
+  CODE YELLOW — Auto-proximity 3-7m or single signal
+  ──────────────────────────────────────────────
+  Potential threat, not yet confirmed by multiple signals.
+  Response: Monitor and prepare. Escalate if confirmed.
+
+  AMBER — Auto-proximity > 7m or low confidence
+  ──────────────────────────────────────────────
+  Awareness level. May be normal activity.
+  Response: Log and observe. No action unless escalated.
+
+IMMEDIATE RESPONSE (0-30 SECONDS)
+═══════════════════════════════════════════════════════════════════
+
+  ON CODE BLACK OR CODE RED:
+
+  1. WEARER PROTECTION
+     [ ] Silent haptic alert sent to wearer's phone
+     [ ] Escape vector and nearest safe exit displayed
+     [ ] Do NOT sound audible alarm (avoid escalating threat)
+
+  2. OPS TRIAGE
+     [ ] Ops reviews alert on control room dashboard
+     [ ] Confirm: alertId, mode, distance, direction, confidence
+     [ ] Assess: is this genuine or false positive?
+     [ ] Decision within 30 seconds: RESPOND or STAND DOWN
+
+  3. VENUE SECURITY DEPLOYMENT
+     [ ] Radio venue security: "Move to sector ___, assist person,
+         clear escape path, do NOT confront threat directly"
+     [ ] Security acknowledges and moves
+
+SHORT-TERM RESPONSE (30 SECONDS - 5 MINUTES)
+═══════════════════════════════════════════════════════════════════
+
+  4. CONTINUOUS MONITORING
+     [ ] Track threat proximity on dashboard (distance/direction)
+     [ ] Watch for second bracelet triggers (multiple victims)
+     [ ] Monitor WS feed for additional signals
+
+  5. ESCALATION DECISION
+     IF threat is confirmed and imminent:
+     [ ] Ops Lead declares CODE BLACK
+     [ ] Notify Legal Lead for export preparation
+     [ ] Prepare to call police liaison
+
+     IF threat is not confirmed:
+     [ ] Continue monitoring for 5 minutes
+     [ ] Check with wearer via phone app: "Are you safe?"
+     [ ] Stand down if wearer confirms safe
+
+EVIDENCE AND POLICE HANDOVER (5-15 MINUTES)
+═══════════════════════════════════════════════════════════════════
+
+  6. EVIDENCE EXPORT (requires TWO-PERSON APPROVAL)
+     [ ] Ops Lead requests export for alert ID
+     [ ] Legal Lead reviews and approves
+     [ ] Tech runs export command
+     [ ] Verify evidence zip integrity (signature + SHA256)
+
+  7. POLICE NOTIFICATION
+     [ ] Call police liaison: [PHONE NUMBER: ________________]
+     [ ] Provide:
+         - Venue name and address
+         - Time of detection
+         - Nature of threat (panic / proximity)
+         - Evidence package available
+     [ ] Do NOT provide GPS/IMEI unless explicitly approved by Legal
+
+  8. EVIDENCE HANDOVER
+     [ ] Provide evidence.zip to police
+     [ ] Provide public.pem for verification
+     [ ] Provide printed verification instructions
+     [ ] Record handover in chain of custody log
+
+POST-INCIDENT (after resolution)
+═══════════════════════════════════════════════════════════════════
+
+  9. IMMEDIATE
+     [ ] Confirm wearer is safe
+     [ ] Stand down venue security
+     [ ] Notify all WS subscribers: "Incident resolved"
+
+  10. WITHIN 24 HOURS
+     [ ] Archive all evidence to immutable bucket
+     [ ] Run post-mortem with Ops, Legal, Tech, Venue
+     [ ] Document: what happened, response time, what to improve
+     [ ] Tune thresholds if false positive or missed detection
+     [ ] Update this SOP if workflow gaps identified
+
+  11. WITHIN 7 DAYS
+     [ ] File incident report
+     [ ] Review with police liaison (if police were involved)
+     [ ] Schedule follow-up drill if new procedures needed
+
+FALSE ALARM PROCEDURE
+═══════════════════════════════════════════════════════════════════
+
+  If Ops determines alert is a false positive:
+
+  [ ] Log reason for false positive determination
+  [ ] Stand down all responses
+  [ ] Notify wearer: "Alert cleared — no action needed"
+  [ ] DO NOT delete the alert — keep in audit log
+  [ ] Review: what caused the false positive?
+  [ ] Adjust thresholds or anchor placement if systematic
+
+COMMUNICATION TEMPLATES
+═══════════════════════════════════════════════════════════════════
+
+  To venue security (radio):
+  "Security team, this is Ops. We have a [CODE BLACK/RED] alert
+   in sector [X]. Move to assist the person with the bracelet.
+   Clear the escape path toward [exit]. Do not confront. Over."
+
+  To police (phone):
+  "This is [name] from [organization], CHUCKYA Ops.
+   We have a Code [Black/Red] at [venue], [address].
+   Detection at [time]. Bracelet wearer triggered [panic/proximity].
+   We have signed digital evidence ready for handover.
+   Requesting [patrol/response] to [venue]. Over."
+
+  To wearer (app notification):
+  CODE BLACK: "Help is on the way. Move toward [exit name]."
+  CODE RED:   "Stay aware. Security is moving to your area."
+  ALL CLEAR:  "Alert cleared. You are safe."
+
+CONTACT LIST (FILL IN)
+═══════════════════════════════════════════════════════════════════
+
+  Ops Lead:        ________________  Phone: ________________
+  Legal Lead:      ________________  Phone: ________________
+  Tech Lead:       ________________  Phone: ________________
+  Venue Security:  ________________  Radio: ________________
+  Police Liaison:  ________________  Phone: ________________
+  Emergency:       000 (Triple Zero)
+
+═══════════════════════════════════════════════════════════════════
+  Post this SOP at every operator station.
+  Review and update after every drill and every real incident.
+═══════════════════════════════════════════════════════════════════

@@ -1,0 +1,76 @@
+rules_version = '2';
+
+// DATA FIGHT CENTRAL — FIREBASE STORAGE SECURITY RULES
+// Production-ready: auth-gated writes, public reads for media, size limits enforced.
+//
+// COST CONTROL: Every write path has a max file size to prevent storage abuse.
+// To further limit costs, enable Firebase App Check and set a GCS lifecycle
+// rule to auto-delete temporary files older than 30 days.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Public read for all media (posters, avatars, event images)
+    match /{allPaths=**} {
+      allow read: if true;
+    }
+
+    // User profile uploads — authenticated, max 10 MB, images only
+    match /users/{userId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Post media — authenticated, max 50 MB (images + video)
+    match /posts/{postId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.resource.size < 50 * 1024 * 1024;
+    }
+
+    // Short videos (Reels) — authenticated, max 100 MB, video only
+    match /short_videos/{userId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 100 * 1024 * 1024
+                   && request.resource.contentType.matches('video/.*');
+    }
+
+    // Video thumbnails — authenticated, max 5 MB, images only
+    match /video_thumbnails/{userId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Event/PPV assets — authenticated, max 100 MB
+    match /events/{eventId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.resource.size < 100 * 1024 * 1024;
+    }
+
+    // Fighter media — authenticated, max 50 MB
+    match /fighters/{fighterId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.resource.size < 50 * 1024 * 1024;
+    }
+
+    // Gym media — authenticated, max 25 MB
+    match /gyms/{gymId}/{allPaths=**} {
+      allow write: if request.auth != null
+                   && request.resource.size < 25 * 1024 * 1024;
+    }
+
+    // Campaign/promo assets — admin only via Cloud Functions (service account)
+    match /campaigns/{allPaths=**} {
+      allow write: if false;
+    }
+
+    // Catch-all: deny writes not matched above
+    match /{document=**} {
+      allow write: if false;
+    }
+  }
+}

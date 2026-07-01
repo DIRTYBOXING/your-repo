@@ -1,0 +1,35 @@
+{
+  "displayName": "DFC — Entitlement failure rate > 1%",
+  "documentation": {
+    "content": "The entitlement grant failure rate has exceeded 1% over a 5-minute window. Check Firebase function logs for `create_entitlement` and inspect the `webhook_dlq` collection for stalled Stripe webhook events. See docs/ONCALL.md for response steps.",
+    "mimeType": "text/markdown"
+  },
+  "conditions": [
+    {
+      "displayName": "Entitlement failure rate exceeds threshold",
+      "conditionThreshold": {
+        "filter": "metric.type=\"logging.googleapis.com/user/entitlement_failure\" resource.type=\"cloud_function\"",
+        "aggregations": [
+          {
+            "alignmentPeriod": "300s",
+            "perSeriesAligner": "ALIGN_RATE",
+            "crossSeriesReducer": "REDUCE_SUM",
+            "groupByFields": []
+          }
+        ],
+        "comparison": "COMPARISON_GT",
+        "thresholdValue": 0.01,
+        "duration": "0s",
+        "trigger": {
+          "count": 1
+        }
+      }
+    }
+  ],
+  "alertStrategy": {
+    "autoClose": "604800s"
+  },
+  "combiner": "OR",
+  "enabled": true,
+  "notificationChannels": []
+}

@@ -1,0 +1,12 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "dirtyboxing",
+        "projectKey": "DIRTYBOXING_Data-Fight-Central"
+    },
+    "firebridge.useEmulator": true,
+    "firebridge.emulatorProjectId": "Data-Fight-Central",
+    "firebridge.emulatorHost": "localhost",
+    "firebridge.emulatorPort": 8080,
+    "workbench.colorCustomizations": {},
+    "editor.formatOnSave": true
+}

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stripe Onboarding Guide — Data Fight Central</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      @media print {
+        body {
+          font-size: 11pt;
+          color: #000;
+        }
+        .no-print {
+          display: none;
+        }
+      }
+      body {
+        font-family: "Georgia", serif;
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 0 1.5rem;
+        line-height: 1.7;
+        color: #222;
+      }
+      h1 {
+        font-size: 1.6rem;
+        text-align: center;
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin-top: 2rem;
+        color: #333;
+      }
+      .step {
+        background: #f7f7f7;
+        border-left: 4px solid #00d9ff;
+        padding: 0.75rem 1rem;
+        margin: 0.75rem 0;
+      }
+      .step strong {
+        color: #00d9ff;
+      }
+      .highlight {
+        background: #e8f9ff;
+        padding: 1rem;
+        border-radius: 6px;
+        margin: 1.5rem 0;
+      }
+      .btn-print {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background: #00d9ff;
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="no-print" style="text-align: center">
+      <button class="btn-print" onclick="window.print()">
+        Print / Save as PDF
+      </button>
+      <a
+        class="btn-print"
+        href="/promoters.html"
+        style="
+          text-decoration: none;
+          margin-left: 0.5rem;
+          background: #555;
+          color: #fff;
+        "
+        >Back to Promoter Hub</a
+      >
+    </div>
+
+    <h1>STRIPE CONNECT ONBOARDING GUIDE</h1>
+    <p style="text-align: center">
+      For promoters receiving PPV payouts through Data Fight Central
+    </p>
+
+    <div class="highlight">
+      <strong>Key fact:</strong> DFC does NOT hold your funds. Stripe routes
+      your share directly to your bank account at the moment of purchase.
+    </div>
+
+    <h2>How It Works</h2>
+    <ol>
+      <li>You complete Stripe Express onboarding (5–10 minutes).</li>
+      <li>Stripe verifies your identity (KYC) and bank details.</li>
+      <li>
+        When a fan buys PPV access to your event, Stripe automatically:
+        <ul>
+          <li>Sends your share (e.g. 60%) to your connected account</li>
+          <li>Retains DFC's commission (e.g. 40%) as application fee</li>
+        </ul>
+      </li>
+      <li>
+        You see payouts in your Stripe dashboard within 2–7 business days.
+      </li>
+    </ol>
+
+    <h2>Step-by-Step</h2>
+    <div class="step">
+      <strong>Step 1:</strong> Click the onboarding link DFC sends you by email.
+    </div>
+    <div class="step">
+      <strong>Step 2:</strong> Enter your business details — business name, ABN
+      (Australian promoters), and address.
+    </div>
+    <div class="step">
+      <strong>Step 3:</strong> Enter representative details — name, date of
+      birth, government ID.
+    </div>
+    <div class="step">
+      <strong>Step 4:</strong> Enter your bank account details for payouts.
+    </div>
+    <div class="step">
+      <strong>Step 5:</strong> Agree to Stripe's terms of service.
+    </div>
+    <div class="step">
+      <strong>Step 6:</strong> Submit — Stripe verifies within 1–2 business
+      days. You'll receive a confirmation email.
+    </div>
+
+    <h2>Sandbox Testing (Before Live Event)</h2>
+    <ul>
+      <li>DFC creates a test PaymentIntent using Stripe test mode.</li>
+      <li>You see a test payout in your Stripe test dashboard.</li>
+      <li>Confirm the amount matches the expected split.</li>
+      <li>Report any issues to <strong>ops@datafightcentral.com</strong>.</li>
+    </ul>
+
+    <h2>Live Payment Flow</h2>
+    <ol>
+      <li>Fan visits event PPV page on datafightcentral.com.</li>
+      <li>Fan clicks "Buy PPV Access" and enters card details.</li>
+      <li>
+        Stripe creates a PaymentIntent with your connected account as
+        destination.
+      </li>
+      <li>Stripe charges the fan and routes your share instantly.</li>
+      <li>Stripe holds a short reserve (7–14 days) for chargebacks.</li>
+      <li>
+        Payout arrives in your bank account per your Stripe payout schedule.
+      </li>
+    </ol>
+
+    <h2>Reporting</h2>
+    <ul>
+      <li>DFC provides daily email reports during the event window.</li>
+      <li>Final settlement report within 7 days of event.</li>
+      <li>Full payout reconciliation within 30 days.</li>
+      <li>View all transactions at <strong>dashboard.stripe.com</strong>.</li>
+    </ul>
+
+    <h2>Chargebacks &amp; Disputes</h2>
+    <ul>
+      <li>If a buyer disputes a charge, Stripe notifies both DFC and you.</li>
+      <li>DFC responds to disputes using purchase evidence and DRM logs.</li>
+      <li>
+        If a chargeback is upheld, the amount is deducted from the reserve.
+      </li>
+    </ul>
+
+    <h2>FAQ</h2>
+    <p>
+      <strong>Q: Does DFC hold my money?</strong><br />
+      A: No. Stripe routes your share directly to your connected account. DFC
+      only receives the agreed commission via application_fee.
+    </p>
+
+    <p>
+      <strong>Q: What fees does Stripe charge?</strong><br />
+      A: Standard Stripe processing: ~2.9% + $0.30 per transaction, deducted
+      before the revenue split.
+    </p>
+
+    <p>
+      <strong>Q: How long until I get paid?</strong><br />
+      A: Stripe's standard rolling payout schedule — typically 2–7 business
+      days.
+    </p>
+
+    <p>
+      <strong>Q: What if I need to change my bank details?</strong><br />
+      A: Log into your Stripe dashboard → Settings → Payouts.
+    </p>
+
+    <h2>Support</h2>
+    <p>
+      Onboarding issues: <strong>ops@datafightcentral.com</strong><br />
+      Payment queries: <strong>info@datafightcentral.com</strong><br />
+      Phone: <strong>0450 113 139</strong>
+    </p>
+  </body>
+</html>

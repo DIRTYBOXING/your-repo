@@ -1,0 +1,258 @@
+# ╔══════════════════════════════════════════════════════════════════════╗
+# ║  DFC CHUCKYA + BLACKBIRD — FULL CONTROL SYSTEM                     ║
+# ║  DataFightCentral Internal · All Services Unified                   ║
+# ║                                                                     ║
+# ║  Usage:                                                             ║
+# ║    docker-compose -f docker-compose.full.yml up --build             ║
+# ║                                                                     ║
+# ║  Access:                                                            ║
+# ║    Control Room UI:   http://localhost                               ║
+# ║    Radar API:         http://localhost/v1/radar/alerts              ║
+# ║    WebSocket:         ws://localhost/ws/                             ║
+# ║    Prometheus:        http://localhost:9090                          ║
+# ║    Grafana:           http://localhost:3001  (admin / admin)        ║
+# ║    PostGIS DB:        localhost:5432                                 ║
+# ║    Device Verifier:   http://localhost/v1/device/*                  ║
+# ╚══════════════════════════════════════════════════════════════════════╝
+version: "3.9"
+
+services:
+  # ═══════════════════════════════════════════════════════════════════
+  # TIER 1 — DATA STORES
+  # ═══════════════════════════════════════════════════════════════════
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  db:
+    image: postgis/postgis:15-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: controlroom
+      POSTGRES_USER: controlroomuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../migrations/20260329_blackbird_pilot_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U controlroomuser -d controlroom"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ═══════════════════════════════════════════════════════════════════
+  # TIER 2 — CORE SERVICES
+  # ═══════════════════════════════════════════════════════════════════
+
+  # Chuckya Radar — anti-piracy ingest, scoring, evidence export
+  radar-api:
+    build: ./radar-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+    volumes:
+      - ops-audit:/ops-audit
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:8080/healthz'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Device verifier — public key registration, consent, signature
+  device-verifier:
+    build: ./device-verifier
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=8083
+    volumes:
+      - ops-audit:/ops-audit
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:8083/healthz'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # WebSocket server — Redis-backed, JWT auth, region rooms
+  ws-server:
+    build: ./ws-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-replace-in-prod}
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-admintoken}
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:8080/healthz'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Prometheus metrics exporter
+  metrics-server:
+    build: ./metrics-server
+    restart: unless-stopped
+    environment:
+      - METRICS_PORT=9091
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:9091/healthz'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Blackbird Pilot — FastAPI ingest + PostGIS matching
+  blackbird-api:
+    build:
+      context: ../atlas_backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://controlroomuser:${DB_PASSWORD:-changeme}@db:5432/controlroom
+      REDIS_URL: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GOOGLE_APPLICATION_CREDENTIALS: /secrets/firebase.json
+    volumes:
+      - ${FIREBASE_CRED_PATH:-/dev/null}:/secrets/firebase.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'python -c "import urllib.request; urllib.request.urlopen(''http://localhost:8000/docs'')"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ═══════════════════════════════════════════════════════════════════
+  # TIER 3 — FRONTEND & PROXY
+  # ═══════════════════════════════════════════════════════════════════
+
+  # React Control Room frontend
+  frontend:
+    build: ./control-room-frontend
+    restart: unless-stopped
+    environment:
+      - VITE_MAPBOX_TOKEN=${MAPBOX_TOKEN:-pk.placeholder}
+      - VITE_WS_URL=ws://localhost/ws/
+      - VITE_API_BASE=/v1
+
+  # Mapbox vector tile server (required by nginx /tiles/ upstream)
+  tileserver:
+    image: maptiler/tileserver-gl:latest
+    restart: unless-stopped
+    command: ["--port", "8082"]
+    volumes:
+      - ./tiles:/data:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # Nginx reverse proxy — single entry point
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - radar-api
+      - device-verifier
+      - ws-server
+      - metrics-server
+      - frontend
+      - tileserver
+
+  # ═══════════════════════════════════════════════════════════════════
+  # TIER 4 — OBSERVABILITY
+  # ═══════════════════════════════════════════════════════════════════
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: unless-stopped
+    volumes:
+      - ./prometheus-full.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - radar-api
+      - metrics-server
+      - blackbird-api
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana-provisioning/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
+      - ./grafana-provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./grafana-dashboard.json:/etc/grafana/provisioning/dashboards/blackbird.json:ro
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+
+  # ═══════════════════════════════════════════════════════════════════
+  # TIER 5 — LOAD TEST (on-demand)
+  # ═══════════════════════════════════════════════════════════════════
+
+  artillery:
+    image: artilleryio/artillery:latest
+    profiles: ["loadtest"]
+    volumes:
+      - ./load-test:/load-test:ro
+    working_dir: /load-test
+    command: ["run", "artillery.yml"]
+    depends_on:
+      - nginx
+
+volumes:
+  redis-data:
+  pgdata:
+  grafana_data:
+  ops-audit:

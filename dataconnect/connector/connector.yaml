@@ -1,0 +1,5 @@
+connectorId: "default"
+generate:
+  pythonSdk:
+    outputDir: "../../atlas_backend/dataconnect_client"
+    package: "dataconnect_client"

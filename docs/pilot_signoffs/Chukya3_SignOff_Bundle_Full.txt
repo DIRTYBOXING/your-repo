@@ -1,0 +1,321 @@
+================================================================================
+  CHUKYA 3.0 PINK SHIELD — FULL SIGN-OFF BUNDLE
+  Date: 2026-03-27
+  Repo: DIRTYBOXING/Data-Fight-Central
+  Branch: maps/precompute-cluster-icons
+================================================================================
+
+NOTE: Sections 1-10 (Executive Summary, Ops Commands, File Inventory, GitHub
+Issue Creation, Police Outreach Email, Formal Letter, Joint Test Runbook,
+Monitoring/Emergency Actions, Acceptance Criteria, Final Sign-Off Statement)
+are in: docs/pilot_signoffs/Chukya3_Delivery_Package.txt
+
+This file contains ADDITIONAL sections that extend the delivery package.
+
+================================================================================
+11. USER ONBOARDING FLOW (how victims use it)
+================================================================================
+
+A. Consent and registration
+   - Victim signs consent form (digital or paper).
+   - Store signed consent reference in police_validations with victimId,
+     officerId, and timestamp.
+
+B. Police adds offender profile
+   - Police uses addThreatProfile to add offender HMAC-hashed identifier
+     to threat_watchlist.
+   - Only police accounts with police_service custom claim may write to
+     the watchlist.
+
+C. Victim app
+   - Victim installs DFC Pink Shield app, opts into Chukya, and links
+     victimId (consent verified).
+   - App runs background scanning; matches are sent to server for
+     fingerprint matching.
+
+D. Server behavior
+   - On match with confidence >= threshold (default 0.8), server writes
+     proximity_alerts and, if notifications enabled, enqueues
+     police_notifications.
+   - Evidence attachments (audio/photo) are uploaded to restricted bucket
+     and linked to the alert.
+
+================================================================================
+12. AUDIT, RETENTION, AND LEGAL CONTROLS
+================================================================================
+
+- Append-only evidence: do NOT delete proximity_alerts or evidence_vault
+  entries. Use retention policy per counsel (recommended 7 years).
+
+- Cloud Audit Logs: export police API calls and Firestore writes to a
+  secure GCS bucket for legal review.
+
+- HMAC secret rotation: rotate quarterly and record rotation in the
+  approval ticket. Update Secret Manager version and redeploy Cloud
+  Functions after rotation.
+
+- Chain of custody: every proximity_alerts document includes timestamp,
+  victimId, confidence, estimatedDistanceMeters, mode, and testRunId
+  for full traceability.
+
+- Data minimization: raw phone numbers are never stored; only HMAC-hashed
+  identifiers are persisted. Victim consent can be revoked and scanning
+  disabled per-user.
+
+================================================================================
+13. QUICK VERIFICATION CHECKLIST (run after each test)
+================================================================================
+
+  [ ] chukya_enabled=false and chukya_police_notifications_paused=true set.
+  [ ] Police SA created and police_service claim set.
+  [ ] High injection created proximity_alerts with confidence >= 0.8.
+  [ ] No police notifications were sent while paused.
+  [ ] Evidence metadata fields present and valid (victimId, mode,
+      estimatedDistanceMeters, confidence, testRunId).
+  [ ] Prometheus metrics show detection events.
+  [ ] Logs captured and archived for the test run.
+
+================================================================================
+14. VS CODE PROJECT SETUP GUIDE
+================================================================================
+
+A. Project layout in VS Code
+   Open the repo folder in VS Code (File > Open Folder):
+
+   DIRTYBOXING/Data-Fight-Central/
+   +-- docs/
+   |   +-- pilot_signoffs/
+   |       +-- Chukya3_SignOff_Bundle_OnePage.txt
+   |       +-- Chukya3_Delivery_Package.txt
+   |       +-- Chukya3_SignOff_Bundle_Full.txt  (this file)
+   +-- tools/
+   |   +-- inject_chukya_assert_admin.js
+   |   +-- smoke_all.sh
+   |   +-- github_issue_body.md
+   +-- test_fingerprint_high.json
+   +-- test_fingerprint_medium.json
+   +-- test_fingerprint_low.json
+   +-- package.json
+   +-- .github/
+       +-- workflows/
+           +-- chukya-nightly-admin.yml
+           +-- deploy-chukya-staging.yml
+
+B. Replace placeholders
+   Open these files and replace YOUR_PROJECT_ID, YOUR_TEST_TOKEN,
+   REPLACE_WITH_STRONG_SECRET, and other placeholders with real values:
+   - tools/inject_chukya_assert_admin.js
+   - .github/workflows/chukya-nightly-admin.yml
+   - docs/pilot_signoffs/Chukya3_Delivery_Package.txt
+
+C. Install Node dependencies
+   In VS Code terminal (Terminal > New Terminal):
+
+     npm ci
+
+   If needed, package.json already includes firebase-admin and node-fetch
+   with "type": "module" for ESM imports.
+
+D. Run smoke and asserting scripts
+
+   # Set env vars (PowerShell)
+   $env:PROJECT_ID = "your-staging-project"
+   $env:API_BASE = "https://staging-api.example.com"
+   $env:TEST_TOKEN = "your_test_token"
+   $env:FIREBASE_PROJECT = $env:PROJECT_ID
+
+   # Run smoke checks (bash or Git Bash on Windows)
+   bash tools/smoke_all.sh
+
+   # Run asserting admin script
+   node tools/inject_chukya_assert_admin.js
+
+E. Secrets and service account keys
+   - NEVER commit secrets or service account JSON to the repo.
+   - .gitignore already covers .env.* files (except .env.example).
+   - For local testing, store SA JSON at a safe path and set:
+       $env:SERVICE_ACCOUNT_PATH = "C:\path\to\chukya-sa.json"
+   - For CI, use Workload Identity or GitHub Secrets (no long-lived keys).
+
+F. Helpful VS Code tips
+   - Use Run and Debug to run Node scripts with breakpoints.
+   - Use the Terminal split to run smoke and asserting scripts side by side.
+   - Use GitLens to view commit history and authors across the 4 commits.
+
+================================================================================
+15. PUBLIC ANNOUNCEMENT AND MARKETING MATERIALS
+================================================================================
+
+--- Public Statement ---
+DFC is more than an app. It saves lives. Born in Woodridge, forged in the
+Bronx, built from the hood -- we know the struggle. Pink Shield by DFC
+protects survivors, preserves evidence, and holds abusers accountable. We
+put safety before profit. We stand with victims, families, and communities.
+
+--- X / Twitter Thread ---
+Tweet 1:
+DFC is more than an app -- it saves lives. Pink Shield is a privacy-first,
+police-gated proximity radar built to protect survivors and preserve evidence.
+#DFCPinkShield #SaveLives
+
+Tweet 2:
+From Woodridge to the Bronx, from the hood to every neighborhood -- our
+roots drive our mission. We build for people who need protection, not
+headlines. #CommunityFirst
+
+Tweet 3:
+We work with police, legal teams, and survivors to run safe, auditable
+pilots. This is accountability, not surveillance. Join us.
+#SafetyNotSurveillance
+
+--- LinkedIn / Facebook ---
+DFC's Pink Shield is more than technology -- it's a lifeline. Built from
+lived experience in Woodridge and the Bronx, Pink Shield protects victims,
+preserves admissible evidence, and enables accountable police response. We
+prioritize consent, privacy, and safety over profit. If you care about
+protecting people, join our pilot or partner with us. #DFCPinkShield
+#ProtectSurvivors
+
+--- Instagram Caption ---
+Born in Woodridge. Tested in the Bronx. Built for the hood. Pink Shield by
+DFC protects survivors, preserves evidence, and keeps communities safe.
+We're not just an app -- we're a promise. #DFCPinkShield #SaveLives
+
+--- Press Release (one paragraph) ---
+FOR IMMEDIATE RELEASE -- DFC today announces the launch of Pink Shield, a
+privacy-first proximity detection and evidence-collection system designed to
+protect survivors of domestic and family violence. Rooted in communities
+from Woodridge to the Bronx, Pink Shield combines police-validated
+watchlists, HMAC-protected identifiers, and an append-only evidence vault
+to deliver early detection and auditable evidence while preserving victim
+privacy and control. DFC is partnering with local police and legal teams
+to run supervised pilots that prioritize safety, consent, and
+accountability. For partnership inquiries and pilot details, contact
+press@dfc.example.
+
+--- Website Hero Copy ---
+Headline: Pink Shield -- Technology that protects lives
+Subhead: Built from the streets, designed for survivors. Privacy-first
+detection, auditable evidence, accountable response. Join our pilot.
+
+--- 30-Second Video Script ---
+Visual: Quick shots of neighborhoods, a phone with the app, police liaison
+meeting.
+Voiceover: "From Woodridge to the Bronx, DFC knows what safety looks like.
+Pink Shield detects danger early, preserves evidence, and connects survivors
+with accountable response -- without sacrificing privacy. This is protection
+built by people who've lived the struggle. Join us. Protect your community."
+On-screen text: DFC Pink Shield -- Save lives. Protect privacy. Hold
+abusers accountable.
+
+--- Community Email to Supporters ---
+Subject: DFC Pink Shield -- We protect our people
+
+Hi [Name],
+
+DFC is more than an app -- it's a promise. Pink Shield is our privacy-first
+proximity radar that helps protect survivors, preserve evidence, and enable
+accountable response.
+
+Born in Woodridge and forged in the Bronx, our team builds from lived
+experience. We're launching supervised pilots with police partners and need
+community support to keep people safe.
+
+Want to help, volunteer, or learn more? Reply to this email or visit [link].
+
+In solidarity,
+DFC Founder
+Product Lead, DFC Pink Shield
+
+--- Taglines and Hashtags ---
+Taglines: Save Lives. Protect Privacy. Hold Accountable.
+Short slogans:
+  - From the hood, for the people.
+  - Pink Shield: Protection that cares.
+Hashtags:
+  #DFCPinkShield  #SaveLives  #ProtectSurvivors
+  #SafetyNotSurveillance  #FromWoodridgeToTheWorld
+
+--- Amplification Channels ---
+- Post hero copy and press release on website and company blog.
+- Publish social posts across X, LinkedIn, Instagram, and Facebook.
+- Email community list and local partners (police liaison, legal, NGOs).
+- Share the 30s video on social and in community WhatsApp/Telegram groups.
+- Ask supporters to repost with hashtags and tag local leaders and media.
+
+--- Community Pledge (pin to top of feed) ---
+We are DFC. We protect our people. We build from our neighborhoods.
+We save lives.
+
+================================================================================
+16. GOOGLE PLAY PUBLISHING GUIDE
+================================================================================
+
+A. Prepare release build
+   - Generate signed Android App Bundle (AAB):
+     Build > Generate Signed Bundle or APK in Android Studio, OR use
+     flutter build appbundle from the repo root.
+   - Set debuggable=false and remove verbose logging.
+   - Increment versionCode in pubspec.yaml / build.gradle.
+
+B. Create Play Console entry
+   - Register a Google Play developer account (one-time $25 USD).
+   - Verify identity (personal accounts require extra verification).
+   - Create a new app in Play Console and upload the AAB to an internal
+     or closed testing track first.
+
+C. Complete required forms and assets
+   - Data Safety: declare all data types collected and shared (including
+     analytics, crash reporting, Firebase, proximity data).
+   - Content rating, target audience, and privacy policy URL are mandatory.
+   - Upload assets:
+       Icon: 512x512 PNG
+       Feature graphic: 1024x500 PNG
+       Screenshots: 1080x1920 (2-8 phone screenshots)
+
+D. Privacy and legal (critical for Pink Shield)
+   - PIA and consent flows must be explicit.
+   - Play Data Safety form must match your PIA and backend practices.
+   - Features that interact with law enforcement, location, or audio/video
+     evidence may trigger extra review; document purpose, consent, and
+     retention policies in the store listing and privacy policy.
+
+E. Testing and review
+   - Personal developer accounts created after Nov 2023 may require closed
+     testing with >= 12 testers opted-in for 14 days before production.
+   - Expect review times of a few days to a week; sensitive apps may take
+     longer.
+
+F. Timeline recommendation
+   - Day 0-7:   Build AAB, prepare assets, privacy policy, Play Console.
+   - Day 7-21:  Closed testing (14 days if required), fix tester issues.
+   - Day 21-30: Submit to production; monitor review and respond to any
+                 policy questions.
+
+G. Action for DFC Team (Brisbane)
+   - In VS Code, build a signed AAB:
+       flutter build appbundle
+   - Add privacy policy URL to app/src/main/res/ and Play listing.
+   - Prepare screenshots.
+   - Run the GH CLI steps from Section 4 (Delivery Package) to attach the
+     sign-off bundle and create the approval ticket before uploading to
+     Play Console.
+
+================================================================================
+17. CONTACT AND ROLES
+================================================================================
+
+  Product Lead:     DFC Founder
+  SRE Lead:         [Name]
+  Mobile Lead:      [Name]
+  Backend Lead:     [Name]
+  Police Liaison:   [Name]
+  Legal Counsel:    [Name]
+
+================================================================================
+END OF FULL SIGN-OFF BUNDLE
+
+Companion files:
+  docs/pilot_signoffs/Chukya3_Delivery_Package.txt   (Sections 1-10)
+  docs/pilot_signoffs/Chukya3_SignOff_Bundle_OnePage.txt  (One-page sign-off)
+================================================================================

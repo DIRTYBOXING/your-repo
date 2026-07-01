@@ -1,0 +1,46 @@
+{
+  "annotations": { "list": [] },
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Job p95 Latency (ms)",
+      "id": 1,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(job_latency_ms_bucket[5m])) by (le))",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Promote Success Rate",
+      "id": 2,
+      "targets": [
+        {
+          "expr": "sum(rate(promote_actions_total{result=\"success\"}[5m])) / sum(rate(promote_actions_total[5m])) * 100",
+          "refId": "B"
+        }
+      ],
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 }
+    },
+    {
+      "type": "graph",
+      "title": "Consumer Lag Seconds",
+      "id": 3,
+      "targets": [{ "expr": "max(consumer_lag_seconds)", "refId": "C" }],
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 4 }
+    },
+    {
+      "type": "graph",
+      "title": "Area Alerts per Minute",
+      "id": 4,
+      "targets": [{ "expr": "rate(area_alerts_total[1m])", "refId": "D" }],
+      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 8 }
+    }
+  ],
+  "schemaVersion": 27,
+  "title": "Control Panel Metrics",
+  "version": 1
+}

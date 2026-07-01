@@ -1,0 +1,98 @@
+// ═══════════════════════════════════════════════════════════════
+// PROPRIETARY — ALL RIGHTS RESERVED
+// Copyright (c) 2024-2026 [Family Name] IP Dynasty Trust
+//
+// This file is part of the Data Fight Central platform.
+// Unauthorized copying, modification, distribution, or use
+// of this file, via any medium, is strictly prohibited.
+//
+// Owner:   [Family Name] IP Dynasty Trust
+// License: Proprietary (see /LICENSE)
+// ═══════════════════════════════════════════════════════════════
+
+// ─── USAGE ─────────────────────────────────────────────────────
+//
+// Add this header to the top of every source file (.dart, .ts,
+// .tsx, .js, .py, .kt, .swift, .c, .h, .yaml, .json configs).
+//
+// For non-C-style languages, adapt comment syntax:
+//
+// DART / TYPESCRIPT / JAVASCRIPT / KOTLIN / SWIFT / C / C++:
+//   // (double slash — as shown above)
+//
+// PYTHON:
+//   # (hash)
+//
+// HTML:
+//   <!-- ... -->
+//
+// YAML / SHELL / DOCKERFILE:
+//   # (hash)
+//
+// CSS:
+//   /* ... */
+//
+// ─── TEMPLATES ─────────────────────────────────────────────────
+
+// === C-STYLE TEMPLATE (Dart, TypeScript, JavaScript, Kotlin, Swift, C) ===
+
+// ═══════════════════════════════════════════════════════════════
+// PROPRIETARY — ALL RIGHTS RESERVED
+// Copyright (c) 2024-2026 [Family Name] IP Dynasty Trust
+//
+// This file is part of the Data Fight Central platform.
+// Unauthorized copying, modification, distribution, or use
+// of this file, via any medium, is strictly prohibited.
+//
+// Owner:   [Family Name] IP Dynasty Trust
+// License: Proprietary (see /LICENSE)
+// ═══════════════════════════════════════════════════════════════
+
+
+// === PYTHON / YAML / SHELL TEMPLATE ===
+
+# ═══════════════════════════════════════════════════════════════
+# PROPRIETARY — ALL RIGHTS RESERVED
+# Copyright (c) 2024-2026 [Family Name] IP Dynasty Trust
+#
+# This file is part of the Data Fight Central platform.
+# Unauthorized copying, modification, distribution, or use
+# of this file, via any medium, is strictly prohibited.
+#
+# Owner:   [Family Name] IP Dynasty Trust
+# License: Proprietary (see /LICENSE)
+# ═══════════════════════════════════════════════════════════════
+
+
+// === HTML TEMPLATE ===
+
+// <!--
+//   ═══════════════════════════════════════════════════════════════
+//   PROPRIETARY — ALL RIGHTS RESERVED
+//   Copyright (c) 2024-2026 [Family Name] IP Dynasty Trust
+//
+//   This file is part of the Data Fight Central platform.
+//   Unauthorized copying, modification, distribution, or use
+//   of this file, via any medium, is strictly prohibited.
+//
+//   Owner:   [Family Name] IP Dynasty Trust
+//   License: Proprietary (see /LICENSE)
+//   ═══════════════════════════════════════════════════════════════
+// -->
+
+
+// === CSS TEMPLATE ===
+
+// /*
+//  * ═══════════════════════════════════════════════════════════════
+//  * PROPRIETARY — ALL RIGHTS RESERVED
+//  * Copyright (c) 2024-2026 [Family Name] IP Dynasty Trust
+//  *
+//  * This file is part of the Data Fight Central platform.
+//  * Unauthorized copying, modification, distribution, or use
+//  * of this file, via any medium, is strictly prohibited.
+//  *
+//  * Owner:   [Family Name] IP Dynasty Trust
+//  * License: Proprietary (see /LICENSE)
+//  * ═══════════════════════════════════════════════════════════════
+//  */

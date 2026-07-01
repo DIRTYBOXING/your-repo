@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://datafightcentral.com/schemas/dfc-events-api.contract.json",
+  "title": "DFC Event API Contract",
+  "description": "Canonical response for GET /api/events/{id}",
+  "type": "object",
+  "required": [
+    "eventId",
+    "title",
+    "posterUrl",
+    "price",
+    "currency",
+    "entitlementRequired",
+    "venue",
+    "playback"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "posterUrl": {
+      "type": "string",
+      "minLength": 1
+    },
+    "price": {
+      "type": "number",
+      "minimum": 0
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "entitlementRequired": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "announced",
+        "presale",
+        "onSale",
+        "live",
+        "replay",
+        "expired",
+        "postponed",
+        "cancelled"
+      ]
+    },
+    "venue": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "playback": {
+      "type": "object",
+      "required": ["manifestUrl", "protocols"],
+      "properties": {
+        "manifestUrl": {
+          "type": "string"
+        },
+        "protocols": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["hls", "dash", "cmaf"]
+          },
+          "minItems": 1
+        },
+        "cdnHost": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "updatedAt": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

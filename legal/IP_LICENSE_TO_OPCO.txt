@@ -1,0 +1,248 @@
+# ══════════════════════════════════════════════════════════════════
+# INTELLECTUAL PROPERTY LICENSE AGREEMENT
+# FROM: [Family Name] IP Dynasty Trust ("Licensor")
+# TO:   Data Fight Central LLC ("Licensee" / "OpCo")
+# ══════════════════════════════════════════════════════════════════
+#
+# Agreement Date: ________________
+# Effective Date: ________________
+#
+# This Agreement is entered into between the Licensor and Licensee
+# as defined above. Capitalized terms not defined herein have the
+# meanings given in the Family IP Governance Charter.
+# ══════════════════════════════════════════════════════════════════
+
+
+# ─────────────────────────────────────────────────────────────────
+# 1. GRANT OF LICENSE
+# ─────────────────────────────────────────────────────────────────
+
+1.1  EXCLUSIVE LICENSE: Licensor grants Licensee an exclusive,
+     revocable, non-transferable, non-sublicensable license to use
+     the IP (as defined in the Governance Charter, Article 1.1) solely
+     for operating the Data Fight Central platform and related services.
+
+1.2  SCOPE: The license covers:
+     (a) Running, hosting, and deploying the software
+     (b) Creating derivative works for internal platform improvement
+     (c) Using trademarks in connection with the platform business
+     (d) Accessing and processing data using proprietary algorithms
+     (e) Operating all AI systems, firmware, and detection technology
+
+1.3  RESTRICTIONS: The license does NOT permit:
+     (a) Sublicensing to any third party
+     (b) Selling, assigning, or transferring the license
+     (c) Using the IP as collateral for loans or debt
+     (d) Open-sourcing any proprietary code
+     (e) Sharing source code with investors (beyond sanitized demos)
+     (f) Operating competing platforms using the IP
+     (g) Filing patents on IP-derived inventions in OpCo's name
+         (all patents belong to the Trust)
+
+
+# ─────────────────────────────────────────────────────────────────
+# 2. LICENSE FEES & ROYALTIES
+# ─────────────────────────────────────────────────────────────────
+
+2.1  ROYALTY RATE: Licensee shall pay Licensor:
+     (a) [X]% of gross revenue (recommended range: 10-20%), OR
+     (b) A minimum annual fee of $[amount],
+     WHICHEVER IS GREATER.
+
+2.2  PAYMENT SCHEDULE:
+     (a) Quarterly, within 30 days of each calendar quarter-end
+     (b) First payment due: [date]
+     (c) Late payments accrue interest at 1.5% per month
+
+2.3  AUDIT RIGHTS: Licensor may audit Licensee's financial records
+     once per calendar year, at Licensor's expense, to verify
+     royalty accuracy. Underpayments of more than 5% require
+     Licensee to pay audit costs plus the shortfall plus interest.
+
+2.4  TAX TREATMENT: License fees are a legitimate business expense
+     of the Licensee and reduce Licensee's taxable income. The
+     Licensor (Trust) reports license income per applicable tax law.
+
+2.5  REVENUE DEFINITION: "Gross revenue" means all revenue received
+     by the Licensee from any source in connection with operating the
+     platform, including but not limited to:
+     - Subscription fees
+     - PPV event revenue
+     - Marketplace transaction fees
+     - Advertising and sponsorship revenue
+     - Data licensing fees (if approved by Licensor)
+     - API access fees
+     - Merchandise and branded product revenue
+
+
+# ─────────────────────────────────────────────────────────────────
+# 3. OWNERSHIP & IMPROVEMENTS
+# ─────────────────────────────────────────────────────────────────
+
+3.1  IP OWNERSHIP: All IP remains the sole property of the Licensor.
+     This Agreement creates NO ownership interest in the IP for the
+     Licensee, its shareholders, officers, directors, or employees.
+
+3.2  IMPROVEMENTS: Any modifications, enhancements, derivative works,
+     or new IP created by or for the Licensee in connection with the
+     platform are automatically assigned to and owned by the Licensor.
+     Licensee shall execute any documents necessary to perfect this
+     assignment.
+
+3.3  EMPLOYEE/CONTRACTOR WORK: Licensee shall ensure all employees
+     and contractors sign agreements assigning IP to the Licensor
+     (through the Licensee's work-for-hire agreements that flow up
+     to the Trust).
+
+3.4  INVENTIONS: Any inventions, patents, or patentable ideas arising
+     from use of the IP belong to the Trust. Licensee shall promptly
+     disclose all such inventions to the Licensor.
+
+
+# ─────────────────────────────────────────────────────────────────
+# 4. TERM & TERMINATION
+# ─────────────────────────────────────────────────────────────────
+
+4.1  INITIAL TERM: This license is effective from the Effective Date
+     and continues for [X] years (recommended: 10 years), unless
+     earlier terminated under this Section.
+
+4.2  RENEWAL: The license auto-renews for successive [X]-year terms
+     unless either party gives 180 days written notice of non-renewal.
+
+4.3  TERMINATION BY LICENSOR (with cause):
+     (a) Licensee fails to pay license fees for 2 consecutive quarters
+     (b) Licensee breaches any material term and fails to cure
+         within 30 days of written notice
+     (c) Licensee attempts to sublicense, assign, or transfer the IP
+     (d) Licensee enters bankruptcy, insolvency, or receivership
+     (e) Licensee is acquired by a third party without Licensor consent
+     (f) Licensee uses the IP outside the scope of this license
+
+4.4  TERMINATION BY LICENSOR (without cause):
+     (a) Licensor may terminate with 12 months written notice
+     (b) This right exists to preserve the Family's ability to
+         restructure the business if needed
+
+4.5  TERMINATION BY LICENSEE:
+     (a) Licensee may terminate with 6 months written notice
+     (b) All accrued fees remain due and payable
+
+4.6  EFFECT OF TERMINATION:
+     (a) Licensee immediately ceases all use of the IP
+     (b) Licensee returns or destroys all copies of the IP within
+         30 days, certified in writing by an officer
+     (c) Licensee removes all trademarks from its products and marketing
+     (d) Licensee's obligation to pay accrued fees survives
+     (e) Confidentiality obligations survive indefinitely
+     (f) Investors in the Licensee are left with equity in a company
+         that has NO IP license — this is the structural protection
+
+
+# ─────────────────────────────────────────────────────────────────
+# 5. CONFIDENTIALITY
+# ─────────────────────────────────────────────────────────────────
+
+5.1  TRADE SECRETS: Licensee acknowledges that the IP contains trade
+     secrets. Licensee shall protect the IP with at least the same
+     degree of care it uses for its own most confidential information,
+     but no less than reasonable care.
+
+5.2  ACCESS CONTROLS: Licensee shall implement:
+     (a) Role-based access to source code and systems
+     (b) Audit logging of all code access
+     (c) Two-factor authentication for repository access
+     (d) Background checks for employees with IP access
+     (e) Encrypted storage for all IP materials
+
+5.3  DISCLOSURE RESTRICTIONS: Licensee shall not disclose the IP to:
+     (a) Investors (beyond high-level descriptions under NDA)
+     (b) Potential acquirers (without Licensor's prior written consent)
+     (c) Competitors (under any circumstances)
+     (d) Media (technical details are confidential)
+     (e) Open-source communities or public repositories
+
+5.4  SURVIVAL: Confidentiality obligations survive termination of
+     this Agreement INDEFINITELY.
+
+
+# ─────────────────────────────────────────────────────────────────
+# 6. REPRESENTATIONS & WARRANTIES
+# ─────────────────────────────────────────────────────────────────
+
+6.1  LICENSOR REPRESENTS:
+     (a) It is the sole owner of the IP
+     (b) It has authority to grant this license
+     (c) The IP does not, to its knowledge, infringe third-party rights
+
+6.2  LICENSEE REPRESENTS:
+     (a) It is a duly organized entity in good standing
+     (b) It has authority to enter this Agreement
+     (c) It will comply with all applicable laws in using the IP
+
+6.3  DISCLAIMER: THE IP IS PROVIDED "AS IS." LICENSOR MAKES NO
+     WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+     OR NON-INFRINGEMENT BEYOND THOSE EXPRESSLY STATED.
+
+
+# ─────────────────────────────────────────────────────────────────
+# 7. INDEMNIFICATION
+# ─────────────────────────────────────────────────────────────────
+
+7.1  Licensee shall indemnify, defend, and hold harmless the Licensor,
+     the Trust, and all beneficiaries from any claims, damages, losses,
+     or expenses arising from Licensee's use of the IP.
+
+7.2  Licensor shall indemnify Licensee against third-party claims
+     that the IP itself infringes valid intellectual property rights
+     (subject to Licensee's prompt notification and cooperation).
+
+
+# ─────────────────────────────────────────────────────────────────
+# 8. MISCELLANEOUS
+# ─────────────────────────────────────────────────────────────────
+
+8.1  GOVERNING LAW: This Agreement is governed by the laws of
+     [State/Country].
+
+8.2  DISPUTE RESOLUTION: Disputes shall be resolved by binding
+     arbitration under [rules], before a single arbitrator.
+
+8.3  ENTIRE AGREEMENT: This Agreement, together with the Family IP
+     Governance Charter, constitutes the entire agreement between
+     the parties regarding the IP license.
+
+8.4  AMENDMENTS: Amendments require written consent of both parties.
+
+8.5  SEVERABILITY: If any provision is held unenforceable, the
+     remaining provisions continue in full force.
+
+8.6  NO AGENCY: This Agreement does not create any agency, partnership,
+     or joint venture between the parties.
+
+8.7  NOTICES: All notices shall be in writing and delivered to the
+     addresses specified below.
+
+
+# ─────────────────────────────────────────────────────────────────
+# SIGNATURES
+# ─────────────────────────────────────────────────────────────────
+
+LICENSOR — [Family Name] IP Dynasty Trust
+
+By (Trustee): ________________________________
+Name: ________________________________________
+Date: ________________________________________
+
+
+LICENSEE — Data Fight Central LLC
+
+By (Authorized Signatory): ___________________
+Name: ________________________________________
+Title: _______________________________________
+Date: ________________________________________
+
+
+# ══════════════════════════════════════════════════════════════════
+# END OF LICENSE AGREEMENT
+# ══════════════════════════════════════════════════════════════════

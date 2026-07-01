@@ -1,0 +1,174 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# DFC Media Worker — Kubernetes Deployment
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Deploys: Namespace, ServiceAccount, Role, RoleBinding, ConfigMap,
+#          Secret placeholder, Deployment (with liveness probe),
+#          and HorizontalPodAutoscaler.
+#
+# Deployment notes:
+#   1. Replace <YOUR_REGISTRY>/dfc-media-worker:latest with your
+#      container registry image.
+#   2. Populate secrets via your cluster secret manager or CI pipeline.
+#   3. Use a PodDisruptionBudget and node selectors if you want GPU
+#      or specific instance types.
+# ═══════════════════════════════════════════════════════════════════════════
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dfc-media
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: media-worker-sa
+  namespace: dfc-media
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: media-worker-role
+  namespace: dfc-media
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: media-worker-rb
+  namespace: dfc-media
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: media-worker-role
+subjects:
+  - kind: ServiceAccount
+    name: media-worker-sa
+    namespace: dfc-media
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: media-worker-secrets
+  namespace: dfc-media
+type: Opaque
+stringData:
+  AWS_ACCESS_KEY_ID: "<REPLACE_WITH_VALUE>"
+  AWS_SECRET_ACCESS_KEY: "<REPLACE_WITH_VALUE>"
+  WORKER_CALLBACK_SECRET: "<REPLACE_WITH_VALUE>"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: media-worker-config
+  namespace: dfc-media
+data:
+  REDIS_URL: "redis://redis:6379"
+  S3_BUCKET: "dfc-variants-bucket"
+  S3_ENDPOINT: ""
+  S3_FORCE_PATH_STYLE: "false"
+  API_BASE: "https://api.datafightcentral.com"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-worker
+  namespace: dfc-media
+  labels:
+    app: media-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: media-worker
+  template:
+    metadata:
+      labels:
+        app: media-worker
+    spec:
+      serviceAccountName: media-worker-sa
+      containers:
+        - name: media-worker
+          image: <YOUR_REGISTRY>/dfc-media-worker:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AWS_REGION
+              value: "us-east-1"
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: media-worker-config
+                  key: REDIS_URL
+            - name: S3_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: media-worker-config
+                  key: S3_BUCKET
+            - name: API_BASE
+              valueFrom:
+                configMapKeyRef:
+                  name: media-worker-config
+                  key: API_BASE
+            - name: WORKER_CALLBACK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: media-worker-secrets
+                  key: WORKER_CALLBACK_SECRET
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: media-worker-secrets
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: media-worker-secrets
+                  key: AWS_SECRET_ACCESS_KEY
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "6Gi"
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          livenessProbe:
+            exec:
+              command: ["node", "healthcheck.js"]
+            initialDelaySeconds: 30
+            periodSeconds: 30
+      volumes:
+        - name: tmp
+          emptyDir: {}
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: media-worker-hpa
+  namespace: dfc-media
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: media-worker
+  minReplicas: 1
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60

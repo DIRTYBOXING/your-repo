@@ -1,0 +1,207 @@
+# ops/cloudbuild-pr-check.yaml
+# Cloud Build trigger configuration — PR check against master
+#
+# Create via:
+#   gcloud builds triggers create github \
+#     --project=$PROJECT_ID \
+#     --repo-name=Data-Fight-Central \
+#     --repo-owner=DIRTYBOXING \
+#     --pull-request-pattern='^master$' \
+#     --build-config=ops/cloudbuild-pr-check.yaml \
+#     --name=dfc-pr-check \
+#     --description="Lint and validate service code on PRs targeting master"
+#
+# In GitHub: Settings → Branches → master → Add rule → "Require status checks"
+#   Add the Cloud Build check named "dfc-pr-check"
+steps:
+  # ─── entitlements-service: install + audit ──────────────────────────────────
+  - name: "node:20-alpine"
+    id: install-entitlements
+    dir: entitlements-service
+    entrypoint: npm
+    args: ["ci", "--prefer-offline"]
+
+  - name: "node:20-alpine"
+    id: audit-entitlements
+    dir: entitlements-service
+    waitFor: ["install-entitlements"]
+    entrypoint: npm
+    args: ["audit", "--audit-level=high"]
+
+  # ─── poster-worker: install + type-check ────────────────────────────────────
+  - name: "node:20-alpine"
+    id: install-poster-worker
+    dir: poster-worker
+    entrypoint: npm
+    args: ["ci", "--prefer-offline"]
+
+  - name: "node:20-alpine"
+    id: typecheck-poster-worker
+    dir: poster-worker
+    waitFor: ["install-poster-worker"]
+    entrypoint: npx
+    args: ["tsc", "--noEmit"]
+
+  # ─── promotion-worker: install + type-check ─────────────────────────────────
+  - name: "node:20-alpine"
+    id: install-promotion-worker
+    dir: promotion-worker
+    entrypoint: npm
+    args: ["ci", "--prefer-offline"]
+
+  - name: "node:20-alpine"
+    id: typecheck-promotion-worker
+    dir: promotion-worker
+    waitFor: ["install-promotion-worker"]
+    entrypoint: npx
+    args: ["tsc", "--noEmit"]
+
+  # ─── Flutter analyze (Dart side) ────────────────────────────────────────────
+  - name: "ghcr.io/cirruslabs/flutter:stable"
+    id: flutter-analyze
+    entrypoint: flutter
+    args: ["analyze", "--no-fatal-infos"]
+
+  # ─── Docker build smoke (no push) ───────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: docker-build-entitlements
+    waitFor: ["audit-entitlements"]
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/entitlements-service:pr-$SHORT_SHA"
+      - -f
+      - entitlements-service/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: docker-build-poster-worker
+    waitFor: ["typecheck-poster-worker"]
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/poster-worker:pr-$SHORT_SHA"
+      - -f
+      - poster-worker/Dockerfile
+      - .
+
+  - name: "gcr.io/cloud-builders/docker"
+    id: docker-build-promotion-worker
+    waitFor: ["typecheck-promotion-worker"]
+    args:
+      - build
+      - -t
+      - "gcr.io/$PROJECT_ID/promotion-worker:pr-$SHORT_SHA"
+      - -f
+      - promotion-worker/Dockerfile
+      - .
+
+  # ── Granular status context reporter ────────────────────────────────────────
+  # Posts individual GitHub Commit Status entries per logical gate so branch
+  # protection can require *specific* checks rather than the single dfc-pr-check
+  # umbrella context.  Each step below writes to a unique context name.
+  #
+  # How it works:
+  #   - Each reporting step calls `gcloud builds github submit-status` to post
+  #     a named context back to the PR commit SHA.
+  #   - Contexts registered in branch protection rules must match these names
+  #     exactly:  dfc/audit-entitlements, dfc/tsc-poster-worker,
+  #     dfc/tsc-promotion-worker, dfc/flutter-analyze, dfc/docker-entitlements,
+  #     dfc/docker-poster-worker, dfc/docker-promotion-worker
+  #
+  # Wire these in create-cloudbuild-trigger.sh "required_status_checks.contexts".
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-audit-entitlements
+    waitFor: ["audit-entitlements"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/audit-entitlements"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-tsc-poster
+    waitFor: ["typecheck-poster-worker"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/tsc-poster-worker"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-tsc-promotion
+    waitFor: ["typecheck-promotion-worker"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/tsc-promotion-worker"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-flutter-analyze
+    waitFor: ["flutter-analyze"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/flutter-analyze"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-docker-entitlements
+    waitFor: ["docker-build-entitlements"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/docker-entitlements"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-docker-poster
+    waitFor: ["docker-build-poster-worker"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/docker-poster-worker"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: report-docker-promotion
+    waitFor: ["docker-build-promotion-worker"]
+    entrypoint: gcloud
+    args:
+      - builds
+      - github
+      - report-status
+      - "--context=dfc/docker-promotion-worker"
+      - "--state=success"
+      - "--sha=$COMMIT_SHA"
+      - "--repo=https://github.com/DIRTYBOXING/Data-Fight-Central"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8

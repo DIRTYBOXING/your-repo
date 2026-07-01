@@ -1,0 +1,208 @@
+{
+  "info": {
+    "name": "DFC Local Callable Smoke",
+    "description": "Callable Firebase Functions smoke tests for the local emulator suite.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"data\":{}}" },
+        "url": {
+          "raw": "{{CALLABLE_BASE}}/healthCheck",
+          "host": ["{{CALLABLE_BASE}}"],
+          "path": ["healthCheck"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('health result present', () => {",
+              "  pm.expect(json.result.status).to.eql('healthy');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Seed Pipeline Content",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"data\":{\"contentType\":\"post\",\"title\":\"Smoke Seed\",\"body\":\"Smoke test content\",\"imageUrl\":\"assets/dfc_backgrounds/new_dfc_image_1.png\",\"targetPlatforms\":[\"instagram\"],\"createdBy\":\"smoke_runner\"}}"
+        },
+        "url": {
+          "raw": "{{CALLABLE_BASE}}/seedPipelineContent",
+          "host": ["{{CALLABLE_BASE}}"],
+          "path": ["seedPipelineContent"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('seed created document', () => {",
+              "  pm.expect(json.result.status).to.eql('ok');",
+              "  pm.expect(json.result.docId).to.be.a('string');",
+              "  pm.environment.set('assetId', json.result.docId);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pipeline Sync",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"data\":{\"eventId\":\"evt_smoke\",\"assetIds\":[\"{{assetId}}\"],\"stages\":[\"warroom\",\"review\"],\"priority\":\"high\",\"metadata\":{\"title\":\"Smoke Pipeline\",\"eventName\":\"Smoke Event\"}}}"
+        },
+        "url": {
+          "raw": "{{CALLABLE_BASE}}/pipelineSync",
+          "host": ["{{CALLABLE_BASE}}"],
+          "path": ["pipelineSync"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('pipeline jobs created', () => {",
+              "  pm.expect(json.result.status).to.eql('ok');",
+              "  pm.expect(json.result.jobsCreated).to.be.above(0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Approvals Stats",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": { "mode": "raw", "raw": "{\"data\":{}}" },
+        "url": {
+          "raw": "{{CALLABLE_BASE}}/approvalsStats",
+          "host": ["{{CALLABLE_BASE}}"],
+          "path": ["approvalsStats"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('approval stats shape valid', () => {",
+              "  pm.expect(json.result.status).to.eql('ok');",
+              "  pm.expect(json.result).to.have.property('pending');",
+              "  pm.expect(json.result).to.have.property('approved');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Capture Influencer Consent",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"data\":{\"handle\":\"{{handle}}\",\"platform\":\"instagram\",\"displayName\":\"Smoke Creator\",\"contact\":{\"email\":\"smoke@example.com\"},\"consent\":true,\"consentScope\":[\"dm_seeding\",\"paid_campaigns\"],\"consentText\":\"I consent to DFC outreach for testing.\",\"signedBy\":\"Smoke Creator\",\"signedMethod\":\"test_harness\"}}"
+        },
+        "url": {
+          "raw": "{{CALLABLE_BASE}}/influencerConsent",
+          "host": ["{{CALLABLE_BASE}}"],
+          "path": ["influencerConsent"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('consent recorded', () => {",
+              "  pm.expect(json.result.status).to.eql('ok');",
+              "  pm.expect(json.result.consentId).to.be.a('string');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Verify Influencer Consent",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json", "type": "text" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"data\":{\"handles\":[{\"handle\":\"{{handle}}\",\"platform\":\"instagram\"}]}}"
+        },
+        "url": {
+          "raw": "{{CALLABLE_BASE}}/influencerVerifyConsent",
+          "host": ["{{CALLABLE_BASE}}"],
+          "path": ["influencerVerifyConsent"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "const json = pm.response.json();",
+              "pm.test('consent verifies active', () => {",
+              "  pm.expect(json.result.status).to.eql('ok');",
+              "  pm.expect(json.result.valid).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

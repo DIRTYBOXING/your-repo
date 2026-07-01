@@ -1,0 +1,49 @@
+# ops/cloudbuild-trigger.yaml
+# Cloud Build trigger configuration — master branch → build + deploy all services
+#
+# Create the trigger via:
+#   gcloud builds triggers create github \
+#     --project=$PROJECT_ID \
+#     --repo-name=Data-Fight-Central \
+#     --repo-owner=DIRTYBOXING \
+#     --branch-pattern='^master$' \
+#     --build-config=cloudbuild.yaml \
+#     --substitutions=_REGION=australia-southeast1,_WORKER_SA=dfc-worker-sa@$PROJECT_ID.iam.gserviceaccount.com,_ENTITLEMENTS_SA=dfc-entitlements-sa@$PROJECT_ID.iam.gserviceaccount.com \
+#     --name=dfc-master-deploy \
+#     --description="Deploy all DFC Cloud Run services on master push"
+#
+# Or import this file directly via the Cloud Build console
+# (Triggers → Create Trigger → Point to this file).
+
+name: dfc-master-deploy
+description: "Deploy all DFC Cloud Run services on push to master"
+
+github:
+  owner: DIRTYBOXING
+  name: Data-Fight-Central
+  push:
+    branch: "^master$"
+
+filename: cloudbuild.yaml
+
+substitutions:
+  _REGION: australia-southeast1
+  _WORKER_SA: dfc-worker-sa@${PROJECT_ID}.iam.gserviceaccount.com
+  _ENTITLEMENTS_SA: dfc-entitlements-sa@${PROJECT_ID}.iam.gserviceaccount.com
+
+includedFiles:
+  - "poster-worker/**"
+  - "promotion-worker/**"
+  - "entitlements-service/**"
+  - "cloudbuild.yaml"
+
+# Only trigger if relevant service files changed — ignore Flutter/docs changes
+ignoredFiles:
+  - "lib/**"
+  - "docs/**"
+  - "*.md"
+  - "pubspec.yaml"
+  - "pubspec.lock"
+  - "web/**"
+  - "android/**"
+  - "ios/**"

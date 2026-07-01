@@ -1,0 +1,70 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  DFC CHUCKYA RADAR — TOP SECRET TESTING ROOM               ║
+# ║  DataFightCentral Internal Use Only                         ║
+# ║  Anti-piracy signal ingestion, scoring & evidence pipeline  ║
+# ╚══════════════════════════════════════════════════════════════╝
+version: "3.8"
+services:
+  # ─── Core API (ingest, alerts, police export, verified ingest) ───
+  radar-api:
+    build: ./radar-server
+    ports:
+      - "8081:8080"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./ops-audit:/ops-audit
+    depends_on:
+      - redis
+
+  # ─── Device verifier (public key registration, consent, sig verify) ───
+  device-verifier:
+    build: ./device-verifier
+    ports:
+      - "8083:8083"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./ops-audit:/ops-audit
+
+  # ─── WebSocket server (Redis-backed, JWT auth, region rooms) ───
+  ws-server:
+    build: ./ws-server
+    ports:
+      - "8084:8080"
+    environment:
+      - NODE_ENV=development
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-dev-secret-replace-in-prod}
+      - ADMIN_TOKEN=${ADMIN_TOKEN:-admintoken}
+    depends_on:
+      - redis
+
+  # ─── Prometheus metrics exporter ───
+  metrics-server:
+    build: ./metrics-server
+    ports:
+      - "9091:9091"
+    environment:
+      - NODE_ENV=development
+      - METRICS_PORT=9091
+
+  # ─── Redis for WS pub/sub ───
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  # ─── Static dashboard (HTML control room) ───
+  static:
+    image: nginx:stable
+    ports:
+      - "8082:80"
+    volumes:
+      - ./radar-dashboard:/usr/share/nginx/html:ro
+
+volumes:
+  redis-data:

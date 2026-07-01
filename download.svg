@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<svg fill="rgb(241, 244, 249)" width="766" height="580" viewBox="0 0 383 290" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs><image id="dedup-img-0" width="20" height="20" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEjklEQVR42sxX22tcRRj/fTNnL9kkzSamqRIIolgooiBiIRqQgiAKteLtQQ3ihSJCg77qfyCoAUGlUEERxKYUsQ+mj8EaFN/SBy8EaaqkNWyS1c3u5pydM5/M2Tnr7Oac3aR5sAPDbGa+fPfL73hIWOd/CvDUA9noBJBIQwQECrj0q4pO83fKUp+8UsDrn9Zgzs7lofdS3R4Z+1u9FMgCOG5PI2uHnYIgiUBEO3QxtD6ArwEEgvamAFmBAwDOGjlpGoa6uVNCoAEcBLChdIvnnjxg/mEDwHCaB1KiENOWe0VpNzkg7U5TAF0UkL0IBf7ntRsPhHa3eYABYobg/2KtEzwQ7lcBw2QkyVOSgFwG8ASgKHpP8uZIr7B5Pcp7C8CztgzjrJdSILz8h568WtKnShVGPouPhgr0A3NUkq7VgeVhFOUb8YBhcN69ODIu8Ns1jS8XG9ViP80YDzRCXLx3gi4M9hEq9eSk13zjSSitotH+/LtG3pzjIzSYtyEoZDFo7q6s6bxLu5scayM4eaaG068WML+kxMkzNTG/tLMLr28xyjWOmk/sVLYW6mRLPcNXc/M5ltErBJ1Z3Vq3jwpV2WbUA1SytsqDEBUzM+K3/ZRh3C4fAjBhlWjL4n/qHCXaxChN1v2mkn05PAKgP35LSGgT6qsAvndkJCogbO2+A+CxtDFs1lCBUCy0JMwwY4a698lvATzuyOgagprTgLKJdcq7HsWBTeTaXvuAtDX8BoCq4zppFXsQwClL/yGARectpu0H8J5xWNpQIhf9XLys5KP3eOH8kjprG9AagNtSEtLghG/s7ycAXEjACkIzrgEYAzDXn6Pnqj7LgTyF77/Qh7e+qLd5gO46JKRxrQEYaLrYxOsgczRWYTrgLQOUG+wjtVLSRVNy3LRriBk5Inhg+IeKJPtzhOtlLtYbLCwNVXyWxJBVn6Mi3trmtkbER++QJl7hdgOBatqsM0TrzPBDhv/xy33qyfsz1cO3Cn+zyn83VKt0Kgz4Gqiefm1ZTR2WvqGZnV4vBQphZBQQkOnkHOUExyXnOXGbKm3xm+b3sSNycnWT+fc1PRR6fE5KaNEsoQ9W1vVngpA/fp83vlGF/nk1JBXibSnwEhHqKA5N14MoN6bmfhyT5RofWL6uubTFD2c8zAmCJwVmASxICek5dX4ngKfNj7EDhO0GsPwXcsw4YTM+A2CWgBcNzUCezBDCL6tRGI62/FhW0wCOAThhcOD4COHPjahDjjPjGW6GzeTLAjPIDYFvEbCvNFjptvswnmoANg2dZoQN1YYZlH2Lp2jEy9DYHGCHl59UhnFITD9xe0oMyUTHcGKHSHRAMBHzdmjI4UU3DSS7qTAhO+3XRUXKmZBJGJETMKB26CiBV+IwyjoxSlJy0J7DXQwaFl4U3oEevHLuRaz1AoDnHe2EFBH+0xb9XrGWmRadia22NLCfZ8Ho3Tlz/y6Ar+JxThTRiJiXFLgUd1bPEbhid/vE4x2T71wn1mPncbsc2bNodzIvbt1xZxnKHl87YecEpZ14QXWWWsq3RqTGvwEAAP//aiXzo5t4CqIAAAAASUVORK5CYII=" /><image id="dedup-img-1" width="20" height="20" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEB0lEQVR42syWS4gdRRSGv6ruuXdMJJrI+Iiog+KDKIjCiBjwkagoPhIVN7rShbgU3Gl0oUZdxIW4H9zEjUQzkeAzY0YYMcb3QkkWkgkGfIxCgkzndvftkpr5Sypt33vjHcEUFNVV1V3nP/9/zumy/M8tDQ9v7c+5f6LlRwP4XvX4xu+5MPHfLKc1MeBkPOmzn8TA/ysARoddDlwGdCMgoZ0BXKi9VGwsC4RteD4L+ArYBlwkY1bdW5oEHgLK+DsPYhggMYCg+efAH8CTwHfAFu15jzNgBtgObI1iJR1WEtugrffsM42rgOeAs+W9b28CBfAUsAcY17tDSWIbIty3T3Tgcc1vibLmAPCtpLkZ2AdsGlaSOoAgw6wYCV7dFQHw62+LrY7Y2Qm8NIwkJp6oBngDbeCgIt63I8ClYsTvr1N82Kgm+Odp4FFgTiDKQfXC9sjxjoIR6X0+cF3Eyg/A11FRsjK2QZLcq7kZJIntw8qMxq7GOxtkIGIg1bvnAFPKEgZJ0gQgxMGnOnxE8zsErtB8SgbjQpXo+0pZ8qFkLHuBOAGAdHKH5xcxfA/8FB16VbdarJLBqN//RqC6NaeCJBsd7Kscd69sm3LXl6Wdm68WGd62+3jvf8H4mE0UcPutAWvIrSFpj3C7OB8ROzu17zTGPbWGbmI4N7W80ync868/frQ69JtzeYlZyHtIUHShUy7FQbfioyyHLMf48VjmfL4zmi5Fd2LZkRUUWU6S5Ti9G3e/Xvm+kLNlcmbN7NrV5uK1qw0rW0s20jqAyb3530ASC2mkcGIMC7nzAGmniwBZ0aonc3Nzzr9rGFtl2D5bMHFJ0pcBJwZulSdODEyJgVQMPJAVjGQ53cBSrft16/tCzgs7nlix/rwzzY9iwPVMw/Ex64NqFJiQni2vZ3uEDxQDhfzerH3TEAOlj5vE8HNquadTuGdefb9j5+adyUtciIETyNuw9c8Aykf9tcAX0Z3A1/9rtO8BXqk1WzunirJhjyrj4XplnH769J5ZENZuqOX9e7W6sEnA4hSM7w4vArf1M94YhFFluykqLr69qzGU2PtqlTMUm1+Ax4BdUSluNN4EIBSVtmo/8viI/g1Gh62THK72B2z6Gbkmw/+ohNI/eOMNXBAhn9ZtqK35ZjGTR5S/LMrn+lHe81oeAfLerI+89YZ2N9AfmPpVlE+dDOWDAAT9b9Qho1r7OAJwBXC1gO0FHgEORX/D6mQMN17Lo+v29RqPAc/Ky3CjeFBx4aN8Y2R8oN6DGAj57YNvDfAK8Jo0DbSepux4GHhjGMr7AQgF5HcVoYNRGoZcb9UKy7+mvO+1XIcckPEkYiW0ozKeDEv5oCAMsVC/ZDTVCpZr/JRofwUAAP//PQCluCW57wEAAAAASUVORK5CYII=" /><image id="dedup-img-2" width="20" height="20" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADHklEQVR42uyXTWgUSRTHf1XTye4m2SzLsuwedtnNshdFxA8iRL04xI+TeNOAEERR8KIXETKoBxlvol5U/EIQxXPwoOCMEPAgmty8RDE3BVECOkpIZqrkdb8amrEnjjHByxQ0VdP1+v9/Ve//XtVYvnNrO9B2IMoXK5QLPUgPmCyjcqHHB7tWWguYPsxHjROLuTqTAM6LGTWEozPDkRpQXaADxieY6kt9N2YBF0hz+nIAeAZMAlPAc+2v6HzuK7hjW5dgprEmlWMg2KV34CfgLx07XbkA/foNUZDV/5FavU1xfZYFc0o8BvwN/Kf9sIqppj2btJff+YxxyvahYvyr/ZhyzGVpIDg0A7zM1lMznZGhZWOUKI0105j6tkltCIKMUoixXgZPfRTWXL5YsYE8X6zk4nnndGwSxxLXOhTHZvHZJnnvVKmi/iPAmaAL513IDBncAnbWf1trknEkfQnDCt2FqmK2VAnDu63AeuB/YDmwGtjhk1UNAcuAVUAfsBno15AMQbVPf4uot6ueMotS1CSu0jYCB1J294BRa+2o924YOAv8ABzWb44aeOrhJBBK5lX9dhfwotUQ1LQ/BmwBftdU3APs894J4DYSol80pVYC130SNtmxO8DPwOuOTvsn8KABu6XD6EfgNnANOCEEwG+qCyE5DewHngA3tGYIwSCwF9gtIZibdcdbLcWNTURzDriJ9+8w5o0I03icN3wADgGXgftSGjDG42OFvAcOxt/BW929ZmmcrQFNK1nNhfg7E6fV+TgfE4W8Ai7qqqf0Ce2RPjJ3V9915IsVlyXCrBBUlbyW0qQP9d14G17mMLGNCXN6XMf1whhTi4xNV9nMQ81mCLAXWJN6/lEzJwSyA3I/EILySI9sjjfIuFvdNbJSVxrppupdl6bvWsXqbRSibTg4cnpSjaeeS+VCV91Wx5SUUPpSobsOouOAuwGYUKGOK3YudezHGgjimFbDEKtwGk4s4LISbEWEjxXTpkr6dLCLwsVAyfu/kBWttmArzq+bzy5qUgVZxKuamQ9vSe+ES4jZ/mPSdmDx2qcAAAD//zfYABjdnxv5AAAAAElFTkSuQmCC" />
+<style type="text/css">
+    <![CDATA[
+    @import url('https://fonts.googleapis.com/css?family=Google+Sans:400,700');
+    ]]>
+</style>
+<marker id="path-arrow-src" refX="7" refY="3" markerWidth="7" markerHeight="6" orient='auto'>
+    <path d="M0,3 L7,0 V6 Z" style="fill:rgb(189, 193, 198);" />
+</marker>
+<marker id="path-arrow-dst" refX="0" refY="3" markerWidth="7" markerHeight="6" orient='auto'>
+    <path d="M0,0 V6 L7,3 Z" style="fill:rgb(189, 193, 198);" />
+</marker>
+<filter id="drop-shadow">
+    <feGaussianBlur in="SourceAlpha" result="baseShadow" stdDeviation="0.7 0.7" />
+    <feOffset in="baseShadow" result="offsetBlur" dx="0" dy="1" />
+    <feFlood in="baseShadow" result="shadowColor" flood-fill-color="" flood-fill-opacity="0" flood-color='rgba(0,0,0,0.3)' />
+    <feComposite in="offsetBlur" in2="shadowColor" result="dropShadow" operator="in" k1="0" k2="0" k3="0" k4="0" />
+    <feMerge>
+        <feMergeNode in="dropShadow"/>
+        <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+</filter>
+<pattern id="graph-renderer-bg" width="5" height="5" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="5" height="5" fill="#000000" /><circle cx="1" cy="1" r="0.5" fill="#3c4043" /></pattern>
+</defs>
+<rect x="-1915" y="-1450" width="3830" height="2900" fill="url(#graph-renderer-bg)" />
+<g id="lb-backend-social,social-feed-service" class="edge">
+<path d="M139,130 Q139,142 132,155 Q126,167 126,180" style="fill:none;stroke:rgb(189, 193, 198);stroke-width:0.70;" />
+</g>
+<g id="lb-backend-ppv,ppv-engine-service" class="edge">
+<path d="M278,130 Q278,142 268,155 Q258,167 258,180" style="fill:none;stroke:rgb(189, 193, 198);stroke-width:0.70;" />
+</g>
+<g id="lb-frontend,lb-backend-social" class="edge">
+<path d="M184,60 Q184,70 161,80 Q139,90 139,100" style="fill:none;stroke:rgb(189, 193, 198);stroke-width:0.70;" />
+</g>
+<g id="lb-frontend,lb-backend-ppv" class="edge">
+<path d="M184,60 Q184,70 231,80 Q278,90 278,100" style="stroke:rgb(189, 193, 198);stroke-width:0.70;fill:none;" />
+</g>
+<g id="social-feed-service,mux-secrets-social" class="edge">
+<path d="M126,210 Q126,220 113,230 Q101,240 101,250" style="fill:none;stroke:rgb(189, 193, 198);stroke-width:0.70;" />
+</g>
+<g id="ppv-engine-service,mux-secrets-ppv" class="edge">
+<path d="M258,210 Q258,220 243,230 Q228,240 228,250" style="fill:none;stroke:rgb(189, 193, 198);stroke-width:0.70;" />
+</g>
+<g id="group-1" class="cluster">
+<rect x="30" y="10" width="338" height="130" rx="3" style="fill:transparent;stroke:rgb(255, 255, 255);stroke-width:0.60;stroke-dasharray:2 2;" />
+<text x="199" y="20" style="font-weight:bold;fill:rgb(189, 193, 198);dominant-baseline:central;text-anchor:middle;font-family:Google Sans;font-size:7.5px;" ></text>
+</g>
+<g id="lb-frontend" class="node">
+<rect x="124" y="30" width="119" height="30" rx="3" style="stroke-width:0.60;filter:url(#drop-shadow);fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);" />
+<use xlink:href="#dedup-img-0" x="129" y="35" />
+<text x="156" y="36" style="fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;font-family:Google Sans;font-size:7.5px;font-weight:bold;" >dfc-lb-frontend</text>
+<text x="156" y="46" style="dominant-baseline:text-before-edge;font-family:Google Sans;font-size:7.0px;fill:rgb(189, 193, 198);" >Cloud Load Balancer</text>
+</g>
+<g id="lb-backend-social" class="node">
+<rect x="75" y="100" width="128" height="30" rx="3" style="fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);stroke-width:0.60;filter:url(#drop-shadow);" />
+<use xlink:href="#dedup-img-0" x="80" y="105" />
+<text x="107" y="106" style="font-weight:bold;fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;font-family:Google Sans;font-size:7.5px;" >dfc-lb-backend-social</text>
+<text x="107" y="116" style="font-size:7.0px;fill:rgb(189, 193, 198);dominant-baseline:text-before-edge;font-family:Google Sans;" >Cloud Load Balancer</text>
+</g>
+<g id="lb-backend-ppv" class="node">
+<rect x="218" y="100" width="119" height="30" rx="3" style="fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);stroke-width:0.60;filter:url(#drop-shadow);" />
+<use xlink:href="#dedup-img-0" x="223" y="105" />
+<text x="250" y="106" style="fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;font-family:Google Sans;font-size:7.5px;font-weight:bold;" >dfc-lb-backend-ppv</text>
+<text x="250" y="116" style="font-family:Google Sans;font-size:7.0px;fill:rgb(189, 193, 198);dominant-baseline:text-before-edge;" >Cloud Load Balancer</text>
+</g>
+<g id="social-feed-service" class="node">
+<rect x="66" y="180" width="119" height="30" rx="3" style="fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);stroke-width:0.60;filter:url(#drop-shadow);" />
+<use xlink:href="#dedup-img-1" x="71" y="185" />
+<text x="98" y="186" style="font-family:Google Sans;font-size:7.5px;font-weight:bold;fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;" >social-feed-service</text>
+<text x="98" y="196" style="font-family:Google Sans;font-size:7.0px;fill:rgb(189, 193, 198);dominant-baseline:text-before-edge;" >Cloud Run</text>
+</g>
+<g id="ppv-engine-service" class="node">
+<rect x="201" y="180" width="114" height="30" rx="3" style="filter:url(#drop-shadow);fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);stroke-width:0.60;" />
+<use xlink:href="#dedup-img-1" x="206" y="185" />
+<text x="233" y="186" style="font-family:Google Sans;font-size:7.5px;font-weight:bold;fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;" >ppv-engine-service</text>
+<text x="233" y="196" style="fill:rgb(189, 193, 198);dominant-baseline:text-before-edge;font-family:Google Sans;font-size:7.0px;" >Cloud Run</text>
+</g>
+<g id="mux-secrets-social" class="node">
+<rect x="41" y="250" width="119" height="30" rx="3" style="fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);stroke-width:0.60;filter:url(#drop-shadow);" />
+<use xlink:href="#dedup-img-2" x="46" y="255" />
+<text x="73" y="256" style="font-family:Google Sans;font-size:7.5px;font-weight:bold;fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;" >dfc-api-keys-social</text>
+<text x="73" y="266" style="font-family:Google Sans;font-size:7.0px;fill:rgb(189, 193, 198);dominant-baseline:text-before-edge;" >Secret Manager</text>
+</g>
+<g id="mux-secrets-ppv" class="node">
+<rect x="175" y="250" width="105" height="30" rx="3" style="fill:rgb(10, 19, 20);stroke:rgb(60, 64, 67);stroke-width:0.60;filter:url(#drop-shadow);" />
+<use xlink:href="#dedup-img-2" x="180" y="255" />
+<text x="207" y="256" style="fill:rgb(232, 234, 237);dominant-baseline:text-before-edge;font-family:Google Sans;font-size:7.5px;font-weight:bold;" >dfc-api-keys-ppv</text>
+<text x="207" y="266" style="font-family:Google Sans;font-size:7.0px;fill:rgb(189, 193, 198);dominant-baseline:text-before-edge;" >Secret Manager</text>
+</g>
+</svg>

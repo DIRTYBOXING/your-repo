@@ -1,0 +1,78 @@
+name: Notify Promoter on New Event
+on:
+  push:
+    paths:
+      - "data/events/**.json"
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      SENDGRID_ENDPOINT: ${{ secrets.SENDGRID_ENDPOINT }}
+      SOCIAL_ENDPOINT: ${{ secrets.SOCIAL_ENDPOINT }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Find changed event files
+        id: changed
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            BEFORE="HEAD~1"
+          fi
+          CHANGED=$(git diff --name-only "$BEFORE" "${{ github.sha }}" -- 'data/events/*.json' 2>/dev/null || echo "")
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # ── Step 1: Email outreach via SendGrid ──
+      - name: Send promoter emails for each changed event
+        if: steps.changed.outputs.changed_files != '' && env.SENDGRID_ENDPOINT != ''
+        run: |
+          for f in $(echo "${{ steps.changed.outputs.changed_files }}" | tr '\n' ' '); do
+            [ -z "$f" ] && continue
+            echo "📧 Email outreach → $f"
+            curl -s -X POST "$SENDGRID_ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "{\"eventJsonPath\":\"$PWD/$f\",\"template\":\"initial\"}" || echo "⚠️  Email send failed for $f"
+          done
+
+      # ── Step 2: Social DM outreach (Messenger + Instagram) ──
+      - name: Send social DMs for each changed event
+        if: steps.changed.outputs.changed_files != '' && env.SOCIAL_ENDPOINT != ''
+        env:
+          SOCIAL_ENDPOINT: ${{ secrets.SOCIAL_ENDPOINT }}
+        run: |
+          for f in $(echo "${{ steps.changed.outputs.changed_files }}" | tr '\n' ' '); do
+            [ -z "$f" ] && continue
+            EVENT_ID=$(jq -r '.eventId // empty' "$PWD/$f" 2>/dev/null)
+            PROMOTER=$(jq -r '.promotion // .promoter // "Promoter"' "$PWD/$f" 2>/dev/null)
+            TITLE=$(jq -r '.title // .eventTitle // "Untitled"' "$PWD/$f" 2>/dev/null)
+            MESSENGER_ID=$(jq -r '.social_ids.messenger // empty' "$PWD/$f" 2>/dev/null)
+            INSTAGRAM_ID=$(jq -r '.social_ids.instagram // empty' "$PWD/$f" 2>/dev/null)
+
+            # Messenger DM (sends or returns fallback text)
+            echo "📨 Messenger DM → $EVENT_ID"
+            curl -s -X POST "$SOCIAL_ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg ch messenger \
+                --arg rid "$MESSENGER_ID" \
+                --arg promoter "$PROMOTER" \
+                --arg title "$TITLE" \
+                '{channel: $ch, template: "promoter_initial", recipientId: (if $rid == "" then null else $rid end), vars: {PROMOTER_NAME: $promoter, EVENT_TITLE: $title}}'
+              )" || echo "⚠️  Messenger DM failed for $EVENT_ID"
+
+            # Instagram DM (sends or returns fallback text)
+            echo "📨 Instagram DM → $EVENT_ID"
+            curl -s -X POST "$SOCIAL_ENDPOINT" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                --arg ch instagram \
+                --arg rid "$INSTAGRAM_ID" \
+                --arg promoter "$PROMOTER" \
+                --arg title "$TITLE" \
+                '{channel: $ch, template: "promoter_initial", recipientId: (if $rid == "" then null else $rid end), vars: {PROMOTER_NAME: $promoter, EVENT_TITLE: $title}}'
+              )" || echo "⚠️  Instagram DM failed for $EVENT_ID"
+          done

@@ -1,0 +1,59 @@
+{
+  "info": {
+    "name": "DFC Operator Panel + Storefront",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://australia-southeast1-datafightcentral.cloudfunctions.net"
+    },
+    { "key": "operatorId", "value": "ops_alpha" },
+    { "key": "operatorSignature", "value": "replace_me" },
+    { "key": "eventId", "value": "event_123" },
+    { "key": "userId", "value": "user_123" },
+    { "key": "orderId", "value": "replace_me" }
+  ],
+  "item": [
+    {
+      "name": "Queue Operator Action",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-Operator-Id", "value": "{{operatorId}}" },
+          { "key": "X-Operator-Signature", "value": "{{operatorSignature}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"operatorId\": \"{{operatorId}}\",\n  \"action\": \"send_promo\",\n  \"params\": {\n    \"idempotencyKey\": \"promo_smoke_001\",\n    \"eventId\": \"{{eventId}}\"\n  },\n  \"timestamp\": \"2026-04-28T00:00:00Z\"\n}"
+        },
+        "url": "{{baseUrl}}/operatorAction"
+      }
+    },
+    {
+      "name": "Create Storefront Order",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"eventId\": \"{{eventId}}\",\n  \"tierId\": \"premium\",\n  \"userId\": \"{{userId}}\"\n}"
+        },
+        "url": "{{baseUrl}}/createPpvStorefrontOrder"
+      }
+    },
+    {
+      "name": "Confirm Storefront Order (Sandbox)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orderId\": \"{{orderId}}\",\n  \"sandboxApproved\": true\n}"
+        },
+        "url": "{{baseUrl}}/confirmPpvStorefrontOrder"
+      }
+    }
+  ]
+}

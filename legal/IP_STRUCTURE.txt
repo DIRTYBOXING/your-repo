@@ -1,0 +1,30 @@
+# DFC INTELLECTUAL PROPERTY STRUCTURE
+# Family Sovereign IP Trust + Operating Company Separation
+#
+# ┌─────────────────────────────────────────────────────────────┐
+# │              FAMILY IP HOLDING ENTITY (Trust/LLC)           │
+# │  ┌───────────────────────────────────────────────────────┐  │
+# │  │  ALL SOURCE CODE, ALGORITHMS, PATENTS, TRADE SECRETS  │  │
+# │  │  TRADEMARKS, COPYRIGHTS, DOMAIN NAMES, DATA MODELS    │  │
+# │  │  AI SYSTEMS, PROTOCOLS, FIRMWARE, DESIGNS              │  │
+# │  └───────────────────────────────────────────────────────┘  │
+# │                                                             │
+# │  OWNER: [Family Name] Family Dynasty Trust                  │
+# │  TRUSTEE: Founder (you)                                     │
+# │  BENEFICIARIES: Bloodline descendants only                  │
+# │  TRANSFER RULE: NEVER — licensed, never sold                │
+# │                                                             │
+# │  ╔═══════════════════╗    ╔════════════════════════════╗    │
+# │  ║ EXCLUSIVE LICENSE ║───>║ DFC Operating Company LLC  ║    │
+# │  ║ (revocable)       ║    ║ (runs the business)        ║    │
+# │  ╚═══════════════════╝    ╚════════════════════════════╝    │
+# │                                  │                          │
+# │                           ╔══════╧═══════╗                  │
+# │                           ║  INVESTORS   ║                  │
+# │                           ║  get equity  ║                  │
+# │                           ║  in OpCo     ║                  │
+# │                           ║  ONLY        ║                  │
+# │                           ║              ║                  │
+# │                           ║  NEVER in IP ║                  │
+# │                           ╚══════════════╝                  │
+# └─────────────────────────────────────────────────────────────┘

@@ -1,0 +1,56 @@
+{
+  "contractModel": {
+    "description": "Sliding contract model. Numeric rates are stored in secure admin settings.",
+    "tiers": [
+      {
+        "id": "starter",
+        "name": "Starter",
+        "criteria": {
+          "audience_threshold": "ENV_OR_ADMIN",
+          "viral_flag": false
+        },
+        "rate_key": "RATE_STARTER"
+      },
+      {
+        "id": "growth",
+        "name": "Growth",
+        "criteria": {
+          "audience_threshold": "ENV_OR_ADMIN",
+          "viral_flag": "ENV_OR_ADMIN"
+        },
+        "rate_key": "RATE_GROWTH"
+      },
+      {
+        "id": "global",
+        "name": "Global",
+        "criteria": {
+          "audience_threshold": "ENV_OR_ADMIN",
+          "viral_flag": true
+        },
+        "rate_key": "RATE_GLOBAL"
+      }
+    ]
+  },
+  "promotions": [
+    {
+      "id": "promo-micro-round",
+      "title": "Micro Round Sale",
+      "description": "Sell single rounds",
+      "enabled": true,
+      "ui": {
+        "label": "Buy Round",
+        "cta": "buy-round"
+      }
+    },
+    {
+      "id": "promo-ppv",
+      "title": "Event PPV",
+      "description": "Full event access",
+      "enabled": true,
+      "ui": {
+        "label": "Buy Event",
+        "cta": "buy-event"
+      }
+    }
+  ]
+}

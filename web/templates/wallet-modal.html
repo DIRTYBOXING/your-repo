@@ -1,0 +1,113 @@
+<div id="wallet-modal" class="dfc-wallet-modal" aria-label="DFC Wallet" role="region">
+  <h3>DFC Wallet</h3>
+  <p class="wallet-subtitle">Top up once, buy clips and micro-items in one click.</p>
+
+  <div class="wallet-balance-row">
+    <span>Balance:</span>
+    <strong id="wallet-balance">$0.00</strong>
+  </div>
+
+  <label for="wallet-topup-amount">Top-up amount (USD)</label>
+  <input id="wallet-topup-amount" type="number" value="10" min="1" step="1" />
+
+  <label for="wallet-provider">Provider</label>
+  <select id="wallet-provider">
+    <option value="stripe">Stripe</option>
+    <option value="paypal">PayPal</option>
+  </select>
+
+  <div class="wallet-actions">
+    <button id="wallet-topup-btn" type="button">Create Top-up</button>
+    <button id="wallet-refresh-btn" type="button">Refresh Balance</button>
+  </div>
+
+  <pre id="wallet-output" aria-live="polite"></pre>
+</div>
+
+<style>
+  .dfc-wallet-modal {
+    max-width: 420px;
+    margin: 1rem auto;
+    padding: 1rem;
+    border: 1px solid #2f3d60;
+    border-radius: 10px;
+    background: #111827;
+    color: #f3f4f6;
+    font-family: "Segoe UI", sans-serif;
+  }
+  .wallet-subtitle { color: #a5b4d4; font-size: 0.9rem; }
+  .wallet-balance-row { display: flex; justify-content: space-between; margin: 0.75rem 0; }
+  .dfc-wallet-modal input, .dfc-wallet-modal select {
+    width: 100%;
+    margin-top: 0.35rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    background: #0b1220;
+    color: #f3f4f6;
+  }
+  .wallet-actions { display: flex; gap: 0.5rem; }
+  .wallet-actions button {
+    border: 0;
+    background: #22d3ee;
+    color: #0b1220;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  #wallet-output {
+    margin-top: 0.75rem;
+    max-height: 180px;
+    overflow: auto;
+    padding: 0.6rem;
+    background: #0b1220;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+</style>
+
+<script>
+  (function initWalletModal() {
+    const userId = (globalThis.DFC && globalThis.DFC.userId) || 'u1';
+    const output = document.getElementById('wallet-output');
+    const balanceEl = document.getElementById('wallet-balance');
+
+    function authHeaders() {
+      return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userId}`,
+      };
+    }
+
+    async function refreshBalance() {
+      const response = await fetch(`/api/wallet/${userId}`, { headers: authHeaders() });
+      const data = await response.json();
+      balanceEl.textContent = `$${(Number(data.balanceCents || 0) / 100).toFixed(2)}`;
+      output.textContent = JSON.stringify(data, null, 2);
+    }
+
+    document.getElementById('wallet-topup-btn').addEventListener('click', async () => {
+      const amount = Number(document.getElementById('wallet-topup-amount').value || 0);
+      const provider = document.getElementById('wallet-provider').value;
+      const response = await fetch('/api/wallet/topup', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          userId,
+          amountCents: Math.round(amount * 100),
+          provider,
+          idempotencyKey: `wallet-topup-${Date.now()}`,
+        }),
+      });
+      const data = await response.json();
+      output.textContent = JSON.stringify(data, null, 2);
+    });
+
+    document.getElementById('wallet-refresh-btn').addEventListener('click', refreshBalance);
+
+    refreshBalance();
+  })();
+</script>

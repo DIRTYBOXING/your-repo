@@ -1,0 +1,180 @@
+DFC SPONSORS PPV EMAIL MANIFEST
+================================
+Auto-generated email index for autonomous outreach.
+All emails below are ready to send via tools/send_all_promoter_emails.sh
+or tools/send_all_gym_emails.sh once SEND_ENDPOINT is configured.
+
+RULE: Only SPONSORED gyms receive Shields, extra ads, and Gold Coins.
+
+────────────────────────────────────────────────────
+SECTION 1 — PROMOTER PPV OUTREACH EMAILS
+────────────────────────────────────────────────────
+Location: tools/promoter_emails/
+Trigger:  tools/send_all_promoter_emails.sh
+
+  1. ppv-bkfc-newcastle_email.txt        → BKFC Newcastle
+  2. ppv-ifma-antalyacup_email.txt       → IFMA Muaythai EMF Open Cup (Antalya)
+  3. ppv-legends45_email.txt             → Legends Fight Show 45 (Melbourne)
+  4. ppv-eternal88_email.txt             → Eternal MMA 88 (Sydney)
+  5. ppv-adelaide-cs12_email.txt         → Adelaide Combat Series 12
+  6. ppv-ufc-paramount-fightnight_email.txt → UFC Fight Night / Paramount+ (Las Vegas)
+  7. ppv-brisbane-bonanza_email.txt      → Brisbane Boxing Bonanza
+  8. ppv-westcoast-warriors33_email.txt  → West Coast Warriors 33 (Perth)
+
+────────────────────────────────────────────────────
+SECTION 2 — GYM SHIELDS & GOLD COINS OUTREACH
+────────────────────────────────────────────────────
+Location: tools/gym_emails/
+Trigger:  tools/send_all_gym_emails.sh  OR  node tools/send_gym_emails_node.js
+Contacts: data/contacts/gyms.csv
+
+Templates:
+  A. gym_shields_initial.txt   → Initial sponsorship outreach
+  B. gym_shields_followup.txt  → 7-day follow-up
+  C. gym_shields_confirm.txt   → Onboarding confirmation
+
+────────────────────────────────────────────────────
+SECTION 3 — CONTACT LIST (gyms.csv)
+────────────────────────────────────────────────────
+Location: data/contacts/gyms.csv
+Columns:  gym_id, gym_name, contact_name, contact_email, city, country, sponsored, notes
+
+Current entries:
+  dfc_hq             → DFC HQ Gym (Brisbane)                  — sponsored: YES
+  bkfc_newcastle      → BKFC Newcastle Gym Network             — sponsored: no
+  ifma_antalya        → IFMA Muaythai Training Centre          — sponsored: no
+  legends_melbourne   → Legends Fight Show Gym                 — sponsored: no
+  eternal_sydney      → Eternal MMA Training Centre            — sponsored: no
+  adelaide_combat     → Adelaide Combat Series Gym             — sponsored: no
+  ufc_lasvegas        → UFC Performance Institute              — sponsored: no
+  brisbane_boxing     → Brisbane Boxing Promotions Gym         — sponsored: no
+  westcoast_perth     → West Coast Warriors Gym                — sponsored: no
+
+────────────────────────────────────────────────────
+SECTION 4 — SERVERLESS FUNCTIONS
+────────────────────────────────────────────────────
+A) functions/sendPromoterEmail.js  — Email outreach (SendGrid)
+   Templates: initial / followup / approved / gym_shields_initial / gym_shields_followup / gym_shields_confirm
+   Audit logs:    docs/legal/email_logs/
+   Failure logs:  docs/legal/email_failures/
+
+B) functions/sendSocialOutreach.js — Social DM outreach (Messenger + Instagram)
+   Templates: promoter_initial / promoter_followup / gym_shields
+   Sends via Graph API if tokens are set; otherwise returns DM text for manual paste.
+   Audit logs:    docs/legal/social_logs/
+
+C) functions/socialConfig.js       — Shared social channel config & safety rules
+   Channels:  email (SendGrid), messenger (FB Page API), instagram (IG Business API)
+   Safety:    sponsored-only enforcement, moderation pause, domain validation
+
+────────────────────────────────────────────────────
+SECTION 4b — SOCIAL DM TEMPLATES
+────────────────────────────────────────────────────
+Location: tools/social_templates/
+
+  Messenger DMs:
+    messenger_promoter_initial.txt   → Initial promoter DM
+    messenger_promoter_followup.txt  → Follow-up DM
+    messenger_gym_shields.txt        → Gym Shields invite DM
+
+  Instagram DMs:
+    instagram_promoter_initial.txt   → Initial promoter DM
+    instagram_promoter_followup.txt  → Follow-up DM
+    instagram_gym_shields.txt        → Gym Shields invite DM
+
+  Social Posts:
+    post_event_announcement.txt      → Event PPV announcement post
+    post_gym_spotlight.txt           → Sponsored gym spotlight post
+
+────────────────────────────────────────────────────
+SECTION 5 — LEGAL TEMPLATES
+────────────────────────────────────────────────────
+  docs/legal/license_template.txt        → PPV distribution license
+  docs/legal/model_release_template.txt  → Fighter photo/likeness release
+  docs/legal/promotion_rules.md          → Event promotion rules
+  docs/legal/gym_release_template.txt    → Gym sponsorship consent release
+
+────────────────────────────────────────────────────
+SECTION 6 — ONE-LINE COMMANDS
+────────────────────────────────────────────────────
+# Set secrets first
+export SEND_ENDPOINT="https://your-endpoint.example/sendPromoterEmail"
+export SENDGRID_API_KEY="your_key"
+
+# Send all promoter PPV emails
+bash tools/send_all_promoter_emails.sh initial
+
+# Send all gym sponsorship emails (sponsored only)
+bash tools/send_all_gym_emails.sh gym_shields_initial
+
+# Or use Node bulk sender for gyms
+node tools/send_gym_emails_node.js
+
+# Send social DMs (Messenger) for all events
+export SOCIAL_ENDPOINT="https://your-endpoint.example/sendSocialOutreach"
+bash tools/send_all_social_outreach.sh messenger promoter_initial
+
+# Send social DMs (Instagram) for all events
+bash tools/send_all_social_outreach.sh instagram promoter_initial
+
+# Send gym Shields DMs via Messenger (sponsored only)
+bash tools/send_all_social_outreach.sh messenger gym_shields
+
+# Full autopilot pipeline (posters + upload + all outreach)
+chmod +x tools/run_full_ppv_pipeline.sh
+./tools/run_full_ppv_pipeline.sh
+./tools/send_all_promoter_emails.sh initial
+./tools/send_all_gym_emails.sh gym_shields_initial
+./tools/send_all_social_outreach.sh messenger promoter_initial
+./tools/send_all_social_outreach.sh instagram promoter_initial
+
+────────────────────────────────────────────────────
+SECTION 7 — DEPLOYMENT
+────────────────────────────────────────────────────
+Staging:    Vercel  → functions/ via vercel.json (auto-deploy on push)
+Production: Cloud Run → Dockerfile in functions/ (gcr.io/PROJECT/dfc-email-sender)
+
+  Dockerfile:        functions/Dockerfile
+  Cloud Build:       functions/cloudbuild.yaml
+  Vercel config:     functions/vercel.json
+  SMS webhook:       functions/smsWebhook.js (Twilio inbound)
+
+GitHub Secrets required:
+  SENDGRID_API_KEY         — SendGrid API key
+  SEND_PROMOTER_ENDPOINT   — Cloud Run or Vercel URL for email sends
+  SOCIAL_ENDPOINT          — Cloud Run or Vercel URL for social DMs
+  FB_PAGE_ID               — Facebook Page numeric ID
+  FB_PAGE_ACCESS_TOKEN     — Long-lived Facebook Page token
+  IG_BUSINESS_ACCOUNT_ID   — Instagram Business Account ID
+  IG_ACCESS_TOKEN          — Instagram API token
+  TWILIO_AUTH_TOKEN        — Twilio auth token (for SMS triggers)
+  TWILIO_SID               — Twilio account SID
+  CDN_CLI_KEY              — CDN upload key (for poster uploads)
+
+────────────────────────────────────────────────────
+SECTION 8 — MOBILE TRIGGERS (Chukya-friendly)
+────────────────────────────────────────────────────
+  A. GitHub Mobile:  Push to data/events/*.json → auto-triggers notify-promoter.yml
+  B. workflow_dispatch: .github/workflows/mobile-outreach-trigger.yml
+     Run from GitHub mobile app → select eventId or "all" → sends emails + DMs
+  C. SMS trigger:    Text "SEND ppv_legends45" to Twilio number → calls endpoint
+  D. One-tap script: curl one-liner saved as phone home-screen shortcut
+
+────────────────────────────────────────────────────
+SECTION 9 — DNS DELIVERABILITY (do before large sends)
+────────────────────────────────────────────────────
+  SPF:   v=spf1 include:sendgrid.net -all
+  DKIM:  Add CNAME records from SendGrid domain auth
+  DMARC: v=DMARC1; p=quarantine; rua=mailto:postmaster@datafightcentral.com; pct=100
+  Verify FROM_EMAIL in SendGrid before sending.
+
+────────────────────────────────────────────────────
+SENDER IDENTITY
+────────────────────────────────────────────────────
+From:    legal@datafightcentral.com
+Name:    DFC Team — DataFight Central
+Sig:     DFC Team
+         DataFight Central (DFC) — www.datafightcentral.com
+         legal@datafightcentral.com
+         Facebook Messenger: m.me/DataFightCentral
+Logo:    assets/icons/dfc_logo.png (attached to all outgoing emails)

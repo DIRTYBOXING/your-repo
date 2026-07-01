@@ -1,0 +1,779 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:datafightcentral/features/dashboard/screens/premium_2026_dashboard.dart';
+import 'package:datafightcentral/features/social/screens/dfc_feed_screen.dart';
+import 'package:datafightcentral/features/fightwire/screens/fightwire_master_screen.dart';
+import 'package:datafightcentral/features/training/screens/training_master_screen.dart';
+import 'package:datafightcentral/features/wellness/screens/wellness_master_screen.dart';
+import 'package:datafightcentral/features/profile/screens/profile_screen_v2.dart';
+import 'package:datafightcentral/features/creative_hub/screens/creative_hub_screen.dart';
+import 'package:datafightcentral/features/discovery/screens/explore_screen.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/constants/app_logos.dart';
+import '../../../core/config/router_config.dart' as rc;
+import '../../../shared/widgets/dfc_nav_drawer.dart';
+import '../../../shared/widgets/floating_dfc_orb.dart';
+import '../../../shared/widgets/ambient_planets.dart';
+import '../../../shared/widgets/dfc_logo_backdrop.dart';
+import '../../../shared/widgets/dfc_bottom_nav.dart';
+import '../../../shared/services/auth_service.dart';
+import '../../../shared/services/enhanced_friends_service.dart';
+import '../../messaging/services/messaging_service.dart';
+import '../../../shared/widgets/ninja_welcome_overlay.dart';
+
+/// ═══════════════════════════════════════════════════════════════════════════
+/// DATAFIGHTCENTRAL — MASTER APP (2026 AI-Native)
+/// Bottom nav: Dashboard | Feed | FightWire | Training | Wellness | Profile
+/// 6-tab layout with social Feed as the primary engagement surface
+/// ═══════════════════════════════════════════════════════════════════════════
+class HomeScreen extends StatefulWidget {
+  final int initialTab;
+  const HomeScreen({super.key, this.initialTab = 0});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late int _selectedIndex;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // Lazy tab cache — only build tabs when first visited
+  final Map<int, Widget> _builtTabs = {};
+  static const _tabCount = 8;
+  bool _showNinjaWelcome = false;
+  static const _welcomeSeenKey = 'dfc_ninja_welcome_seen';
+
+  Widget _tabForIndex(int index) {
+    return _builtTabs.putIfAbsent(index, () {
+      final tabs = <Widget>[
+        Premium2026Dashboard(),
+        DFCFeedScreen(),
+        ExploreScreen(),
+        FightWireScreen(),
+        TrainingMasterScreen(),
+        WellnessMasterScreen(),
+        CreativeHubScreen(),
+        ProfileScreen(),
+      ];
+      return RepaintBoundary(child: tabs[index]);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialTab.clamp(0, _tabCount - 1);
+    _checkNinjaWelcome();
+  }
+
+  Future<void> _checkNinjaWelcome() async {
+    // Skip overlay on web — it blocks the dashboard view for 8 seconds
+    if (kIsWeb) return;
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(_welcomeSeenKey) == true) return;
+    if (!mounted) return;
+    setState(() => _showNinjaWelcome = true);
+    // Seed Ninja inbox message
+    _seedNinjaInbox();
+  }
+
+  Future<void> _seedNinjaInbox() async {
+    try {
+      final auth = context.read<AuthService>();
+      final uid = auth.currentUser?.uid;
+      if (uid == null) return;
+      final name = auth.userModel?.displayName ?? 'Fighter';
+      final photo = auth.userModel?.photoUrl ?? '';
+      await context.read<MessagingService>().sendNinjaWelcome(
+        currentUserId: uid,
+        currentUserName: name,
+        currentUserPhotoUrl: photo,
+      );
+    } catch (_) {
+      // Silent — inbox seed is best-effort
+    }
+  }
+
+  Future<void> _dismissNinjaWelcome() async {
+    setState(() => _showNinjaWelcome = false);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_welcomeSeenKey, true);
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: AppTheme.primaryBackground,
+      drawer: DFCNavDrawer(
+        onTabSelected: (index) {
+          setState(() => _selectedIndex = index.clamp(0, _tabCount - 1));
+        },
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Ambient floating planets — background depth
+          const AmbientPlanets(),
+          // DFC logo watermark behind content
+          const DfcLogoBackdrop(opacity: 0.035, size: 300),
+          // Main tab content — lazy-loaded, only builds visited tabs
+          Positioned.fill(
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: List.generate(_tabCount, (i) {
+                if (!_builtTabs.containsKey(i) && i != _selectedIndex) {
+                  return const SizedBox.shrink();
+                }
+                return _tabForIndex(i);
+              }),
+            ),
+          ),
+          // Left edge pull tab — always visible, opens command panel
+          const DFCEdgePullTab(),
+          // Floating DFC orb — drifts, glows, draggable
+          const FloatingDFCOrb(),
+          // ── Ninja Welcome Overlay — appears once, vanishes like a ninja ──
+          if (_showNinjaWelcome)
+            NinjaWelcomeOverlay(onDismissed: _dismissNinjaWelcome),
+          // ── DFC Logo Corner Badge ──────────────────────────────────────
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: 12,
+            child: GestureDetector(
+              onTap: () => _scaffoldKey.currentState?.openDrawer(),
+              child: Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFF0A0E1A),
+                  border: Border.all(
+                    color: AppTheme.neonCyan.withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.neonCyan.withValues(alpha: 0.25),
+                      blurRadius: 12,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.asset(
+                    AppLogos.icon,
+                    width: 42,
+                    height: 42,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => const Center(
+                      child: Text(
+                        'DFC',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // ── Inbox + Account pills — top right ─────────────────────────
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            right: 12,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Inbox icon with unread badge ──
+                GestureDetector(
+                  onTap: () => context.push('/messaging'),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: const Color(0xFF0A0E1A).withValues(alpha: 0.9),
+                      border: Border.all(
+                        color: AppTheme.neonCyan.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: StreamBuilder<int>(
+                      stream: () {
+                        try {
+                          final uid = context
+                              .read<AuthService>()
+                              .currentUser
+                              ?.uid;
+                          if (uid == null) return Stream.value(0);
+                          return context
+                              .read<MessagingService>()
+                              .totalUnreadStream(uid)
+                              .handleError((_) {});
+                        } catch (_) {
+                          return Stream.value(0);
+                        }
+                      }(),
+                      builder: (ctx, snap) {
+                        final count = snap.data ?? 0;
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(
+                              Icons.mail_outline,
+                              color: AppTheme.neonCyan.withValues(alpha: 0.8),
+                              size: 20,
+                            ),
+                            if (count > 0)
+                              Positioned(
+                                top: -6,
+                                right: -8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.redAccent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: Text(
+                                    count > 9 ? '9+' : '$count',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // ── Friends icon with friend-count badge ──
+                GestureDetector(
+                  onTap: () => context.push('/friends'),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: const Color(0xFF0A0E1A).withValues(alpha: 0.9),
+                      border: Border.all(
+                        color: AppTheme.neonCyan.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: StreamBuilder<int>(
+                      stream: context
+                          .read<EnhancedFriendsService>()
+                          .streamFriendCount()
+                          .handleError((_) {}),
+                      builder: (ctx, snap) {
+                        final count = snap.data ?? 0;
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(
+                              Icons.people,
+                              color: AppTheme.neonCyan.withValues(alpha: 0.8),
+                              size: 20,
+                            ),
+                            if (count > 0)
+                              Positioned(
+                                top: -6,
+                                right: -8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.redAccent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: Text(
+                                    count > 99 ? '99+' : '$count',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // ── Friend Requests icon with badge ──
+                GestureDetector(
+                  onTap: () => context.push('/friend-requests'),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: const Color(0xFF0A0E1A).withValues(alpha: 0.9),
+                      border: Border.all(
+                        color: AppTheme.neonCyan.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: StreamBuilder<int>(
+                      stream: () {
+                        try {
+                          final uid = context
+                              .read<AuthService>()
+                              .currentUser
+                              ?.uid;
+                          if (uid == null) return Stream.value(0);
+                          return context
+                              .read<EnhancedFriendsService>()
+                              .streamPendingRequestCount()
+                              .handleError((_) {});
+                        } catch (_) {
+                          return Stream.value(0);
+                        }
+                      }(),
+                      builder: (ctx, snap) {
+                        final count = snap.data ?? 0;
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(
+                              Icons.people_outline,
+                              color: AppTheme.neonCyan.withValues(alpha: 0.8),
+                              size: 20,
+                            ),
+                            if (count > 0)
+                              Positioned(
+                                top: -6,
+                                right: -8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(3),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.redAccent,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: Text(
+                                    count > 9 ? '9+' : '$count',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // ── Account pill ──
+                GestureDetector(
+                  onTap: () => _showAccountMenu(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: const Color(0xFF0A0E1A).withValues(alpha: 0.9),
+                      border: Border.all(
+                        color: AppTheme.neonCyan.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.account_circle,
+                          color: AppTheme.neonCyan.withValues(alpha: 0.8),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.expand_more,
+                          color: Colors.white54,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Samurai Shido quick access pill
+          Positioned(
+            right: 16,
+            bottom: 88,
+            child: GestureDetector(
+              onTap: () => context.push('/ai-bots/shido'),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppTheme.neonPurple.withValues(alpha: 0.9),
+                      AppTheme.neonCyan.withValues(alpha: 0.9),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.neonCyan.withValues(alpha: 0.4),
+                      blurRadius: 14,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.psychology, size: 16, color: Colors.black),
+                    SizedBox(width: 6),
+                    Text(
+                      'Ask Samurai Shido',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (_selectedIndex == 2)
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 10,
+              child: _buildExploreQuickPicks(context),
+            ),
+        ],
+      ),
+      bottomNavigationBar: DFCBottomNav(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+      ),
+    );
+  }
+
+  Widget _buildExploreQuickPicks(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0A0E1A).withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppTheme.neonCyan.withValues(alpha: 0.25)),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            _quickPick(
+              label: 'Earth',
+              icon: Icons.public,
+              onTap: () => setState(() => _selectedIndex = 2),
+            ),
+            const SizedBox(width: 8),
+            _quickPick(
+              label: 'Places',
+              icon: Icons.place,
+              onTap: () => context.push(rc.RouterConfig.combatMapPath),
+            ),
+            const SizedBox(width: 8),
+            _quickPick(
+              label: 'Mentors',
+              icon: Icons.groups,
+              onTap: () => context.push(rc.RouterConfig.mentorMapPath),
+            ),
+            const SizedBox(width: 8),
+            _quickPick(
+              label: 'Sponsors',
+              icon: Icons.handshake,
+              onTap: () => context.push(rc.RouterConfig.sponsorDashboardPath),
+            ),
+            const SizedBox(width: 8),
+            _quickPick(
+              label: 'Pink Shield',
+              icon: Icons.shield,
+              onTap: () => context.push('/pink-shield'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _quickPick({
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(999),
+          color: AppTheme.neonCyan.withValues(alpha: 0.12),
+          border: Border.all(color: AppTheme.neonCyan.withValues(alpha: 0.3)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: AppTheme.neonCyan),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAccountMenu(BuildContext ctx) {
+    final auth = ctx.read<AuthService>();
+    final user = auth.userModel;
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFF0A0E1A),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (sheetCtx) => SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(
+            20,
+            20,
+            20,
+            20 + MediaQuery.of(sheetCtx).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // User info
+              CircleAvatar(
+                radius: 28,
+                backgroundColor: AppTheme.neonCyan.withValues(alpha: 0.2),
+                backgroundImage:
+                    user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                    ? NetworkImage(user.photoUrl!)
+                    : null,
+                onBackgroundImageError:
+                    user?.photoUrl != null && user!.photoUrl!.isNotEmpty
+                    ? (_, _) {}
+                    : null,
+                child: (user?.photoUrl == null || user!.photoUrl!.isEmpty)
+                    ? Text(
+                        (user?.displayName ?? 'U')
+                            .substring(0, 1)
+                            .toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.cyanAccent,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : null,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                user?.displayName ?? 'Fight Fan',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                user?.email ?? '',
+                style: const TextStyle(color: Colors.white54, fontSize: 12),
+              ),
+              if (user?.role != null)
+                Container(
+                  margin: const EdgeInsets.only(top: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppTheme.neonCyan.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    user!.role.name.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.cyanAccent,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 20),
+              const Divider(color: Colors.white12),
+              // Quick actions
+              ListTile(
+                leading: const Icon(Icons.person, color: Colors.white70),
+                title: const Text(
+                  'Profile',
+                  style: TextStyle(color: Colors.white),
+                ),
+                dense: true,
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  setState(() => _selectedIndex = 7);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings, color: Colors.white70),
+                title: const Text(
+                  'Settings',
+                  style: TextStyle(color: Colors.white),
+                ),
+                dense: true,
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  ctx.push('/settings');
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.notifications, color: Colors.white70),
+                title: const Text(
+                  'Notifications',
+                  style: TextStyle(color: Colors.white),
+                ),
+                dense: true,
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  ctx.push('/notifications');
+                },
+              ),
+              const Divider(color: Colors.white12),
+              ListTile(
+                leading: const Icon(Icons.logout, color: Colors.redAccent),
+                title: const Text(
+                  'Log Out',
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                dense: true,
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  _confirmLogout(ctx);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _confirmLogout(BuildContext ctx) {
+    showDialog(
+      context: ctx,
+      builder: (dlg) => AlertDialog(
+        backgroundColor: const Color(0xFF0A0E1A),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.3)),
+        ),
+        title: const Row(
+          children: [
+            Icon(Icons.logout, color: Colors.redAccent, size: 22),
+            SizedBox(width: 10),
+            Text('Log Out', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: const Text(
+          'Are you sure you want to log out?',
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dlg).pop(),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white54),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(dlg).pop();
+              ctx.read<AuthService>().signOut();
+              GoRouter.of(ctx).go('/login');
+            },
+            child: const Text('Log Out'),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,0 +1,70 @@
+service: dfc-serverless
+frameworkVersion: "3"
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'staging'}
+  environment:
+    REDIS_URL: ${env:REDIS_URL, 'redis://localhost:6379'}
+    ENT_SECRET: ${env:ENT_SECRET, 'dfc-local-dev-secret'}
+    MODEL_ENDPOINT: ${env:MODEL_ENDPOINT, 'http://localhost:8090'}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - ssm:GetParameter
+            - ssm:GetParameters
+          Resource: arn:aws:ssm:${self:provider.region}:*:parameter/dfc/${self:provider.stage}/*
+        - Effect: Allow
+          Action:
+            - secretsmanager:GetSecretValue
+          Resource: arn:aws:secretsmanager:${self:provider.region}:*:secret:dfc-${self:provider.stage}-*
+functions:
+  issueToken:
+    handler: serverless/issueToken.handler
+    memorySize: 256
+    timeout: 10
+    events:
+      - httpApi:
+          path: /issue
+          method: post
+  publishReel:
+    handler: serverless/publishReel.handler
+    memorySize: 512
+    timeout: 20
+    events:
+      - httpApi:
+          path: /publishReel
+          method: post
+  pricingApi:
+    handler: serverless/pricingApi.handler
+    memorySize: 256
+    timeout: 8
+    events:
+      - httpApi:
+          path: /pricing
+          method: post
+  validateToken:
+    handler: serverless/validateToken.handler
+    memorySize: 256
+    timeout: 10
+    events:
+      - httpApi:
+          path: /validate
+          method: post
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+package:
+  individually: true
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .git/**
+custom:
+  serverless-offline:
+    httpPort: 3001
+  dotenv:
+    basePath: ./serverless

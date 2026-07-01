@@ -1,0 +1,57 @@
+{
+  "eventId": "ppv-ufc-327",
+  "title": "UFC 327: PROCHAZKA vs ULBERG",
+  "subtitle": "Light Heavyweight Showdown",
+  "date": "2026-04-11",
+  "time": "22:00 ET",
+  "price": "79.99",
+  "promoter": "UFC",
+  "sport": "UFC",
+  "venue": "T-Mobile Arena, Las Vegas",
+  "currency": "USD",
+  "streamPlatforms": ["ESPN+", "Kayo"],
+  "fighters": [
+    {
+      "name": "Jiri Prochazka",
+      "nickname": "Denisa",
+      "record": "30-4-1",
+      "weightClass": "Light Heavyweight",
+      "corner": "left"
+    },
+    {
+      "name": "Carlos Ulberg",
+      "nickname": "Black Jag",
+      "record": "11-1-0",
+      "weightClass": "Light Heavyweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Jiri Prochazka",
+      "fighter2": "Carlos Ulberg",
+      "weightClass": "Light Heavyweight",
+      "rounds": 5,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "Merab Dvalishvili",
+      "fighter2": "Umar Nurmagomedov",
+      "weightClass": "Bantamweight",
+      "rounds": 5,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Shavkat Rakhmonov",
+      "fighter2": "Kamaru Usman",
+      "weightClass": "Welterweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Movsar Evloev",
+      "fighter2": "Yair Rodriguez",
+      "weightClass": "Featherweight",
+      "rounds": 3
+    }
+  ]
+}

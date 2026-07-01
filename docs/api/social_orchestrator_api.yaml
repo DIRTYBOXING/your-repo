@@ -1,0 +1,687 @@
+openapi: "3.1.0"
+info:
+  title: DFC Social Orchestrator API
+  version: "1.0.0"
+  description: |
+    Cross-platform social publishing, A/B variant selection, and audience-aware
+    scheduling for DataFightCentral.  Works with the existing `atlas_jobs`
+    collection, `content/factory.js`, and `hypebot_worker.js`.
+  contact:
+    name: DFC Engineering
+    url: https://datafightcentral.com
+  license:
+    name: Proprietary
+servers:
+  - url: https://us-central1-datafightcentral.cloudfunctions.net
+    description: Firebase Functions (production)
+  - url: http://localhost:5001/datafightcentral/us-central1
+    description: Firebase Emulators (local)
+
+# ─────────────────────────────────────────────────────────────────────────
+# SECURITY
+# ─────────────────────────────────────────────────────────────────────────
+security:
+  - firebaseAuth: []
+components:
+  securitySchemes:
+    firebaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Firebase ID Token
+
+  schemas:
+    # ═══════════════════════════════════════════════════════════════
+    # SOCIAL POST — the core scheduling unit
+    # ═══════════════════════════════════════════════════════════════
+    SocialPost:
+      type: object
+      required: [eventId, platforms, variants]
+      properties:
+        id:
+          type: string
+          example: sp_ufc313_01
+        eventId:
+          type: string
+          example: demo-ufc-313
+        promoterId:
+          type: string
+          example: ufc
+        platforms:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatformTarget"
+          minItems: 1
+        variants:
+          type: array
+          items:
+            $ref: "#/components/schemas/PostVariant"
+          minItems: 1
+          maxItems: 5
+        schedule:
+          $ref: "#/components/schemas/Schedule"
+        abTest:
+          $ref: "#/components/schemas/ABConfig"
+        sponsorSlotId:
+          type: string
+          nullable: true
+          description: Linked Sponsor SKU (pre-roll badge, co-brand logo, etc.)
+        status:
+          type: string
+          enum: [draft, scheduled, publishing, live, paused, cancelled, error]
+          default: draft
+        safetyHold:
+          type: boolean
+          default: false
+          description: CHUCKYA Radar can set this to pause syndication.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    PlatformTarget:
+      type: object
+      required: [platform]
+      properties:
+        platform:
+          type: string
+          enum: [meta_fb, meta_ig, x_twitter, youtube, tiktok, threads]
+        pageId:
+          type: string
+          description: Platform page/channel ID (from connected accounts).
+        utmParams:
+          $ref: "#/components/schemas/UTMParams"
+        pixelId:
+          type: string
+          nullable: true
+          description: Meta Pixel or X Pixel ID for conversion tracking.
+
+    PostVariant:
+      type: object
+      required: [caption]
+      properties:
+        variantId:
+          type: string
+          example: v_short
+        caption:
+          type: string
+          maxLength: 2200
+        hashtags:
+          type: array
+          items:
+            type: string
+          maxItems: 30
+        ogImageUrl:
+          type: string
+          format: uri
+          description: URL to the OG image for this variant.
+        mediaUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Video/image URLs to attach.
+        tone:
+          type: string
+          enum: [hype, informational, dramatic, humorous]
+          default: hype
+        length:
+          type: string
+          enum: [short, medium, long]
+
+    Schedule:
+      type: object
+      properties:
+        publishAt:
+          type: string
+          format: date-time
+          description: Exact UTC publish time.
+        timezone:
+          type: string
+          example: Australia/Sydney
+        audienceAware:
+          type: boolean
+          default: false
+          description: If true, the orchestrator overrides publishAt with predicted peak window.
+        recurringCron:
+          type: string
+          nullable: true
+          description: Cron expression for recurring posts (e.g., fight-week countdowns).
+
+    ABConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: false
+        cohortPercent:
+          type: integer
+          minimum: 5
+          maximum: 50
+          default: 15
+          description: Percentage of audience for initial test cohort.
+        winnerMetric:
+          type: string
+          enum: [ctr, engagement, watch_time, conversions]
+          default: engagement
+        promoteAfterMinutes:
+          type: integer
+          minimum: 15
+          maximum: 1440
+          default: 60
+          description: Minutes before auto-promoting the winning variant.
+
+    UTMParams:
+      type: object
+      properties:
+        source:
+          type: string
+          example: dfc
+        medium:
+          type: string
+          example: social
+        campaign:
+          type: string
+          example: ufc313_fight_week
+        content:
+          type: string
+          description: Variant identifier for attribution.
+
+    # ═══════════════════════════════════════════════════════════════
+    # SPONSOR SKU — inventory unit for sponsorship activation
+    # ═══════════════════════════════════════════════════════════════
+    SponsorSKU:
+      type: object
+      required: [skuId, name, type, priceModel]
+      properties:
+        skuId:
+          type: string
+          example: sku_preroll_30s
+        name:
+          type: string
+          example: "Pre-Roll 30s"
+        type:
+          type: string
+          enum:
+            - pre_roll
+            - mid_roll
+            - og_badge
+            - co_branded_clip
+            - banner_overlay
+            - ringside_virtual
+            - avatar_skin
+          description: Placement type determines where the sponsor asset appears.
+        priceModel:
+          $ref: "#/components/schemas/PriceModel"
+        deliveryRules:
+          $ref: "#/components/schemas/DeliveryRules"
+        assetRequirements:
+          $ref: "#/components/schemas/AssetRequirements"
+        analyticsObligations:
+          type: array
+          items:
+            type: string
+            enum: [impressions, clicks, conversions, watch_time, ctr]
+          description: Metrics the platform must report to the sponsor.
+        performanceSLA:
+          $ref: "#/components/schemas/PerformanceSLA"
+        status:
+          type: string
+          enum: [active, paused, sold_out, archived]
+          default: active
+        createdAt:
+          type: string
+          format: date-time
+
+    PriceModel:
+      type: object
+      required: [currency, amount, billingType]
+      properties:
+        currency:
+          type: string
+          enum: [AUD, USD, GBP, EUR, THB, NZD]
+          default: AUD
+        amount:
+          type: integer
+          description: Price in smallest currency unit (cents).
+          example: 50000
+        billingType:
+          type: string
+          enum: [flat, cpm, cpc, revenue_share]
+        revenueSharePercent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          description: Only used when billingType is revenue_share.
+        platformFeePercent:
+          type: number
+          minimum: 0
+          maximum: 50
+          default: 25
+          description: DFC's take on this SKU.
+
+    DeliveryRules:
+      type: object
+      properties:
+        maxImpressions:
+          type: integer
+          nullable: true
+          description: Cap total impressions; null = unlimited.
+        geoTargets:
+          type: array
+          items:
+            type: string
+          description: ISO 3166-1 alpha-2 country codes.
+          example: ["AU", "US", "GB"]
+        sportTypes:
+          type: array
+          items:
+            type: string
+          description: Filter to specific sport types.
+          example: ["mma", "boxing", "bkfc"]
+        eventIds:
+          type: array
+          items:
+            type: string
+          description: Restrict to specific events.
+        scheduledStart:
+          type: string
+          format: date-time
+        scheduledEnd:
+          type: string
+          format: date-time
+
+    AssetRequirements:
+      type: object
+      properties:
+        formats:
+          type: array
+          items:
+            type: string
+          example: ["mp4", "png", "svg"]
+        maxFileSizeMB:
+          type: integer
+          default: 50
+        dimensions:
+          type: object
+          properties:
+            width:
+              type: integer
+            height:
+              type: integer
+        durationSeconds:
+          type: integer
+          nullable: true
+          description: For video assets (pre-roll, mid-roll).
+
+    PerformanceSLA:
+      type: object
+      properties:
+        guaranteedImpressions:
+          type: integer
+          nullable: true
+        guaranteedClicks:
+          type: integer
+          nullable: true
+        refundPolicy:
+          type: string
+          enum: [full_refund, bonus_credits, pro_rata, none]
+          default: bonus_credits
+        reportingWindowHours:
+          type: integer
+          default: 48
+
+    # ═══════════════════════════════════════════════════════════════
+    # SPONSOR ACTIVATION — a sponsor accepting/proposing a campaign
+    # ═══════════════════════════════════════════════════════════════
+    SponsorActivation:
+      type: object
+      required: [skuId, sponsorId, promoterId]
+      properties:
+        activationId:
+          type: string
+        skuId:
+          type: string
+        sponsorId:
+          type: string
+        promoterId:
+          type: string
+        campaignName:
+          type: string
+        assets:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+                format: uri
+              type:
+                type: string
+              sha256:
+                type: string
+        trackingPixels:
+          type: array
+          items:
+            type: string
+            format: uri
+        status:
+          type: string
+          enum: [proposed, accepted, active, completed, disputed]
+        stripePaymentIntentId:
+          type: string
+          nullable: true
+        reportUrl:
+          type: string
+          format: uri
+          nullable: true
+
+    # ═══════════════════════════════════════════════════════════════
+    # CAPTION GENERATION — AI auto-creative request
+    # ═══════════════════════════════════════════════════════════════
+    CaptionRequest:
+      type: object
+      required: [eventId]
+      properties:
+        eventId:
+          type: string
+        sportType:
+          type: string
+        region:
+          type: string
+          description: ISO region code for locale-tuned copy.
+        tones:
+          type: array
+          items:
+            type: string
+            enum: [hype, informational, dramatic, humorous]
+          default: [hype, informational, dramatic]
+        includeHashtags:
+          type: boolean
+          default: true
+
+    CaptionResponse:
+      type: object
+      properties:
+        eventId:
+          type: string
+        variants:
+          type: array
+          items:
+            type: object
+            properties:
+              length:
+                type: string
+                enum: [short, medium, long]
+              caption:
+                type: string
+              hashtags:
+                type: array
+                items:
+                  type: string
+              tone:
+                type: string
+
+    EngagementSignal:
+      type: object
+      properties:
+        postId:
+          type: string
+        platform:
+          type: string
+        variantId:
+          type: string
+        impressions:
+          type: integer
+        clicks:
+          type: integer
+        reactions:
+          type: integer
+        shares:
+          type: integer
+        watchTimeSeconds:
+          type: number
+        ctr:
+          type: number
+        collectedAt:
+          type: string
+          format: date-time
+
+# ─────────────────────────────────────────────────────────────────────────
+# PATHS
+# ─────────────────────────────────────────────────────────────────────────
+paths:
+  # ── Social Posts ─────────────────────────────────────────────────
+  /api/social/posts:
+    post:
+      summary: Create a social post (with variants and schedule)
+      operationId: createSocialPost
+      tags: [Social Orchestrator]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SocialPost"
+      responses:
+        "201":
+          description: Post created and queued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialPost"
+        "400":
+          description: Validation error.
+        "401":
+          description: Unauthorized.
+    get:
+      summary: List scheduled/published posts for a promoter
+      operationId: listSocialPosts
+      tags: [Social Orchestrator]
+      parameters:
+        - name: promoterId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, scheduled, publishing, live, paused, cancelled, error]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+      responses:
+        "200":
+          description: Array of posts.
+
+  /api/social/posts/{postId}/publish:
+    post:
+      summary: Immediately publish a post (bypasses schedule)
+      operationId: publishNow
+      tags: [Social Orchestrator]
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Publishing initiated.
+        "404":
+          description: Post not found.
+
+  /api/social/posts/{postId}/pause:
+    post:
+      summary: Pause syndication (e.g. CHUCKYA safety hold)
+      operationId: pausePost
+      tags: [Social Orchestrator]
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Post paused.
+
+  # ── AI Caption Generation ──────────────────────────────────────
+  /api/social/captions/generate:
+    post:
+      summary: Generate 3 caption variants (short/medium/long) + hashtags
+      operationId: generateCaptions
+      tags: [AI Engine]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaptionRequest"
+      responses:
+        "200":
+          description: Caption variants generated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaptionResponse"
+
+  # ── OG Image Variants ──────────────────────────────────────────
+  /api/social/og/generate:
+    post:
+      summary: Generate 3 OG image variants for A/B testing
+      operationId: generateOGVariants
+      tags: [AI Engine]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId]
+              properties:
+                eventId:
+                  type: string
+                template:
+                  type: string
+                  enum:
+                    [
+                      cinematic_full,
+                      cinematic_light,
+                      dubai_gold,
+                      fight_card,
+                      social_story,
+                      minimal_dark,
+                    ]
+                headline:
+                  type: string
+                subheadline:
+                  type: string
+      responses:
+        "200":
+          description: Three image URLs returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  variants:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        variantId:
+                          type: string
+                        url:
+                          type: string
+                          format: uri
+                        template:
+                          type: string
+
+  # ── Engagement Signals ─────────────────────────────────────────
+  /api/social/signals:
+    post:
+      summary: Ingest engagement signal (webhook from platforms or scraper)
+      operationId: ingestSignal
+      tags: [Analytics]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EngagementSignal"
+      responses:
+        "202":
+          description: Signal accepted.
+
+  # ── Sponsor SKUs ───────────────────────────────────────────────
+  /api/sponsors/skus:
+    post:
+      summary: Create a sponsor inventory slot (SKU)
+      operationId: createSponsorSKU
+      tags: [Sponsor Hub]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SponsorSKU"
+      responses:
+        "201":
+          description: SKU created.
+    get:
+      summary: List available sponsor SKUs
+      operationId: listSponsorSKUs
+      tags: [Sponsor Hub]
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: sportType
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, paused, sold_out, archived]
+      responses:
+        "200":
+          description: Array of SKUs.
+
+  /api/sponsors/activations:
+    post:
+      summary: Activate a sponsor campaign (accept proposal or initiate)
+      operationId: createActivation
+      tags: [Sponsor Hub]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SponsorActivation"
+      responses:
+        "201":
+          description: Activation created, Stripe PaymentIntent initiated.
+
+  /api/sponsors/activations/{activationId}/report:
+    get:
+      summary: Get performance report for a sponsor activation
+      operationId: getActivationReport
+      tags: [Sponsor Hub]
+      parameters:
+        - name: activationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Performance report with impressions, clicks, conversions.

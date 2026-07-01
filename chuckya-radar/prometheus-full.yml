@@ -1,0 +1,34 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  DFC CHUCKYA + BLACKBIRD — Full Prometheus Configuration    ║
+# ║  Scrapes all services for unified Grafana dashboards        ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Chuckya Radar API (Express + prom-client)
+  - job_name: "chuckya-radar-api"
+    static_configs:
+      - targets: ["radar-api:8080"]
+    metrics_path: /metrics
+
+  # Chuckya Metrics Server (dedicated exporter)
+  - job_name: "chuckya-metrics"
+    static_configs:
+      - targets: ["metrics-server:9091"]
+    metrics_path: /metrics
+
+  # Blackbird Pilot API (FastAPI)
+  - job_name: "blackbird-api"
+    static_configs:
+      - targets: ["blackbird-api:8000"]
+    metrics_path: /metrics
+
+  # WebSocket server health (custom endpoint)
+  - job_name: "chuckya-ws"
+    static_configs:
+      - targets: ["ws-server:8080"]
+    metrics_path: /healthz
+    scrape_interval: 30s

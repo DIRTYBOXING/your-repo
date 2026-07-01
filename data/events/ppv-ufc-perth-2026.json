@@ -1,0 +1,63 @@
+{
+  "eventId": "ppv-ufc-perth-2026",
+  "title": "UFC FIGHT NIGHT: PERTH",
+  "subtitle": "Della Maddalena vs Prates",
+  "date": "2026-05-02",
+  "time": "18:00 AWST",
+  "price": "59.99",
+  "promoter": "UFC",
+  "sport": "UFC",
+  "venue": "RAC Arena, Perth",
+  "currency": "AUD",
+  "streamPlatforms": ["Kayo", "ESPN+"],
+  "fighters": [
+    {
+      "name": "Robert Whittaker",
+      "nickname": "The Reaper",
+      "record": "25-7-0",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "Dricus du Plessis",
+      "nickname": "Stillknocks",
+      "record": "22-2-0",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Robert Whittaker",
+      "fighter2": "Dricus du Plessis",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": true
+    },
+    {
+      "fighter1": "Jack Della Maddalena",
+      "fighter2": "Michel Pereira Prates",
+      "weightClass": "Welterweight",
+      "rounds": 5
+    },
+    {
+      "fighter1": "Tai Tuivasa",
+      "fighter2": "Jairzinho Rozenstruik",
+      "weightClass": "Heavyweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Jimmy Crute",
+      "fighter2": "Alonzo Menifield",
+      "weightClass": "Light Heavyweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Casey O'Neill",
+      "fighter2": "Maycee Barber",
+      "weightClass": "Flyweight",
+      "rounds": 3
+    }
+  ]
+}

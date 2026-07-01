@@ -1,0 +1,53 @@
+{
+  "eventId": "ppv-ufc-paramount-fightnight",
+  "title": "UFC FIGHT NIGHT — LIVE ON PARAMOUNT+",
+  "subtitle": "Las Vegas — Main Card",
+  "date": "2026-06-07",
+  "time": "22:00 ET",
+  "price": "79.99",
+  "promoter": "UFC",
+  "sport": "UFC",
+  "venue": "T-Mobile Arena, Las Vegas",
+  "currency": "USD",
+  "streamPlatforms": ["Paramount+", "ESPN+"],
+  "fighters": [
+    {
+      "name": "TBA",
+      "weightClass": "Welterweight",
+      "corner": "left"
+    },
+    {
+      "name": "TBA",
+      "weightClass": "Welterweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Welterweight",
+      "rounds": 5,
+      "isMainEvent": true
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Lightweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "TBA",
+      "fighter2": "TBA",
+      "weightClass": "Heavyweight",
+      "rounds": 3
+    }
+  ],
+  "safetyFlags": { "ageRestricted": true },
+  "license": {
+    "holder": null,
+    "type": "pending",
+    "expiry": null,
+    "contact": "NOTE: UFC trademark requires written license before publishing any poster with UFC logo"
+  }
+}

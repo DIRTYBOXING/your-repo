@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="gPink" x1="0" x2="1">
+      <stop offset="0" stop-color="#FF8FB3"/>
+      <stop offset="1" stop-color="#FF5A9A"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <path d="M512 64c0 0 240 48 240 240 0 240-240 384-240 384S272 608 272 304C272 112 512 64 512 64z"
+          fill="url(#gPink)" stroke="#C02E6B" stroke-width="24"/>
+    <g transform="translate(320,320)" fill="#FFFFFF">
+      <path d="M128 64c-24 0-44 20-44 44 0 24 20 44 44 44s44-20 44-44c0-24-20-44-44-44z"/>
+      <path d="M64 176c32-24 64-24 96 0" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M40 220c36-36 84-36 120 0" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>
+</svg>

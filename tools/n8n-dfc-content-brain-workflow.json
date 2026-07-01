@@ -1,0 +1,890 @@
+{
+  "id": "dfc-content-brain-v2",
+  "name": "DFC Content Brain: AI Fight Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dfc-content-brain",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-intake",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 340],
+      "webhookId": "dfc-content-brain",
+      "notes": "Receives content requests from DFC Cloud Functions / Flutter app."
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ppv-event-created",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ppv-event-webhook",
+      "name": "PPV Event Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 1000],
+      "webhookId": "ppv-event-created",
+      "notes": "Receives PPV event creation from Flutter N8nService.notifyPPVEventCreated().\nPayload: { eventId, title, sport, fighters, priceCents, promotion, eventDate, requestId }"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "post-fight-results",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "post-fight-webhook",
+      "name": "Post-Fight Results Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 1200],
+      "webhookId": "post-fight-results",
+      "notes": "Receives post-fight results from Flutter N8nService.notifyPostFightResults().\nPayload: { eventId, winner, loser, method, round, time, requestId }"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": $json.body.webInput || '',\n  \"platform\": $json.body.platform || 'all',\n  \"postType\": $json.body.postType || 'text',\n  \"brandTone\": $json.body.brandTone || 'hype',\n  \"audienceType\": $json.body.audienceType || 'fans',\n  \"niche\": $json.body.niche || 'general',\n  \"objective\": $json.body.objective || 'engagement',\n  \"eventData\": $json.body.eventData || {},\n  \"callbackUrl\": $json.body.callbackUrl || '',\n  \"requestId\": $json.body.requestId || 'req_' + Date.now(),\n  \"_triggerType\": \"webhook\"\n} }}"
+      },
+      "id": "edit-fields",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [420, 340],
+      "notes": "Normalize incoming fields with sensible defaults. Tags _triggerType=webhook."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": \"NEW PPV EVENT: \" + ($json.body.title || '') + \"! \" + (($json.body.fighters || []).join(' vs ')) + \" - \" + ($json.body.sport || 'MMA') + \" action live on DFC. Promotion: \" + ($json.body.promotion || 'DFC') + \". Generate launch promo content for all platforms.\",\n  \"platform\": \"all\",\n  \"postType\": \"text\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": ($json.body.sport || 'mma').toLowerCase(),\n  \"objective\": \"conversion\",\n  \"eventData\": $json.body,\n  \"callbackUrl\": \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": $json.body.requestId || 'ppv_create_' + Date.now(),\n  \"_triggerType\": \"webhook\"\n} }}"
+      },
+      "id": "format-ppv-event",
+      "name": "Format PPV Event",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [420, 1000],
+      "notes": "Formats PPV event creation data into the standard pipeline payload."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": \"POST-FIGHT RESULTS: \" + ($json.body.winner || '') + \" defeats \" + ($json.body.loser || '') + \" by \" + ($json.body.method || '') + \". Generate post-fight recap and reaction content.\",\n  \"platform\": \"all\",\n  \"postType\": \"text\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": \"mma\",\n  \"objective\": \"engagement\",\n  \"eventData\": $json.body,\n  \"callbackUrl\": \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": $json.body.requestId || 'postfight_' + Date.now(),\n  \"_triggerType\": \"webhook\"\n} }}"
+      },
+      "id": "format-post-fight-webhook",
+      "name": "Format Post-Fight Webhook",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [420, 1200],
+      "notes": "Formats post-fight results from Flutter webhook into standard pipeline payload."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a content metadata extractor for a combat sports platform called Data Fight Central (DFC). Extract structured fields from the user's content request. Return JSON only.\n\nExtract:\n- platform: target social platform (instagram, linkedin, x, tiktok, threads, facebook, youtube, bluesky, pinterest, all)\n- niche: combat sport niche (mma, boxing, muay_thai, kickboxing, bare_knuckle, bkfc, general)\n- postType: content format (text, image, video, carousel, reel, story, short)\n- brandTone: voice (hype, analytical, motivational, news, edgy, underground)\n- audienceType: target audience (fighters, fans, promoters, casual, coaches, all)\n- objective: goal (engagement, traffic, awareness, conversion, community)\n- topicSummary: 1-sentence summary of the content topic\n- fighters: array of fighter names mentioned (empty array if none)\n- eventName: event name if mentioned (null if none)\n- urgency: low | medium | high (based on time-sensitivity)"
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.webInput }}\n\nProvided context:\nPlatform: {{ $json.platform }}\nPost Type: {{ $json.postType }}\nBrand Tone: {{ $json.brandTone }}\nAudience: {{ $json.audienceType }}\nNiche: {{ $json.niche }}\nObjective: {{ $json.objective }}\nEvent Data: {{ JSON.stringify($json.eventData) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.4,
+          "response_format": {
+            "type": "json_object"
+          }
+        }
+      },
+      "id": "info-extractor",
+      "name": "Information Extractor",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [860, 340],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "GPT-4.1-Mini at 0.4 temp - cost-effective extraction."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a combat sports content strategist for Data Fight Central (DFC), the world's first AI-powered fight platform.\n\nYour role: Generate INTENT - the strategic purpose behind this content.\n\nGiven the extracted metadata, determine:\n1. primary_intent: What is this content trying to achieve? (inform, hype, convert, educate, provoke, celebrate, mourn, predict)\n2. content_angle: The specific angle to take (e.g., 'underdog story', 'knockout prediction', 'behind-the-scenes')\n3. hook_type: What hook pattern works best? (question, statistic, bold_claim, controversy, nostalgia, prediction, challenge, revelation)\n4. cta_type: What call to action? (watch_live, buy_ppv, follow, share, comment, sign_up, download_app, visit_link, none)\n5. content_pillars: Array of 2-3 thematic pillars to build around\n6. controversy_safe: boolean - is this topic safe to be edgy about?\n7. viral_potential: 1-10 score of how shareable this content could be\n\nReturn JSON only."
+            },
+            {
+              "role": "user",
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "generate-intent",
+      "name": "Generate Intent",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1080, 340],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "GPT-4.1 at 0.2 temp - high-accuracy intent reasoning."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a combat sports content strategist for Data Fight Central.\n\nDevelop STRATEGY for the content piece. Think like a fight promoter who understands social media.\n\nOutput:\n1. belief_to_address: What belief or pain point does the audience hold?\n2. myth_to_challenge: What common misconception can we bust? (null if N/A)\n3. takeaway: What should the reader walk away thinking/feeling/doing?\n4. mindset_shift: What perspective change are we creating?\n5. tension_point: What creates dramatic tension?\n6. stakes: What are the stakes? (career, legacy, money, pride, history)\n7. narrative_device: Which storytelling device? (comparison, timeline, what-if, origin-story, countdown, versus, transformation)\n\nReturn JSON only."
+            },
+            {
+              "role": "user",
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.6
+        }
+      },
+      "id": "strategy-node",
+      "name": "Strategy",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1300, 340],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "GPT-4.1 at 0.6 temp - balanced reasoning for strategy."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are an emotional intelligence engine for Data Fight Central content.\n\nYour job: Frame the emotional arc of this content piece.\n\nCombat sports content MUST hit emotionally - neutral content dies on every platform.\n\nOutput:\n1. core_emotion: The primary emotion to evoke (awe, anger, excitement, respect, fear, pride, nostalgia, curiosity, defiance)\n2. emotional_arc: Array of 3-5 emotions in sequence (e.g., ['curiosity', 'tension', 'shock', 'awe'])\n3. tone_modifiers: Array of adjective modifiers for the writing (e.g., ['raw', 'visceral', 'unapologetic', 'electric'])\n4. charged_phrases: Array of 5-8 emotionally loaded phrases specific to this topic\n5. energy_level: 1-10 - how amped should this content feel?\n6. vulnerability_moment: One sentence describing a moment of human vulnerability to include\n\nReturn JSON only."
+            },
+            {
+              "role": "user",
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "emotional-framing",
+      "name": "Emotional Framing",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1520, 340],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "GPT-4.1 at 0.3 temp - consistent emotional framing."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"extractedMeta\": $('Information Extractor').item.json,\n  \"intent\": $('Generate Intent').item.json,\n  \"strategy\": $('Strategy').item.json,\n  \"emotionalFrame\": $('Emotional Framing').item.json,\n  \"originalRequest\": $input.first().json\n} }}"
+      },
+      "id": "format-emotional-data",
+      "name": "Format Emotional Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1740, 340],
+      "notes": "Merge all upstream AI outputs into a single context object for the outline step."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4.1",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a content architect for Data Fight Central.\n\nCreate a STRUCTURAL OUTLINE for the content piece. This is NOT the final content - it's the blueprint.\n\nOutput (JSON):\n1. hook_idea: The attention-grabbing opener (1-2 sentences max)\n2. story_or_idea_summary: The main content body guide (3-5 bullet points)\n3. pivot_or_punchline: The key insight, stat, or twist\n4. cta_idea: The engagement driver\n5. hashtag_strategy: Object with { primary: [3-5 core hashtags], trending: [2-3 piggyback hashtags], branded: ['#DFC', '#DataFightCentral', plus 1-2 sport-specific] }\n6. platform_notes: Object with specific formatting notes per platform\n7. media_suggestion: What visual/media should accompany this?\n\nReturn JSON only."
+            },
+            {
+              "role": "user",
+              "content": "={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "outline-node",
+      "name": "Outline",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [1960, 340],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "GPT-4.1 at 0.7 temp - creative structure."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"allContext\": {\n    \"originalRequest\": $input.first().json.originalRequest,\n    \"extractedMeta\": $('Information Extractor').item.json,\n    \"intent\": $('Generate Intent').item.json,\n    \"strategy\": $('Strategy').item.json,\n    \"emotionalFrame\": $('Emotional Framing').item.json,\n    \"outline\": $('Outline').item.json\n  }\n} }}"
+      },
+      "id": "format-input",
+      "name": "Format Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [2180, 340],
+      "notes": "Consolidate ALL upstream context into a single payload for final generation."
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are the content engine for Data Fight Central (DFC) - the world's first AI-powered combat sports platform.\n\nYou have been given:\n- Extracted metadata (topic, platform, niche, audience)\n- Strategic intent (angle, hook type, CTA)\n- Content strategy (belief to address, myth to bust, narrative device)\n- Emotional framing (arc, tone modifiers, charged phrases)\n- Structural outline (hook, body guide, punchline, CTA)\n\nNow CREATE THE FINAL CONTENT. This is the polished, ready-to-publish output.\n\nRules:\n1. Match the platform's native format and character limits exactly\n2. Use the emotional arc - start where it says, end where it says\n3. Incorporate at least 3 of the charged phrases naturally\n4. The hook MUST stop a scroller in under 2 seconds\n5. Never use generic filler ('In the world of MMA...', 'Combat sports fans know...')\n6. Write like a fight insider, not a marketing department\n7. Include hashtags from the hashtag strategy\n8. If multiple platforms, generate SEPARATE versions optimized for each\n\nOutput JSON:\n{\n  \"posts\": [{\"platform\": \"instagram\", \"postType\": \"text\", \"caption\": \"...\", \"slides\": [], \"alt_text\": \"...\", \"best_time_to_post\": \"...\"}],\n  \"headline\": \"1-line headline\",\n  \"summary\": \"2-3 sentence summary\",\n  \"suggestedMedia\": \"description of ideal visual\",\n  \"viralScore\": 8,\n  \"toneSummary\": \"how this content feels in 3 words\"\n}"
+            },
+            {
+              "role": "user",
+              "content": "={{ JSON.stringify($json.allContext) }}"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.9,
+          "frequency_penalty": 0.3,
+          "presence_penalty": 0.6
+        }
+      },
+      "id": "generate-content",
+      "name": "Generate Content",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [2400, 340],
+      "credentials": {
+        "openAiApi": {
+          "id": "kQdVNcAb6F7oXVyn",
+          "name": "OpenAI account"
+        }
+      },
+      "notes": "GPT-4o at 0.9 temp - premium model for final creative output."
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all();\nconst aiOutput = input[0].json;\nlet originalRequest = {};\ntry { originalRequest = $('Edit Fields').item.json; } catch(e) {}\nif (!originalRequest.webInput) try { originalRequest = $('Format PPV Event').item.json; } catch(e) {}\nif (!originalRequest.webInput) try { originalRequest = $('Format Post-Fight Webhook').item.json; } catch(e) {}\nif (!originalRequest.webInput) try { originalRequest = $('Generate Countdown Content').item.json; } catch(e) {}\nif (!originalRequest.webInput) try { originalRequest = $('Format Post-Fight Scheduled').item.json; } catch(e) {}\n\nlet content;\ntry {\n  content = typeof aiOutput === 'string' ? JSON.parse(aiOutput) : aiOutput;\n  if (content.message && content.message.content) {\n    content = JSON.parse(content.message.content);\n  }\n} catch (e) {\n  content = { posts: [], headline: 'Generation failed', summary: '', viralScore: 0 };\n}\n\nconst output = {\n  requestId: originalRequest.requestId || 'gen_' + Date.now(),\n  callbackUrl: originalRequest.callbackUrl || '',\n  source: 'n8n_content_brain',\n  generatedAt: new Date().toISOString(),\n  platform: originalRequest.platform || 'all',\n  postType: originalRequest.postType || 'text',\n  brandTone: originalRequest.brandTone || 'hype',\n  niche: originalRequest.niche || 'mma',\n  objective: originalRequest.objective || 'engagement',\n  _triggerType: originalRequest._triggerType || 'scheduled',\n  posts: content.posts || [],\n  headline: content.headline || '',\n  summary: content.summary || '',\n  suggestedMedia: content.suggestedMedia || '',\n  viralScore: content.viralScore || 0,\n  toneSummary: content.toneSummary || '',\n  pipeline: {\n    extractedMeta: $('Information Extractor').item.json,\n    intent: $('Generate Intent').item.json,\n    strategy: $('Strategy').item.json,\n    emotionalFrame: $('Emotional Framing').item.json,\n    outline: $('Outline').item.json\n  }\n};\n\nreturn [{ json: output }];"
+      },
+      "id": "stringify-json",
+      "name": "stringifyJSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2620, 340],
+      "notes": "Parse AI output and structure the final DFC pipeline payload."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "conditions": [
+            {
+              "id": "trigger-check",
+              "leftValue": "={{ $json._triggerType }}",
+              "rightValue": "webhook",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "is-webhook-trigger",
+      "name": "Is Webhook Trigger?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2840, 340],
+      "notes": "Routes: TRUE (webhook) -> Respond to Webhook -> Callback. FALSE (scheduled) -> Callback directly."
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [3060, 240],
+      "notes": "Return generated content back to the webhook caller."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "id": "send-to-callback",
+      "name": "Send to Callback",
+      "position": [3280, 240],
+      "notes": "Forwards content to DFC n8nContentCallback. Stores in Firestore + optionally auto-publishes."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback",
+        "authentication": "none",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "id": "send-to-callback-scheduled",
+      "name": "Send to Callback (Scheduled)",
+      "position": [3060, 480],
+      "notes": "Same callback for scheduled runs (no webhook response needed)."
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "countdown-t24h",
+      "name": "Countdown T-24h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 600],
+      "notes": "Fires every 24 hours to check for upcoming events within the next 48h."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://firestore.googleapis.com/v1/projects/datafightcentral/databases/(default)/documents/ppv_events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleServiceAccount",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "orderBy",
+              "value": "eventDate"
+            },
+            {
+              "name": "pageSize",
+              "value": "20"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "fetch-upcoming-events",
+      "name": "Fetch Upcoming Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 600],
+      "credentials": {
+        "googleServiceAccount": {
+          "id": "wHl6zJAv1Hjm1Kfa",
+          "name": "Google Service Account account"
+        }
+      },
+      "notes": "Fetches upcoming PPV events from Firestore via REST API."
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst in48h = new Date(now.getTime() + 48 * 60 * 60 * 1000);\nconst docs = $input.first().json.documents || [];\nconst upcoming = [];\nfor (const doc of docs) {\n  const fields = doc.fields || {};\n  const eventDateStr = fields.eventDate?.timestampValue || fields.eventDate?.stringValue;\n  if (!eventDateStr) continue;\n  const eventDate = new Date(eventDateStr);\n  if (eventDate >= now && eventDate <= in48h) {\n    const eventId = doc.name.split('/').pop();\n    upcoming.push({\n      eventId,\n      title: fields.title?.stringValue || fields.eventName?.stringValue || 'Upcoming Event',\n      eventDate: eventDateStr,\n      mainEvent: fields.mainEvent?.stringValue || '',\n      venue: fields.venue?.stringValue || '',\n      niche: fields.niche?.stringValue || 'mma',\n      promotion: fields.promotion?.stringValue || 'DFC'\n    });\n  }\n}\nif (upcoming.length === 0) return [];\nreturn upcoming.map(e => ({ json: e }));"
+      },
+      "id": "check-event-time",
+      "name": "Check Event Time",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 600],
+      "notes": "Filters to events within next 48 hours. Stops flow if none qualify."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": \"COUNTDOWN CONTENT: \" + $json.title + \" is happening in less than 48 hours! Main event: \" + $json.mainEvent + \". Venue: \" + $json.venue + \". Generate hype countdown content for all platforms.\",\n  \"platform\": \"all\",\n  \"postType\": \"text\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": $json.niche || \"mma\",\n  \"objective\": \"engagement\",\n  \"eventData\": $json,\n  \"callbackUrl\": \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": \"countdown_\" + $json.eventId + \"_\" + Date.now(),\n  \"_triggerType\": \"scheduled\"\n} }}"
+      },
+      "id": "generate-countdown-content",
+      "name": "Generate Countdown Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [860, 600],
+      "notes": "Formats countdown data into standard pipeline payload. _triggerType=scheduled."
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "post-fight-trigger",
+      "name": "Post-Fight Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 800],
+      "notes": "Fires every hour to check for recently completed events (within last 3 hours)."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://firestore.googleapis.com/v1/projects/datafightcentral/databases/(default)/documents/ppv_events",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleServiceAccount",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "orderBy",
+              "value": "eventDate desc"
+            },
+            {
+              "name": "pageSize",
+              "value": "20"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "fetch-recent-events",
+      "name": "Fetch Recent Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 800],
+      "credentials": {
+        "googleServiceAccount": {
+          "id": "wHl6zJAv1Hjm1Kfa",
+          "name": "Google Service Account account"
+        }
+      },
+      "notes": "Fetches recent PPV events from Firestore to find completed fights."
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000);\nconst docs = $input.first().json.documents || [];\nconst completed = [];\nfor (const doc of docs) {\n  const fields = doc.fields || {};\n  const eventDateStr = fields.eventDate?.timestampValue || fields.eventDate?.stringValue;\n  if (!eventDateStr) continue;\n  const eventDate = new Date(eventDateStr);\n  if (eventDate <= now && eventDate >= threeHoursAgo) {\n    const eventId = doc.name.split('/').pop();\n    completed.push({\n      eventId,\n      title: fields.title?.stringValue || fields.eventName?.stringValue || 'Recent Event',\n      eventDate: eventDateStr,\n      mainEvent: fields.mainEvent?.stringValue || '',\n      venue: fields.venue?.stringValue || '',\n      niche: fields.niche?.stringValue || 'mma',\n      promotion: fields.promotion?.stringValue || 'DFC',\n      headliner: fields.headliner?.stringValue || ''\n    });\n  }\n}\nif (completed.length === 0) return [];\nreturn completed.map(e => ({ json: e }));"
+      },
+      "id": "check-completed-events",
+      "name": "Check Completed Events",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 800],
+      "notes": "Filters to events completed within last 3 hours. Stops flow if none."
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ {\n  \"webInput\": \"POST-FIGHT RECAP: \" + $json.title + \" just wrapped up! \" + ($json.mainEvent ? \"Main event: \" + $json.mainEvent + \". \" : \"\") + \"Venue: \" + ($json.venue || \"N/A\") + \". Generate post-fight reaction content with highlights and fan reactions.\",\n  \"platform\": \"all\",\n  \"postType\": \"text\",\n  \"brandTone\": \"hype\",\n  \"audienceType\": \"fans\",\n  \"niche\": $json.niche || \"mma\",\n  \"objective\": \"engagement\",\n  \"eventData\": $json,\n  \"callbackUrl\": \"https://australia-southeast1-datafightcentral.cloudfunctions.net/n8nContentCallback\",\n  \"requestId\": \"postfight_\" + $json.eventId + \"_\" + Date.now(),\n  \"_triggerType\": \"scheduled\"\n} }}"
+      },
+      "id": "format-post-fight-scheduled",
+      "name": "Format Post-Fight Scheduled",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [860, 800],
+      "notes": "Formats post-fight recap with REAL event data from Firestore. _triggerType=scheduled."
+    },
+    {
+      "parameters": {
+        "jsCode": "const error = $input.first().json;\nconst errorOutput = {\n  status: 'pipeline_error',\n  error: error.message || error.errorMessage || 'Unknown pipeline error',\n  failedNode: error.node || 'unknown',\n  timestamp: new Date().toISOString(),\n  requestId: 'error_' + Date.now()\n};\nconsole.log('DFC Content Brain pipeline error:', JSON.stringify(errorOutput));\nreturn [{ json: errorOutput }];"
+      },
+      "id": "error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2620, 600],
+      "notes": "Catches pipeline errors and logs them."
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PPV Event Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format PPV Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-Fight Results Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Post-Fight Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format PPV Event": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post-Fight Webhook": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Generate Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Intent": {
+      "main": [
+        [
+          {
+            "node": "Strategy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strategy": {
+      "main": [
+        [
+          {
+            "node": "Emotional Framing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emotional Framing": {
+      "main": [
+        [
+          {
+            "node": "Format Emotional Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Emotional Data": {
+      "main": [
+        [
+          {
+            "node": "Outline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outline": {
+      "main": [
+        [
+          {
+            "node": "Format Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Input": {
+      "main": [
+        [
+          {
+            "node": "Generate Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Content": {
+      "main": [
+        [
+          {
+            "node": "stringifyJSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "stringifyJSON": {
+      "main": [
+        [
+          {
+            "node": "Is Webhook Trigger?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Webhook Trigger?": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send to Callback (Scheduled)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send to Callback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Countdown T-24h": {
+      "main": [
+        [
+          {
+            "node": "Fetch Upcoming Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Upcoming Events": {
+      "main": [
+        [
+          {
+            "node": "Check Event Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Event Time": {
+      "main": [
+        [
+          {
+            "node": "Generate Countdown Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Countdown Content": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post-Fight Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Recent Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Events": {
+      "main": [
+        [
+          {
+            "node": "Check Completed Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Completed Events": {
+      "main": [
+        [
+          {
+            "node": "Format Post-Fight Scheduled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Post-Fight Scheduled": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "id": "1",
+      "name": "DFC"
+    },
+    {
+      "id": "2",
+      "name": "content-generation"
+    },
+    {
+      "id": "3",
+      "name": "ai-pipeline"
+    },
+    {
+      "id": "4",
+      "name": "v2-complete"
+    }
+  ],
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {}
+}

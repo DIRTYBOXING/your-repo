@@ -1,0 +1,130 @@
+{
+  "eventId": "ppv-ultimate-legends-apr-2026",
+  "title": "ULTIMATE LEGENDS: WBC SILVER AUSTRALIAN TITLE",
+  "subtitle": "Melbourne Pavilion — Jordan Roesler Main Event",
+  "date": "2026-04-24",
+  "time": "18:00 AEST",
+  "price": "24.99",
+  "promoter": "Ultimate Legends (John Scida & Joey Demicoli)",
+  "sport": "Boxing",
+  "venue": "Melbourne Pavilion",
+  "city": "Melbourne",
+  "country": "Australia",
+  "currency": "AUD",
+  "streamPlatforms": ["Live Combat Sports"],
+  "legacy": {
+    "founded": 1992,
+    "founder": "John Scida (5th Degree Black Belt, Zen Do Kai)",
+    "coPromoter": "Joey Demicoli (Vice President)",
+    "heritage": "Ultimate Muay Thai → Ultimate Legends. Melbourne's longest-running combat sports promotion. 30+ years of professional fight nights."
+  },
+  "fighters": [
+    {
+      "name": "Jordan Roesler",
+      "weightClass": "Super Welterweight",
+      "corner": "left",
+      "hometown": "Melbourne, VIC",
+      "trainedBy": "John Scida & Joey Demicoli",
+      "fatherSonLegacy": true,
+      "father": "James Roesler",
+      "bio": "Headlining the WBC Silver Australian Title. Trained under John Scida since childhood. Father James Roesler is a cornerstone of the Ultimate Legends family — trainers, corners, and lifelong supporters of Melbourne combat sports."
+    },
+    {
+      "name": "Conor Wallace",
+      "weightClass": "Super Welterweight",
+      "corner": "right"
+    }
+  ],
+  "cornerTeam": {
+    "headTrainer": "John Scida",
+    "corner": ["Joey Demicoli", "James Roesler"],
+    "note": "James Roesler — father of headliner Jordan Roesler. A father-and-son legacy built through Ultimate Legends."
+  },
+  "fightCard": [
+    {
+      "fighter1": "Jordan Roesler",
+      "fighter2": "Conor Wallace",
+      "weightClass": "Super Welterweight",
+      "rounds": 10,
+      "isMainEvent": true,
+      "isTitleFight": true,
+      "titleName": "WBC Silver Australian Title"
+    },
+    {
+      "fighter1": "Tommy Browne",
+      "fighter2": "Daiki Tanaka",
+      "weightClass": "K1 Middleweight",
+      "rounds": 3
+    },
+    {
+      "fighter1": "Nong-O Gaiyanghadao",
+      "fighter2": "Jack Creed",
+      "weightClass": "Muay Thai Super Lightweight",
+      "rounds": 5
+    },
+    {
+      "fighter1": "Sam Soliman",
+      "fighter2": "Tony Mundine Jr",
+      "weightClass": "Middleweight",
+      "rounds": 8
+    }
+  ],
+  "tags": [
+    "ultimate legends",
+    "legend",
+    "john scida",
+    "joey demicoli",
+    "jordan roesler",
+    "james roesler",
+    "father son legacy",
+    "melbourne",
+    "wbc",
+    "main event",
+    "headline bout",
+    "ppv",
+    "ticket",
+    "fight week",
+    "announcement"
+  ],
+  "hashtags": [
+    "#UltimateLegends",
+    "#WBC",
+    "#JordanRoesler",
+    "#JamesRoesler",
+    "#JohnScida",
+    "#JoeyDemicoli",
+    "#FatherAndSon",
+    "#Melbourne",
+    "#MelbournePavilion",
+    "#Boxing",
+    "#K1",
+    "#MuayThai",
+    "#Kickboxing",
+    "#CombatSports",
+    "#AustralianFighting",
+    "#ProFighting",
+    "#FightNight",
+    "#PPV",
+    "#LiveCombatSports",
+    "#DataFightCentral",
+    "#DFC",
+    "#ThaiVsAussie",
+    "#MuayThaiLegends",
+    "#CombatSportsFamily"
+  ],
+  "socialLinks": {
+    "facebook": "https://www.facebook.com/ultimatelegendsau",
+    "instagram": "https://www.instagram.com/ultimatelegendspromotions/",
+    "website": "https://ultimatelegends.com.au",
+    "dfc": "https://www.datafightcentral.com"
+  },
+  "distributionRegions": ["AU", "TH", "IN", "NZ", "PH", "US", "GB"],
+  "boostSignals": [
+    "isLegendItem",
+    "mainEventLift",
+    "ticketRevenueLift",
+    "viralLift",
+    "samuraiPromotionLift",
+    "dealCloseLift"
+  ]
+}

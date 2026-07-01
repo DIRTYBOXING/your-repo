@@ -1,0 +1,65 @@
+name: dfc-pr-check
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "poster-worker/**"
+      - "promotion-worker/**"
+      - "entitlements-service/**"
+      - "cloudbuild.yaml"
+      - "lib/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # COST CUTTING: Disabled Node checks (run locally instead)
+  # See: .github/COST_CUTTING_EMERGENCY.md
+  # Users should run locally: npm ci && npx tsc && npm test
+  #
+  # audit-entitlements, tsc-poster-worker, tsc-promotion-worker,
+  # jest-promotion-worker: DISABLED to save GitHub Actions minutes
+
+  # -- Flutter analyze (BLOCKING) -----------------------------------------------
+  flutter-analyze:
+    name: dfc-ci:flutter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+      - name: Ensure CI-only env asset exists
+        run: |
+          mkdir -p assets
+          test -f assets/.env || echo "# CI placeholder" > assets/.env
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos
+
+  # -- Docker smoke builds (BLOCKING: entitlements only) -------------------------
+  docker-entitlements:
+    name: dfc-ci:docker-entitlements
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: entitlements-service/Dockerfile
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: entitlements-service:pr-${{ github.event.pull_request.number }}
+
+  # COST CUTTING: Disabled Docker smoke builds for poster/promotion
+  # See: .github/COST_CUTTING_EMERGENCY.md
+  # Users should test locally: docker build -f Dockerfile . --tag poster-worker:test
+  #
+  # docker-poster-worker, docker-promotion-worker: DISABLED to save GitHub Actions minutes

@@ -1,0 +1,109 @@
+version: "3.9"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DFC CONTENT PIPELINE — Docker Compose
+# Small-promoter weapon: upload → transcode → imagegen → publish
+# ═══════════════════════════════════════════════════════════════════════════
+
+services:
+  # ── Redis (job queue backbone) ─────────────────────────────────────────
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  auto-clip-worker:
+    build: ./auto-clip-worker
+    env_file: .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_CONNECT_TIMEOUT=10000
+      - REDIS_MAX_RETRIES_PER_REQUEST=null
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ── Upload Service (presigned URLs + validation) ───────────────────────
+  upload-service:
+    build: ./upload-service
+    ports:
+      - "4001:4001"
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PORT=4001
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ── Video Worker (FFmpeg transcoding) ──────────────────────────────────
+  video-worker:
+    build: ./video-worker
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+
+  # ── Imagegen Service (social cards + hero images) ──────────────────────
+  imagegen-service:
+    build: ./imagegen-service
+    ports:
+      - "4002:4002"
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PORT=4002
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ── Social Orchestrator (auto-clip → OG → caption → cross-platform) ────
+  social-orchestrator:
+    build: ./social-orchestrator
+    ports:
+      - "4004:4004"
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PORT=4004
+      - IMAGEGEN_URL=http://imagegen-service:4002
+      - CHUCKYA_URL=${CHUCKYA_URL:-}
+      - CAPTION_URL=${CAPTION_URL:-}
+      - WORKER_CONCURRENCY=3
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ── Live Publisher (WebSocket livefeed + PPV + auto-recap) ──────────────
+  live-publisher:
+    build: ./live-publisher
+    ports:
+      - "4003:4003"
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - PORT=4003
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis_data:

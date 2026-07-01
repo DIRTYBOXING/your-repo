@@ -1,0 +1,287 @@
+DATA FIGHT CENTRAL — PROMOTER PARTNERSHIP AGREEMENT
+=====================================================
+ULTIMATE LEGENDS × DFC
+
+This Promoter Partnership Agreement ("Agreement") is entered into between:
+
+PROMOTER
+  Name:          Ultimate Legends Promotions
+  Co-Promoters:  Joseph (Joey) Demicoli & John Scida
+  Contact Phone: [REDACTED]
+  Contact Email: ________________________________________
+  ABN / Tax ID:  ________________________________________
+  Address:       Melbourne, Victoria, Australia
+
+PLATFORM
+  Name:          DataFight Central Pty Ltd ("DFC")
+  ABN:           ________________________________________
+  Contact:       legal@datafightcentral.com
+  Website:       datafightcentral.com
+  Representative: DFC Founder
+
+EFFECTIVE DATE: _______________
+
+════════════════════════════════════════════════════════════
+1. PURPOSE & SPIRIT
+════════════════════════════════════════════════════════════
+
+DFC exists to promote promoters — not compete with them. This
+partnership is built on collaboration, mutual respect, and a
+shared mission to grow combat sports for fighters, fans, and
+communities worldwide.
+
+DFC operates as a platform and distribution channel for combat
+sports content. Ultimate Legends retains full ownership and
+creative control of their events, brand, and fighter relationships.
+
+════════════════════════════════════════════════════════════
+2. WHAT DFC PROVIDES (FREE OF CHARGE)
+════════════════════════════════════════════════════════════
+
+DFC will provide the following to Ultimate Legends at NO COST:
+
+(a) EVENT LISTING & PROMOTION
+    - Featured event listing on DFC platform (web + mobile)
+    - Event details: fight card, venue, date, ticket links
+    - Auto-generated typographic event poster (DFC original work)
+    - Social feed promotion to DFC's combat sports audience
+    - Cross-posting to connected social channels (Facebook, Instagram)
+    - Push notifications to DFC users in the Melbourne/VIC region
+
+(b) FIGHTER PROFILES & STATS
+    - Fighter profiles for all Ultimate Legends card athletes
+    - Fight history, records, and statistics tracking
+    - AI-powered fight previews and analysis content
+
+(c) SOCIAL AMPLIFICATION
+    - DFC feed posts promoting upcoming Ultimate Legends events
+    - Post-event results, highlights, and recaps
+    - Fighter spotlight features and community engagement
+
+(d) TECHNOLOGY PLATFORM
+    - Fan engagement tools (live chat, predictions, scoring)
+    - Audience analytics and event reach reporting
+    - QR-code event passes (fighter, corner, media, VIP)
+
+════════════════════════════════════════════════════════════
+3. OPTIONAL PREMIUM SERVICES (REVENUE SHARE)
+════════════════════════════════════════════════════════════
+
+The following services are available if Ultimate Legends chooses
+to activate them. Each operates on a revenue share model — DFC
+takes a percentage ONLY when money is made:
+
+(a) PPV / LIVESTREAM via DFC
+    If Ultimate Legends streams an event through DFC's Mux-powered
+    streaming infrastructure:
+
+    Revenue Split:
+    - Ultimate Legends receives: 70-85% of net PPV revenue
+    - DFC platform fee: 15-30% of net PPV revenue
+      (sliding scale: DFC fee starts at 30% at 0 buys, decreases
+       to 15% as buy count increases — the more you sell, the
+       more you keep)
+    - Stripe processing fees deducted before split (approx 2.9% + 30c)
+
+    Pricing Tiers Available:
+    - Full Show: $49.99 AUD
+    - Main Card: $29.99 AUD
+    - Prelims: $14.99 AUD
+    - Single Fight: $9.99 AUD
+    - Early Bird (limited time): configurable discount
+    - VIP (backstage + multi-cam + moderated chat): premium pricing
+
+    Replay/VOD: Included automatically. Replay access for 30 days
+    post-event (configurable).
+
+    DRM Protection: Widevine + FairPlay + PlayReady. Forensic
+    watermarking on all streams. Device binding (max 2 concurrent).
+
+(b) TICKET SALES via DFC
+    If Ultimate Legends sells tickets through DFC's Stripe-powered
+    ticketing:
+
+    Revenue Split:
+    - Ultimate Legends receives: 85% of net ticket revenue
+    - DFC platform fee: 15%
+    - Stripe processing fees deducted before split
+
+(c) SPONSORED PLACEMENT
+    Premium feed positioning, banner ads, push notification
+    campaigns. Priced per campaign — separate quote on request.
+
+════════════════════════════════════════════════════════════
+4. WHAT ULTIMATE LEGENDS PROVIDES
+════════════════════════════════════════════════════════════
+
+(a) REQUIRED (for free listing):
+    - Event information: date, venue, fight card, ticket URL
+    - Written confirmation that DFC may list and promote the event
+    - This signed agreement
+
+(b) OPTIONAL (for enhanced promotion):
+    - Official event poster (high-res, min 1600×2400)
+    - Fighter headshots / promo photos
+    - Sponsor logos (transparent PNG)
+    - Broadcast stream URL or Mux ingest key (for PPV)
+    - Model releases for all depicted persons (template provided)
+
+(c) RIGHTS GRANTED:
+    Ultimate Legends grants DFC a non-exclusive, worldwide,
+    royalty-free licence to:
+    - Display event information, fight cards, and results
+    - Create derivative promotional materials (thumbnails, banners,
+      social crops) from provided materials
+    - Feature Ultimate Legends content in DFC's feed and social channels
+    - Archive event results and fighter statistics permanently
+
+    Ultimate Legends retains full ownership of all original materials.
+    DFC's licence is for promotional and platform display purposes only.
+
+════════════════════════════════════════════════════════════
+5. CONTENT RIGHTS & INTELLECTUAL PROPERTY
+════════════════════════════════════════════════════════════
+
+(a) Ultimate Legends retains all IP rights to their brand name,
+    logos, event names, and original content.
+
+(b) DFC retains all IP rights to the DFC platform, technology,
+    AI analysis, typographic posters, and original editorial content.
+
+(c) Neither party may use the other's trademarks outside this
+    Agreement without written permission.
+
+(d) Ultimate Legends represents that all materials provided do not
+    infringe third-party IP rights, and that model releases have
+    been obtained for all depicted persons.
+
+(e) If DFC creates promotional materials using provided assets,
+    Ultimate Legends will be credited as the source promotion.
+
+════════════════════════════════════════════════════════════
+6. PAYMENT & STRIPE CONNECT
+════════════════════════════════════════════════════════════
+
+(a) For revenue-share services (PPV, tickets), Ultimate Legends
+    will onboard to Stripe Connect via DFC's platform.
+
+(b) Payouts are processed automatically:
+    - PPV revenue: within 30 days of event, monthly reconciliation
+    - Ticket revenue: within 14 days of event
+    - Minimum payout threshold: $50 AUD
+
+(c) Full revenue transparency dashboard available in DFC's
+    Promoter Portal showing:
+    - Gross revenue → Stripe fees → Net → DFC% → DFC cut → Your cut
+    - Per-transaction ledger
+    - CSV export for your accountant
+
+(d) All financial records retained for 7 years per Australian tax law.
+
+════════════════════════════════════════════════════════════
+7. TERM & TERMINATION
+════════════════════════════════════════════════════════════
+
+(a) This Agreement is effective from the date of signing and
+    continues for 12 months, automatically renewing unless either
+    party provides 30 days' written notice.
+
+(b) Either party may terminate with 30 days' written notice
+    for any reason.
+
+(c) Upon termination:
+    - DFC will remove promotional materials within 14 business days
+    - Archived event results and fighter statistics remain on DFC
+      permanently (public record)
+    - Outstanding payments will be settled within 30 days
+    - Replay/VOD access for purchased content continues for existing
+      buyers until their access expires
+
+(d) Termination does not affect any rights or obligations arising
+    from events that occurred during the term.
+
+════════════════════════════════════════════════════════════
+8. AUSTRALIAN LAW COMPLIANCE
+════════════════════════════════════════════════════════════
+
+(a) This Agreement is governed by the laws of Queensland, Australia.
+
+(b) Both parties comply with:
+    - Australian Consumer Law (Competition and Consumer Act 2010)
+    - Australian Privacy Act 1988 (APP 1-13)
+    - Copyright Act 1968
+    - Combat sport regulatory requirements (VIC/QLD commissions)
+    - Age restrictions: 18+ for PPV combat content
+
+(c) DFC maintains:
+    - Privacy Policy (datafightcentral.web.app/privacy-policy)
+    - Terms of Service (datafightcentral.web.app/terms-of-service)
+    - DMCA/Copyright takedown process (Section 13 of ToS)
+
+(d) Disputes will be resolved first through good-faith negotiation,
+    then mediation, before any court proceedings.
+
+════════════════════════════════════════════════════════════
+9. LIMITATION OF LIABILITY
+════════════════════════════════════════════════════════════
+
+(a) DFC is a technology platform. DFC does not organise, sanction,
+    or take responsibility for the conduct of combat sports events.
+
+(b) Ultimate Legends is solely responsible for event safety,
+    fighter welfare, medical clearances, regulatory compliance,
+    and insurance for their events.
+
+(c) Neither party's total liability shall exceed the total fees
+    paid/received under this Agreement in the 12 months preceding
+    any claim.
+
+════════════════════════════════════════════════════════════
+10. THE VISION
+════════════════════════════════════════════════════════════
+
+DFC and Ultimate Legends share a vision: grow combat sports
+through collaboration, not competition. DFC exists to amplify
+promoters like Ultimate Legends — to put your events, your
+fighters, and your legacy in front of more fans than ever before.
+
+30+ years of Melbourne combat sports history. A father-and-son
+legacy in the Roesler family. Sensei John Scida's Zen Do Kai
+tradition. Joey Demicoli's promotional expertise. This is what
+real combat sports looks like — and DFC is here to make sure the
+world sees it.
+
+════════════════════════════════════════════════════════════
+SIGNATURES
+════════════════════════════════════════════════════════════
+
+ULTIMATE LEGENDS PROMOTIONS
+
+Name:      Joseph (Joey) Demicoli
+Title:     Co-Promoter
+Signature: __________________________
+Date:      __________________________
+
+Name:      John Scida
+Title:     Co-Promoter / Founder
+Signature: __________________________
+Date:      __________________________
+
+
+DATAFIGHT CENTRAL PTY LTD
+
+Name:      DFC Founder
+Title:     Founder & Platform Director
+Signature: __________________________
+Date:      __________________________
+
+
+════════════════════════════════════════════════════════════
+ATTACHMENTS (Provide with this Agreement)
+════════════════════════════════════════════════════════════
+
+[ ] Model Release Template (for fighter photos)
+[ ] DFC Promotion Rules (content guidelines)
+[ ] Stripe Connect onboarding instructions
+[ ] DFC Promoter Portal access guide
+[ ] Upcoming event details form

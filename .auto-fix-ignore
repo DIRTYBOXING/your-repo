@@ -1,0 +1,8 @@
+# Paths and patterns to exclude from auto-fix automation.
+# One pattern per line. Lines starting with # are comments.
+# Patterns match against file paths (substring match).
+
+build/
+.dart_tool/
+node_modules/
+.git/

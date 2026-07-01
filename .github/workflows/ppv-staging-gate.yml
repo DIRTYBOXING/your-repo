@@ -1,0 +1,319 @@
+name: PPV Staging Gate
+
+"on":
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+    inputs:
+      EVENT_ID:
+        description: Event id for poster and player checks
+        required: false
+        default: champions-collide-2026
+      STAGING_BASE:
+        description: Base URL for staging smoke tests
+        required: false
+        default: ""
+      GCS_BUCKET:
+        description: Bucket containing event posters
+        required: false
+        default: datafightcentral.firebasestorage.app
+      CDN_EDGE_HOST:
+        description: CDN host used by poster checks
+        required: false
+        default: edge-us.cdn.dfc.example.com
+
+permissions:
+  contents: read
+
+env:
+  STAGING_BASE: ${{ github.event.inputs.STAGING_BASE || secrets.STAGING_BASE }}
+  EVENT_ID: ${{ github.event.inputs.EVENT_ID || 'champions-collide-2026' }}
+  GCS_BUCKET: ${{ github.event.inputs.GCS_BUCKET || 'datafightcentral.firebasestorage.app' }}
+  CDN_EDGE_HOST: ${{ github.event.inputs.CDN_EDGE_HOST || 'edge-us.cdn.dfc.example.com' }}
+
+jobs:
+  ppv-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Validate required secret contract
+        id: secret_contract
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          ENTITLEMENT_PROXY_URL: ${{ secrets.ENTITLEMENT_PROXY_URL }}
+          ENTITLEMENT_HEALTH_URL: ${{ secrets.ENTITLEMENT_HEALTH_URL }}
+          MUX_AUTH_URL: ${{ secrets.MUX_AUTH_URL }}
+          MUX_API_TOKEN: ${{ secrets.MUX_API_TOKEN }}
+          TEST_ENTITLEMENT_TOKEN: ${{ secrets.TEST_ENTITLEMENT_TOKEN }}
+        run: |
+          missing=0
+          required=(
+            GCP_SA_KEY
+            GCP_PROJECT_ID
+            ENTITLEMENT_HEALTH_URL
+            TEST_ENTITLEMENT_TOKEN
+          )
+          for key in "${required[@]}"; do
+            if [ -z "${!key}" ]; then
+              echo "Missing required secret: ${key}" >&2
+              missing=1
+            fi
+          done
+          if [ "$missing" -eq 1 ]; then
+            echo "PPV infra checks will be skipped for this run due to missing non-Mux secrets."
+            echo "ppv_infra_ready=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "ppv_infra_ready=1" >> "$GITHUB_OUTPUT"
+          fi
+          if [ -z "${ENTITLEMENT_PROXY_URL}" ]; then
+            echo "ENTITLEMENT_PROXY_URL not set. Workflow will derive gate base from ENTITLEMENT_HEALTH_URL."
+          fi
+          if [ -z "${MUX_AUTH_URL}" ] || [ -z "${MUX_API_TOKEN}" ]; then
+            echo "Mux secrets missing; mux smoke will be skipped for this run."
+          fi
+
+      - name: Authenticate to GCP
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup gcloud SDK
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure gcloud project
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        run: |
+          gcloud config set project "${{ secrets.GCP_PROJECT_ID }}"
+          gsutil version -l
+
+      - name: Entitlement health contract check
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        env:
+          ENTITLEMENT_HEALTH_URL: ${{ secrets.ENTITLEMENT_HEALTH_URL }}
+        run: |
+          health_payload="$(curl -fsS "${ENTITLEMENT_HEALTH_URL}")"
+          echo "${health_payload}"
+          if ! echo "${health_payload}" | grep -Eq '"ready"[[:space:]]*:[[:space:]]*true'; then
+            echo "Entitlement health check failed: ready!=true" >&2
+            exit 1
+          fi
+
+      - name: Run PPV production gate
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        env:
+          ENTITLEMENTS_SERVICE_BASE_URL: ${{ secrets.ENTITLEMENT_PROXY_URL }}
+          ENTITLEMENT_HEALTH_URL: ${{ secrets.ENTITLEMENT_HEALTH_URL }}
+        run: |
+          entitlements_base="${ENTITLEMENTS_SERVICE_BASE_URL}"
+          if [ -z "${entitlements_base}" ]; then
+            entitlements_base="${ENTITLEMENT_HEALTH_URL%/health}"
+            entitlements_base="${entitlements_base%/ready}"
+          fi
+          npm run ppv:gate -- -EntitlementsBaseUrl "${entitlements_base}"
+
+      - name: Mux auth smoke script
+        env:
+          MUX_AUTH_URL: ${{ secrets.MUX_AUTH_URL }}
+          MUX_API_TOKEN: ${{ secrets.MUX_API_TOKEN }}
+        run: |
+          if [ -z "${MUX_AUTH_URL}" ] || [ -z "${MUX_API_TOKEN}" ]; then
+            echo "Skipping mux smoke: missing MUX_AUTH_URL and/or MUX_API_TOKEN."
+            exit 0
+          fi
+          chmod +x ops/mux_smoke.sh
+          ./ops/mux_smoke.sh
+
+      - name: Poster + CDN checks
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        env:
+          GCS_BUCKET: ${{ env.GCS_BUCKET }}
+          EVENT_ID: ${{ env.EVENT_ID }}
+          CDN_EDGE_HOST: ${{ env.CDN_EDGE_HOST }}
+          REQUIRE_POSTER_VARIANTS: "1"
+        run: |
+          chmod +x ops/check_posters.sh
+          ./ops/check_posters.sh "${GCS_BUCKET}" "${EVENT_ID}" "${CDN_EDGE_HOST}"
+
+      - name: Playwright visual smoke
+        if: steps.secret_contract.outputs.ppv_infra_ready == '1'
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          STAGING_BASE: ${{ env.STAGING_BASE }}
+          EVENT_ID: ${{ env.EVENT_ID }}
+          TEST_ENTITLEMENT_TOKEN: ${{ secrets.TEST_ENTITLEMENT_TOKEN }}
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ -z "${STAGING_BASE}" ]; then
+            echo "STAGING_BASE is empty. Provide a real host via secret STAGING_BASE for push runs." >&2
+            exit 6
+          fi
+          if echo "${STAGING_BASE}" | grep -Eq '(^https?://)?[^/]*example\.com'; then
+            echo "STAGING_BASE points to a placeholder host (${STAGING_BASE}) during a non-manual run." >&2
+            exit 7
+          fi
+          node ./node_modules/playwright/cli.js install --with-deps chromium
+          node ./node_modules/playwright/cli.js test --config=playwright.config.ts --list
+          node ./node_modules/playwright/cli.js test test/visual/player-poster.spec.ts --config=playwright.config.ts --reporter=line
+
+      - name: Collect PPV diagnostics on failure
+        if: failure()
+        continue-on-error: true
+        env:
+          GCS_BUCKET: ${{ env.GCS_BUCKET }}
+          EVENT_ID: ${{ env.EVENT_ID }}
+        run: |
+          mkdir -p ci-diagnostics
+          {
+            echo "event_id=${EVENT_ID}"
+            echo "gcs_bucket=${GCS_BUCKET}"
+          } > ci-diagnostics/context.txt
+          gsutil ls -L "gs://${GCS_BUCKET}/events/${EVENT_ID}/poster.jpg" > ci-diagnostics/poster_hero_l.txt 2>&1 || true
+          gsutil ls -L "gs://${GCS_BUCKET}/events/${EVENT_ID}/poster_200x200.jpg" > ci-diagnostics/poster_mobile_l.txt 2>&1 || true
+          cp -r test-results ci-diagnostics/test-results 2>/dev/null || true
+          cp -r playwright-report ci-diagnostics/playwright-report 2>/dev/null || true
+
+      - name: Upload PPV diagnostics artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ppv-gate-diagnostics-${{ github.run_id }}
+          path: ci-diagnostics
+          if-no-files-found: ignore
+
+      - name: Notify Slack on failure
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          message: |
+            :rotating_light: PPV Staging Gate FAILED for commit ${{ github.sha }} on ${{ github.ref }}
+            Actions run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  transport-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies (secure)
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts
+
+      - name: Install ws-gateway dependencies
+        env:
+          npm_config_ignore_scripts: "true"
+        run: npm ci --ignore-scripts --prefix services/ws-gateway
+
+      - name: Start ws-gateway
+        run: |
+          SOCIAL_WS_PORT=8801 node services/ws-gateway/server.js &
+          echo $! > /tmp/ws_gateway.pid
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8801/v1/status >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8801/v1/status >/dev/null
+      - name: Start local transport mock server
+        run: |
+          node -e "const http=require('http'); const port=8799; const server=http.createServer((req,res)=>{ if(req.url==='/v1/status' || req.url==='/health'){res.writeHead(200,{'content-type':'application/json'}); return res.end(JSON.stringify({ok:true,ready:true}));} if(req.url==='/v1/publish' && req.method==='POST'){let body=''; req.on('data',chunk=>body+=chunk); req.on('end',()=>{res.writeHead(200,{'content-type':'application/json'}); res.end(JSON.stringify({ok:true,received:body.length}));}); return;} res.writeHead(404,{'content-type':'application/json'}); res.end(JSON.stringify({ok:false,error:'not-found'}));}); server.listen(port,'127.0.0.1',()=>console.log('mock transport listening on '+port)); setInterval(()=>{},1<<30);" &
+          echo $! > /tmp/transport_mock.pid
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8799/v1/status >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8799/v1/status >/dev/null
+
+      - name: Run transport fallback smoke
+        env:
+          TRANSPORT_BASE: http://127.0.0.1:8799
+          WS_BASE: ws://127.0.0.1:8801/ws/social
+          WS_HTTP_BASE: http://127.0.0.1:8801
+          npm_config_ignore_scripts: "true"
+        run: |
+          if [ ! -f "services/transport/test-spec.yaml" ]; then
+            echo "Transport spec missing: services/transport/test-spec.yaml" >&2
+            exit 4
+          fi
+          spec_source=""
+          spec_path="test/visual/transport-fallback.spec.ts"
+          if [ -f "${spec_path}" ]; then
+            spec_source="${spec_path}"
+          elif [ -f "tests/playwright/transport-fallback.spec.ts" ]; then
+            spec_source="tests/playwright/transport-fallback.spec.ts"
+          else
+            echo "Transport Playwright spec missing: expected test/visual/transport-fallback.spec.ts or tests/playwright/transport-fallback.spec.ts" >&2
+            exit 5
+          fi
+          if [ "${spec_source}" != "${spec_path}" ]; then
+            mkdir -p test/visual
+            cp "${spec_source}" "${spec_path}"
+            echo "Staged ${spec_source} to ${spec_path} for Playwright testDir compatibility."
+          fi
+          node ./node_modules/playwright/cli.js install --with-deps
+          node ./node_modules/playwright/cli.js test --config=playwright.config.ts --list
+          node ./node_modules/playwright/cli.js test "${spec_path}" --config=playwright.config.ts --reporter=line
+
+      - name: Collect transport diagnostics on failure
+        if: failure()
+        continue-on-error: true
+        run: |
+          mkdir -p transport-diagnostics
+          cp -r test-results transport-diagnostics/test-results 2>/dev/null || true
+          cp -r playwright-report transport-diagnostics/playwright-report 2>/dev/null || true
+
+      - name: Upload transport diagnostics artifact
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transport-diagnostics-${{ github.run_id }}
+          path: transport-diagnostics
+          if-no-files-found: ignore
+
+      - name: Stop ws-gateway
+        if: always()
+        run: |
+          if [ -f /tmp/ws_gateway.pid ]; then
+            kill "$(cat /tmp/ws_gateway.pid)" || true
+          fi
+
+      - name: Stop transport mock server
+        if: always()
+        run: |
+          if [ -f /tmp/transport_mock.pid ]; then
+            kill "$(cat /tmp/transport_mock.pid)" || true
+          fi

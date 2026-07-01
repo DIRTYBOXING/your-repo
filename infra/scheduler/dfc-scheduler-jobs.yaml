@@ -1,0 +1,87 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dfc-cloud-scheduler-jobs
+  namespace: dfc-platform
+  labels:
+    app: dfc-platform
+    component: scheduler
+# ─────────────────────────────────────────────────────────────────────────────
+# Reference manifest documenting Cloud Scheduler jobs for DFC PPV platform.
+#
+# Deploy these jobs via the GCP CLI commands below each spec, or via Terraform.
+# All jobs POST to Firebase Cloud Functions over HTTPS.
+#
+# Prerequisites:
+#   - Firebase Functions deployed (firebase deploy --only functions)
+#   - Cloud Scheduler API enabled in the project
+#   - A service account with roles/cloudfunctions.invoker
+# ─────────────────────────────────────────────────────────────────────────────
+data:
+  jobs.yaml: |
+    # Job 1: Webhook DLQ Worker
+    # Processes all ready DLQ items every 5 minutes
+    - name: dfc-webhook-dlq-worker
+      description: "Retry ready items in the Firestore webhook dead-letter queue"
+      schedule: "*/5 * * * *"
+      timezone: "UTC"
+      target:
+        uri: "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/dlqWorkerRun"
+        httpMethod: POST
+        body: "{}"
+        headers:
+          Content-Type: application/json
+      retryConfig:
+        retryCount: 3
+        minBackoffDuration: 10s
+        maxBackoffDuration: 60s
+
+    # Job 2: A/B Results Aggregation
+    # Aggregates experiment events and updates offerAcceptanceRate gauge
+    - name: dfc-ab-results-aggregation
+      description: "Aggregate A/B experiment results and update offer acceptance metrics"
+      schedule: "*/15 * * * *"
+      timezone: "UTC"
+      target:
+        uri: "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/abResultsAggregation"
+        httpMethod: POST
+        body: "{\"updateMetrics\": true}"
+        headers:
+          Content-Type: application/json
+      retryConfig:
+        retryCount: 2
+        minBackoffDuration: 5s
+        maxBackoffDuration: 30s
+
+    # Job 3: Feature Flag Cache Warmup
+    # Triggers a cache refresh on the feature flags system
+    - name: dfc-feature-flag-warmup
+      description: "Warm up feature flag cache to reduce Firestore reads at traffic peaks"
+      schedule: "*/10 * * * *"
+      timezone: "UTC"
+      target:
+        uri: "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/auditFeatureFlags"
+        httpMethod: POST
+        body: "{}"
+        headers:
+          Content-Type: application/json
+      retryConfig:
+        retryCount: 1
+        minBackoffDuration: 5s
+        maxBackoffDuration: 10s
+
+    # Job 4: DLQ Exhausted Alert Summary (daily)
+    # Reports exhausted DLQ items to ops; writes structured log for alerting
+    - name: dfc-dlq-exhausted-daily-report
+      description: "Daily summary of exhausted DLQ items for ops review"
+      schedule: "0 8 * * *"
+      timezone: "America/New_York"
+      target:
+        uri: "https://${REGION}-${PROJECT_ID}.cloudfunctions.net/dlqInspect?status=exhausted"
+        httpMethod: GET
+        headers:
+          Content-Type: application/json
+      retryConfig:
+        retryCount: 1
+        minBackoffDuration: 30s
+        maxBackoffDuration: 60s

@@ -1,0 +1,62 @@
+DEVICE CONSENT AND DATA COLLECTION AGREEMENT
+DataFight Central — Safety Zone System
+
+Last updated: 2026-03-27
+
+1. INTRODUCTION
+This document outlines the data collected by the DataFight Central (DFC)
+safety zone system through wearable devices and geofence monitoring.
+
+2. DATA COLLECTED
+The following data points are collected from registered safety devices:
+  - Device identifier (hardware serial number)
+  - GPS coordinates (latitude, longitude)
+  - Accelerometer readings (impact force, orientation)
+  - Proximity sensor readings (distance to nearby devices)
+  - Battery level
+  - Panic button activation status
+  - Timestamp of each reading
+
+3. PURPOSE OF DATA COLLECTION
+Data is collected solely for:
+  - Fighter and participant safety during events
+  - Geofence zone enforcement (restricted areas)
+  - Emergency alert dispatch (SOS, fall detection)
+  - Post-event safety audit and incident investigation
+
+4. DATA RETENTION
+  - Real-time alert data: retained for 90 days
+  - Incident logs (SOS, fall, geofence breach): retained for 2 years
+  - Heartbeat/routine data: retained for 30 days
+  - All data deleted upon written request (subject to legal holds)
+
+5. DATA SHARING
+Data is shared only with:
+  - On-call safety team (SMS/email alerts)
+  - Event medical personnel (during active incidents)
+  - Law enforcement (only upon valid legal process)
+Data is never sold or shared with advertisers.
+
+6. CONSENT
+By wearing a DFC safety device at a registered event, the participant
+acknowledges and consents to the data collection described above.
+
+Participants may withdraw consent at any time by:
+  - Removing the device and returning it to event staff
+  - Sending a written request to legal@datafightcentral.com
+
+7. SECURITY
+All device data is transmitted over encrypted channels (TLS 1.3).
+Alert payloads are validated with HMAC-SHA256 signatures.
+Access to safety logs is restricted to authorized personnel.
+
+8. CONTACT
+DataFight Central
+Email: legal@datafightcentral.com
+Website: https://datafightcentral.com
+
+PARTICIPANT SIGNATURE: ___________________________
+PRINT NAME: ___________________________
+DATE: ___________________________
+EVENT: ___________________________
+DEVICE ID: ___________________________

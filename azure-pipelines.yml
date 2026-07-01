@@ -1,0 +1,99 @@
+# Azure DevOps Pipeline for Data Fight Central
+# NO EXTENSIONS REQUIRED - 100% native Azure DevOps
+
+trigger:
+  branches:
+    include:
+      - master
+      - main
+
+pr:
+  branches:
+    include:
+      - master
+      - main
+
+stages:
+  - stage: Build
+    displayName: "Build & Test"
+    jobs:
+      - job: FlutterBuild
+        displayName: "Flutter Build"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - script: |
+              sudo apt-get update -y
+              sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
+            displayName: "Install dependencies"
+
+          - script: |
+              git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
+              echo "##vso[task.prependpath]$HOME/flutter/bin"
+            displayName: "Install Flutter SDK"
+
+          - script: |
+              export PATH="$HOME/flutter/bin:$PATH"
+              flutter precache
+              flutter --version
+            displayName: "Setup Flutter"
+
+          - script: |
+              export PATH="$HOME/flutter/bin:$PATH"
+              flutter pub get
+            displayName: "Get packages"
+
+          - script: |
+              export PATH="$HOME/flutter/bin:$PATH"
+              flutter analyze --no-fatal-infos --no-fatal-warnings
+            displayName: "Analyze code"
+
+          - script: |
+              export PATH="$HOME/flutter/bin:$PATH"
+              flutter test --reporter expanded
+            displayName: "Run unit tests"
+
+          - script: |
+              export PATH="$HOME/flutter/bin:$PATH"
+              flutter build web --release
+            displayName: "Build Web"
+
+          - script: |
+              export PATH="$HOME/flutter/bin:$PATH"
+              flutter build appbundle --release
+            displayName: "Build Android App Bundle"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish web build"
+            inputs:
+              PathtoPublish: "build/web"
+              ArtifactName: "web-build"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Android build"
+            inputs:
+              PathtoPublish: "build/app/outputs/bundle/release"
+              ArtifactName: "android-build"
+
+  - stage: DeployFunctions
+    displayName: "Deploy Cloud Functions"
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - job: DeployFunctions
+        displayName: "Firebase Functions Deploy"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "20.x"
+
+          - script: |
+              cd functions && npm ci
+            displayName: "Install function dependencies"
+
+          - script: |
+              npm install -g firebase-tools
+              firebase deploy --only functions --token $(FIREBASE_TOKEN) --project $(FIREBASE_PROJECT)
+            displayName: "Deploy Cloud Functions"

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DFC Background Remover</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: #050a14;
+        color: #e0e0e0;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 40px 24px;
+      }
+      h1 {
+        color: #00f5ff;
+        font-size: 28px;
+        margin-bottom: 8px;
+        text-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+      }
+      .subtitle {
+        color: #888;
+        margin-bottom: 32px;
+        font-size: 14px;
+      }
+      .drop-zone {
+        border: 2px dashed rgba(0, 245, 255, 0.3);
+        border-radius: 16px;
+        padding: 48px 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: rgba(13, 27, 42, 0.6);
+        margin-bottom: 24px;
+      }
+      .drop-zone:hover,
+      .drop-zone.dragover {
+        border-color: #00f5ff;
+        background: rgba(0, 245, 255, 0.05);
+        box-shadow: 0 0 30px rgba(0, 245, 255, 0.1);
+      }
+      .drop-zone .icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+      }
+      .drop-zone p {
+        color: #aaa;
+      }
+      .drop-zone .hint {
+        font-size: 12px;
+        color: #666;
+        margin-top: 8px;
+      }
+      input[type="file"] {
+        display: none;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #00f5ff, #0088ff);
+        color: #000;
+      }
+      .btn-primary:hover:not(:disabled) {
+        box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+      .btn-secondary:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.15);
+      }
+      .preview-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      @media (max-width: 640px) {
+        .preview-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .preview-card {
+        background: #0d1b2a;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .preview-card .label {
+        padding: 8px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #888;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .preview-card img {
+        width: 100%;
+        display: block;
+        /* Checkerboard for transparency */
+        background-image:
+          linear-gradient(45deg, #1a1a2e 25%, transparent 25%),
+          linear-gradient(-45deg, #1a1a2e 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #1a1a2e 75%),
+          linear-gradient(-45deg, transparent 75%, #1a1a2e 75%);
+        background-size: 16px 16px;
+        background-position:
+          0 0,
+          0 8px,
+          8px -8px,
+          -8px 0;
+      }
+      .progress-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        display: none;
+      }
+      .progress-bar.active {
+        display: block;
+      }
+      .progress-bar .fill {
+        height: 100%;
+        background: linear-gradient(90deg, #00f5ff, #ff3366);
+        width: 0%;
+        transition: width 0.3s;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.7;
+        }
+      }
+      .status {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 16px;
+        min-height: 20px;
+      }
+      .status.error {
+        color: #ff3366;
+      }
+      .batch-info {
+        background: rgba(0, 245, 255, 0.06);
+        border: 1px solid rgba(0, 245, 255, 0.15);
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        display: none;
+      }
+      .batch-info.active {
+        display: block;
+      }
+      .file-list {
+        list-style: none;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      .file-list li {
+        padding: 4px 0;
+        font-size: 12px;
+        color: #aaa;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .file-list li .size {
+        color: #666;
+        margin-left: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>⚡ DFC Background Remover</h1>
+      <p class="subtitle">
+        U²-Net powered · GPU accelerated · Fight poster ready
+      </p>
+
+      <div class="drop-zone" id="dropZone">
+        <div class="icon">📸</div>
+        <p>Drop image(s) here or click to upload</p>
+        <p class="hint">
+          Supports JPEG, PNG, WebP · Up to 10 images · 10 MB each
+        </p>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" multiple />
+
+      <div class="batch-info" id="batchInfo">
+        <strong id="fileCount">0</strong> file(s) selected
+        <ul class="file-list" id="fileList"></ul>
+      </div>
+
+      <div class="status" id="status"></div>
+      <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="processBtn" disabled>
+          Remove Background
+        </button>
+        <button class="btn btn-secondary" id="clearBtn" disabled>Clear</button>
+        <button
+          class="btn btn-secondary"
+          id="downloadBtn"
+          disabled
+          style="display: none"
+        >
+          Download Result
+        </button>
+      </div>
+
+      <div class="preview-grid" id="previewGrid" style="display: none">
+        <div class="preview-card">
+          <div class="label">Original</div>
+          <img id="originalPreview" alt="Original" />
+        </div>
+        <div class="preview-card">
+          <div class="label">Background Removed</div>
+          <img id="resultPreview" alt="Result" />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const API_URL = window.location.origin;
+      const dropZone = document.getElementById("dropZone");
+      const fileInput = document.getElementById("fileInput");
+      const processBtn = document.getElementById("processBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const status = document.getElementById("status");
+      const progressBar = document.getElementById("progressBar");
+      const progressFill = document.getElementById("progressFill");
+      const previewGrid = document.getElementById("previewGrid");
+      const batchInfo = document.getElementById("batchInfo");
+      const fileCount = document.getElementById("fileCount");
+      const fileList = document.getElementById("fileList");
+
+      let selectedFiles = [];
+      let resultBlob = null;
+
+      // Drop zone
+      dropZone.addEventListener("click", () => fileInput.click());
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+      dropZone.addEventListener("dragleave", () =>
+        dropZone.classList.remove("dragover"),
+      );
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        handleFiles(e.dataTransfer.files);
+      });
+      fileInput.addEventListener("change", () => handleFiles(fileInput.files));
+
+      function handleFiles(files) {
+        selectedFiles = Array.from(files)
+          .filter((f) => f.type.startsWith("image/"))
+          .slice(0, 10);
+        if (!selectedFiles.length) return;
+
+        fileCount.textContent = selectedFiles.length;
+        fileList.innerHTML = selectedFiles
+          .map(
+            (f) =>
+              `<li>${sanitize(f.name)}<span class="size">${(f.size / 1024).toFixed(0)} KB</span></li>`,
+          )
+          .join("");
+        batchInfo.classList.add("active");
+        processBtn.disabled = false;
+        clearBtn.disabled = false;
+        downloadBtn.style.display = "none";
+        previewGrid.style.display = "none";
+        status.textContent = "";
+        status.className = "status";
+
+        // Preview first image
+        if (selectedFiles.length === 1) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            document.getElementById("originalPreview").src = e.target.result;
+          };
+          reader.readAsDataURL(selectedFiles[0]);
+        }
+      }
+
+      function sanitize(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      function reset() {
+        selectedFiles = [];
+        resultBlob = null;
+        fileInput.value = "";
+        processBtn.disabled = true;
+        clearBtn.disabled = true;
+        downloadBtn.style.display = "none";
+        previewGrid.style.display = "none";
+        batchInfo.classList.remove("active");
+        progressBar.classList.remove("active");
+        status.textContent = "";
+        status.className = "status";
+      }
+
+      clearBtn.addEventListener("click", reset);
+
+      processBtn.addEventListener("click", async () => {
+        if (!selectedFiles.length) return;
+        processBtn.disabled = true;
+        progressBar.classList.add("active");
+        progressFill.style.width = "30%";
+        status.textContent = "Processing...";
+        status.className = "status";
+
+        try {
+          if (selectedFiles.length === 1) {
+            // Single image
+            const formData = new FormData();
+            formData.append("file", selectedFiles[0]);
+            progressFill.style.width = "60%";
+
+            const resp = await fetch(`${API_URL}/remove-background/`, {
+              method: "POST",
+              body: formData,
+            });
+            if (!resp.ok) {
+              const err = await resp
+                .json()
+                .catch(() => ({ detail: resp.statusText }));
+              throw new Error(err.detail || "Server error");
+            }
+
+            resultBlob = await resp.blob();
+            const url = URL.createObjectURL(resultBlob);
+            document.getElementById("resultPreview").src = url;
+            previewGrid.style.display = "grid";
+            downloadBtn.style.display = "inline-block";
+            downloadBtn.disabled = false;
+            status.textContent = "Done! Background removed.";
+          } else {
+            // Batch
+            const formData = new FormData();
+            selectedFiles.forEach((f) => formData.append("files", f));
+            progressFill.style.width = "60%";
+
+            const resp = await fetch(`${API_URL}/remove-background/batch/`, {
+              method: "POST",
+              body: formData,
+            });
+            if (!resp.ok) {
+              const err = await resp
+                .json()
+                .catch(() => ({ detail: resp.statusText }));
+              throw new Error(err.detail || "Server error");
+            }
+
+            resultBlob = await resp.blob();
+            downloadBtn.style.display = "inline-block";
+            downloadBtn.disabled = false;
+            status.textContent = `Done! ${selectedFiles.length} images processed. Download ZIP below.`;
+          }
+
+          progressFill.style.width = "100%";
+        } catch (err) {
+          status.textContent = `Error: ${err.message}`;
+          status.className = "status error";
+        } finally {
+          processBtn.disabled = false;
+          setTimeout(() => progressBar.classList.remove("active"), 1000);
+        }
+      });
+
+      downloadBtn.addEventListener("click", () => {
+        if (!resultBlob) return;
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(resultBlob);
+        a.download =
+          selectedFiles.length > 1
+            ? "dfc_bg_removed.zip"
+            : "dfc_bg_removed.png";
+        a.click();
+      });
+    </script>
+  </body>
+</html>

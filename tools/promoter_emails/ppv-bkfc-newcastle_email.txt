@@ -1,0 +1,37 @@
+To: [BKFC promoter email — add when known]
+Subject: Asset & Event Key Request — BKFC FIGHT NIGHT: NEWCASTLE — DataFight Central (DFC)
+
+Hi BKFC,
+
+We are the DataFight Central (DFC) team — www.datafightcentral.com.
+
+DFC is a global promoter and distribution platform for combat sports. We promote every event and fighter equally, from grassroots shows to major cards, and provide worldwide exposure across our app and social channels. We respect your brand and will promote responsibly: no trolling, accurate event details, and clear refund/terms shown to buyers.
+
+We're preparing a Pay-Per-View listing for "BKFC FIGHT NIGHT: NEWCASTLE" at Newcastle Entertainment Centre and request the following so we can list, promote, and sell the PPV on your behalf:
+
+  - Official high-res hero poster and portrait poster (min 1600x2400)
+  - Fighter headshots (high resolution; please include signed model releases where required)
+  - Sponsor logos (transparent PNG) and any sponsor usage rules
+  - Official event copy: full card, venue, start time, ticket/door times, and approved legal text
+  - Written license confirming DFC may distribute and sell the PPV digitally worldwide
+  - Event key or API token (if you use one) and any required metadata fields (e.g., broadcast rights, blackout regions)
+  - Preferred contact for legal/licensing and a point person for approvals
+
+If you prefer, we can send a draft poster for your approval before publishing. Once we receive assets and the license, we will:
+
+  1. Publish a DFC PPV listing with your approved artwork.
+  2. Map the event to an eventId and create the PPV product in our payment gateway.
+  3. Promote the event across DFC channels and provide weekly sales reports.
+  4. Keep all signed licenses and model releases in our secure legal folder and provide copies on request.
+
+Please reply to legal@datafightcentral.com with the assets and signed license, or reply here with a time for a 10-minute call and I'll arrange it.
+
+Thanks for partnering — we look forward to promoting your event and building fighters' exposure together.
+
+Regards,
+DFC Team
+DataFight Central (DFC) — www.datafightcentral.com
+legal@datafightcentral.com
+Facebook Messenger: m.me/DataFightCentral
+
+[DFC Logo attached: assets/icons/dfc_logo.png]

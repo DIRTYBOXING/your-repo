@@ -1,0 +1,39 @@
+{
+  "eventId": "bkfc-honolulu-pitolo-coltrane",
+  "title": "BKFC Fight Night Honolulu",
+  "subtitle": "Pitolo vs Coltrane — Middleweight",
+  "date": "2026-04-12",
+  "time": "13:00 UTC",
+  "price": "29.99",
+  "promoter": "BKFC",
+  "sport": "BKFC",
+  "venue": "Blaisdell Arena, Honolulu, HI",
+  "currency": "USD",
+  "categories": ["Bare Knuckle", "Boxing", "MMA"],
+  "streamPlatforms": ["BKFC App", "Triller TV"],
+  "fighters": [
+    {
+      "name": "Maki Pitolo",
+      "nickname": "Coconut Bombz",
+      "record": "1-0-0 BK",
+      "weightClass": "Middleweight",
+      "corner": "left"
+    },
+    {
+      "name": "Doug Coltrane",
+      "record": "0-0-0 BK",
+      "weightClass": "Middleweight",
+      "corner": "right"
+    }
+  ],
+  "fightCard": [
+    {
+      "fighter1": "Maki Pitolo",
+      "fighter2": "Doug Coltrane",
+      "weightClass": "Middleweight",
+      "rounds": 5,
+      "isMainEvent": true,
+      "isTitleFight": false
+    }
+  ]
+}

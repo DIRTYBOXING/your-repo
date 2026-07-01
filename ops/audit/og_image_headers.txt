@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Connection: keep-alive
+Content-Length: 395468
+Cache-Control: max-age=3600
+Content-Type: image/png
+Etag: "d2d648587b6d4fe210294645b122e570559eda8b10ecf5410ff7888bbb7181c2"
+Last-Modified: Fri, 27 Mar 2026 12:42:01 GMT
+Strict-Transport-Security: max-age=31556926
+Accept-Ranges: bytes
+Date: Fri, 27 Mar 2026 18:55:44 GMT
+X-Served-By: cache-bne-ybbn1320022-BNE
+X-Cache: HIT
+X-Cache-Hits: 1
+X-Timer: S1774637745.945566,VS0,VE1
+Vary: x-fh-requested-host, accept-encoding
+alt-svc: h3=":443";ma=86400,h3-29=":443";ma=86400,h3-27=":443";ma=86400
+

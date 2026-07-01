@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "source": "functions"
+  },
+  "emulators": {
+    "functions": {
+      "port": 5101
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4101
+    },
+    "singleProjectMode": true
+  }
+}

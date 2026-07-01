@@ -1,0 +1,49 @@
+Chukya 3.0 Pink Shield Pilot — One Page Sign-Off Bundle
+Date: 2026-03-27
+Environment: staging
+Project: Chukya 3.0 — Pink Shield Proximity Radar
+Prepared by: [Your Name] Product Lead
+
+Executive summary
+- What: Proactive proximity detection for police-validated restraining orders with evidence vault and silent alerts.
+- Why: Detect offender presence before close approach; provide admissible evidence and automated police notification.
+- Readiness: Code committed; Cloud Functions deployed; Firestore rules staged; Prometheus metrics and ServiceMonitors configured; nightly asserting tests via Workload Identity.
+
+Pilot scope and KPIs
+- Pilot cohort: 50 victims, Brisbane metro, 12 weeks.
+- Key KPIs:
+  1. Detection true positive rate >= 85% (controlled tests)
+  2. False positive rate <= 5%
+  3. Police notification median latency <= 30s
+  4. Evidence upload p95 latency <= 10s
+  5. Battery impact <= 5% daily for active users
+
+Operational controls
+- Emergency kill switches: Firestore document settings/feature_flags fields chukya_enabled and chukya_police_notifications_paused.
+- Rollback: helm rollback chukya-safety --namespace staging <rev>; redeploy previous Cloud Functions tag.
+- Audit and retention: Cloud Audit Logs enabled; evidence retained per legal guidance (recommended 7 years); append-only alerts.
+
+Legal and compliance checklist
+- Police validation required to add profiles; only police_service claim may write to threat_watchlist.
+- HMAC hashed phone identifiers only; secret in Secret Manager; rotate quarterly.
+- Victim consent recorded in police_validations with officer id and timestamp.
+- Privacy Impact Assessment completed and attached before pilot start.
+
+Deliverables included
+- Mobile and web builds; ChukyaRadar UI and route; background BLE/Wi-Fi scanner.
+- Cloud Functions addThreatProfile and chukyaCheckFingerprint with HMAC hashing.
+- Firestore security rules and evidence vault schema.
+- CI workflows and nightly asserting tests using Workload Identity.
+- Monitoring: Prometheus metrics, ServiceMonitors, alert rules.
+- Pilot SOPs, victim consent form, police onboarding templates, incident runbook.
+
+Approvals required
+- Legal Counsel sign-off for pilot and PIA approval.
+- Police partner confirmation and police service account creation.
+- Budget release for pilot execution (estimated AUD 172.5k).
+
+Signatures
+- Product Lead: ____________________  Date: ______
+- Legal Counsel: ____________________  Date: ______
+- Police Liaison: ____________________  Date: ______
+- SRE Lead: ____________________  Date: ______

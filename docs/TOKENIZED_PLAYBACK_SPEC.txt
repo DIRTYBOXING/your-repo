@@ -1,0 +1,345 @@
+============================================================
+ DATA FIGHT CENTRAL — TOKENIZED PLAYBACK SPECIFICATION
+ Version 1.0 | March 2026
+ Classification: INTERNAL — Engineering
+============================================================
+
+PURPOSE
+-------
+This spec defines the backend endpoints, JWT format, CDN
+integration, DRM flow, and player setup for token-gated
+PPV streaming on the DFC platform.
+
+============================================================
+ 1. JWT PLAYBACK TOKEN FORMAT
+============================================================
+
+ALGORITHM: RS256 (RSA + SHA-256)
+TTL       : 5-15 minutes (configurable per event)
+SIGNING   : Private key stored in secrets vault (never committed)
+
+HEADER:
+  {
+    "alg": "RS256",
+    "typ": "JWT",
+    "kid": "dfc-stream-key-2026-03"
+  }
+
+PAYLOAD:
+  {
+    "iss": "dfc-backend",
+    "sub": "user:12345",
+    "ent": "entitlement:abc123",
+    "evt": "event:abc123",
+    "dev": "deviceFingerprintOrId",
+    "iat": 1700000000,
+    "exp": 1700000900,
+    "jti": "uuid-0001",
+    "aud": "cdn.example.com"
+  }
+
+CLAIM DEFINITIONS:
+  | Claim | Type   | Description                          |
+  |-------|--------|--------------------------------------|
+  | iss   | string | Issuer: always "dfc-backend"         |
+  | sub   | string | User ID (prefixed "user:")           |
+  | ent   | string | Entitlement ID (prefixed)            |
+  | evt   | string | Event ID (prefixed)                  |
+  | dev   | string | Device fingerprint or session ID     |
+  | iat   | number | Issued-at timestamp (epoch seconds)  |
+  | exp   | number | Expiration timestamp (epoch seconds) |
+  | jti   | string | Unique token ID (UUID v4)            |
+  | aud   | string | CDN / license server domain          |
+
+VALIDATION RULES:
+  - Reject if exp < current time
+  - Reject if iss != "dfc-backend"
+  - Reject if aud doesn't match CDN domain
+  - Reject if jti has been seen (replay protection)
+  - Reject if ent is revoked or inactive
+  - Reject if dev doesn't match session fingerprint
+
+============================================================
+ 2. BACKEND ENDPOINTS
+============================================================
+
+--- POST /api/purchase ---
+Purpose : Process ticket purchase via Stripe Connect
+Auth    : User session (cookie or bearer token)
+Body:
+  {
+    "eventId": "evt_abc123",
+    "userId": "user_12345",
+    "paymentToken": "tok_xxx"
+  }
+Response (201):
+  {
+    "orderId": "ord_def456",
+    "entitlementId": "ent_abc123",
+    "status": "active"
+  }
+Logic:
+  1. Validate eventId exists and is active
+  2. Look up promoter's connected Stripe account
+  3. Create direct charge on promoter's account
+     with application_fee_amount = DFC commission
+  4. On charge.succeeded: create entitlement record
+  5. Return orderId and entitlementId
+
+--- POST /api/entitlement/:id/token ---
+Purpose : Mint short-lived JWT for playback
+Auth    : User session required (must own entitlement)
+Body:
+  {
+    "deviceFingerprint": "fp_hash_abc"
+  }
+Response (200):
+  {
+    "playbackToken": "<JWT>",
+    "manifestUrl": "https://cdn.example.com/event/abc/playlist.m3u8?token=<JWT>&cdn_sig=<SIG>&expires=<TS>",
+    "expiresAt": 1700000900
+  }
+Logic:
+  1. Verify user owns entitlement
+  2. Check entitlement status (active, not revoked)
+  3. Check concurrent session count < max allowed
+  4. Register new session with device fingerprint
+  5. Sign JWT with RS256 private key
+  6. Generate CDN signed URL with token embedded
+  7. Return token + manifest URL
+
+--- GET /api/entitlement/:id/status ---
+Purpose : Check entitlement validity
+Auth    : User session required
+Response (200):
+  {
+    "valid": true,
+    "concurrency": 1,
+    "maxConcurrency": 2,
+    "expiresAt": 1700003600,
+    "eventStatus": "live"
+  }
+
+============================================================
+ 3. CDN SIGNED URL FORMAT
+============================================================
+
+PATTERN:
+  https://<cdn_domain>/event/<eventId>/<manifest>
+    ?token=<JWT>
+    &cdn_sig=<HMAC_OR_RSA_SIGNATURE>
+    &expires=<EPOCH_SECONDS>
+
+CDN VALIDATION:
+  1. Check expires > now
+  2. Verify cdn_sig matches expected signature
+  3. Extract and validate JWT from token param
+  4. If all pass: serve manifest/segments
+  5. If any fail: return 403 Forbidden
+
+SUPPORTED CDNs:
+  - CloudFront (signed URLs or signed cookies)
+  - Cloudflare (signed URL with Workers)
+  - Fastly (token auth module)
+
+SEGMENT PROTECTION:
+  - Option A: Signed manifest only (segments = same-origin)
+  - Option B: Signed manifest + signed segments (stronger)
+  - Recommendation: Option B for premium PPV events
+
+============================================================
+ 4. DRM LICENSE FLOW
+============================================================
+
+FLOW:
+  1. Player loads manifest from CDN
+  2. Player detects encrypted segments
+  3. Player sends license request to DRM license server
+     with Authorization: Bearer <playbackToken>
+  4. License server validates JWT:
+     - Signature valid (RS256)
+     - Not expired
+     - Entitlement active
+     - Device fingerprint matches
+  5. License server issues content decryption key
+  6. Player decrypts and renders video
+
+DRM SYSTEMS:
+  | DRM       | Platforms                     |
+  |-----------|-------------------------------|
+  | Widevine  | Chrome, Android, Chromebook    |
+  | FairPlay  | iOS, Safari, macOS             |
+  | PlayReady | Edge, Windows, Xbox, Smart TVs |
+
+PACKAGING:
+  - Encrypt with CENC (Common Encryption)
+  - Generate DASH + HLS manifests
+  - Use multi-key for different quality levels if needed
+
+DRM PROVIDERS:
+  - Castlabs (DRMtoday)
+  - Axinom
+  - Verimatrix
+  - BuyDRM (KeyOS)
+
+============================================================
+ 5. FORENSIC WATERMARKING
+============================================================
+
+PURPOSE: Embed per-viewer identifiers in the stream so that
+if pirated content surfaces, the source viewer can be identified.
+
+INTEGRATION:
+  - Watermark injected at packaging or CDN edge level
+  - Each viewer session gets unique watermark ID
+  - Watermark ID linked to: userId, entitlementId, deviceFP, sessionId
+
+VENDORS:
+  - NexGuard (Nagra)
+  - Verimatrix Watermarking
+  - Castlabs Watermarking
+  - Irdeto TraceMark
+
+ON PIRACY DETECTION:
+  1. Extract watermark from pirated content
+  2. Look up watermark ID -> identify viewer
+  3. Revoke entitlement
+  4. Issue DMCA takedown
+  5. Preserve evidence for legal action
+  6. Notify promoter
+
+============================================================
+ 6. PLAYER INTEGRATION STEPS
+============================================================
+
+STEP 1: User completes purchase
+  -> Backend creates entitlement
+
+STEP 2: Player requests token
+  -> POST /api/entitlement/:id/token
+  -> Receives { playbackToken, manifestUrl }
+
+STEP 3: Initialize player
+  Shaka Player example:
+    const player = new shaka.Player(videoElement);
+    player.getNetworkingEngine().registerRequestFilter(
+      (type, request) => {
+        if (type === shaka.net.NetworkingEngine.RequestType.LICENSE) {
+          request.headers['Authorization'] = 'Bearer ' + playbackToken;
+        }
+      }
+    );
+    await player.load(manifestUrl);
+
+STEP 4: Handle token refresh
+  - Before token expires, request new token
+  - Player continues with new manifest URL
+  - Seamless transition for viewer
+
+STEP 5: Monitor playback events
+  - Log: play, pause, error, license_request, license_granted
+  - Track: buffering ratio, bitrate switches, error codes
+  - Alert: license failures, concurrent session violations
+
+============================================================
+ 7. WEBHOOK HANDLING
+============================================================
+
+STRIPE WEBHOOKS (POST /webhooks/stripe):
+  charge.succeeded:
+    -> Create/activate entitlement
+    -> Log transaction
+  charge.refunded:
+    -> Revoke entitlement
+    -> End active sessions for that entitlement
+  charge.dispute.created:
+    -> Flag entitlement
+    -> Notify promoter via email/dashboard
+    -> Prepare evidence package (playback logs, watermark data)
+  payout.paid:
+    -> Update reconciliation records
+
+CDN WEBHOOKS (POST /webhooks/cdn):
+  stream_health:
+    -> Monitor bitrate, error rates
+  abuse_alert:
+    -> Signed URL abuse detected
+    -> Rate limit or block IP
+  bandwidth_spike:
+    -> Alert ops team
+
+DRM WEBHOOKS (POST /webhooks/drm):
+  license_error:
+    -> Log failure
+    -> Alert if systemic
+  device_attestation_failure:
+    -> Flag potential piracy attempt
+    -> Block device if repeated
+
+============================================================
+ 8. CONCURRENCY & SESSION MANAGEMENT
+============================================================
+
+DEFAULT: 1 concurrent stream per entitlement
+CONFIGURABLE: Per event (1-3 streams typical)
+
+SESSION TRACKING:
+  - On token mint: register session (userId, deviceFP, timestamp)
+  - On heartbeat (every 30s): update last_seen
+  - On disconnect: remove session
+  - Stale sessions: auto-expire after 5 min no heartbeat
+
+ENFORCEMENT:
+  - Token request checks active session count
+  - If at limit: return 429 Too Many Requests
+  - User must disconnect other session or wait for expiry
+
+============================================================
+ 9. ERROR HANDLING
+============================================================
+
+  | Scenario                    | HTTP | Response                        |
+  |-----------------------------|------|---------------------------------|
+  | Invalid token               | 401  | { "error": "invalid_token" }    |
+  | Expired token               | 401  | { "error": "token_expired" }    |
+  | Entitlement revoked         | 403  | { "error": "entitlement_revoked"}|
+  | Concurrent session limit    | 429  | { "error": "session_limit" }    |
+  | Event not found             | 404  | { "error": "event_not_found" }  |
+  | Payment required            | 402  | { "error": "payment_required" } |
+  | Internal error              | 500  | { "error": "internal_error" }   |
+
+============================================================
+ 10. TESTING CHECKLIST
+============================================================
+
+  [ ] Token minting: valid entitlement -> JWT issued
+  [ ] Token validation: expired token -> 401
+  [ ] Token validation: tampered token -> 401
+  [ ] Token validation: revoked entitlement -> 403
+  [ ] Concurrent sessions: exceed limit -> 429
+  [ ] CDN signed URL: valid -> serves manifest
+  [ ] CDN signed URL: expired -> 403
+  [ ] CDN signed URL: tampered -> 403
+  [ ] DRM license: valid token -> key issued
+  [ ] DRM license: invalid token -> denied
+  [ ] Watermark: can extract viewer ID from sample
+  [ ] Stripe charge: succeeded -> entitlement active
+  [ ] Stripe refund: processed -> entitlement revoked
+  [ ] Stripe dispute: created -> entitlement flagged
+  [ ] Cross-browser: Chrome (Widevine), Safari (FairPlay), Edge (PlayReady)
+  [ ] Mobile: Android Chrome, iOS Safari
+  [ ] Token refresh: seamless during long stream
+  [ ] Heartbeat: stale session auto-expires
+  [ ] Error messages: user-friendly, no sensitive info leaked
+
+============================================================
+ RELATED ARTIFACTS
+============================================================
+
+  PPV architecture : docs/PPV_STREAMING_ARCHITECTURE.txt
+  Promoter agreement: docs/PROMOTER_AGREEMENT_TEMPLATE.txt
+  Playbook v3       : ops/launch/global_growth_metaverse_playbook.txt
+
+============================================================
+ END OF TOKENIZED PLAYBACK SPECIFICATION
+============================================================

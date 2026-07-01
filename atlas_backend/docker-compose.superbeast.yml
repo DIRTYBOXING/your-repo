@@ -1,0 +1,64 @@
+services:
+  atlas-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dfc_superbeast_api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql://${SUPERBEAST_DB_USER:-dfc}:${SUPERBEAST_DB_PASSWORD:-change-me-locally}@db:5432/controlroom # pragma: allowlist secret
+      CONTROLROOM_DATABASE_URL: postgresql://${SUPERBEAST_DB_USER:-dfc}:${SUPERBEAST_DB_PASSWORD:-change-me-locally}@db:5432/controlroom # pragma: allowlist secret
+      DFC_DATABASE_URL: postgresql://${SUPERBEAST_DB_USER:-dfc}:${SUPERBEAST_DB_PASSWORD:-change-me-locally}@db:5432/controlroom # pragma: allowlist secret
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "${SUPERBEAST_API_PORT:-8001}:8000"
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  outbox-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dfc_superbeast_worker
+    command: python -m outbox_dispatcher
+    environment:
+      DATABASE_URL: postgresql://${SUPERBEAST_DB_USER:-dfc}:${SUPERBEAST_DB_PASSWORD:-change-me-locally}@db:5432/controlroom # pragma: allowlist secret
+      CONTROLROOM_DATABASE_URL: postgresql://${SUPERBEAST_DB_USER:-dfc}:${SUPERBEAST_DB_PASSWORD:-change-me-locally}@db:5432/controlroom # pragma: allowlist secret
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: postgres:15
+    container_name: dfc_superbeast_db
+    environment:
+      POSTGRES_USER: dfc
+      POSTGRES_PASSWORD: ${SUPERBEAST_DB_PASSWORD:-change-me-locally} # pragma: allowlist secret
+      POSTGRES_DB: controlroom
+    ports:
+      - "5434:5432"
+    volumes:
+      - ../migrations/20260416_create_event_outbox.sql:/docker-entrypoint-initdb.d/20260416_create_event_outbox.sql:ro
+      - ../migrations/20260416_enhance_event_outbox_dispatcher.sql:/docker-entrypoint-initdb.d/20260416_enhance_event_outbox_dispatcher.sql:ro
+      - ../migrations/20260416_create_superbeast_persistence_tables.sql:/docker-entrypoint-initdb.d/20260416_create_superbeast_persistence_tables.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dfc -d controlroom"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: dfc_superbeast_redis
+    ports:
+      - "6380:6379"

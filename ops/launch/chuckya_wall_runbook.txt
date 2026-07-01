@@ -1,0 +1,140 @@
+CHUCKYA RADAR — TACTICAL WALL RUNBOOK
+=======================================
+Print this. Tape it to the wall. Every operator reads it before shift.
+Last updated: 2026-03-28
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 1 — START STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Command:
+    docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build -d
+
+  Verify:
+    curl -sS http://localhost:8081/health
+    → must return "ok"
+
+  If it fails:
+    docker-compose logs verifier --tail=50
+    docker-compose restart verifier ws-server
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 2 — PAIR DEVICE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Mobile Engineer:
+    1. Open CHUCKYA app on phone.
+    2. Tap "Pair Bracelet".
+    3. Confirm numeric pairing code on bracelet LED.
+    4. Record deviceId from app screen.
+
+  Verify:
+    adb logcat | grep "CHUCKYA"
+    → must show "Paired" status and deviceId.
+
+  If BLE not discovered:
+    - Confirm bracelet is advertising (check with nRF Connect).
+    - Move phone within 1-2 m of bracelet.
+    - Check bracelet battery.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 3 — TRIGGER PANIC
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Wearer: Press bracelet panic button.
+
+  What happens:
+    1. Bracelet sends CBOR payload over BLE to phone.
+    2. Phone signs payload with Keystore key.
+    3. Phone uploads signed payload to verifier.
+
+  Verify:
+    docker-compose logs verifier --tail=20
+    → must show "ingest" and "audit write" entries.
+
+  If CBOR decode error:
+    Capture raw bytes from phone logs:
+      adb logcat | grep "CBOR"
+    Decode locally:
+      node tools/decode_cbor.js <hex_string>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 4 — EXPORT EVIDENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  *** TWO-PERSON RULE: Ops request + Legal approval REQUIRED ***
+
+  Ops:
+    1. Click "Request Export" in Ops console. Record reason.
+    2. Wait for Legal approval (max 5 minutes).
+    3. Click "Generate Export" after approval.
+    4. Download evidence.zip.
+
+  Verify signature:
+    jq -S . evidence/payload.json > evidence/payload.canon
+    jq -r '.signatureBase64' evidence/signed_payload.json | base64 -d > evidence/sig.bin
+    openssl dgst -sha256 -verify public.pem -signature evidence/sig.bin evidence/payload.canon
+    → must print "Verified OK"
+
+  Verify manifest:
+    openssl dgst -sha256 evidence/payload.canon
+    jq . evidence/chain_of_custody.json
+    → SHA256 must match manifest entry.
+
+  DO NOT hand evidence to anyone until BOTH checks pass.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP 5 — POSTMORTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  After every alert (real or drill):
+    1. Capture timestamps from verifier logs.
+    2. Save ops-audit folder contents.
+    3. Record: alert time, acknowledge time, export time, handoff time.
+    4. File a ticket for any failures or delays.
+    5. Postmortem document due within 24 hours.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WHO DOES WHAT — SHIFT ASSIGNMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Tech Lead (owner)   — Coordinate all tracks.           0-4 hours.
+  Mobile Engineer     — Pairing, Keystore, retry queue.  0-3 hours.
+  Hardware Engineer   — Bracelet firmware, CBOR verify.  0-4 hours.
+  Backend Engineer    — Verifier, nonce TTL, audit.      0-4 hours.
+  Ops                 — Export flow, two-person drill.    0-2 hours.
+  Legal               — Standby for export approval.     Immediate.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NON-NEGOTIABLES (before any demo or pilot)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ■ No GPS or IMEI unless explicit consent recorded.
+  ■ Two-person export: Ops + Legal. Log both approvers.
+  ■ Nonce replay rejected. TTL enforced (5 minutes).
+  ■ Private keys stay in Android Keystore. No export.
+  ■ Every ingest writes payload.json, signed_payload.json,
+    and chain_of_custody.json with SHA256.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QUICK DIAGNOSTICS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Service down     → docker-compose ps ; docker-compose logs <service>
+  BLE not found    → nRF Connect scan ; check battery ; move closer
+  CBOR error       → adb logcat | grep CBOR ; node tools/decode_cbor.js
+  Sig verify fail  → check canonicalization (sorted keys) ; check public.pem
+  High latency     → check radar_ingest_latency_seconds metric (p95 < 1s)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MONITORING ALERTS TO ENABLE NOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  radar_ingest_latency_seconds     — alert if p95 > 1s
+  sig_verified / sig_total         — alert if verification rate < 99.5%
+  nonce replay / ttl expired       — PagerDuty incident on any occurrence
+  Ops dashboard                    — live alerts, audit writes, export queue
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+END — Tape this to the wall.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

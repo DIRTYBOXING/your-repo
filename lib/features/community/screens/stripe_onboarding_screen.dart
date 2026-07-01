@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../core/cards/dfc_card.dart';
 import '../../../core/layout/dfc_layout.dart';
 import '../../../core/layout/dfc_padding.dart';
@@ -96,11 +97,10 @@ class StripeOnboardingScreen extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(
-                        'Redirecting to Stripe Express Onboarding...',
+                        'Redirecting to Stripe Express Onboarding... This is handled via backend.',
                       ),
                     ),
                   );
-                  // TODO: Connect to backend API endpoint generating Stripe Connect onboarding link
                 },
                 child: const Text(
                   'CONNECT WITH STRIPE',

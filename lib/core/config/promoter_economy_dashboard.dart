@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../services/economy_service.dart';
 
@@ -125,7 +126,17 @@ class _PromoterEconomyDashboardState extends State<PromoterEconomyDashboard> {
               'No payout statements yet.',
               style: TextStyle(color: Colors.white38),
             ),
-          // TODO: Map over _statements and display custom ListTile widgets
+          ..._statements
+              .map(
+                (statement) => ListTile(
+                  title: Text(statement['period'] ?? 'Unknown Period'),
+                  trailing: Text(
+                    '\$${statement['total'] ?? '0.00'}',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+              .toList(),
         ],
       ),
     );

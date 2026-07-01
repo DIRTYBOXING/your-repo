@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../providers/promoter_providers.dart';
 
 class PromotersScreen extends ConsumerWidget {
@@ -89,8 +90,8 @@ class PromotersScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.amber,
         onPressed: () {
-          // TODO: Navigate to PromoterCreateScreen
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => const PromoterCreateScreen()));
+          // Route into the unified onboarding sequence explicitly
+          Navigator.pushNamed(context, '/promoter_onboarding');
         },
         icon: const Icon(Icons.add, color: Colors.black),
         label: const Text(

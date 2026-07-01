@@ -1,0 +1,49 @@
+flowchart LR
+    subgraph FE[Frontend]
+        Flutter["Flutter App\nfan, fighter, coach, promoter, admin surfaces"]
+        WebUI["Web and event UI\nfeed, dashboards, event pages"]
+    end
+
+    subgraph CI[Delivery and Ops]
+        GHA["GitHub Actions\nbuild -> validate -> deploy -> smoke -> promote"]
+        AR["Artifact Registry\ncontainer images"]
+        SM["Secret Manager\nruntime secrets"]
+        Mon["Cloud Logging and Monitoring\nhealth, latency, crash visibility"]
+    end
+
+    subgraph BE[Backend Runtime]
+        CR["Cloud Run\natlas_backend FastAPI service"]
+        Rank["Service spine\nsource intake -> normalize -> rank -> publish"]
+        AI["AI and inference path\nCPU baseline now, GPU path planned"]
+    end
+
+    subgraph DATA[State and Storage]
+        FS["Firestore\ncanonical objects and authoritative state"]
+        Redis["Redis\nephemeral queues, locks, short-lived coordination"]
+        GCS["Cloud Storage\nmedia, evidence, artifacts"]
+    end
+
+    subgraph EXT[External Integrations]
+        Stripe["Stripe\ncommerce and ticketing"]
+        Mux["Mux\nmedia callbacks and playback workflows"]
+        Partners["Partner feeds and uploads\nevents, fighters, live metadata"]
+        Gemini["Google AI APIs\nintelligence and model-assisted services"]
+    end
+
+    Flutter --> CR
+    WebUI --> CR
+    Partners --> Rank
+    GHA --> AR
+    GHA --> CR
+    GHA --> SM
+    AR --> CR
+    SM --> CR
+    CR --> Rank
+    Rank --> FS
+    Rank --> Redis
+    Rank --> GCS
+    CR --> Stripe
+    CR --> Mux
+    CR --> Gemini
+    Mon --> CR
+    Mon --> GHA

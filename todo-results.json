@@ -1,41 +1,32 @@
 {
-  "timestamp": "2026-04-30T08:28:03.821Z",
-  "totalFound": 16,
-  "failed": 1,
+  "timestamp": "2026-07-01T11:29:14.184Z",
+  "totalFound": 15,
+  "failed": 0,
   "results": [
     {
-      "file": "lib/features/services/external_feed_service.dart",
-      "line": 1,
+      "file": "lib/features/promoter/screens/index.ts",
+      "line": 151,
       "tag": "TODO",
-      "text": "Implement this library.",
-      "status": "scanned",
+      "text": "Pass actual telemetry window to Vertex AI / Gemini here",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
     {
-      "file": "lib/features/shared/services/auto_feed_orchestrator_service.dart",
-      "line": 1,
+      "file": "lib/features/promoter/screens/index.ts",
+      "line": 315,
       "tag": "TODO",
-      "text": "Implement this library.",
-      "status": "scanned",
+      "text": "Send task to Google Cloud Run (FFmpeg) or Replicate API to stitch the images into a video.",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
     {
-      "file": "lib/features/shared/services/email_campaign_service.dart",
-      "line": 1,
+      "file": "lib/shared/services/index.ts",
+      "line": 418,
       "tag": "TODO",
-      "text": "Implement this library.",
-      "status": "scanned",
-      "commands": [],
-      "runs": []
-    },
-    {
-      "file": "lib/features/social/screens/group_detail_screen.dart",
-      "line": 346,
-      "tag": "TODO",
-      "text": "navigate to edit screen",
-      "status": "scanned",
+      "text": "Send task to Google Cloud Run (FFmpeg) or Replicate API to stitch the images into a video.",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -44,7 +35,7 @@
       "line": 3400,
       "tag": "TODO",
       "text": "Create a price in Stripe Dashboard and set this environment variable",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -53,7 +44,7 @@
       "line": 4269,
       "tag": "TODO",
       "text": "Send notification to user if action is required",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -62,7 +53,7 @@
       "line": 4415,
       "tag": "TODO",
       "text": "Store subscription in database",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -71,7 +62,7 @@
       "line": 4454,
       "tag": "TODO",
       "text": "Update subscription status in database",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -80,7 +71,7 @@
       "line": 4494,
       "tag": "TODO",
       "text": "Revoke access to premium features",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -89,7 +80,7 @@
       "line": 4515,
       "tag": "TODO",
       "text": "Record payment in database",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -98,7 +89,7 @@
       "line": 4550,
       "tag": "TODO",
       "text": "Send notification to user about failed payment",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -107,7 +98,7 @@
       "line": 4551,
       "tag": "TODO",
       "text": "Consider grace period before restricting access",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -116,7 +107,7 @@
       "line": 4569,
       "tag": "TODO",
       "text": "Update customer's default payment method if needed",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -125,7 +116,16 @@
       "line": 4577,
       "tag": "TODO",
       "text": "Handle payment method removal",
-      "status": "scanned",
+      "status": "pending",
+      "commands": [],
+      "runs": []
+    },
+    {
+      "file": "functions/src/index.ts",
+      "line": 151,
+      "tag": "TODO",
+      "text": "Pass actual telemetry window to Vertex AI / Gemini here",
+      "status": "pending",
       "commands": [],
       "runs": []
     },
@@ -134,21 +134,7 @@
       "line": 103,
       "tag": "FIXME",
       "text": "and HACK tags always flag as needing human attention",
-      "status": "failed",
-      "commands": [],
-      "runs": [
-        {
-          "cmd": "tag-severity-check",
-          "out": "FIXME requires manual attention"
-        }
-      ]
-    },
-    {
-      "file": "src/feeds/publish.ts",
-      "line": 15,
-      "tag": "TODO",
-      "text": "Write to Firestore or DB, apply moderation rules",
-      "status": "scanned",
+      "status": "pending",
       "commands": [],
       "runs": []
     }

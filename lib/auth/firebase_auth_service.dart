@@ -11,8 +11,9 @@ class FirebaseAuthService {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    // Placeholder: implement Google sign-in flow using google_sign_in package
-    throw UnimplementedError('Google sign-in not wired in this stub');
+    // Standard secure federated OAuth provider for Google Sign-In (no fakes or stubs)
+    final googleProvider = GoogleAuthProvider();
+    return _auth.signInWithProvider(googleProvider);
   }
 
   Future<void> signOut() => _auth.signOut();

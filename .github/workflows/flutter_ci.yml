@@ -26,9 +26,11 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: dfc_frontend/dfc_app
 
       - name: Analyze
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        working-directory: dfc_frontend/dfc_app
 
   test:
     name: Test
@@ -45,9 +47,11 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: dfc_frontend/dfc_app
 
       - name: Run tests
         run: flutter test --coverage || echo "::warning::Some tests failed — review output above"
+        working-directory: dfc_frontend/dfc_app
         continue-on-error: true
 
       - name: Upload coverage
@@ -55,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: coverage/
+          path: dfc_frontend/dfc_app/coverage/

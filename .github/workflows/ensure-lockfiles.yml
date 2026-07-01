@@ -1,0 +1,45 @@
+name: ensure-lockfiles
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-lockfiles:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: List changed files against base
+        id: changed
+        run: |
+          # Ensure base ref is available
+          git fetch origin "${{ github.base_ref }}" --depth=1 || true
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed_files.txt || true
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          cat changed_files.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Fail if package manifests changed without lockfiles
+        run: |
+          set -e
+          # Read changed files
+          changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD || true)
+          missing=0
+          while IFS= read -r f; do
+            if [[ "$f" =~ (^|/)(package.json)$ ]]; then
+              dir=$(dirname "$f")
+              if [ ! -f "$dir/package-lock.json" ] && [ ! -f "$dir/yarn.lock" ] && [ ! -f "$dir/pnpm-lock.yaml" ]; then
+                echo "Missing lockfile for $dir"
+                missing=1
+              fi
+            fi
+          done <<< "$changed"
+
+          if [ "$missing" -eq 1 ]; then
+            echo "One or more package manifests changed without corresponding lockfiles. Please add lockfiles for changed manifests."
+            exit 1
+          fi

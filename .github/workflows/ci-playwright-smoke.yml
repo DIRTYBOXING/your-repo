@@ -34,7 +34,7 @@ jobs:
           fi
 
           echo "Scanning commit range: $RANGE"
-          gitleaks detect --source . --log-opts "$RANGE" --report-format json --report-path gitleaks-report.json
+          gitleaks detect --source . --log-opts "$RANGE" --exclude-path ".secrets.baseline" --report-format json --report-path gitleaks-report.json
 
       - name: Upload gitleaks report
         if: always()

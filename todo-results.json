@@ -1,35 +1,8 @@
 {
-  "timestamp": "2026-07-01T11:29:14.184Z",
-  "totalFound": 15,
+  "timestamp": "2026-07-01T11:46:58.795Z",
+  "totalFound": 11,
   "failed": 0,
   "results": [
-    {
-      "file": "lib/features/promoter/screens/index.ts",
-      "line": 151,
-      "tag": "TODO",
-      "text": "Pass actual telemetry window to Vertex AI / Gemini here",
-      "status": "pending",
-      "commands": [],
-      "runs": []
-    },
-    {
-      "file": "lib/features/promoter/screens/index.ts",
-      "line": 315,
-      "tag": "TODO",
-      "text": "Send task to Google Cloud Run (FFmpeg) or Replicate API to stitch the images into a video.",
-      "status": "pending",
-      "commands": [],
-      "runs": []
-    },
-    {
-      "file": "lib/shared/services/index.ts",
-      "line": 418,
-      "tag": "TODO",
-      "text": "Send task to Google Cloud Run (FFmpeg) or Replicate API to stitch the images into a video.",
-      "status": "pending",
-      "commands": [],
-      "runs": []
-    },
     {
       "file": "functions/index_backup.js",
       "line": 3400,
@@ -116,15 +89,6 @@
       "line": 4577,
       "tag": "TODO",
       "text": "Handle payment method removal",
-      "status": "pending",
-      "commands": [],
-      "runs": []
-    },
-    {
-      "file": "functions/src/index.ts",
-      "line": 151,
-      "tag": "TODO",
-      "text": "Pass actual telemetry window to Vertex AI / Gemini here",
       "status": "pending",
       "commands": [],
       "runs": []

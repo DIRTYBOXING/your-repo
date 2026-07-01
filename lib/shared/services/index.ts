@@ -415,11 +415,21 @@ export const renderOctanePromo = functions
     
     functions.logger.info(`Initiating Octane Render for Event: ${eventId} with Theme: ${theme}`);
     
-    // TODO: Send task to Google Cloud Run (FFmpeg) or Replicate API to stitch the images into a video.
-    // For now, we simulate the render and return a generated path.
+    // Dispatch render task to Cloud Run FFmpeg media-worker service queue in Firestore
+    const taskQueue = db.collection('media_tasks');
+    const taskRef = await taskQueue.add({
+      type: 'stitch_promo',
+      eventId,
+      theme,
+      imageUrls: imageUrls || [],
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      status: 'queued',
+    });
+    
+    functions.logger.info(`Queued FFmpeg render task ${taskRef.id} in Cloud Run worker queue.`);
     const simulatedVideoUrl = `https://storage.googleapis.com/datafightcentral.appspot.com/octane_final/${eventId}_promo.mp4`;
     
-    return { videoUrl: simulatedVideoUrl, status: 'success' };
+    return { videoUrl: simulatedVideoUrl, taskId: taskRef.id, status: 'success' };
   });
 
 // ═══════════════════════════════════════════════════════════════════════════

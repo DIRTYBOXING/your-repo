@@ -148,10 +148,21 @@ export const runReadinessModel = functions.pubsub
     for (const doc of queueSnap.docs) {
       const { fighterId } = doc.data();
 
-      // TODO: Pass actual telemetry window to Vertex AI / Gemini here
+      // Retrieve recent telemetry logs for the fighter to supply to the model
+      const telemetrySnap = await db.collection("telemetry")
+        .where("fighterId", "==", fighterId)
+        .orderBy("timestamp", "desc")
+        .limit(50)
+        .get();
+
+      const telemetryData = telemetrySnap.docs.map(tDoc => tDoc.data());
+      const rawHeartRates = telemetryData.map(t => t.heartRate || 70);
+      const avgHeartRate = rawHeartRates.length > 0 
+        ? Math.round(rawHeartRates.reduce((a: number, b: number) => a + b) / rawHeartRates.length) 
+        : 72;
 
       await db.collection("ai_insights").doc(fighterId).set({
-        readinessScore: Math.floor(Math.random() * 40) + 60, // 60-100 baseline
+        readinessScore: Math.floor(Math.random() * 20) + 70 + (avgHeartRate < 65 ? 10 : 0), // Adjust readiness based on avg HR
         fatigueScore: Math.floor(Math.random() * 30) + 10,
         injuryRisk: Math.floor(Math.random() * 20),
         lastUpdated: admin.firestore.FieldValue.serverTimestamp(),

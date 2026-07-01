@@ -3,15 +3,10 @@ title = "DFC gitleaks config"
 [extend]
 useDefault = true
 
-[[allowlists]]
-description = "Ignore detect-secrets baseline file"
+[allowlist]
+description = "Ignore baseline and known test/docs fixture false positives"
 paths = [
-  '''^\.secrets\.baseline$'''
-]
-
-[[allowlists]]
-description = "Ignore known test/docs fixture false positives"
-paths = [
+  '''^\.secrets\.baseline$''',
   '''^chuckya-radar/control_room_test_checklist\.txt$''',
   '''^functions/auth_count\.json$''',
   '''^docs/ENV_VARS\.md$''',

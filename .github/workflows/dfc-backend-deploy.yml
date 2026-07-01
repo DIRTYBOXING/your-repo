@@ -221,7 +221,22 @@ jobs:
           fi
           auth_header="${{ steps.firebase-auth.outputs.auth_header }}"
 
-          event_payload="$(python -c "import json; from datetime import datetime,timedelta,timezone; now=datetime.now(timezone.utc); print(json.dumps({'title':'Smoke Test Combat Event','slug':'smoke-test-combat-event','start_at':now.isoformat().replace('+00:00','Z'),'end_at':(now + timedelta(hours=4)).isoformat().replace('+00:00','Z'),'venue':{'name':'DFC Smoke Arena','city':'Brisbane','country':'AU'},'status':'published'}))")"
+            event_payload=$(python - <<'PY'
+            from datetime import datetime, timedelta, timezone
+            import json
+
+            now = datetime.now(timezone.utc)
+            payload = {
+              "title": "Smoke Test Combat Event",
+              "slug": "smoke-test-combat-event",
+              "start_at": now.isoformat().replace('+00:00', 'Z'),
+              "end_at": (now + timedelta(hours=4)).isoformat().replace('+00:00', 'Z'),
+              "venue": {"name": "DFC Smoke Arena", "city": "Brisbane", "country": "AU"},
+              "status": "published",
+            }
+            print(json.dumps(payload))
+            PY
+            )
 
           event_response="$(curl -fsS -X POST "${target_url}/api/v1/admin/events" \
             -H "${auth_header}" \
@@ -231,7 +246,25 @@ jobs:
           event_id="$(EVENT_RESPONSE="${event_response}" python -c "import json,os; print(json.loads(os.environ['EVENT_RESPONSE'])['id'])")"
           echo "event_id=${event_id}" >> "$GITHUB_OUTPUT"
 
-          promotion_payload="$(EVENT_ID="${event_id}" python -c "import json,os; from datetime import datetime,timedelta,timezone; now=datetime.now(timezone.utc); print(json.dumps({'event_id':os.environ['EVENT_ID'],'title':'Smoke Test Promo','start_at':now.isoformat().replace('+00:00','Z'),'end_at':(now + timedelta(minutes=10)).isoformat().replace('+00:00','Z'),'priority':9999,'channels':['home_feed'],'targeting':{'regions':['AU']},'status':'active'}))")"
+            promotion_payload=$(EVENT_ID="${event_id}" python - <<'PY'
+            from datetime import datetime, timedelta, timezone
+            import json
+            import os
+
+            now = datetime.now(timezone.utc)
+            payload = {
+              "event_id": os.environ["EVENT_ID"],
+              "title": "Smoke Test Promo",
+              "start_at": now.isoformat().replace('+00:00', 'Z'),
+              "end_at": (now + timedelta(minutes=10)).isoformat().replace('+00:00', 'Z'),
+              "priority": 9999,
+              "channels": ["home_feed"],
+              "targeting": {"regions": ["AU"]},
+              "status": "active",
+            }
+            print(json.dumps(payload))
+            PY
+            )
 
           promotion_response="$(curl -fsS -X POST "${target_url}/api/v1/admin/promotions" \
             -H "${auth_header}" \

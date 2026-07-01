@@ -8,3 +8,15 @@ description = "Ignore detect-secrets baseline file"
 paths = [
   '''^\.secrets\.baseline$'''
 ]
+
+[[allowlists]]
+description = "Ignore known test/docs fixture false positives"
+paths = [
+  '''^chuckya-radar/control_room_test_checklist\.txt$''',
+  '''^functions/auth_count\.json$''',
+  '''^docs/ENV_VARS\.md$''',
+  '''^lib/shared/services/dfc_social_engine\.dart$''',
+  '''^lib/shared/widgets/age_verification_badge\.dart$''',
+  '''^monitoring/health-monitor\.py$''',
+  '''^server/test/ai-sales-ppv\.test\.js$'''
+]

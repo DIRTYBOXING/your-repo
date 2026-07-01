@@ -9,12 +9,9 @@ class OnlyFitService {
   /// Returns public profile data for an OnlyFit creator
   Future<Map<String, dynamic>?> getCreatorProfile(String userId) async {
     try {
-      final doc = await _db
-          .collection('onlyfit_creators')
-          .document(userId)
-          .get();
+      final doc = await _db.collection('onlyfit_creators').doc(userId).get();
       if (doc.exists) {
-        return doc.to_dict();
+        return doc.data();
       }
     } catch (_) {}
 

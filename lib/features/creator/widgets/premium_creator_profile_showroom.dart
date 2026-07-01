@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../core/theme/app_colors.dart';
+
 import '../../../../shared/widgets/dfc_glass_panel.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -56,7 +55,8 @@ class PremiumCreatorProfileShowroom extends StatefulWidget {
 }
 
 class _PremiumCreatorProfileShowroomState
-    extends State<PremiumCreatorProfileShowroom> with TickerProviderStateMixin {
+    extends State<PremiumCreatorProfileShowroom>
+    with TickerProviderStateMixin {
   late final OnlyFitCreatorModel _creator;
   bool _isLoading = false;
   bool _isPurchasing = false;
@@ -76,9 +76,12 @@ class _PremiumCreatorProfileShowroomState
       name: 'Cristine Fereano',
       title: 'Cris "The Rose" Fereano',
       specialty: 'Bantamweight Bareknuckle / Kickboxing',
-      bio: ' Queensland Champion. Hardened by resilience, fueled by focus. Delivering elite combat training, high-prestige stream events, and custom program curation directly to supporters.',
-      posterUrl: 'https://api.datafightcentral.com/assets/cristine_vogue_editorial.png',
-      highlightVideoUrl: 'https://api.datafightcentral.com/assets/cristine_clip.mp4',
+      bio:
+          ' Queensland Champion. Hardened by resilience, fueled by focus. Delivering elite combat training, high-prestige stream events, and custom program curation directly to supporters.',
+      posterUrl:
+          'https://api.datafightcentral.com/assets/cristine_vogue_editorial.png',
+      highlightVideoUrl:
+          'https://api.datafightcentral.com/assets/cristine_clip.mp4',
       ppvPrice: 19.99,
       ticketPrice: 45.00,
       subscriptionPrice: 8.99,
@@ -109,7 +112,8 @@ class _PremiumCreatorProfileShowroomState
     await Future.delayed(const Duration(milliseconds: 1500));
 
     // Staging endpoint simulation
-    const String stripeSessionUrl = 'https://checkout.stripe.com/pay/cs_live_test_xxx';
+    const String stripeSessionUrl =
+        'https://checkout.stripe.com/pay/cs_live_test_xxx';
     final uri = Uri.parse(stripeSessionUrl);
 
     if (await canLaunchUrl(uri)) {
@@ -118,7 +122,8 @@ class _PremiumCreatorProfileShowroomState
       // Simulate Stripe Completed callback webhook updating current order
       setState(() {
         if (itemType == 'ticket') {
-          _purchasedTicketJwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmRlcklkIjoiNzc3IiwiZXZlbnRJZCI6IjkwOSIsImV4cGlyZXNBdCI6IjIwMjYtMDctMDJUMTI6MDA6MDBaIn0';
+          _purchasedTicketJwt =
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvcmRlcklkIjoiNzc3IiwiZXZlbnRJZCI6IjkwOSIsImV4cGlyZXNBdCI6IjIwMjYtMDctMDJUMTI6MDA6MDBaIn0';
         } else {
           _purchasedPpvToken = 'ppv_access_token_authorized_999';
         }
@@ -159,7 +164,11 @@ class _PremiumCreatorProfileShowroomState
                         ),
                       ),
                       child: Center(
-                        child: Icon(Icons.star_border, color: accentColor, size: 80),
+                        child: Icon(
+                          Icons.star_border,
+                          color: accentColor,
+                          size: 80,
+                        ),
                       ),
                     ),
                   ),
@@ -209,196 +218,216 @@ class _PremiumCreatorProfileShowroomState
 
           // Creator Details and Instant Commerce Funnel
           SliverList(
-            delegate: SliverChildList {
-              return [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Profile Biography Glass Card Focus
-                      DfcGlassPanel(
-                        glowColor: accentColor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'THE ROSE IN THE GLOVES',
-                                style: TextStyle(
-                                  color: accentColor,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _creator.bio,
-                                style: const TextStyle(
-                                  color: Colors.white80,
-                                  fontSize: 14,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Direct-Buy / Subscribe Actions
-                      Text(
-                        'DIRECT INSTANT TICKET SALES & COMMERCE',
-                        style: TextStyle(
-                          color: Colors.white30,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: accentColor,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          elevation: 12,
-                          shadowColor: accentColor.withValues(alpha: 0.5),
-                        ),
-                        onPressed: () => _initiateDirectPurchase('ticket', _creator.ticketPrice),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+            delegate: SliverChildListDelegate([
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 24,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Profile Biography Glass Card Focus
+                    DfcGlassPanel(
+                      glowColor: accentColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.local_activity, size: 22),
-                            const SizedBox(width: 8),
                             Text(
-                              'BUY INSTANT TICKET — \$${_creator.ticketPrice.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w900,
+                              'THE ROSE IN THE GLOVES',
+                              style: TextStyle(
+                                color: accentColor,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
                                 letterSpacing: 1.5,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _creator.bio,
+                              style: const TextStyle(
+                                color: Colors.white80,
+                                fontSize: 14,
+                                height: 1.5,
                               ),
                             ),
                           ],
                         ),
                       ),
+                    ),
 
-                      const SizedBox(height: 16),
+                    const SizedBox(height: 32),
 
-                      Row(
+                    // Direct-Buy / Subscribe Actions
+                    Text(
+                      'DIRECT INSTANT TICKET SALES & COMMERCE',
+                      style: TextStyle(
+                        color: Colors.white30,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: accentColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 12,
+                        shadowColor: accentColor.withValues(alpha: 0.5),
+                      ),
+                      onPressed: () => _initiateDirectPurchase(
+                        'ticket',
+                        _creator.ticketPrice,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: accentColor, width: 2),
-                                padding: const EdgeInsets.symmetric(vertical: 18),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () => _initiateDirectPurchase('ppv', _creator.ppvPrice),
-                              child: Text(
-                                'PPV STREAM (\$${_creator.ppvPrice.toStringAsFixed(2)})',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: OutlinedButton(
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(color: Colors.white24, width: 1.5),
-                                padding: const EdgeInsets.symmetric(vertical: 18),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () => _initiateDirectPurchase('sub', _creator.subscriptionPrice),
-                              child: Text(
-                                'SUBSCRIBE (\$${_creator.subscriptionPrice.toStringAsFixed(2)}/MO)',
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                ),
-                              ),
+                          const Icon(Icons.local_activity, size: 22),
+                          const SizedBox(width: 8),
+                          Text(
+                            'BUY INSTANT TICKET — \$${_creator.ticketPrice.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 1.5,
                             ),
                           ),
                         ],
                       ),
+                    ),
 
-                      const SizedBox(height: 32),
+                    const SizedBox(height: 16),
 
-                      // Post-Purchase Ticket JWT Token Display (No Scalper noise!)
-                      if (_purchasedTicketJwt != null) ...[
-                        Text(
-                          'YOUR ACTIVE DIGITAL TICKET PASS',
-                          style: TextStyle(
-                            color: accentColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.5,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: accentColor, width: 2),
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () => _initiateDirectPurchase(
+                              'ppv',
+                              _creator.ppvPrice,
+                            ),
+                            child: Text(
+                              'PPV STREAM (\$${_creator.ppvPrice.toStringAsFixed(2)})',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        DfcGlassPanel(
-                          glowColor: accentColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              children: [
-                                const Icon(Icons.qr_code_2, size: 140, color: Colors.white),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'TICKET TOKEN: ${_purchasedTicketJwt!.substring(0, 16)}...',
-                                  style: const TextStyle(
-                                    color: Colors.white54,
-                                    fontSize: 11,
-                                    fontFamily: 'Courier',
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.black,
-                                    foregroundColor: Colors.white,
-                                    side: const BorderSide(color: Colors.white24),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  icon: const Icon(Icons.apple_wallet, size: 20),
-                                  label: const Text(
-                                    'ADD TO APPLE WALLET',
-                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                                  ),
-                                  onPressed: () {
-                                    // Deep link / Add Pass file redirect
-                                  },
-                                ),
-                              ],
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                color: Colors.white24,
+                                width: 1.5,
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () => _initiateDirectPurchase(
+                              'sub',
+                              _creator.subscriptionPrice,
+                            ),
+                            child: Text(
+                              'SUBSCRIBE (\$${_creator.subscriptionPrice.toStringAsFixed(2)}/MO)',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1,
+                              ),
                             ),
                           ),
                         ),
                       ],
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // Post-Purchase Ticket JWT Token Display (No Scalper noise!)
+                    if (_purchasedTicketJwt != null) ...[
+                      Text(
+                        'YOUR ACTIVE DIGITAL TICKET PASS',
+                        style: TextStyle(
+                          color: accentColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      DfcGlassPanel(
+                        glowColor: accentColor,
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.qr_code_2,
+                                size: 140,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'TICKET TOKEN: ${_purchasedTicketJwt!.substring(0, 16)}...',
+                                style: const TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 11,
+                                  fontFamily: 'Courier',
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.black,
+                                  foregroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.white24),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.apple_wallet, size: 20),
+                                label: const Text(
+                                  'ADD TO APPLE WALLET',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // Deep link / Add Pass file redirect
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
+                  ],
                 ),
-              ];
-            }(),
+              ),
+            ]),
           ),
         ],
       ),

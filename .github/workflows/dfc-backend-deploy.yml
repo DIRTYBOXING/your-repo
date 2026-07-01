@@ -1,0 +1,351 @@
+name: DFC Backend Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - atlas_backend/**
+      - libs/**
+      - .github/workflows/dfc-backend-deploy.yml
+  workflow_dispatch:
+    inputs:
+      promote_after_deploy:
+        description: Promote deployed revision after smoke checks
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+env:
+  PROJECT_ID: datafightcentral
+  REGION: australia-southeast1
+  SERVICE_NAME: dfc-backend
+  REPOSITORY: australia-southeast1-docker.pkg.dev/datafightcentral/dfc-repo
+  IMAGE_NAME: dfc-backend
+  DATABASE_SECRET_NAME: DATABASE_URL
+  REDIS_SECRET_NAME: REDIS_URL
+  STRIPE_SECRET_NAME: STRIPE_SECRET_KEY
+  GOOGLE_AI_SECRET_NAME: GOOGLE_GENAI_API_KEY
+  CORS_ALLOWED_ORIGINS: https://www.datafightcentral.com
+  EVIDENCE_BUCKET: datafightcentral.firebasestorage.app
+  FIREBASE_STORAGE_BUCKET: datafightcentral.firebasestorage.app
+
+jobs:
+  build-and-push:
+    name: Build and Push Backend Image
+    runs-on: ubuntu-latest
+    outputs:
+      image_uri: ${{ steps.image.outputs.image_uri }}
+      image_tag: ${{ steps.image.outputs.image_tag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Compute image tag
+        id: image
+        shell: bash
+        run: |
+          short_sha="${GITHUB_SHA::12}"
+          image_uri="${REPOSITORY}/${IMAGE_NAME}:${short_sha}"
+          echo "image_uri=${image_uri}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${short_sha}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: docker build -f atlas_backend/Dockerfile -t "${{ steps.image.outputs.image_uri }}" .
+
+      - name: Verify container startup
+        run: |
+          docker run --rm "${{ steps.image.outputs.image_uri }}" \
+            python -c "import atlas_backend.main as main; print('container-app-loaded', main.app is not None)"
+
+      - name: Push Docker image
+        run: docker push "${{ steps.image.outputs.image_uri }}"
+
+  deploy:
+    name: Deploy Candidate Revision
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    outputs:
+      revision: ${{ steps.revision.outputs.revision }}
+      candidate_tag: ${{ steps.deploy-meta.outputs.candidate_tag }}
+      service_url: ${{ steps.service.outputs.service_url }}
+      candidate_url: ${{ steps.service.outputs.candidate_url }}
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Detect existing service
+        id: service-check
+        shell: bash
+        run: |
+          if gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --project "${PROJECT_ID}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prepare deploy metadata
+        id: deploy-meta
+        shell: bash
+        run: |
+          echo "candidate_tag=candidate-${{ needs.build-and-push.outputs.image_tag }}" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy initial service
+        if: steps.service-check.outputs.exists != 'true'
+        shell: bash
+        run: |
+          gcloud run deploy "${SERVICE_NAME}" \
+            --image "${{ needs.build-and-push.outputs.image_uri }}" \
+            --region "${REGION}" \
+            --project "${PROJECT_ID}" \
+            --platform managed \
+            --set-secrets "DATABASE_URL=${DATABASE_SECRET_NAME}:latest,REDIS_URL=${REDIS_SECRET_NAME}:latest,STRIPE_SECRET_KEY=${STRIPE_SECRET_NAME}:latest,GOOGLE_AI_KEY=${GOOGLE_AI_SECRET_NAME}:latest" \
+            --set-env-vars "CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS},EVIDENCE_BUCKET=${EVIDENCE_BUCKET},FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}" \
+            --allow-unauthenticated
+
+      - name: Deploy no-traffic candidate revision
+        if: steps.service-check.outputs.exists == 'true'
+        shell: bash
+        run: |
+          gcloud run deploy "${SERVICE_NAME}" \
+            --image "${{ needs.build-and-push.outputs.image_uri }}" \
+            --region "${REGION}" \
+            --project "${PROJECT_ID}" \
+            --platform managed \
+            --no-traffic \
+            --tag "${{ steps.deploy-meta.outputs.candidate_tag }}" \
+            --set-secrets "DATABASE_URL=${DATABASE_SECRET_NAME}:latest,REDIS_URL=${REDIS_SECRET_NAME}:latest,STRIPE_SECRET_KEY=${STRIPE_SECRET_NAME}:latest,GOOGLE_AI_KEY=${GOOGLE_AI_SECRET_NAME}:latest" \
+            --set-env-vars "CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS},EVIDENCE_BUCKET=${EVIDENCE_BUCKET},FIREBASE_STORAGE_BUCKET=${FIREBASE_STORAGE_BUCKET}"
+
+      - name: Capture revision name
+        id: revision
+        shell: bash
+        run: |
+          revision="$(gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --project "${PROJECT_ID}" --format='value(status.latestCreatedRevisionName)')"
+          echo "revision=${revision}" >> "$GITHUB_OUTPUT"
+
+      - name: Capture service and candidate URLs
+        id: service
+        shell: bash
+        run: |
+          service_url="$(gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --project "${PROJECT_ID}" --format='value(status.url)')"
+          candidate_url="$(gcloud run services describe "${SERVICE_NAME}" --region "${REGION}" --project "${PROJECT_ID}" --format="value(status.traffic[?tag='${{ steps.deploy-meta.outputs.candidate_tag }}'].url)")"
+          echo "service_url=${service_url}" >> "$GITHUB_OUTPUT"
+          echo "candidate_url=${candidate_url}" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for revision readiness
+        shell: bash
+        run: |
+          revision="${{ steps.revision.outputs.revision }}"
+          for _ in {1..30}; do
+            ready="$(gcloud run revisions describe "${revision}" --region "${REGION}" --project "${PROJECT_ID}" --format="value(status.conditions[?type='Ready'].status)")"
+            if [[ "${ready}" == "True" ]]; then
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Revision ${revision} did not become ready"
+          gcloud run revisions describe "${revision}" --region "${REGION}" --project "${PROJECT_ID}"
+          exit 1
+
+      - name: Smoke candidate health
+        shell: bash
+        run: |
+          target_url="${{ steps.service.outputs.candidate_url }}"
+          if [[ -z "${target_url}" ]]; then
+            target_url="${{ steps.service.outputs.service_url }}"
+          fi
+          curl -fsS "${target_url}/health"
+          curl -fsS "${target_url}/api/v1/health"
+
+      - name: Acquire Firebase smoke token
+        id: firebase-auth
+        shell: bash
+        env:
+          FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+          FIREBASE_SMOKE_EMAIL: ${{ secrets.FIREBASE_SMOKE_EMAIL }}
+          FIREBASE_SMOKE_PASSWORD: ${{ secrets.FIREBASE_SMOKE_PASSWORD }}
+        run: |
+          if [[ -z "${FIREBASE_WEB_API_KEY}" || -z "${FIREBASE_SMOKE_EMAIL}" || -z "${FIREBASE_SMOKE_PASSWORD}" ]]; then
+            echo "::error::Missing Firebase smoke-test secrets"
+            exit 1
+          fi
+
+          payload="$(python -c "import json,os; print(json.dumps({'email': os.environ['FIREBASE_SMOKE_EMAIL'], 'password': os.environ['FIREBASE_SMOKE_PASSWORD'], 'returnSecureToken': True}))")"
+
+          token_response="$(curl -fsS -X POST "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_WEB_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "${payload}")"
+
+          id_token="$(TOKEN_RESPONSE="${token_response}" python -c "import json,os; print(json.loads(os.environ['TOKEN_RESPONSE']).get('idToken',''))")"
+
+          if [[ -z "${id_token}" ]]; then
+            echo "::error::Unable to acquire Firebase ID token"
+            exit 1
+          fi
+
+          auth_header="Authorization: Bearer ${id_token}"
+          echo "auth_header=${auth_header}" >> "$GITHUB_OUTPUT"
+
+      - name: Seed smoke-test promotion
+        id: smoke-promo
+        shell: bash
+        run: |
+          target_url="${{ steps.service.outputs.candidate_url }}"
+          if [[ -z "${target_url}" ]]; then
+            target_url="${{ steps.service.outputs.service_url }}"
+          fi
+          auth_header="${{ steps.firebase-auth.outputs.auth_header }}"
+
+            event_payload=$(python - <<'PY'
+            from datetime import datetime, timedelta, timezone
+            import json
+
+            now = datetime.now(timezone.utc)
+            payload = {
+              "title": "Smoke Test Combat Event",
+              "slug": "smoke-test-combat-event",
+              "start_at": now.isoformat().replace('+00:00', 'Z'),
+              "end_at": (now + timedelta(hours=4)).isoformat().replace('+00:00', 'Z'),
+              "venue": {"name": "DFC Smoke Arena", "city": "Brisbane", "country": "AU"},
+              "status": "published",
+            }
+            print(json.dumps(payload))
+            PY
+            )
+
+          event_response="$(curl -fsS -X POST "${target_url}/api/v1/admin/events" \
+            -H "${auth_header}" \
+            -H "Content-Type: application/json" \
+            -d "${event_payload}")"
+
+          event_id="$(EVENT_RESPONSE="${event_response}" python -c "import json,os; print(json.loads(os.environ['EVENT_RESPONSE'])['id'])")"
+          echo "event_id=${event_id}" >> "$GITHUB_OUTPUT"
+
+            promotion_payload=$(EVENT_ID="${event_id}" python - <<'PY'
+            from datetime import datetime, timedelta, timezone
+            import json
+            import os
+
+            now = datetime.now(timezone.utc)
+            payload = {
+              "event_id": os.environ["EVENT_ID"],
+              "title": "Smoke Test Promo",
+              "start_at": now.isoformat().replace('+00:00', 'Z'),
+              "end_at": (now + timedelta(minutes=10)).isoformat().replace('+00:00', 'Z'),
+              "priority": 9999,
+              "channels": ["home_feed"],
+              "targeting": {"regions": ["AU"]},
+              "status": "active",
+            }
+            print(json.dumps(payload))
+            PY
+            )
+
+          promotion_response="$(curl -fsS -X POST "${target_url}/api/v1/admin/promotions" \
+            -H "${auth_header}" \
+            -H "Content-Type: application/json" \
+            -d "${promotion_payload}")"
+
+          promotion_id="$(PROMOTION_RESPONSE="${promotion_response}" python -c "import json,os; print(json.loads(os.environ['PROMOTION_RESPONSE'])['id'])")"
+          echo "promotion_id=${promotion_id}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify smoke promo in personalized feed
+        shell: bash
+        run: |
+          target_url="${{ steps.service.outputs.candidate_url }}"
+          if [[ -z "${target_url}" ]]; then
+            target_url="${{ steps.service.outputs.service_url }}"
+          fi
+          auth_header="${{ steps.firebase-auth.outputs.auth_header }}"
+
+          for _ in {1..12}; do
+            response="$(curl -fsS "${target_url}/api/v1/feeds/home?include_promotions=true&limit=20&region=AU" -H "${auth_header}")"
+            found="$(FEED_RESPONSE="${response}" python -c "import json,os; items=json.loads(os.environ['FEED_RESPONSE']).get('items', []); print(sum(1 for item in items if item.get('title') == 'Smoke Test Promo'))")"
+            if [[ "${found}" -ge 1 ]]; then
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "::error::Smoke promo not found in personalized home feed"
+          exit 1
+
+      - name: Cleanup smoke artifacts
+        if: always()
+        shell: bash
+        run: |
+          target_url="${{ steps.service.outputs.candidate_url }}"
+          if [[ -z "${target_url}" ]]; then
+            target_url="${{ steps.service.outputs.service_url }}"
+          fi
+          auth_header="${{ steps.firebase-auth.outputs.auth_header }}"
+
+          promotion_id="${{ steps.smoke-promo.outputs.promotion_id }}"
+          event_id="${{ steps.smoke-promo.outputs.event_id }}"
+
+          if [[ -n "${promotion_id}" ]]; then
+            curl -fsS -X DELETE "${target_url}/api/v1/admin/promotions/${promotion_id}" -H "${auth_header}" || true
+          fi
+          if [[ -n "${event_id}" ]]; then
+            curl -fsS -X DELETE "${target_url}/api/v1/admin/events/${event_id}" -H "${auth_header}" || true
+          fi
+
+      - name: Show recent logs
+        if: always()
+        run: |
+          gcloud logging read 'resource.type="cloud_run_revision" AND resource.labels.service_name="${{ env.SERVICE_NAME }}"' \
+            --limit 100 \
+            --project "${{ env.PROJECT_ID }}"
+
+  promote:
+    name: Promote Candidate Revision
+    needs: deploy
+    if: github.event_name == 'workflow_dispatch' && inputs.promote_after_deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Promote revision to 100% traffic
+        run: |
+          gcloud run services update-traffic "${SERVICE_NAME}" \
+            --region "${REGION}" \
+            --project "${PROJECT_ID}" \
+            --to-revisions "${{ needs.deploy.outputs.revision }}=100"
+
+      - name: Verify promoted service health
+        run: |
+          curl -fsS "${{ needs.deploy.outputs.service_url }}/health"
+          curl -fsS "${{ needs.deploy.outputs.service_url }}/api/v1/health"

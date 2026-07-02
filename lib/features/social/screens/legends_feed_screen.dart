@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/image_assets.dart';
+import '../../../core/theme/glass_panel.dart';
 
 class LegendsFeedScreen extends StatelessWidget {
   const LegendsFeedScreen({super.key});
@@ -29,12 +30,9 @@ class LegendsFeedScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           // Legends Group Photo
-          Card(
-            color: Colors.grey[900],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            elevation: 6,
+          GlassPanel(
+            backgroundColor: Colors.grey[900],
+            borderRadius: BorderRadius.circular(16),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -113,10 +111,9 @@ class LegendsFeedScreen extends StatelessWidget {
     required String posterAsset,
     required String contact,
   }) {
-    return Card(
-      color: Colors.grey[900],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 6,
+    return GlassPanel(
+      backgroundColor: Colors.grey[900],
+      borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

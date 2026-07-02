@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/services/social_platform_config_service.dart';
+import '../../../core/theme/glass_panel.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DFC SOCIAL CONNECTORS
@@ -467,15 +468,13 @@ class _SocialConnectorsScreenState extends State<SocialConnectorsScreen>
   }
 
   Widget _buildGetMoreEngine() {
-    return Container(
+    return GlassPanel(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [_cyan.withValues(alpha: 0.12), _card],
-        ),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _cyan.withValues(alpha: 0.25)),
+      gradient: LinearGradient(
+        colors: [_cyan.withValues(alpha: 0.12), _card],
       ),
+      borderRadius: BorderRadius.circular(14),
+      borderColor: _cyan.withValues(alpha: 0.25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

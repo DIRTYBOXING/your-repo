@@ -127,4 +127,80 @@ class SocialService {
   Future<void> deletePost(String postId) async {
     await _db.collection('posts').doc(postId).delete();
   }
+
+  // ─── FOLLOW / FOLLOWERS ───
+  // Schema: users/{userId}/followers/{followerId} and
+  //         users/{userId}/following/{followingId}
+  // Both sides are written together so counts and lookups stay in sync.
+
+  Future<bool> isFollowing(String currentUserId, String targetUserId) async {
+    final doc = await _db
+        .collection('users')
+        .doc(targetUserId)
+        .collection('followers')
+        .doc(currentUserId)
+        .get();
+    return doc.exists;
+  }
+
+  Future<void> followUser(String currentUserId, String targetUserId) async {
+    if (currentUserId == targetUserId) return;
+    final batch = _db.batch();
+    batch.set(
+      _db
+          .collection('users')
+          .doc(targetUserId)
+          .collection('followers')
+          .doc(currentUserId),
+      {'createdAt': FieldValue.serverTimestamp()},
+    );
+    batch.set(
+      _db
+          .collection('users')
+          .doc(currentUserId)
+          .collection('following')
+          .doc(targetUserId),
+      {'createdAt': FieldValue.serverTimestamp()},
+    );
+    await batch.commit();
+  }
+
+  Future<void> unfollowUser(String currentUserId, String targetUserId) async {
+    final batch = _db.batch();
+    batch.delete(
+      _db
+          .collection('users')
+          .doc(targetUserId)
+          .collection('followers')
+          .doc(currentUserId),
+    );
+    batch.delete(
+      _db
+          .collection('users')
+          .doc(currentUserId)
+          .collection('following')
+          .doc(targetUserId),
+    );
+    await batch.commit();
+  }
+
+  Future<int> getFollowerCount(String userId) async {
+    final agg = await _db
+        .collection('users')
+        .doc(userId)
+        .collection('followers')
+        .count()
+        .get();
+    return agg.count ?? 0;
+  }
+
+  Future<int> getFollowingCount(String userId) async {
+    final agg = await _db
+        .collection('users')
+        .doc(userId)
+        .collection('following')
+        .count()
+        .get();
+    return agg.count ?? 0;
+  }
 }

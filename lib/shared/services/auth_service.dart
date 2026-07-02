@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/user_model.dart';
-import '../../core/logic/result.dart';
-import '../../core/logic/failure.dart';
+import '../../core/constants/app_constants.dart';
+import 'result.dart';
+import 'failure.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// AUTH ENGINE (BLUE TIER)
@@ -13,10 +17,13 @@ import '../../core/logic/failure.dart';
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final ImagePicker _imagePicker = ImagePicker();
 
   User? _firebaseUser;
   UserModel? _userModel;
   bool _isInitialized = false;
+  String? _error;
   StreamSubscription<User?>? _authStateSub;
 
   AuthService() {
@@ -47,7 +54,15 @@ class AuthService extends ChangeNotifier {
   bool get isInitialized => _isInitialized;
   bool get isAuthenticated => _firebaseUser != null;
   User? get currentUser => _firebaseUser;
+  User? get firebaseUser => _firebaseUser;
   UserModel? get userModel => _userModel;
+  String? get error => _error;
+
+  /// True when running without a live Firebase-backed account (guest/demo
+  /// sandbox lane), meaning writes should be skipped rather than sent to
+  /// Firestore for a session that isn't really persisted.
+  bool get isDemoUser =>
+      AppConstants.guestMode || !AppConstants.authEnabled || _firebaseUser == null;
 
   // If the user document doesn't exist or is missing crucial setup info, they need onboarding
   bool get needsOnboarding => isAuthenticated && _userModel == null;
@@ -115,16 +130,7 @@ class AuthService extends ChangeNotifier {
 
       // Only populate _userModel if onboarding is complete, maintaining your router logic
       if (doc.exists && data != null && data['onboardingCompleted'] == true) {
-        // Assuming UserModel has a fromMap or fromFirestore factory
-        // _userModel = UserModel.fromMap(data, doc.id);
-
-        // Fallback stub until UserModel is finalized
-        _userModel = UserModel(
-          id: doc.id,
-          email: data['email'] ?? '',
-          displayName: data['displayName'] ?? 'Fighter',
-          role: UserRole.fromString(data['role'] ?? 'fan'),
-        );
+        _userModel = UserModel.fromFirestore(doc);
       } else {
         _userModel = null; // Needs onboarding
       }
@@ -153,6 +159,108 @@ class AuthService extends ChangeNotifier {
     if (_firebaseUser != null) {
       await _fetchUserModel(_firebaseUser!.uid);
       notifyListeners();
+    }
+  }
+
+  /// Alias used by profile screens to re-sync the cached [userModel] after
+  /// an edit, e.g. after [updateProfile]/[updateProfileMetadata] complete.
+  Future<void> refreshUserProfile() => refreshUser();
+
+  // ─── PROFILE EDITING ───
+
+  /// Updates core profile fields on the `users` Firestore document.
+  Future<void> updateProfile({
+    String? displayName,
+    String? bio,
+    String? username,
+  }) async {
+    if (_firebaseUser == null) return;
+    try {
+      final updates = <String, dynamic>{
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+      if (displayName != null) updates['displayName'] = displayName;
+      if (bio != null) updates['bio'] = bio;
+      if (username != null) updates['username'] = username;
+
+      await _db.collection('users').doc(_firebaseUser!.uid).update(updates);
+      await refreshUser();
+      _error = null;
+    } catch (e) {
+      _error = 'Failed to update profile. Please try again.';
+      debugPrint('Failed to update profile: $e');
+    }
+  }
+
+  /// Updates the user's platform role (fighter/coach/gym/promoter/etc).
+  Future<void> updateUserRole(UserRole role) async {
+    if (_firebaseUser == null) return;
+    try {
+      await _db.collection('users').doc(_firebaseUser!.uid).update({
+        'role': role.name,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      await refreshUser();
+      _error = null;
+    } catch (e) {
+      _error = 'Failed to update role. Please try again.';
+      debugPrint('Failed to update user role: $e');
+    }
+  }
+
+  /// Merges extended profile metadata (location, gym, physical stats) into
+  /// the `metadata` map on the user's Firestore document.
+  Future<void> updateProfileMetadata(Map<String, dynamic> metadata) async {
+    if (_firebaseUser == null) return;
+    try {
+      final existing = _userModel?.metadata ?? <String, dynamic>{};
+      final merged = {...existing, ...metadata};
+      await _db.collection('users').doc(_firebaseUser!.uid).update({
+        'metadata': merged,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      await refreshUser();
+      _error = null;
+    } catch (e) {
+      _error = 'Failed to update profile details. Please try again.';
+      debugPrint('Failed to update profile metadata: $e');
+    }
+  }
+
+  /// Picks a photo from [source], uploads it to Firebase Storage under
+  /// `profile_photos/{uid}.jpg`, and stores the resulting URL on the user's
+  /// Firestore document. Returns the uploaded URL, or null if the pick was
+  /// cancelled or the upload failed (see [error] for the failure message).
+  Future<String?> pickAndUploadProfilePhoto({
+    required ImageSource source,
+  }) async {
+    if (_firebaseUser == null) return null;
+    try {
+      final picked = await _imagePicker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        imageQuality: 85,
+      );
+      if (picked == null) return null;
+
+      final ref = _storage.ref().child(
+        'profile_photos/${_firebaseUser!.uid}.jpg',
+      );
+      await ref.putFile(File(picked.path));
+      final url = await ref.getDownloadURL();
+
+      await _db.collection('users').doc(_firebaseUser!.uid).update({
+        'photoUrl': url,
+        'photoURL': url,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      await refreshUser();
+      _error = null;
+      return url;
+    } catch (e) {
+      _error = 'Failed to upload photo. Please try again.';
+      debugPrint('Failed to upload profile photo: $e');
+      return null;
     }
   }
 

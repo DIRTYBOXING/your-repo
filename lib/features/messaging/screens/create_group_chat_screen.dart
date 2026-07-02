@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 import '../services/messaging_service.dart';
@@ -157,16 +158,13 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
       body: Column(
         children: [
           // Group name input
-          Container(
-            margin: const EdgeInsets.all(16),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: GlassPanel(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: AppTheme.neonCyan.withValues(alpha: 0.15),
-              ),
-            ),
+            borderRadius: BorderRadius.circular(16),
+            backgroundColor: Colors.white.withValues(alpha: 0.04),
+            borderColor: AppTheme.neonCyan.withValues(alpha: 0.15),
             child: Row(
               children: [
                 Container(
@@ -202,6 +200,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                   ),
                 ),
               ],
+            ),
             ),
           ),
 
@@ -243,16 +242,13 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
             ),
 
           // Search input
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+            child: GlassPanel(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08),
-              ),
-            ),
+            borderRadius: BorderRadius.circular(16),
+            backgroundColor: Colors.white.withValues(alpha: 0.04),
+            borderColor: Colors.white.withValues(alpha: 0.08),
             child: Row(
               children: [
                 Icon(
@@ -285,6 +281,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                     ),
                   ),
               ],
+            ),
             ),
           ),
 

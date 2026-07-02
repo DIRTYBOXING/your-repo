@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 
 /// FIGHTWIRE 2.0 HUB — Unified Social Feed Entry Point
 /// Hero event banner · Region selector · Fighter spotlights
@@ -355,14 +356,13 @@ class _FightWire2HubScreenState extends State<FightWire2HubScreen> {
   // ── Compose Bar ──
 
   Widget _buildComposeBar() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+      child: GlassPanel(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: DesignTokens.bgCard,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
-      ),
+      backgroundColor: DesignTokens.bgCard,
+      borderRadius: BorderRadius.circular(14),
+      borderColor: Colors.white.withValues(alpha: 0.06),
       child: Row(
         children: [
           CircleAvatar(
@@ -390,6 +390,7 @@ class _FightWire2HubScreenState extends State<FightWire2HubScreen> {
           const SizedBox(width: 6),
           _miniBtn(Icons.poll, DesignTokens.neonAmber),
         ],
+      ),
       ),
     );
   }

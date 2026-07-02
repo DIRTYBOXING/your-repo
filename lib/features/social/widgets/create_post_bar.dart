@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
@@ -28,15 +30,13 @@ class CreatePostBar extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: GlassPanel(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: DesignTokens.bgCard,
-        borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-        border: Border.all(
-          color: DesignTokens.neonCyan.withValues(alpha: 0.12),
-          width: DesignTokens.borderThin,
-        ),
-      ),
+      backgroundColor: DesignTokens.bgCard.withValues(alpha: 0.6),
+      borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+      borderColor: DesignTokens.neonCyan.withValues(alpha: 0.18),
+      borderWidth: DesignTokens.borderThin,
+      shadows: NeonGlow.softCyan(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -127,6 +127,7 @@ class CreatePostBar extends StatelessWidget {
             ],
           ),
         ],
+      ),
       ),
     );
   }

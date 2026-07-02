@@ -176,6 +176,7 @@ class GenieApiService {
     List<String>? conversationHistory,
   }) async {
     final p = persona ?? geniePersonas.first;
+    final samuraiPersona = _mapToSamuraiPersona(p.id);
 
     // Primary path: use SamurAI service (real intelligence stack).
     try {
@@ -184,7 +185,6 @@ class GenieApiService {
         _samuraiInitialized = true;
       }
 
-      final mappedPersona = _mapToSamuraiPersona(p.id);
       final samuraiResponse = await _samurai.chat(
         question,
         persona: mappedPersona,
@@ -206,50 +206,24 @@ class GenieApiService {
           persona: p,
         );
       }
-    } catch (_) {
-      // Fall through to legacy local responses below.
-    }
+    } catch (e) {
+      // If SamuraiService fails, use its own local fallback mechanism.
+      // This avoids duplicating complex response logic in the client.
+      final fallbackResponse = SamuraiResponse.localFallback(
+        question,
+        samuraiPersona,
+      );
 
-    // Secondary path: Gemini Cloud Function for genuine AI response
-    try {
-      final callable = _functions.httpsCallable('generateSocialPost');
-      final result = await callable.call<Map<String, dynamic>>({
-        'topic': question,
-        'tone': p.style,
-        'platform': 'genie_chat',
-      });
-      final post = (result.data['post'] as String?) ?? '';
-      if (post.trim().isNotEmpty) {
-        return _formatConversationalResponse(post, persona: p);
+      if (fallbackResponse.response.trim().isNotEmpty) {
+        return _formatConversationalResponse(fallbackResponse.response, persona: p);
       }
-    } catch (_) {
-      // Fall through to legacy local responses below.
     }
 
-    // Tertiary path: intelligent local fallback with memory
-    _responseCycle++;
-    final topic = _detectTopic(question);
-    _recentTopics.add(topic);
-
-    // For Shido, use the advanced topic-aware engine
-    if (p.id == 'shido') {
-      final response = _buildShidoResponse(question, topic);
-      return _formatConversationalResponse(response, persona: p);
-    }
-
-    // PosterBoy fallback pool
-    final posterBoyResponses = [
-      "Creative mode activated! ${_analyzeQuestion(question)} Let me cook up something visual for that.",
-      "That's giving me ideas! ${_analyzeQuestion(question)} Want me to turn that into a poster or card?",
-      "I see the vision! ${_analyzeQuestion(question)} Every great fight deserves a great image.",
-    ];
-
-    final personaResponses = posterBoyResponses;
-    final idx =
-        (_responseCycle + _rng.nextInt(personaResponses.length)) %
-        personaResponses.length;
-    final fallback = personaResponses[idx];
-    return _formatConversationalResponse(fallback, persona: p);
+    // Final, simple fallback if all other systems (including Samurai's own fallback) fail.
+    return _formatConversationalResponse(
+      "I'm having trouble connecting to my core intelligence right now. Please try again in a moment.",
+      persona: p,
+    );
   }
 
   static SamuraiPersona _mapToSamuraiPersona(String id) {

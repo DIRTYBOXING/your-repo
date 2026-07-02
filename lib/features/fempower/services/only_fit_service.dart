@@ -1,6 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../services/api_client.dart';
+
+part 'only_fit_service.g.dart';
+
+@riverpod
+OnlyFitService onlyFitService(OnlyFitServiceRef ref) {
+  return OnlyFitService();
+}
 
 class OnlyFitService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;

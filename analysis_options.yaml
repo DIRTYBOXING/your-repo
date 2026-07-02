@@ -1,6 +1,8 @@
 include: package:flutter_lints/flutter.yaml
 
 analyzer:
+  plugins:
+    - custom_lint
   exclude:
     - build/**
     - datafightcentral/**
@@ -25,6 +27,10 @@ analyzer:
     avoid_void_async: error
     no_adjacent_strings_in_list: error
     unnecessary_null_checks: error
+
+custom_lint:
+  rules:
+    - riverpod_lint
 
 linter:
   rules:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/config/router_config.dart';
 
 void main() async {
@@ -15,7 +16,7 @@ void main() async {
   Stripe.publishableKey = 'pk_test_your_stripe_publishable_key_here';
   await Stripe.instance.applySettings();
 
-  runApp(const DataFightCentralApp());
+  runApp(const ProviderScope(child: DataFightCentralApp()));
 }
 
 class DataFightCentralApp extends StatelessWidget {

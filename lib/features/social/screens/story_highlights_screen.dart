@@ -111,6 +111,15 @@ class _HighlightCircle extends StatelessWidget {
                       : data.color,
                   width: isAdd ? 1.5 : 2,
                 ),
+                boxShadow: isAdd
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: data.color.withValues(alpha: 0.45),
+                          blurRadius: 12,
+                          spreadRadius: -2,
+                        ),
+                      ],
               ),
               child: CircleAvatar(
                 radius: 26,

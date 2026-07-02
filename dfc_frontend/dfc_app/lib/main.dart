@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
-import 'main_shell.dart';
-import 'theme/dfc_theme.dart';
 
 void main() {
-  runApp(const DfcApp());
+  runApp(const MyApp());
 }
 
-class DfcApp extends StatelessWidget {
-  const DfcApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return MaterialApp(
       title: 'DataFight Central',
       debugShowCheckedModeBanner: false,
-      theme: buildDfcTheme(),
-      routerConfig: dfcRouter,
+      theme: ThemeData.dark(useMaterial3: true),
+      home: const _HomeScreen(),
+    );
+  }
+}
+
+class _HomeScreen extends StatelessWidget {
+  const _HomeScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          'DataFight Central',
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

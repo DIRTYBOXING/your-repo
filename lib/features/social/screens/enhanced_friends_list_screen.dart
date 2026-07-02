@@ -7,6 +7,7 @@ import '../../../shared/services/enhanced_friends_service.dart';
 import '../../../shared/models/friend_model.dart';
 import '../../messaging/services/messaging_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
+import '../../../core/theme/glass_panel.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// ENHANCED FRIENDS LIST SCREEN
@@ -354,8 +355,10 @@ class FriendListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
@@ -582,6 +585,7 @@ class FriendListTile extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

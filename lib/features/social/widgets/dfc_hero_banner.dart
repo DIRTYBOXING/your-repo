@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glow_effects.dart';
 import '../../../core/constants/image_assets.dart';
 import '../../../shared/widgets/liquid_fire_overlay.dart';
 
@@ -102,13 +103,7 @@ class DFCHeroBanner extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: DesignTokens.neonCyan.withValues(alpha: 0.35),
-                          blurRadius: 24,
-                          spreadRadius: 4,
-                        ),
-                      ],
+                      boxShadow: NeonGlow.hardCyan(),
                     ),
                     child: Image.asset(
                       ImageAssets.dfcLogoGlow,
@@ -154,14 +149,7 @@ class DFCHeroBanner extends StatelessWidget {
                           colors: [DesignTokens.neonCyan, Color(0xFF00C8CC)],
                         ),
                         borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: DesignTokens.neonCyan.withValues(alpha: 0.5),
-                            blurRadius: 20,
-                            spreadRadius: 2,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                        boxShadow: NeonGlow.mediumCyan(),
                       ),
                       child: const Text(
                         'Explore Events',

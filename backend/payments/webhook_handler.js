@@ -2,7 +2,7 @@
 // Minimal webhook receiver. Verifies signature (placeholder), persists raw event, and calls verify-session.
 const { v4: uuidv4 } = require('uuid');
 const { getClient } = require('./db');
-const fetch = require('node-fetch');
+const fetchImpl = globalThis.fetch || require('node-fetch');
 
 const VERIFY_ENDPOINT = process.env.VERIFY_ENDPOINT || 'http://localhost:8080/internal/payments/verify-session';
 
@@ -42,7 +42,7 @@ module.exports = async function webhookHandler(req, res) {
     const checkoutSessionId = event?.data?.object?.id || event?.data?.object?.payment_intent || null;
     if (checkoutSessionId) {
       const body = { checkoutSessionId, provider: 'stripe', sourceEventId: eventId };
-      fetch(VERIFY_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      fetchImpl(VERIFY_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
         .then(r => console.log(`verify-session responded ${r.status} for event ${eventId}`))
         .catch(err => console.error('verify-session call failed', err));
     }

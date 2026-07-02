@@ -4,7 +4,10 @@ const request = require('supertest');
 const app = require('../index'); // index.js exports app
 const { getClient } = require('../db');
 
-describe('verify-session integration tests (reference)', function() {
+const runIntegration = process.env.RUN_PG_INTEGRATION === '1';
+const describeIfIntegration = runIntegration ? describe : describe.skip;
+
+describeIfIntegration('verify-session integration tests (reference)', function () {
   this.timeout(10000);
   let client;
   before(async () => {
@@ -24,7 +27,7 @@ describe('verify-session integration tests (reference)', function() {
   it('processes fixture and creates order + entitlement', async () => {
     // Insert a webhook_event fixture row (simulate provider webhook persisted)
     const eventId = 'test_evt_001';
-    const raw = require('../test_fixtures/checkout.session.completed.json');
+    const raw = require('./test_fixtures/checkout.session.completed.json');
     await client.query('INSERT INTO webhook_events(event_id,type,raw_payload,status,received_at) VALUES($1,$2,$3,$4,NOW()) ON CONFLICT DO NOTHING', [eventId, raw.type, raw.data.object, 'pending']);
 
     const res = await request(app)

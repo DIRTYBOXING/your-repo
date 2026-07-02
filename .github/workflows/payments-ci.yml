@@ -1,0 +1,118 @@
+name: Payments + Experiments CI
+
+on:
+  pull_request:
+    branches: [main, master]
+    paths:
+      - "backend/payments/**"
+      - "backend/experiments/**"
+      - "backend/rights/**"
+      - "test/backend/rights/**"
+      - "test/experiments/**"
+      - "migrations/**"
+      - ".github/workflows/payments-ci.yml"
+  push:
+    branches: [main, master]
+    paths:
+      - "backend/payments/**"
+      - "backend/experiments/**"
+      - "backend/rights/**"
+      - "test/backend/rights/**"
+      - "test/experiments/**"
+      - "migrations/**"
+      - ".github/workflows/payments-ci.yml"
+
+concurrency:
+  group: payments-exp-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  migration-smoke:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: dfc
+          POSTGRES_PASSWORD: dfc
+          POSTGRES_DB: dfc_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dfc -d dfc_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: dfc
+      PG_CONN: postgres://dfc:dfc@localhost:5432/dfc_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install psql client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Migration up
+        run: |
+          psql "$PG_CONN" -f migrations/20260702_create_payments_and_webhooks.sql
+          psql "$PG_CONN" -f migrations/20260702_create_rights_and_takedown.sql
+          psql "$PG_CONN" -f migrations/20260702_create_experiments_and_assignments.sql
+      - name: Migration down
+        run: |
+          psql "$PG_CONN" -f migrations/20260702_drop_experiments_and_assignments.sql
+          psql "$PG_CONN" -f migrations/20260702_drop_rights_and_takedown.sql
+          psql "$PG_CONN" -f migrations/20260702_drop_payments_and_webhooks.sql
+
+  payments-node-test:
+    needs: migration-smoke
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: dfc
+          POSTGRES_PASSWORD: dfc
+          POSTGRES_DB: dfc_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dfc -d dfc_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PG_CONN: postgres://dfc:dfc@localhost:5432/dfc_test
+      RUN_PG_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: backend/payments/package-lock.json
+      - name: Install psql client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+      - name: Apply payments migration
+        run: psql "$PG_CONN" -f migrations/20260702_create_payments_and_webhooks.sql
+      - name: Run payments tests
+        run: |
+          cd backend/payments
+          npm ci
+          npm test
+
+  dart-rights-experiments-test:
+    needs: migration-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: stable
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Analyze scoped backend modules
+        run: flutter analyze backend/rights backend/experiments test/backend/rights test/experiments
+      - name: Run rights and experiments tests
+        run: |
+          flutter test test/backend/rights
+          flutter test test/experiments/assignment_test.dart

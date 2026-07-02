@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/widgets/dfc_poster_frame.dart';
 
 /// Renders server-populated OG metadata (from the fetchOgMetadata Cloud Function).
@@ -23,14 +24,13 @@ class OgPreviewCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-        decoration: BoxDecoration(
-          color: DesignTokens.bgCard,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white10),
-        ),
-        clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
+        child: GlassPanel(
+        padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(12),
+        backgroundColor: DesignTokens.bgCard,
+        borderColor: Colors.white10,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,6 +104,7 @@ class OgPreviewCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/constants/image_assets.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// STORY VIEWER — Instagram-grade full-screen story viewer
@@ -311,15 +313,14 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (story.caption.isNotEmpty)
-                      Container(
+                      GlassPanel(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
                           vertical: 10,
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.5),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        backgroundColor: Colors.black.withValues(alpha: 0.35),
+                        borderRadius: const BorderRadius.all(Radius.circular(12)),
+                        hasBorder: false,
                         child: Text(
                           story.caption,
                           style: const TextStyle(
@@ -331,17 +332,14 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
                       ),
                     const SizedBox(height: 12),
                     // Reply bar
-                    Container(
+                    GlassPanel(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       height: 44,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.3),
-                        ),
-                        borderRadius: BorderRadius.circular(22),
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Row(
+                      borderColor: DesignTokens.neonCyan.withValues(alpha: 0.35),
+                      shadows: NeonGlow.softCyan(),
+                      borderRadius: const BorderRadius.all(Radius.circular(22)),
+                      child: Center(
+                        child: Row(
                         children: [
                           Expanded(
                             child: Text(
@@ -364,6 +362,7 @@ class _StoryViewerScreenState extends State<StoryViewerScreen>
                             size: 20,
                           ),
                         ],
+                        ),
                       ),
                     ),
                   ],

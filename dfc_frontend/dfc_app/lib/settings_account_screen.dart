@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'dfc_theme.dart';
-import 'auth_controller.dart'; // Adjust path if needed depending on your router's source of truth
-import 'modules/settings/controllers/settings_controller.dart';
+import 'auth_controller.dart';
 
 class SettingsAccountScreen extends StatefulWidget {
   const SettingsAccountScreen({super.key});
@@ -12,42 +11,30 @@ class SettingsAccountScreen extends StatefulWidget {
 }
 
 class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
-  late final SettingsController _controller;
+  final _settings = _LocalSettings();
 
   @override
   void initState() {
     super.initState();
-    _controller = SettingsController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final userEmail = user?.email ?? 'fighter@datafightcentral.com';
-    final userName =
-        user?.displayName ?? (userEmail.split('@').first.toUpperCase());
-    final avatarUrl =
-        user?.photoURL ??
-        'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userName)}&background=00E5FF&color=000';
+    const userEmail = 'fighter@datafightcentral.com';
+    const userName = 'Fighter';
+    const avatarUrl =
+        'https://ui-avatars.com/api/?name=Fighter&background=00E5FF&color=000';
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _controller,
-          builder: (context, _) {
-            if (_controller.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: AppColors.accentCyan),
-              );
-            }
-
+        child: StatefulBuilder(
+          builder: (context, setLocalState) {
             return ListView(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               children: [
@@ -136,8 +123,10 @@ class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
                     children: [
                       _buildToggleRow(
                         title: 'Push Notifications',
-                        value: _controller.settings.pushNotifications,
-                        onChanged: _controller.togglePush,
+                        value: _settings.pushNotifications,
+                        onChanged: (value) => setLocalState(() {
+                          _settings.pushNotifications = value;
+                        }),
                         color: AppColors.accentCyan,
                       ),
                       const Padding(
@@ -146,8 +135,10 @@ class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
                       ),
                       _buildToggleRow(
                         title: 'Email Updates',
-                        value: _controller.settings.emailUpdates,
-                        onChanged: _controller.toggleEmail,
+                        value: _settings.emailUpdates,
+                        onChanged: (value) => setLocalState(() {
+                          _settings.emailUpdates = value;
+                        }),
                         color: AppColors.accentCyan,
                       ),
                       const Padding(
@@ -172,8 +163,10 @@ class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
                     children: [
                       _buildToggleRow(
                         title: 'Biometric Login (Face ID)',
-                        value: _controller.settings.biometricLogin,
-                        onChanged: _controller.toggleBiometrics,
+                        value: _settings.biometricLogin,
+                        onChanged: (value) => setLocalState(() {
+                          _settings.biometricLogin = value;
+                        }),
                         color: AppColors.accentPurple,
                       ),
                       const Padding(
@@ -205,7 +198,7 @@ class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
                     children: [
                       _buildNavigationRow(
                         title: 'Payment Methods',
-                        subtitle: _controller.settings.paymentMethod,
+                        subtitle: _settings.paymentMethod,
                       ),
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0),
@@ -213,7 +206,7 @@ class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
                       ),
                       _buildNavigationRow(
                         title: 'Subscription Plan',
-                        subtitle: _controller.settings.subscriptionTier,
+                        subtitle: _settings.subscriptionTier,
                         valueColor: AppColors.accentGreen,
                       ),
                     ],
@@ -353,6 +346,14 @@ class _SettingsAccountScreenState extends State<SettingsAccountScreen> {
       ],
     );
   }
+}
+
+class _LocalSettings {
+  bool pushNotifications = true;
+  bool emailUpdates = true;
+  bool biometricLogin = false;
+  String paymentMethod = 'Card •••• 4242';
+  String subscriptionTier = 'Pro';
 }
 
 class _DfcCard extends StatelessWidget {

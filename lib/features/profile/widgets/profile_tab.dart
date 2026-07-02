@@ -4,6 +4,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/constants/theme_mode.dart';
 import '../../../shared/widgets/neon_card.dart';
 import '../../../core/theme/theme_controller.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({super.key});
@@ -20,18 +22,17 @@ class _ProfileTabState extends State<ProfileTab> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Container(
+          GlassPanel(
             padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.neonBlue.withValues(alpha: 0.08),
-                  AppColors.panel,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.border),
+            gradient: LinearGradient(
+              colors: [
+                AppColors.neonBlue.withValues(alpha: 0.08),
+                AppColors.panel,
+              ],
             ),
+            borderRadius: BorderRadius.circular(16),
+            borderColor: AppColors.neonBlue.withValues(alpha: 0.3),
+            shadows: NeonGlow.softCyan(),
             child: Column(
               children: [
                 Container(
@@ -262,21 +263,28 @@ class _ProfileTabState extends State<ProfileTab> {
     ),
   );
 
-  static Widget _ps(String l, String v) => Column(
-    children: [
-      Text(
-        v,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: AppColors.textPrimary,
+  static Widget _ps(String l, String v) => GlassPanel(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    backgroundColor: AppColors.neonBlue.withValues(alpha: 0.06),
+    borderColor: AppColors.neonBlue.withValues(alpha: 0.2),
+    borderRadius: BorderRadius.circular(10),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          v,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
-      ),
-      Text(
-        l,
-        style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
-      ),
-    ],
+        Text(
+          l,
+          style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
+        ),
+      ],
+    ),
   );
 
   static String _modeLabel(DfcThemeMode m) {

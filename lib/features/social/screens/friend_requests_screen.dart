@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/services/enhanced_friends_service.dart';
 import '../../../shared/models/friend_model.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
+import '../../../core/theme/glass_panel.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// FRIEND REQUESTS SCREEN
@@ -267,9 +268,11 @@ class _RequestCardState extends State<RequestCard> {
     final expiresIn = request.expiresAt.difference(DateTime.now());
     final isExpiringSoon = expiresIn.inDays < 3 && !request.isExpired;
 
-    return Card(
-      color: AppTheme.cardBackground,
-      margin: const EdgeInsets.only(bottom: 12),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
+      backgroundColor: AppTheme.cardBackground,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -465,6 +468,7 @@ class _RequestCardState extends State<RequestCard> {
             ],
           ],
         ),
+      ),
       ),
     );
   }

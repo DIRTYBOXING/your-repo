@@ -32,13 +32,13 @@ We will decouple the following isolated modules from our staging branch (`harden
 
 We will launch a formal **GitHub Sponsors Campaign** structured across individual and corporate contribution tiers:
 
-| Sponsor Tier | Monthly Contribution | Primary Benefit |
-|---|---|---|
-| **Supporter** | $5 / month | Public badge on profile; inclusion in `CONTRIBUTORS.md`. |
-| **Elite Developer** | $50 / month | Direct access to DFC core Discord, early beta feature flags access, and input into our feature prioritisation boards. |
-| **Pink Shield Gym Sponsor**| $250 / month | Sponsors 1 certified "Gym Not Jail" youth diversion scholarship at a local combat sports gym. Includes branding on global map nodes. |
-| **Corporate Sponsor** | $1,000 / month | 2 hours/month of dedicated technical support for setting up the idempotent payments mesh; branding on GitHub README pages. |
-| **Enterprise Sovereign** | $5,000 / month | Dedicated SRE setup consulting for GKE pipelines; prime sponsorship spot on the central DFC landing page and partner decks. |
+| Sponsor Tier                | Monthly Contribution | Primary Benefit                                                                                                                      |
+| --------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Supporter**               | $5 / month           | Public badge on profile; inclusion in `CONTRIBUTORS.md`.                                                                             |
+| **Elite Developer**         | $50 / month          | Direct access to DFC core Discord, early beta feature flags access, and input into our feature prioritisation boards.                |
+| **Pink Shield Gym Sponsor** | $250 / month         | Sponsors 1 certified "Gym Not Jail" youth diversion scholarship at a local combat sports gym. Includes branding on global map nodes. |
+| **Corporate Sponsor**       | $1,000 / month       | 2 hours/month of dedicated technical support for setting up the idempotent payments mesh; branding on GitHub README pages.           |
+| **Enterprise Sovereign**    | $5,000 / month       | Dedicated SRE setup consulting for GKE pipelines; prime sponsorship spot on the central DFC landing page and partner decks.          |
 
 ---
 
@@ -65,7 +65,7 @@ Given GitHub's deep support for open-source sustainability and social impact, we
 
 Would you be available for a brief discussion this Thursday or Friday? I can share a one-page tech schematic and our cohorted rollout roadmap.
 
-Best regards,  
-DFC Platform Lead  
+Best regards,
+DFC Platform Lead
 https://github.com/DIRTYBOXING/your-repo
 ```

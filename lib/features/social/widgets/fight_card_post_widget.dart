@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../core/constants/image_assets.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -42,23 +43,20 @@ class FightCardPostWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final parsed = _ParsedFightCard.fromText(content);
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0A0E18),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: DesignTokens.neonCyan.withValues(alpha: 0.2),
-          width: 0.8,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
+      borderRadius: BorderRadius.circular(14),
+      backgroundColor: const Color(0xFF0A0E18),
+      borderColor: DesignTokens.neonCyan.withValues(alpha: 0.2),
+      borderWidth: 0.8,
+      shadows: [
+        BoxShadow(
+          color: DesignTokens.neonCyan.withValues(alpha: 0.06),
+          blurRadius: 16,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: DesignTokens.neonCyan.withValues(alpha: 0.06),
-            blurRadius: 16,
-          ),
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
+      ],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -85,6 +83,7 @@ class FightCardPostWidget extends StatelessWidget {
           // ── BROADCAST / HASHTAG STRIP ──
           _buildBroadcastStrip(parsed),
         ],
+      ),
       ),
     );
   }

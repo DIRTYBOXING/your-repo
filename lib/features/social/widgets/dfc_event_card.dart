@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/models/event_model.dart';
 import '../../../shared/services/feed_prioritization_service.dart';
 import '../../../shared/services/auth_service.dart';
@@ -166,27 +167,25 @@ class _DFCEventCardState extends State<DFCEventCard> {
         HapticFeedback.lightImpact();
         widget.onTap?.call();
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        decoration: BoxDecoration(
-          color: DesignTokens.bgCard,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-          border: Border.all(
-            color: urgency >= 2
-                ? _urgencyColor.withValues(alpha: 0.4)
-                : Colors.white.withValues(alpha: 0.06),
-            width: urgency >= 2 ? 1.5 : DesignTokens.borderThin,
-          ),
-          boxShadow: urgency >= 2
-              ? [
-                  BoxShadow(
-                    color: _urgencyColor.withValues(alpha: 0.15),
-                    blurRadius: 12,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : null,
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+        child: GlassPanel(
+        padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
+        backgroundColor: DesignTokens.bgCard,
+        borderColor: urgency >= 2
+            ? _urgencyColor.withValues(alpha: 0.4)
+            : Colors.white.withValues(alpha: 0.06),
+        borderWidth: urgency >= 2 ? 1.5 : DesignTokens.borderThin,
+        shadows: urgency >= 2
+            ? [
+                BoxShadow(
+                  color: _urgencyColor.withValues(alpha: 0.15),
+                  blurRadius: 12,
+                  spreadRadius: 2,
+                ),
+              ]
+            : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -484,6 +483,7 @@ class _DFCEventCardState extends State<DFCEventCard> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

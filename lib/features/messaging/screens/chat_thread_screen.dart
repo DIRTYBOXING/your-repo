@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
-import '../widgets/message_bubble.dart';
-import '../widgets/chat_input_bar.dart';
-import '../widgets/typing_indicator.dart';
+import 'message_bubble.dart';
+import 'chat_input_bar.dart';
+import 'typing_indicator.dart';
 
 class ChatThreadScreen extends StatelessWidget {
   final String conversationId;

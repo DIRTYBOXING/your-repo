@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'dart:math' as math;
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -170,12 +170,12 @@ class _PpvStreamScreenState extends State<PpvStreamScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(color: AppTheme.neonRed),
+            CircularProgressIndicator(color: DesignTokens.neonRed),
             SizedBox(height: 16),
             Text(
               'ESTABLISHING SECURE WEBRTC CONNECTION...',
               style: TextStyle(
-                color: AppTheme.neonRed,
+                color: DesignTokens.neonRed,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 2,
               ),
@@ -237,11 +237,11 @@ class _PpvStreamScreenState extends State<PpvStreamScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: AppTheme.neonRed,
+              color: DesignTokens.neonRed,
               borderRadius: BorderRadius.circular(6),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.neonRed.withValues(alpha: 0.5),
+                  color: DesignTokens.neonRed.withValues(alpha: 0.5),
                   blurRadius: 12,
                 ),
               ],
@@ -381,7 +381,7 @@ class _PpvStreamScreenState extends State<PpvStreamScreen>
         children: [
           _buildCamButton(0, 'MAIN', Icons.videocam),
           const SizedBox(height: 12),
-          _buildCamButton(1, 'RED', Icons.camera_alt, color: AppTheme.neonRed),
+          _buildCamButton(1, 'RED', Icons.camera_alt, color: DesignTokens.neonRed),
           const SizedBox(height: 12),
           _buildCamButton(
             2,
@@ -464,12 +464,12 @@ class _PpvStreamScreenState extends State<PpvStreamScreen>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: const RadialGradient(
-                  colors: [AppTheme.neonRed, Colors.transparent],
+                  colors: [DesignTokens.neonRed, Colors.transparent],
                   stops: [0.3, 1.0],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.neonRed.withValues(
+                    color: DesignTokens.neonRed.withValues(
                       alpha: 0.5 * _hypeController.value,
                     ),
                     blurRadius: 20,

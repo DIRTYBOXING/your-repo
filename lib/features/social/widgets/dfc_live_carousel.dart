@@ -141,6 +141,13 @@ class _CarouselEventCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black,
+                  boxShadow: [
+                    BoxShadow(
+                      color: palette.accent.withValues(alpha: 0.25),
+                      blurRadius: 16,
+                      spreadRadius: -4,
+                    ),
+                  ],
                 ),
                 child: Stack(
                   fit: StackFit.expand,

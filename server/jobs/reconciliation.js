@@ -29,6 +29,7 @@ function aggregatePurchaseTotals(purchaseStore) {
   const totals = new Map();
   for (const purchase of purchaseStore.values()) {
     if (!purchase?.userId || purchase.status !== "paid") continue;
+    if (purchase.provider !== "wallet") continue;
     const cents = Number(purchase.amountCents || 0);
     totals.set(purchase.userId, (totals.get(purchase.userId) || 0) + cents);
   }

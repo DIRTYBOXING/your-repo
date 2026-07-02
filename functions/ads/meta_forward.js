@@ -74,7 +74,6 @@ function _buildMetaEvent(dfcEvent) {
     userId,
     email,
     phone,
-    fbclid,
     fbc,
     fbp,
     clientIpAddress,
@@ -84,6 +83,7 @@ function _buildMetaEvent(dfcEvent) {
     currency = "USD",
     orderId,
     offerId,
+    customData: dfcCustomData = {},
   } = dfcEvent;
 
   const metaEventName = EVENT_NAME_MAP[event] || "CustomEvent";
@@ -98,7 +98,7 @@ function _buildMetaEvent(dfcEvent) {
   if (clientIpAddress) userData.client_ip_address = clientIpAddress;
   if (clientUserAgent) userData.client_user_agent = clientUserAgent;
 
-  const customData = {};
+  const customData = { ...dfcCustomData };
   if (amountCents != null) {
     customData.value = (Number(amountCents) / 100).toFixed(2);
     customData.currency = currency;

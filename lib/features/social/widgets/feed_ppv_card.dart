@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:provider/provider.dart';
+
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/theme/adrenaline_theme.dart';
 import '../../../shared/models/ppv_model.dart';
+import '../../../shared/services/auth_service.dart';
 import '../../../shared/services/ppv_service.dart';
 import '../../ppv/widgets/ppv_payment_sheet.dart';
 
@@ -97,13 +100,16 @@ class _FeedPPVCardState extends State<FeedPPVCard>
         event: event,
         onPaymentConfirmed: (request) async {
           final messenger = ScaffoldMessenger.of(context);
+          final auth = context.read<AuthService>();
+          final userId =
+              auth.firebaseUser?.uid ??
+              (auth.isDemoUser ? AuthService.demoUserId : 'anon');
           try {
             await PPVService().purchasePPV(
-              ppvEventId: event.id,
-              paymentIntentId: request.externalPaymentReference,
-              paymentMethod: request.paymentMethod.key,
+              userId: userId,
+              ppvEvent: event,
               tier: _mapTier(request.purchaseTier),
-              pricePaidCents: (request.amount * 100).round(),
+              paymentMethod: request.paymentMethod.key,
             );
             messenger.showSnackBar(
               SnackBar(

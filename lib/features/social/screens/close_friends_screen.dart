@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// CLOSE FRIENDS — Instagram-grade close friends management
@@ -227,16 +228,13 @@ class _CloseFriendsScreenState extends State<CloseFriendsScreen> {
       body: Column(
         children: [
           // Info banner
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: GlassPanel(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: DesignTokens.neonGreen.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: DesignTokens.neonGreen.withValues(alpha: 0.2),
-              ),
-            ),
+            backgroundColor: DesignTokens.neonGreen.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+            borderColor: DesignTokens.neonGreen.withValues(alpha: 0.2),
             child: Row(
               children: [
                 const Icon(
@@ -256,6 +254,7 @@ class _CloseFriendsScreenState extends State<CloseFriendsScreen> {
                   ),
                 ),
               ],
+            ),
             ),
           ),
 
@@ -314,19 +313,17 @@ class _FriendTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 6),
-      decoration: BoxDecoration(
-        color: entry.isClose
-            ? DesignTokens.neonGreen.withValues(alpha: 0.06)
-            : DesignTokens.bgCard,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: entry.isClose
-              ? DesignTokens.neonGreen.withValues(alpha: 0.2)
-              : Colors.white.withValues(alpha: 0.06),
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
+      backgroundColor: entry.isClose
+          ? DesignTokens.neonGreen.withValues(alpha: 0.06)
+          : DesignTokens.bgCard,
+      borderRadius: BorderRadius.circular(12),
+      borderColor: entry.isClose
+          ? DesignTokens.neonGreen.withValues(alpha: 0.2)
+          : Colors.white.withValues(alpha: 0.06),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: entry.isClose
@@ -381,6 +378,7 @@ class _FriendTile extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

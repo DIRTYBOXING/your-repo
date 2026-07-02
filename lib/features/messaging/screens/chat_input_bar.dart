@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 
 class ChatInputBar extends StatelessWidget {
   const ChatInputBar({super.key});
@@ -27,13 +28,11 @@ class ChatInputBar extends StatelessWidget {
             onPressed: () {},
           ),
           Expanded(
-            child: Container(
+            child: GlassPanel(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: DesignTokens.bgCard,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.white10),
-              ),
+              borderRadius: BorderRadius.circular(24),
+              backgroundColor: DesignTokens.bgCard,
+              borderColor: DesignTokens.neonCyan.withValues(alpha: 0.15),
               child: const TextField(
                 style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(

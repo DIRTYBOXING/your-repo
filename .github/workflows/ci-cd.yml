@@ -28,7 +28,7 @@ jobs:
       BACKEND_BASE_URL: ${{ secrets.BACKEND_BASE_URL }}
       FRONTEND_BASE_URL: ${{ secrets.FRONTEND_BASE_URL }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Validate required C1 secrets on main branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         shell: bash
@@ -44,9 +44,9 @@ jobs:
             exit 1
           fi
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
       - name: Install dependencies (secure — ignore scripts)
         shell: bash
         env:
@@ -69,25 +69,28 @@ jobs:
   docker-build:
     needs: build-and-test
     runs-on: ubuntu-latest
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker build -t myapp:${{ github.sha }} .
-      - name: Log in to DockerHub
-        if: env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != ''
-        uses: docker/login-action@v2
+      - uses: actions/checkout@v4
+      - name: Log in to GCR
+        if: secrets.GCP_SA_KEY != ''
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Push Docker image
-        if: env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != ''
-        run: docker push myapp:${{ github.sha }}
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }}
+      - name: Build and push Docker image to GCR
+        if: secrets.GCP_SA_KEY != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            gcr.io/datafightcentral/backend:latest
+            gcr.io/datafightcentral/backend:${{ github.sha }}
       - name: Skip Docker push notice
-        if: env.DOCKERHUB_USERNAME == '' || env.DOCKERHUB_TOKEN == ''
-        run: echo "::notice::DockerHub secrets missing — built image locally but skipped push"
+        if: secrets.GCP_SA_KEY == ''
+        run: echo "::notice::GCP_SA_KEY missing — skipped GCR push"
 
   deploy-aws:
     needs: docker-build

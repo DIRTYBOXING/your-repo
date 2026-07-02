@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/services/enhanced_friends_service.dart';
 import '../../../shared/services/friend_suggestions_engine.dart';
 
@@ -264,17 +265,15 @@ class _SuggestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: GlassPanel(
         width: 176,
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        decoration: BoxDecoration(
-          color: DesignTokens.bgCard,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.08),
-            width: 0.5,
-          ),
-        ),
+        padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+        backgroundColor: DesignTokens.bgCard,
+        borderColor: Colors.white.withValues(alpha: 0.08),
+        borderWidth: 0.5,
         child: Stack(
           children: [
             Column(
@@ -429,6 +428,7 @@ class _SuggestionCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

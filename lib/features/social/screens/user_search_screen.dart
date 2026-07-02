@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../widgets/follow_button.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -221,13 +222,13 @@ class _UserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.06)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
+      backgroundColor: Colors.white.withValues(alpha: 0.04),
+      borderRadius: BorderRadius.circular(12),
+      borderColor: Colors.white.withValues(alpha: 0.06),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         leading: DfcCircleAvatar(
@@ -286,6 +287,7 @@ class _UserTile extends StatelessWidget {
                 ],
               ),
         onTap: () => context.push('/user/$userId'),
+      ),
       ),
     );
   }

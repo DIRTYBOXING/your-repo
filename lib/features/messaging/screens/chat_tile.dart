@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
 
 class ChatTile extends StatelessWidget {
   final String name;
@@ -27,13 +29,15 @@ class ChatTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      child: Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: GlassPanel(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
-          ),
-        ),
+        borderRadius: BorderRadius.circular(14),
+        borderColor: hasUnread
+            ? DesignTokens.neonCyan.withValues(alpha: 0.25)
+            : Colors.white.withValues(alpha: 0.06),
+        shadows: hasUnread ? NeonGlow.softCyan() : null,
         child: Row(
           children: [
             Stack(
@@ -120,9 +124,10 @@ class ChatTile extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.only(left: 8),
                           padding: const EdgeInsets.all(6),
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: DesignTokens.neonCyan,
                             shape: BoxShape.circle,
+                            boxShadow: NeonGlow.softCyan(),
                           ),
                           child: Text(
                             unreadCount.toString(),
@@ -140,6 +145,7 @@ class ChatTile extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

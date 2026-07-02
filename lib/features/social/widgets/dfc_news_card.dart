@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/services/fight_news_service.dart';
 
 /// Professional fight news article card — Boxing News 24 / Sherdog / DAZN style.
@@ -21,31 +22,28 @@ class DFCNewsCard extends StatelessWidget {
         HapticFeedback.lightImpact();
         onTap?.call();
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        decoration: BoxDecoration(
-          color: kIsWeb
-              ? const Color(0xFF0A1628).withValues(alpha: 0.92)
-              : Colors.white.withValues(alpha: 0.06),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: article.isBreaking
-                ? DesignTokens.neonRed.withValues(alpha: 0.5)
-                : article.isFeatured
-                ? DesignTokens.neonGold.withValues(alpha: 0.3)
-                : Colors.white.withValues(alpha: 0.1),
-            width: article.isBreaking ? 1.5 : 1,
-          ),
-          boxShadow: article.isBreaking
-              ? [
-                  BoxShadow(
-                    color: DesignTokens.neonRed.withValues(alpha: 0.15),
-                    blurRadius: 12,
-                  ),
-                ]
-              : null,
-        ),
-        clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        child: GlassPanel(
+        padding: EdgeInsets.zero,
+        backgroundColor: kIsWeb
+            ? const Color(0xFF0A1628).withValues(alpha: 0.92)
+            : Colors.white.withValues(alpha: 0.06),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderColor: article.isBreaking
+            ? DesignTokens.neonRed.withValues(alpha: 0.5)
+            : article.isFeatured
+            ? DesignTokens.neonGold.withValues(alpha: 0.3)
+            : Colors.white.withValues(alpha: 0.1),
+        borderWidth: article.isBreaking ? 1.5 : 1,
+        shadows: article.isBreaking
+            ? [
+                BoxShadow(
+                  color: DesignTokens.neonRed.withValues(alpha: 0.15),
+                  blurRadius: 12,
+                ),
+              ]
+            : null,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -73,6 +71,7 @@ class DFCNewsCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

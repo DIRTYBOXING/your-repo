@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/services/n8n_service.dart';
 
 class AIPostGeneratorCard extends StatefulWidget {
@@ -175,29 +176,24 @@ class _AIPostGeneratorCardState extends State<AIPostGeneratorCard> {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [
-              const Color(0xFF11253A),
-              DesignTokens.bgCard.withValues(alpha: 0.98),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(
-            color: DesignTokens.neonCyan.withValues(alpha: 0.24),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: DesignTokens.neonCyan.withValues(alpha: 0.08),
-              blurRadius: 22,
-              spreadRadius: 1,
-            ),
+      child: GlassPanel(
+        borderRadius: BorderRadius.circular(20),
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF11253A),
+            DesignTokens.bgCard.withValues(alpha: 0.98),
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderColor: DesignTokens.neonCyan.withValues(alpha: 0.24),
+        shadows: [
+          BoxShadow(
+            color: DesignTokens.neonCyan.withValues(alpha: 0.08),
+            blurRadius: 22,
+            spreadRadius: 1,
+          ),
+        ],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -14,6 +14,7 @@ import '../../../shared/models/event_model.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/services/social_service.dart';
+import '../../../shared/services/ppv_service.dart';
 import '../../../shared/services/fight_news_service.dart';
 import '../../../shared/services/story_engine.dart';
 import '../widgets/dfc_post_card.dart';

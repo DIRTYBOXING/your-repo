@@ -34,6 +34,13 @@ import '../../features/profile/screens/fighter_public_profile_screen.dart';
 import '../../features/profile/screens/profile_screen_v2.dart';
 import '../../features/promoter/screens/promoter_dashboard_screen.dart';
 import '../../features/replay/screens/replay_center_screen.dart';
+import '../../features/social/fight_wire_post_screen.dart';
+import '../../features/social/screens/create_group_screen.dart';
+import '../../features/social/screens/create_story_screen.dart';
+import '../../features/social/screens/cross_platform_publish_screen.dart';
+import '../../features/social/screens/group_detail_screen.dart';
+import '../../features/social/screens/story_viewer_screen.dart';
+import '../../features/social/screens/upload_reel_screen.dart';
 import '../../features/sponsors/screens/sponsorship_system_screen.dart';
 import '../../features/streaming/screens/streaming_center_screen.dart';
 import '../../features/training/screens/fight_summary_screen.dart';
@@ -232,6 +239,63 @@ class AppRouter {
         path: '/only-fit',
         builder: (context, state) => const OnlyFitPortalScreen(),
       ),
+
+      // Social module
+      GoRoute(
+        path: RouterConfig.createGroupPath,
+        builder: (context, state) => const CreateGroupScreen(),
+      ),
+      GoRoute(
+        path: RouterConfig.groupDetailPath,
+        builder: (context, state) => GroupDetailScreen(
+          groupId: state.pathParameters['groupId']!,
+        ),
+      ),
+      GoRoute(
+        path: RouterConfig.uploadReelPath,
+        builder: (context, state) => const UploadReelScreen(),
+      ),
+      GoRoute(
+        path: RouterConfig.crossPlatformPublishPath,
+        builder: (context, state) => const CrossPlatformPublishScreen(),
+      ),
+      GoRoute(
+        path: RouterConfig.createStoryPath,
+        builder: (context, state) => const CreateStoryScreen(),
+      ),
+      GoRoute(
+        path: RouterConfig.storyViewerPath,
+        builder: (context, state) => StoryViewerScreen(
+          category: state.uri.queryParameters['category'] ?? 'EVENTS',
+        ),
+      ),
+      GoRoute(
+        path: RouterConfig.fightWirePath,
+        builder: (context, state) => const FightWirePostScreen(),
+      ),
     ],
   );
+}
+
+/// Named route-path constants for screens that are pushed by string path
+/// (via `context.push`) rather than referenced directly, so callers don't
+/// have to hardcode raw path strings.
+class RouterConfig {
+  RouterConfig._();
+
+  static const String createGroupPath = '/create-group';
+  static const String groupDetailPath = '/group/:groupId';
+  static const String uploadReelPath = '/upload-reel';
+  static const String crossPlatformPublishPath = '/cross-platform-publish';
+  static const String createStoryPath = '/create-story';
+  static const String storyViewerPath = '/story-viewer';
+  static const String fightWirePath = '/fight-wire';
+
+  // NOTE: the following three are referenced by find_friends_screen.dart's
+  // promo quick-actions but have no corresponding screen/route implemented
+  // yet. Kept as placeholders so the file compiles; wire up real
+  // destinations before shipping this UI.
+  static const String socialQueuePath = '/social-queue';
+  static const String eventPromotionPath = '/event-promotion';
+  static const String socialMediaToolkitPath = '/social-media-toolkit';
 }

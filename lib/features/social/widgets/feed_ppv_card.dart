@@ -6,6 +6,7 @@ import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/theme/adrenaline_theme.dart';
 import '../../../shared/models/ppv_model.dart';
+import '../../../shared/services/ppv_service.dart';
 import '../../ppv/widgets/ppv_payment_sheet.dart';
 
 /// Compact in-feed PPV buy card — zero-friction micro-monetisation

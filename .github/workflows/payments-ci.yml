@@ -26,9 +26,41 @@ concurrency:
   group: payments-exp-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
-  migration-smoke:
+  secrets-scan:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependency-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: backend/payments/package-lock.json
+      - name: Run npm audit (production deps)
+        run: |
+          cd backend/payments
+          npm ci
+          npm audit --omit=dev --audit-level=high
+
+  migration-smoke:
+    needs: [secrets-scan, dependency-scan]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:15
@@ -52,18 +84,51 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
       - name: Migration up
         run: |
-          psql "$PG_CONN" -f migrations/20260702_create_payments_and_webhooks.sql
-          psql "$PG_CONN" -f migrations/20260702_create_rights_and_takedown.sql
-          psql "$PG_CONN" -f migrations/20260702_create_experiments_and_assignments.sql
+          set -euo pipefail
+          psql "$PG_CONN" -f migrations/20260702_create_payments_and_webhooks.sql | tee migration_up_payments.log
+          psql "$PG_CONN" -f migrations/20260702_create_rights_and_takedown.sql | tee migration_up_rights.log
+          psql "$PG_CONN" -f migrations/20260702_create_experiments_and_assignments.sql | tee migration_up_experiments.log
       - name: Migration down
         run: |
-          psql "$PG_CONN" -f migrations/20260702_drop_experiments_and_assignments.sql
-          psql "$PG_CONN" -f migrations/20260702_drop_rights_and_takedown.sql
-          psql "$PG_CONN" -f migrations/20260702_drop_payments_and_webhooks.sql
+          set -euo pipefail
+          psql "$PG_CONN" -f migrations/20260702_drop_experiments_and_assignments.sql | tee migration_down_experiments.log
+          psql "$PG_CONN" -f migrations/20260702_drop_rights_and_takedown.sql | tee migration_down_rights.log
+          psql "$PG_CONN" -f migrations/20260702_drop_payments_and_webhooks.sql | tee migration_down_payments.log
+      - name: Verify rollback reached clean state
+        run: |
+          set -euo pipefail
+          psql "$PG_CONN" -tAc "
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_schema='public'
+              AND table_name IN (
+                'webhook_events',
+                'provider_transactions',
+                'orders',
+                'ppv_entitlements',
+                'ledger_entries',
+                'payout_batches',
+                'payout_attempts',
+                'content_rights',
+                'geo_policy',
+                'takedown_requests',
+                'experiments',
+                'assignments',
+                'exposures',
+                'experiment_audit'
+              )
+          " | grep -qx '0'
+      - name: Upload migration logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-smoke-logs
+          path: "*_*.log"
 
   payments-node-test:
     needs: migration-smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     services:
       postgres:
         image: postgres:15
@@ -94,13 +159,21 @@ jobs:
         run: psql "$PG_CONN" -f migrations/20260702_create_payments_and_webhooks.sql
       - name: Run payments tests
         run: |
+          set -euo pipefail
           cd backend/payments
           npm ci
-          npm test
+          npm test | tee ../../payments-tests.log
+      - name: Upload payments test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: payments-test-logs
+          path: payments-tests.log
 
   dart-rights-experiments-test:
     needs: migration-smoke
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -111,8 +184,20 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
       - name: Analyze scoped backend modules
-        run: flutter analyze backend/rights backend/experiments test/backend/rights test/experiments
+        run: |
+          set -euo pipefail
+          flutter analyze backend/rights backend/experiments test/backend/rights test/experiments | tee dart-analyze.log
       - name: Run rights and experiments tests
         run: |
-          flutter test test/backend/rights
-          flutter test test/experiments/assignment_test.dart
+          set -euo pipefail
+          flutter test test/backend/rights | tee dart-rights-tests.log
+          flutter test test/experiments/assignment_test.dart | tee dart-experiments-tests.log
+      - name: Upload dart logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dart-rights-experiments-logs
+          path: |
+            dart-analyze.log
+            dart-rights-tests.log
+            dart-experiments-tests.log

@@ -1,4 +1,4 @@
- YOU WORKINGH OR STUCK -- migrations/20260702_create_payments_and_webhooks.sql
+-- migrations/20260702_create_payments_and_webhooks.sql
 -- Create payments, webhooks, entitlements, ledger, provider transactions, and payout tables
 -- Run with: psql $PG_CONN -f migrations/20260702_create_payments_and_webhooks.sql
 -- Rollback: psql $PG_CONN -f migrations/20260702_drop_payments_and_webhooks.sql

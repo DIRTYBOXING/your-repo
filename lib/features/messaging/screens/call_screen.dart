@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -185,23 +186,20 @@ class _CallScreenState extends State<CallScreen>
             Positioned(
               right: 16,
               top: MediaQuery.of(context).padding.top + 16,
-              child: Container(
+              child: GlassPanel(
                 width: 120,
                 height: 160,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1A1A1A),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: AppTheme.neonCyan.withValues(alpha: 0.3),
-                    width: 2,
+                padding: EdgeInsets.zero,
+                borderRadius: BorderRadius.circular(16),
+                backgroundColor: const Color(0xFF1A1A1A),
+                borderColor: AppTheme.neonCyan.withValues(alpha: 0.3),
+                borderWidth: 2,
+                shadows: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.5),
+                    blurRadius: 20,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      blurRadius: 20,
-                    ),
-                  ],
-                ),
+                ],
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(14),
                   child: Center(

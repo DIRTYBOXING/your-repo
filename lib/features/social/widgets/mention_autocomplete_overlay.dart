@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -244,22 +245,20 @@ class _MentionAutocompleteOverlayState
   }
 
   Widget _buildSuggestionList() {
-    return Container(
+    return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 280),
-      decoration: BoxDecoration(
-        color: DesignTokens.bgCard,
+      child: GlassPanel(
+        padding: EdgeInsets.zero,
         borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
-        border: Border.all(color: DesignTokens.neonCyan.withValues(alpha: 0.2)),
-        boxShadow: [
+        backgroundColor: DesignTokens.bgCard,
+        borderColor: DesignTokens.neonCyan.withValues(alpha: 0.2),
+        shadows: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
         child: ListView.separated(
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(vertical: 6),

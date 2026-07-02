@@ -9,6 +9,7 @@ import '../../../shared/models/user_model.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/services/enhanced_friends_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
+import '../../../core/theme/glass_panel.dart';
 
 String _cleanMemberText(String? value) {
   if (value == null) return '';
@@ -435,13 +436,13 @@ class _MemberCardState extends State<_MemberCard> {
     final initials = name.isNotEmpty ? name[0].toUpperCase() : '?';
     final roleLabel = widget.user.role.displayName.toUpperCase();
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: AppTheme.cardBackground,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _roleColor.withValues(alpha: 0.25)),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
+      backgroundColor: AppTheme.cardBackground,
+      borderRadius: BorderRadius.circular(12),
+      borderColor: _roleColor.withValues(alpha: 0.25),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -537,6 +538,7 @@ class _MemberCardState extends State<_MemberCard> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

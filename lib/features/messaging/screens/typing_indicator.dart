@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 
 class TypingIndicator extends StatefulWidget {
   const TypingIndicator({super.key});
@@ -31,14 +32,13 @@ class _TypingIndicatorState extends State<TypingIndicator>
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+        child: GlassPanel(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: DesignTokens.bgCard,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white10),
-        ),
+        borderRadius: BorderRadius.circular(16),
+        backgroundColor: DesignTokens.bgCard,
+        borderColor: Colors.white10,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(3, (index) {
@@ -68,6 +68,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
             );
           }),
         ),
+      ),
       ),
     );
   }

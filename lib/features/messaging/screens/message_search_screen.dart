@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/services/auth_service.dart';
 import '../models/message_model.dart';
 import 'package:go_router/go_router.dart';
@@ -142,14 +143,11 @@ class _MessageSearchScreenState extends State<MessageSearchScreen> {
           // Search bar
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.04),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppTheme.neonCyan.withValues(alpha: 0.15),
-                ),
-              ),
+            child: GlassPanel(
+              padding: EdgeInsets.zero,
+              borderRadius: BorderRadius.circular(16),
+              backgroundColor: Colors.white.withValues(alpha: 0.04),
+              borderColor: AppTheme.neonCyan.withValues(alpha: 0.15),
               child: TextField(
                 controller: _searchCtrl,
                 autofocus: true,
@@ -243,14 +241,13 @@ class _MessageSearchScreenState extends State<MessageSearchScreen> {
         },
       ),
       borderRadius: BorderRadius.circular(12),
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 3),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: GlassPanel(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.02),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.04)),
-        ),
+        borderRadius: BorderRadius.circular(12),
+        backgroundColor: Colors.white.withValues(alpha: 0.02),
+        borderColor: Colors.white.withValues(alpha: 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -291,6 +288,7 @@ class _MessageSearchScreenState extends State<MessageSearchScreen> {
             _highlightedText(text, query),
           ],
         ),
+      ),
       ),
     );
   }

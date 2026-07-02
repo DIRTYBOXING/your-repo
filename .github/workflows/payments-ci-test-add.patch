@@ -1,0 +1,104 @@
+--- a/.github/workflows/payments-ci.yml
++++ b/.github/workflows/payments-ci.yml
+@@ -24,6 +24,9 @@ concurrency:
+   group: payments-exp-${{ github.ref }}
+   cancel-in-progress: true
+
++permissions:
++  contents: read
++  security-events: write
++
+ jobs:
+   secret-scan:
+     runs-on: ubuntu-latest
+@@ -40,6 +43,16 @@ jobs:
+       - name: Gitleaks action
+         uses: gitleaks/gitleaks-action@v2
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
++      - name: Upload secrets SARIF
++        uses: github/codeql-action/upload-sarif@v3
++        with:
++          sarif_file: gitleaks.sarif
++        if: always()
++
++  dependency-scan:
++    runs-on: ubuntu-latest
++    steps:
++      - uses: actions/checkout@v4
++      - name: Install trivy
++        run: |
++          sudo apt-get update && sudo apt-get install -y wget
++          wget https://github.com/aquasecurity/trivy/releases/download/v0.52.2/trivy_0.52.2_Linux-64bit.deb && sudo dpkg -i trivy_0.52.2_Linux-64bit.deb
++      - name: Filesystem dependency scan
++        run: trivy fs --format sarif --output trivy-sarif.json .
+
+   migration-smoke:
+     runs-on: ubuntu-latest
+@@ -50,6 +63,7 @@ jobs:
+         ports:
+           - 5432:5432
+         options: >-
+           --health-cmd "pg_isready -U dfc -d dfc_test"
+@@ -58,6 +72,8 @@ jobs:
+     env:
+       PGPASSWORD: dfc
+       PG_CONN: postgres://dfc:dfc@localhost:5432/dfc_test
++      FAIL_ON_MIGRATION_ERROR: "1"
++      STRICT_MIGRATIONS: "1"
+     steps:
+       - uses: actions/checkout@v4
+       - name: Install psql client
+@@ -75,6 +91,7 @@ jobs:
+           psql "$PG_CONN" -f migrations/20260702_drop_experiments_and_assignments.sql
+           psql "$PG_CONN" -f migrations/20260702_drop_rights_and_takedown.sql
+           psql "$PG_CONN" -f migrations/20260702_drop_payments_and_webhooks.sql
++      - name: Verify rollback achieved clean state
++        run: psql "$PG_CONN" -c "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('payments','webhooks','rights','takedowns','experiments','assignments','exposures','experiment_audit');"
+
+   payments-node-test:
+     needs: migration-smoke
+@@ -94,6 +111,7 @@ jobs:
+       - name: Apply payments migration
+         run: psql "$PG_CONN" -f migrations/20260702_create_payments_and_webhooks.sql
+       - name: Run payments tests
++        continue-on-error: false
+         run: |
+           cd backend/payments
+           npm ci
+@@ -104,6 +122,7 @@ jobs:
+     steps:
+       - uses: actions/checkout@v4
+       - uses: subosito/flutter-action@v2
++        with:
++          flutter-version: "3.x"
++          channel: stable
++          cache: true
+-        with:
+-          flutter-version: "3.x"
+-          channel: stable
+-          cache: true
++      - name: Flutter pub get
++        run: flutter pub get
++      - name: Analyze scoped backend modules
++        run: flutter analyze backend/rights backend/experiments test/backend/rights test/experiments
++      - name: Run rights and experiments tests
++        continue-on-error: false
++        run: |
++          flutter test test/backend/rights
++          flutter test test/experiments/assignment_test.dart
++      - name: Upload test results (rights)
++        uses: actions/upload-artifact@v4
++        with:
++          name: rights-dart-test-results
++          path: test/backend/rights/**/*.json
++          retention-days: 7
++        if: failure()
++      - name: Upload test results (experiments)
++        uses: actions/upload-artifact@v4
++        with:
++          name: experiments-dart-test-results
++          path: test/experiments/**/*.json
++          retention-days: 7
++        if: failure()
+--- End patch

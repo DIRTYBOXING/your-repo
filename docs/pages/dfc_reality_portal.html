@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFC Hybrid Meta 5 — Real-time Platform Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --color-accent: #FF5A5F;
+            --color-secondary: #2B2F6B;
+            --color-success: #00B3A6;
+            --color-danger: #E53935;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030810;
+        }
+
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .neon-glow-accent {
+            box-shadow: 0 0 15px rgba(255, 90, 95, 0.25);
+        }
+
+        .neon-glow-success {
+            box-shadow: 0 0 15px rgba(0, 179, 166, 0.25);
+        }
+
+        .neon-border-accent {
+            border-color: rgba(255, 90, 95, 0.4);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060e1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a2a42;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2b3f5c;
+        }
+    </style>
+</head>
+<body class="text-slate-100 overflow-x-hidden min-h-screen">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-[#060e1a]/95 backdrop-blur-md border-b border-cyan-500/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Brand logo with pulse indicator -->
+                <div class="flex items-center space-x-3">
+                    <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-[#FF5A5F] to-[#FF8C42] flex items-center justify-center font-black text-xl italic tracking-tighter heading-font shadow-lg transform -rotate-6">D</div>
+                    <div>
+                        <span class="text-lg font-extrabold tracking-widest text-white block heading-font leading-none">DATA FIGHT CENTRAL</span>
+                        <span class="text-[10px] text-[#00B3A6] font-semibold tracking-wider uppercase leading-none">HYBRID META 5 • REALITY NET</span>
+                    </div>
+                </div>
+
+                <!-- Live nodes and core metrics -->
+                <div class="hidden md:flex items-center space-x-6 text-xs text-slate-400">
+                    <div class="flex items-center space-x-2">
+                        <span class="h-2 w-2 rounded-full bg-[#00B3A6] animate-pulse"></span>
+                        <span class="font-medium">CANARY PIPELINE: STABLE</span>
+                    </div>
+                    <div class="h-4 w-px bg-slate-800"></div>
+                    <div>ACTIVE COHORTS: <span class="text-white font-bold heading-font" id="live-cohorts">18</span></div>
+                    <div class="h-4 w-px bg-slate-800"></div>
+                    <div>GLOBAL RETENTION: <span class="text-[#00B3A6] font-bold heading-font">38.4%</span></div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="triggerEmergencyLockdown()" class="px-3 py-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-400 hover:bg-red-900/40 text-xs font-bold transition flex items-center space-x-1">
+                        <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                        <span>GUARDIAN LOCK</span>
+                    </button>
+                    <a href="#calculator" class="px-4 py-2 rounded-xl bg-[#FF5A5F] text-white hover:bg-[#ff4449] text-xs font-bold transition duration-200 hover:scale-105 shadow-xl shadow-[#FF5A5F]/20 flex items-center space-x-1.5">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                        <span>CREATOR HUB</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Hero Introduction & Platform Concept Wire -->
+        <div class="mb-8 p-6 bg-gradient-to-r from-[#0a1628] to-[#040c17] rounded-3xl border border-cyan-500/15 relative overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(0,179,166,0.08),transparent_50%)]"></div>
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-white italic heading-font mb-2 tracking-wide">WE ARE NOT JUST FIGHTING • WE ARE THE FIGHT</h1>
+                    <p class="text-xs sm:text-sm text-slate-400 max-w-3xl leading-relaxed">
+                        Data Fight Central (DFC) matches payments, social media content feeds, and real-world combat fitness. 
+                        This interactive portal wires up live content flows, ticket processing validation, sliding revenue distribution computation, and region-blocked matchmaking directly from the codebase.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold flex items-center space-x-1.5">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#FF5A5F]"></i>
+                        <span>OnlyFans Model</span>
+                    </span>
+                    <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold flex items-center space-x-1.5">
+                        <i data-lucide="video" class="w-3.5 h-3.5 text-[#00B3A6]"></i>
+                        <span>TikTok Algorithmic Feed</span>
+                    </span>
+                    <span class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold flex items-center space-x-1.5">
+                        <i data-lucide="activity" class="w-3.5 h-3.5 text-yellow-400"></i>
+                        <span>Athlete Safety First</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3-Column Interactive Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- COLUMN 1: LIVE FIGHTWIRE & SOCIAL CONTENT FEED FEED SIMULATOR -->
+            <div class="flex flex-col space-y-6">
+                <div class="bg-[#0a1628]/80 p-5 rounded-2xl border border-cyan-500/10 flex flex-col h-[640px]">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="clapperboard" class="w-5 h-5 text-[#FF5A5F]"></i>
+                            <h2 class="text-sm font-bold tracking-wider uppercase text-white heading-font">FIGHTWIRE Feed Flow</h2>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full bg-red-950 text-[#FF5A5F] text-[9px] font-bold uppercase animate-pulse flex items-center space-x-1">
+                            <span class="h-1.5 w-1.5 rounded-full bg-[#FF5A5F]"></span>
+                            <span>Live Ingest</span>
+                        </span>
+                    </div>
+
+                    <!-- Simulator status block -->
+                    <div class="p-3 bg-[#06101c] rounded-xl border border-cyan-500/5 text-[11px] text-slate-400 mb-4 flex justify-between items-center">
+                        <span class="flex items-center gap-1.5"><i data-lucide="rss" class="w-3.5 h-3.5 text-cyan-400"></i> 40+ Ingest feeds active</span>
+                        <button onclick="injectFeedItem()" class="text-xs text-[#00B3A6] font-bold hover:underline flex items-center gap-1">
+                            + Trigger Post ⚡
+                        </button>
+                    </div>
+
+                    <!-- Scrollable Live Feed Area -->
+                    <div id="feed-container" class="flex-1 overflow-y-auto space-y-4 pr-1">
+                        <!-- Feed Item 1 -->
+                        <div class="p-4 bg-[#071120] rounded-xl border border-slate-800 hover:border-slate-700 transition">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="h-7 w-7 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-xs">💪</div>
+                                    <div>
+                                        <h3 class="text-xs font-bold text-white leading-tight">Tiger Muay Thai & MMA</h3>
+                                        <span class="text-[9px] text-[#00B3A6] font-medium">PHUKET, THAILAND 🇹🇭</span>
+                                    </div>
+                                </div>
+                                <span class="text-[9px] text-[#FF5A5F] font-bold">LIVE STAGING</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                                Morning striking drills on raw sand. 🔴 Running Live stream for subscribers. Youth redirection training program kicking off in parallel!
+                            </p>
+                            <!-- Media Frame -->
+                            <div class="w-full h-32 rounded-lg bg-slate-900 border border-slate-800/80 overflow-hidden relative flex items-center justify-center mb-3">
+                                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/70 text-[9px] font-bold text-[#FF5A5F] flex items-center gap-1">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-[#FF5A5F] animate-ping"></span>
+                                    ONLINE VIEW CARD
+                                </span>
+                                <i data-lucide="play-circle" class="w-10 h-10 text-white opacity-40 hover:opacity-100 hover:scale-110 transition cursor-pointer"></i>
+                            </div>
+                            <!-- CTA Stack matching onlyfit conventions -->
+                            <div class="flex gap-2">
+                                <button onclick="simulateStripeCheckout(' Tiger Muay Thai Channel', 999, 'gym_tiger')" class="flex-1 py-1.5 rounded-lg bg-[#FF5A5F] text-white hover:bg-[#ff4449] text-[10px] font-bold transition flex items-center justify-center space-x-1">
+                                    <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                                    <span>SUBSCRIBE • $9.99 🔥</span>
+                                </button>
+                                <button onclick="simulateStripeCheckout(' Phuket Fight Night PPV', 2999, 'evt_phuket_001')" class="flex-1 py-1.5 rounded-lg bg-slate-800 text-[#00B3A6] border border-cyan-500/20 hover:bg-slate-750 text-[10px] font-bold transition flex items-center justify-center space-x-1">
+                                    <i data-lucide="ticket" class="w-3.5 h-3.5"></i>
+                                    <span>BUY PPV • $29.99 🎟️</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Feed Item 2 -->
+                        <div class="p-4 bg-[#071120] rounded-xl border border-slate-800 hover:border-slate-700 transition">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center space-x-2">
+                                    <div class="h-7 w-7 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-xs">🥊</div>
+                                    <div>
+                                        <h3 class="text-xs font-bold text-white leading-tight">Brisbane MMA Academy</h3>
+                                        <span class="text-[9px] text-[#00B3A6] font-medium">BRISBANE, QUEENSLAND 🇦🇺</span>
+                                    </div>
+                                </div>
+                                <span class="text-[9px] text-yellow-400 font-bold">HEALTHY DIVERSION</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                                Local "Gym Not Jail" session complete. 32 at-risk youths redirected from juvenile courts into discipline-focused mats today. Reddirecting adrenaline to discipline!
+                            </p>
+                            <!-- CTA Stack -->
+                            <div class="flex gap-2">
+                                <button onclick="simulateStripeCheckout(' Brisbane youth training fund', 1000, 'campaign_bris_youth')" class="flex-1 py-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-755 text-[10px] font-bold transition flex items-center justify-center space-x-1.5 border border-slate-700">
+                                    <i data-lucide="heart" class="w-3.5 h-3.5 text-[#FF5A5F]"></i>
+                                    <span>DONATE TO YOUTH • $10 💖</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 2: REALITY WIRE CONTEXT - PAYOUT SPLITS & TRANSACTION LEDGER -->
+            <div id="calculator" class="flex flex-col space-y-6">
+                <!-- Payout Split and Ad Budget Dynamic Calculator -->
+                <div class="bg-[#0a1628]/80 p-5 rounded-2xl border border-cyan-500/10 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,90,95,0.04),transparent_50%)]"></div>
+                    <div class="flex items-center space-x-2 mb-4 relative z-10">
+                        <i data-lucide="calculator" class="w-5 h-5 text-[#00B3A6]"></i>
+                        <h2 class="text-sm font-bold tracking-wider uppercase text-white heading-font">Dynamic Sliding Fee Engine</h2>
+                    </div>
+
+                    <div class="space-y-4 relative z-10">
+                        <!-- Input Control Sliders -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-300">PPV Event Buy Count (Exposure)</span>
+                                <span class="text-[#FF5A5F] font-bold heading-font" id="calc-exp-val">2,500 buys</span>
+                            </div>
+                            <input type="range" id="input-exposure" min="0" max="10000" value="2500" step="100" class="w-full accent-[#FF5A5F] h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" oninput="calculateDynamicFees()">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold mb-1">
+                                <span class="text-slate-300">Staging Revenue Generated (USD)</span>
+                                <span class="text-[#00B3A6] font-bold heading-font" id="calc-gross-val">$74,975.00</span>
+                            </div>
+                            <input type="range" id="input-gross" min="1000" max="500000" value="75000" step="5000" class="w-full accent-[#00B3A6] h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer" oninput="calculateDynamicFees()">
+                        </div>
+
+                        <!-- Mathematical verification box -->
+                        <div class="p-3 bg-[#06101c] rounded-xl border border-[#00B3A6]/15 text-xs">
+                            <div class="flex justify-between items-center mb-1 bg-slate-900/40 p-1.5 rounded">
+                                <span class="text-[#00B3A6] font-bold text-[10px]">CREATOR REVENUE SPLIT</span>
+                                <span class="text-white font-black heading-font text-sm italic" id="creator-percentage">65.00%</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-slate-400">
+                                <span>DFC Platform Take Rate</span>
+                                <span id="dfc-percentage" class="text-slate-200">35.00%</span>
+                            </div>
+                            <p class="text-[9px] text-slate-500 leading-normal mt-1 border-t border-slate-900/60 pt-1">
+                                Double-Sliding Agreement Formula: Creator share begins at 70% floor at 0 buys, sliding linearly to 50% at 10,000+ buys to absorb provider risk at scale.
+                            </p>
+                        </div>
+
+                        <!-- Results display block -->
+                        <div class="grid grid-cols-2 gap-3 pt-2">
+                            <div class="p-3 bg-red-950/20 rounded-xl border border-[#FF5A5F]/20 text-center">
+                                <div class="text-[9px] text-[#FF5A5F] font-black uppercase">Net Creator Payout</div>
+                                <div class="text-md sm:text-lg font-extrabold text-white heading-font tracking-tight mt-1" id="out-creator-amount">$48,733.75</div>
+                            </div>
+                            <div class="p-3 bg-cyan-950/20 rounded-xl border border-[#00B3A6]/20 text-center">
+                                <div class="text-[9px] text-[#00B3A6] font-black uppercase">DFC Platform Fee</div>
+                                <div class="text-md sm:text-lg font-extrabold text-white heading-font tracking-tight mt-1" id="out-dfc-amount">$26,241.25</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ledger Entries, Replays & Audit Trail -->
+                <div class="bg-[#0a1628]/80 p-5 rounded-2xl border border-cyan-500/10 flex-1">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="receipt" class="w-5 h-5 text-yellow-400"></i>
+                            <h2 class="text-sm font-bold tracking-wider uppercase text-white heading-font">Live Transaction Ledger</h2>
+                        </div>
+                        <button onclick="clearLedgerHistory()" class="text-[10px] text-slate-400 hover:text-white flex items-center space-x-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+
+                    <!-- Webhook queue simulation visual indicators -->
+                    <div class="space-y-3">
+                        <div class="p-3 bg-[#06101c] rounded-xl border border-slate-800 text-[11px] leading-relaxed">
+                            <div class="flex justify-between items-center font-bold text-white mb-2 pb-1.5 border-b border-slate-900">
+                                <span>WEBHOOK EVENTS STACK</span>
+                                <span class="text-slate-400 text-[9px] font-normal">Auto-processes via Staging Client</span>
+                            </div>
+                            <div class="max-h-28 overflow-y-auto space-y-1.5" id="webhook-log-area">
+                                <div class="flex justify-between text-[10px] text-slate-400 bg-slate-900/60 p-1.5 rounded">
+                                    <span class="flex items-center gap-1 text-[#00B3A6]"><i data-lucide="check-circle" class="w-3 h-3"></i> test_evt_001</span>
+                                    <span>processed ✅</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-3 bg-slate-900/40 rounded-xl border border-slate-800/80">
+                            <div class="flex justify-between items-center text-xs font-bold text-white mb-2">
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="h-2 w-2 rounded-full bg-[#00B3A6] animate-pulse"></span>
+                                    <span>CANONICAL LEDGER AUDIT</span>
+                                </div>
+                                <span class="text-[10px] text-[#00B3A6] font-extrabold heading-font" id="ledger-total-order">$19.99</span>
+                            </div>
+                            <div class="max-h-36 overflow-y-auto space-y-2 pr-1" id="ledger-entries-list">
+                                <div class="p-2 bg-[#06101c] rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+                                    <div>
+                                        <div class="font-extrabold text-white text-[11px]">ORDER CREATED</div>
+                                        <span class="text-[9px] text-slate-500">ID: order-stripe-abc123</span>
+                                    </div>
+                                    <div class="text-[#00B3A6] font-bold heading-font">$19.99</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 3: GLOBAL COMBAT NODE - INTERACTIVE GLOBE & COMPLIANCE HUD -->
+            <div class="flex flex-col space-y-6">
+                <!-- Vector Map and Hotspot Simulation -->
+                <div class="bg-[#0a1628]/80 p-5 rounded-2xl border border-cyan-500/10 flex flex-col h-[640px]">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="globe-2" class="w-5 h-5 text-cyan-400"></i>
+                            <h2 class="text-sm font-bold tracking-wider uppercase text-white heading-font">Reality Mesh Map</h2>
+                        </div>
+                        <span class="text-[10px] font-extrabold text-cyan-400">Brisbane & Global</span>
+                    </div>
+
+                    <!-- Styled vector Map Simulation Canvas -->
+                    <div class="flex-1 bg-[#040d1a] border border-cyan-500/10 rounded-2xl relative overflow-hidden flex items-center justify-center p-4">
+                        <!-- Hotspots overlay and connections -->
+                        <div class="absolute inset-0 bg-cover bg-center rounded-2xl opacity-15" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_blank_black_white.svg'); filter: invert(1);"></div>
+                        
+                        <!-- Pulse grid indicators -->
+                        <div class="absolute top-1/2 left-1/3 h-56 w-56 rounded-full border border-cyan-500/10 animate-pulse"></div>
+
+                        <!-- Actual Interactive Vector Map Pins with Info card triggers -->
+                        <!-- Las Vegas Pin -->
+                        <button onclick="selectMapHotspot('Vegas', 36.085, -115.153, 'UFC Performance Institute (Elite)', 'Las Vegas, NV • USA 🇺🇸', 'MMA • Wrestling • BJJ', 4.9)" class="absolute top-[35%] left-[25%] group flex flex-col items-center">
+                            <span class="h-4 w-4 bg-[#FF5A5F] rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition">⭐</span>
+                            <span class="absolute bottom-5 px-1.5 py-0.5 rounded bg-black/80 text-[8px] text-white hidden group-hover:block whitespace-nowrap">UFC PI (Vegas)</span>
+                        </button>
+
+                        <!-- Phuket Pin -->
+                        <button onclick="selectMapHotspot('Phuket', 7.880, 98.392, 'Tiger Muay Thai (Elite)', 'Phuket • Thailand 🇹🇭', 'Muay Thai • MMA • BJJ', 4.8)" class="absolute top-[60%] left-[75%] group flex flex-col items-center">
+                            <span class="h-4 w-4 bg-[#FF5A5F] rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition">⭐</span>
+                            <span class="absolute bottom-5 px-1.5 py-0.5 rounded bg-black/80 text-[8px] text-white hidden group-hover:block whitespace-nowrap font-bold">Tiger Muay Thai</span>
+                        </button>
+
+                        <!-- Brisbane Pin -->
+                        <button onclick="selectMapHotspot('Brisbane', -27.469, 153.025, 'Brisbane MMA Academy (Premier)', 'Brisbane, QLD • Australia 🇦🇺', 'BJJ • MMA • Wrestling', 4.7)" class="absolute top-[82%] left-[88%] group flex flex-col items-center">
+                            <span class="h-4.5 w-4.5 bg-cyan-400 rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition animate-bounce">🇦🇺</span>
+                            <span class="absolute bottom-5 px-1.5 py-0.5 rounded bg-black/80 text-[8px] text-white hidden group-hover:block whitespace-nowrap">Brisbane MMA</span>
+                        </button>
+
+                        <!-- Sydney Pin -->
+                        <button onclick="selectMapHotspot('Sydney', -33.868, 151.209, 'Sydney Fight Club (Premier)', 'Sydney, NSW • Australia 🇦🇺', 'Boxing • Kickboxing', 4.6)" class="absolute top-[86%] left-[86%] group flex flex-col items-center">
+                            <span class="h-3 w-3 bg-cyan-400 rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition"></span>
+                        </button>
+
+                        <!-- Auckland Pin (City Kickboxing) -->
+                        <button onclick="selectMapHotspot('Auckland', -36.848, 174.763, 'City Kickboxing (Elite)', 'Auckland • New Zealand 🇳🇿', 'MMA • Kickboxing • Striking', 4.9)" class="absolute top-[88%] left-[94%] group flex flex-col items-center">
+                            <span class="h-4 w-4 bg-[#FF5A5F] rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition">⭐</span>
+                        </button>
+
+                        <!-- London Pin -->
+                        <button onclick="selectMapHotspot('London', 51.507, -0.127, 'London Shootfighters (Elite)', 'London • United Kingdom 🇬🇧', 'MMA • Catch Wrestling', 4.8)" class="absolute top-[26%] left-[48%] group flex flex-col items-center">
+                            <span class="h-3 w-3 bg-[#FF5A5F] rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition">⭐</span>
+                        </button>
+
+                        <!-- Brazil Pin -->
+                        <button onclick="selectMapHotspot('Manaus', -3.119, -60.021, 'Amazon BJJ Center', 'Manaus, AM • Brazil 🇧🇷', 'BJJ • Submission Grappling', 4.7)" class="absolute top-[65%] left-[36%] group flex flex-col items-center">
+                            <span class="h-3.5 w-3.5 bg-green-500 rounded-full flex items-center justify-center border border-white text-[8px] font-black group-hover:scale-125 transition"></span>
+                        </button>
+
+                        <!-- Interactive profile Card displays dynamically inside Map frame -->
+                        <div id="map-selection-panel" class="absolute bottom-3 left-3 right-3 p-3.5 bg-[#0a1628]/95 border border-[#00B3A6]/30 rounded-xl backdrop-blur-md hidden transition-all duration-300">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-center space-x-2">
+                                    <div class="h-7 w-7 rounded bg-[#00B3A6]/10 flex items-center justify-center font-bold text-xs">🥋</div>
+                                    <div>
+                                        <h4 class="text-xs font-extrabold text-white" id="hotspot-name">Tiger Muay Thai</h4>
+                                        <span class="text-[9px] text-slate-400" id="hotspot-sub">Phuket • Thailand</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-amber-400 font-extrabold flex items-center gap-0.5"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> <span id="hotspot-rating">4.8</span></span>
+                            </div>
+                            <div class="mt-2 text-[10px] text-slate-300 flex justify-between items-center bg-slate-900/40 p-1.5 rounded">
+                                <span>Disciplines: <strong id="hotspot-disciplines" class="text-white">Muay Thai • MMA</strong></span>
+                                <button onclick="triggerHotspotAction()" class="text-[#00B3A6] font-bold hover:underline">Verify Node 🌐</button>
+                            </div>
+                        </div>
+
+                        <!-- Directions overlay helper -->
+                        <div class="absolute top-3 left-3 right-3 p-2 bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-800 text-[10px] text-slate-400 text-center">
+                            Tap any location on the interactive globe to inspect profile.
+                        </div>
+                    </div>
+
+                    <!-- Healthy lifestyles, youth redirection and safety KPIs -->
+                    <div class="mt-4 p-4 bg-[#071120] rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-xs font-bold text-white heading-font uppercase">Redirection & Safety HUD</h3>
+                            <button onclick="triggerSilentSOS()" class="px-2.5 py-1 rounded bg-[#E53935] text-white hover:bg-red-700 text-[10px] font-black uppercase tracking-wider transition">
+                                Trigger silent SOS 🚨
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div class="p-2 bg-slate-900/60 rounded-lg">
+                                <div class="text-[9px] text-[#00B3A6] font-bold">SPARRING HOUR</div>
+                                <div class="text-sm font-bold text-white heading-font mt-0.5">384h</div>
+                                <span class="text-[8px] text-slate-400">Max 12h/week limit</span>
+                            </div>
+                            <div class="p-2 bg-slate-900/60 rounded-lg">
+                                <div class="text-[9px] text-pink-400 font-bold">GYM DIVERSIONS</div>
+                                <div class="text-sm font-bold text-white heading-font mt-0.5" id="kids-redirected">248</div>
+                                <span class="text-[8px] text-[#00B3A6] font-bold">Gym Not Jail ✅</span>
+                            </div>
+                            <div class="p-2 bg-slate-900/60 rounded-lg">
+                                <div class="text-[9px] text-amber-500 font-bold">PBR SCORE</div>
+                                <div class="text-sm font-bold text-amber-400 heading-font mt-0.5">9.4/10</div>
+                                <span class="text-[8px] text-slate-400">Brain Health Status</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Simulated Payment checkout Modal (Stripe Mock overlay) -->
+    <div id="stripe-modal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+        <div class="bg-[#0a1628] border border-cyan-500/20 max-w-sm w-full rounded-2xl p-6 relative overflow-hidden shadow-2xl">
+            <!-- Modal Background glow -->
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,90,95,0.08),transparent_50%)]"></div>
+            <!-- Dynamic header -->
+            <div class="relative z-10 flex justify-between items-center mb-4">
+                <span class="px-2.5 py-1 rounded bg-[#00B3A6]/10 text-[#00B3A6] text-[10px] font-extrabold uppercase">DFC SECURE CHECKOUT</span>
+                <button onclick="closeStripeCheckout()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <!-- Provider simulated content -->
+            <div class="relative z-10 space-y-4">
+                <div class="flex items-center space-x-3 bg-slate-900/60 p-3 rounded-lg border border-slate-800">
+                    <span class="text-xl">💳</span>
+                    <div>
+                        <h4 class="text-xs font-bold text-white" id="modal-product-name">Tiger Muay Thai Subscription</h4>
+                        <span class="text-[10px] text-slate-400">Total Due: <strong id="modal-product-price" class="text-[#00B3A6] font-bold heading-font">$9.99</strong></span>
+                    </div>
+                </div>
+
+                <!-- Input inputs -->
+                <div class="space-y-2">
+                    <label class="block text-[10px] text-slate-400 uppercase font-bold">Simulated Card Details</label>
+                    <input type="text" value="4242 •••• •••• 4242" class="w-full bg-[#06101c] border border-slate-800 text-[11px] p-2.5 rounded-lg text-slate-200 outline-none focus:border-[#00B3A6]" disabled>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" value="12/28" class="w-full bg-[#06101c] border border-slate-800 text-[11px] p-2.5 rounded-lg text-slate-200 outline-none" disabled>
+                        <input type="text" value="123" class="w-full bg-[#06101c] border border-slate-800 text-[11px] p-2.5 rounded-lg text-slate-200 outline-none" disabled>
+                    </div>
+                </div>
+
+                <!-- Action button -->
+                <button id="stripe-confirm-btn" onclick="executeStripeCheckout()" class="w-full py-2.5 rounded-lg bg-[#00B3A6] hover:bg-teal-600 text-white text-xs font-extrabold transition uppercase flex items-center justify-center space-x-1.5 shadow-xl">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Authorized Payment ✅</span>
+                </button>
+                <p class="text-[9px] text-slate-500 text-center leading-normal">
+                    This triggers a simulated Stripe Webhook Event `checkout.session.completed` firing straight to our idempotent Postgres ledger integration!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Event Notifications / Flash Logs -->
+    <div id="notification-toast" class="fixed bottom-4 left-4 z-50 p-4 bg-[#0a1628] border border-[#00B3A6] rounded-xl shadow-xl max-w-sm w-full hidden transform translate-y-10 opacity-0 transition-all duration-300">
+        <div class="flex items-start space-x-3">
+            <span class="text-xl" id="toast-icon">🚀</span>
+            <div class="flex-1">
+                <h4 class="text-xs font-bold text-white mb-0.5" id="toast-title">Live System Notification</h4>
+                <p class="text-[10px] text-slate-300 leading-normal" id="toast-body">Event processed on ledger</p>
+            </div>
+            <button onclick="closeToast()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+    </div>
+
+    <footer class="mt-12 border-t border-cyan-500/10 py-6 text-center text-[10px] text-slate-500 max-w-7xl mx-auto px-4">
+        <p>DFC HYBRID META 5 Platform showcase. Hardened ledger transaction tracking, A/B experimenting, and location-blocked network nodes wired cleanly in VS Code. All rights reserved &copy; 2026.</p>
+    </footer>
+
+    <!-- Core Interactive Client JavaScript -->
+    <script>
+        // Lucide SVG rendering
+        lucide.createIcons();
+
+        // State trackers
+        let activeCheckoutProduct = '';
+        let activeCheckoutPrice = 0;
+        let activeCheckoutCreatorId = '';
+        let feedInjectIndex = 0;
+
+        // Slide calculation on startup
+        calculateDynamicFees();
+
+        // Feed items repository
+        const mockFeedItems = [
+            {
+                avatar: "👊",
+                handle: "American Top Team",
+                region: "COCONUT CREEK, FL • USA 🇺🇸",
+                badge: "ELITE STAGING",
+                text: "Late-night sparring. Reconciling heart-rate metrics directly into global fitness database. Live ticket checkout active for Florida fight card next month!",
+                media: true,
+                price: 1999,
+                id: "gym_att",
+                type: 'gym'
+            },
+            {
+                avatar: "🤼",
+                handle: "Auckland City Kickboxing",
+                region: "AUCKLAND • NEW ZEALAND 🇳🇿",
+                text: "Title camp training loops complete. Heavy bags, focus pads, and local youth outreach program. Supporting 12-pillar safety protocol with CTE tracking.",
+                media: false,
+                price: 999,
+                id: "gym_ckb",
+                type: 'gym'
+            },
+            {
+                avatar: "🏆",
+                handle: "UFC 305 Live Fight Match",
+                region: "PERTH • AUSTRALIA 🇦🇺",
+                badge: "OFFICIAL EVENT",
+                text: "Pound-for-pound world championship streaming. Full ticket seating map active on map canvas. Secure your live PPV stream coupon and watch live!",
+                media: true,
+                price: 4999,
+                id: "evt_ufc_305",
+                type: 'event'
+            }
+        ];
+
+        // 1. Ingest simulated TikTok/OnlyFans Feed item
+        function injectFeedItem() {
+            const feedContainer = document.getElementById('feed-container');
+            const item = mockFeedItems[feedInjectIndex];
+            feedInjectIndex = (feedInjectIndex + 1) % mockFeedItems.length;
+
+            const div = document.createElement('div');
+            div.className = "p-4 bg-[#071120] rounded-xl border border-[#00B3A6]/20 shadow-lg transform -translate-x-4 opacity-0 transition-all duration-300";
+            
+            let badgeBlock = item.badge ? `<span class="text-[9px] text-[#FF5A5F] font-bold">${item.badge}</span>` : `<span class="text-[9px] text-yellow-400 font-bold">HEALTHY CHOICE</span>`;
+            let mediaBlock = item.media ? `
+                <div class="w-full h-32 rounded-lg bg-slate-900 border border-slate-800/80 overflow-hidden relative flex items-center justify-center mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/70 text-[9px] font-bold text-cyan-400 flex items-center gap-1">
+                        <span class="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        LIVE CONTENT PIN
+                    </span>
+                    <i data-lucide="play-circle" class="w-10 h-10 text-white opacity-40 hover:opacity-100 hover:scale-110 transition cursor-pointer"></i>
+                </div>
+            ` : '';
+
+            let actionBlock = item.type === 'gym' ? `
+                <div class="flex gap-2">
+                    <button onclick="simulateStripeCheckout('${item.handle} Subscription', ${item.price}, '${item.id}')" class="flex-1 py-1.5 rounded-lg bg-[#FF5A5F] text-white hover:bg-[#ff4449] text-[10px] font-bold transition flex items-center justify-center space-x-1">
+                        <i data-lucide="flame" class="w-3.5 h-3.5"></i>
+                        <span>SUBSCRIBE • $${(item.price/100).toFixed(2)} 🔥</span>
+                    </button>
+                </div>
+            ` : `
+                <div class="flex gap-2">
+                    <button onclick="simulateStripeCheckout('${item.handle} Pass', ${item.price}, '${item.id}')" class="flex-1 py-1.5 rounded-lg bg-[#FF5A5F] text-white hover:bg-[#ff4449] text-[10px] font-bold transition flex items-center justify-center space-x-1">
+                        <i data-lucide="ticket" class="w-3.5 h-3.5"></i>
+                        <span>BUY PPV • $${(item.price/100).toFixed(2)} 🎟️</span>
+                    </button>
+                </div>
+            `;
+
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <div class="h-7 w-7 rounded-lg bg-slate-800 flex items-center justify-center font-bold text-xs">${item.avatar}</div>
+                        <div>
+                            <h3 class="text-xs font-bold text-white leading-tight">${item.handle}</h3>
+                            <span class="text-[9px] text-[#00B3A6] font-medium">${item.region}</span>
+                        </div>
+                    </div>
+                    ${badgeBlock}
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed mb-3">${item.text}</p>
+                ${mediaBlock}
+                ${actionBlock}
+            `;
+
+            feedContainer.insertBefore(div, feedContainer.firstChild);
+            
+            // Trigger animation
+            setTimeout(() => {
+                div.classList.remove('-translate-x-4', 'opacity-0');
+                lucide.createIcons();
+            }, 50);
+
+            showToast("📣 NEW BROADCAST INGESTED", "Fighter stream synced directly to active cohort feed.");
+        }
+
+        // 2. Continuous double-sliding fee logic computation (dart platform parity)
+        function calculateDynamicFees() {
+            const exposure = parseInt(document.getElementById('input-exposure').value);
+            const gross = parseFloat(document.getElementById('input-gross').value);
+
+            // Interpolation formulas modeled directly from CreatorPayoutEngine:
+            // 70% share floor (0 exposure) down to 50% share ceiling (10k exposure) [due to server payload scale-carrying costs]
+            const maxExposure = 10000;
+            const factor = Math.min(exposure / maxExposure, 1.0);
+            const creatorShareRate = 0.70 - (0.70 - 0.50) * factor;
+            const dfcPlatformRate = 1.0 - creatorShareRate;
+
+            const netCreatorPayout = gross * creatorShareRate;
+            const dfcPlatFee = gross * dfcPlatformRate;
+
+            // Update UI elements
+            document.getElementById('calc-exp-val').innerText = `${exposure.toLocaleString()} buys`;
+            document.getElementById('calc-gross-val').innerText = `$${gross.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
+            document.getElementById('creator-percentage').innerText = `${(creatorShareRate * 100).toFixed(2)}%`;
+            document.getElementById('dfc-percentage').innerText = `${(dfcPlatformRate * 100).toFixed(2)}%`;
+            document.getElementById('out-creator-amount').innerText = `$${netCreatorPayout.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('out-dfc-amount').innerText = `$${dfcPlatFee.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+
+        // 3. Simulated hosted Stripe checkout Modal launcher
+        function simulateStripeCheckout(pName, priceInCents, creatorId) {
+            activeCheckoutProduct = pName;
+            activeCheckoutPrice = (priceInCents / 100).toFixed(2);
+            activeCheckoutCreatorId = creatorId;
+
+            document.getElementById('modal-product-name').innerText = pName;
+            document.getElementById('modal-product-price').innerText = `$${activeCheckoutPrice}`;
+
+            document.getElementById('stripe-modal').classList.remove('hidden');
+        }
+
+        function closeStripeCheckout() {
+            document.getElementById('stripe-modal').classList.add('hidden');
+        }
+
+        // 4. Action processing from successful checkouts
+        function executeStripeCheckout() {
+            closeStripeCheckout();
+
+            const eventId = 'stripe_evt_' + Math.floor(Math.random() * 1000000);
+            const orderId = 'order_stripe_' + Math.floor(Math.random() * 1000000);
+
+            // Webhook Simulation Log Entry
+            const webhookLog = document.getElementById('webhook-log-area');
+            const logItem = document.createElement('div');
+            logItem.className = "flex justify-between text-[10px] text-slate-400 bg-slate-900/60 p-1.5 rounded transform translate-y-3 opacity-0 transition-all duration-200";
+            logItem.innerHTML = `
+                <span class="flex items-center gap-1 text-[#00B3A6]"><i data-lucide="check-circle" class="w-3 h-3"></i> ${eventId}</span>
+                <span>processed ✅</span>
+            `;
+            webhookLog.insertBefore(logItem, webhookLog.firstChild);
+
+            // Ledger Flow Simulation Log Entry
+            const ledgerList = document.getElementById('ledger-entries-list');
+            const ledgerItem = document.createElement('div');
+            ledgerItem.className = "p-2 bg-[#06101c] rounded-lg border border-[#00B3A6]/30 flex justify-between items-center text-xs transform -translate-y-3 opacity-0 transition-all duration-200";
+            ledgerItem.innerHTML = `
+                <div>
+                    <div class="font-extrabold text-white text-[11px] uppercase">${activeCheckoutProduct}</div>
+                    <span class="text-[9px] text-slate-500">ID: ${orderId}</span>
+                </div>
+                <div class="text-[#00B3A6] font-bold heading-font">$${activeCheckoutPrice}</div>
+            `;
+            ledgerList.insertBefore(ledgerItem, ledgerList.firstChild);
+
+            // Increment totals on summary badges
+            document.getElementById('ledger-total-order').innerText = `$${activeCheckoutPrice}`;
+
+            // Playback animation triggers
+            setTimeout(() => {
+                logItem.classList.remove('translate-y-3', 'opacity-0');
+                ledgerItem.classList.remove('-translate-y-3', 'opacity-0');
+                lucide.createIcons();
+            }, 50);
+
+            showToast("💳 CHECKOUT VALIDATED", `${activeCheckoutProduct} completed! Entitlements unlocked.`);
+        }
+
+        // 5. Silent SOS Action Alert Trigger (Safety validation)
+        function triggerSilentSOS() {
+            showToast("🆘 SILENT SOS ACTIVATED", "Guardian alert sent to active Brisbane gym and emergency response node! Response team dispatched check safety.");
+            
+            // simulated red screen flash
+            document.body.classList.add('bg-red-950/20');
+            setTimeout(() => {
+                document.body.classList.remove('bg-red-950/20');
+            }, 1000);
+        }
+
+        function triggerEmergencyLockdown() {
+            showToast("🔒 EMERGENCY LOCKDOWN", "Emergency regional geoblock triggered for all combat card streaming endpoints.");
+        }
+
+        // 6. Interactive hotspots selection inside Reality Map canvas
+        function selectMapHotspot(name, lat, lng, type, loc, disciplines, rating) {
+            document.getElementById('hotspot-name').innerText = type;
+            document.getElementById('hotspot-sub').innerText = loc;
+            document.getElementById('hotspot-rating').innerText = rating;
+            document.getElementById('hotspot-disciplines').innerText = disciplines;
+
+            const panel = document.getElementById('map-selection-panel');
+            panel.classList.remove('hidden');
+            
+            showToast("🌐 MAP NODE LOADED", `${type} profiles focused on world canvas.`);
+        }
+
+        function triggerHotspotAction() {
+            showToast("🔗 DATABASE TUNNEL OPENED", "SRE pipeline connecting live coordinates directly to Firestore region map index.");
+        }
+
+        // Helper: Clear history UI
+        function clearLedgerHistory() {
+            document.getElementById('webhook-log-area').innerHTML = '';
+            document.getElementById('ledger-entries-list').innerHTML = '';
+            document.getElementById('ledger-total-order').innerText = '$0.00';
+            showToast("🧹 LEDGER CLEANSED", "Simulated transactions reset to safe defaults.");
+        }
+
+        // Helper: Toast alerts
+        function showToast(title, body) {
+            const toast = document.getElementById('notification-toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-body').innerText = body;
+
+            // Play icons
+            lucide.createIcons();
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            // auto-close
+            setTimeout(() => {
+                closeToast();
+            }, 4500);
+        }
+
+        function closeToast() {
+            const toast = document.getElementById('notification-toast');
+            toast.classList.add('translate-y-10', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/services/link_preview_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
@@ -87,15 +88,12 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
     if (_loading) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-        child: Container(
+        child: GlassPanel(
           height: 80,
-          decoration: BoxDecoration(
-            color: DesignTokens.bgCard,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: DesignTokens.neonCyan.withValues(alpha: 0.2),
-            ),
-          ),
+          padding: EdgeInsets.zero,
+          borderRadius: BorderRadius.circular(10),
+          backgroundColor: DesignTokens.bgCard,
+          borderColor: DesignTokens.neonCyan.withValues(alpha: 0.2),
           child: const Center(
             child: SizedBox(
               width: 20,
@@ -120,15 +118,11 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
       padding: const EdgeInsets.fromLTRB(14, 8, 14, 0),
       child: GestureDetector(
         onTap: _openUrl,
-        child: Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            color: DesignTokens.bgCard,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: DesignTokens.neonCyan.withValues(alpha: 0.15),
-            ),
-          ),
+        child: GlassPanel(
+          padding: EdgeInsets.zero,
+          borderRadius: BorderRadius.circular(10),
+          backgroundColor: DesignTokens.bgCard,
+          borderColor: DesignTokens.neonCyan.withValues(alpha: 0.15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,

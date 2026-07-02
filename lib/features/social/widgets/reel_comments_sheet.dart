@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/models/community/short_video_model.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/services/short_video_service.dart';
@@ -57,11 +58,11 @@ class _ReelCommentsSheetState extends State<ReelCommentsSheet> {
       maxChildSize: 0.9,
       expand: false,
       builder: (context, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: DesignTokens.bgSecondary,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          ),
+        return GlassPanel(
+          padding: EdgeInsets.zero,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          backgroundColor: DesignTokens.bgSecondary,
+          hasBorder: false,
           child: Column(
             children: [
               // Handle + title

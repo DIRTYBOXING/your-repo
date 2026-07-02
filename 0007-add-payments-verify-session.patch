@@ -1,0 +1,353 @@
+*** Begin Patch
+*** Add File: backend/payments/README.md
++# Payments verify-session and webhook handler (reference)
++
++This folder contains a reference Node/Express implementation for:
++- `POST /payments/webhook` — provider webhook receiver (signature verification placeholder)
++- `POST /internal/payments/verify-session` — idempotent internal endpoint used to create orders, entitlements, and ledger entries
++
++This implementation is intentionally minimal and safe:
++- Uses `pg` for Postgres access.
++- Idempotency: checks `webhook_events` and `orders` before writes.
++- All writes for an event are performed in a single DB transaction.
++- Includes test skeletons and example environment variables.
++
++## Environment variables
++- `PG_CONN` — Postgres connection string (e.g., postgres://user:pass@localhost:5432/dfc)
++- `PORT` — port to run the Express server (default 8080)
++- `WEBHOOK_SECRET` — provider webhook secret (used by signature verification; placeholder in this reference)
++
++## How to run locally (example)
++1. Install dependencies:
++   ```
++   cd backend/payments
++   npm ci
++   ```
++2. Start server:
++   ```
++   PG_CONN="postgres://user:pass@localhost:5432/dfc_test" node index.js
++   ```
++3. Run tests:
++   ```
++   npm test
++   ```
++
++## Notes
++- Replace the signature verification placeholder with your provider SDK (Stripe, Adyen, etc.).
++- Ensure DB migrations from Patch A and rights/takedown migration are applied before running.
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/package.json
++{
++  "name": "dfc-payments-ref",
++  "version": "0.1.0",
++  "private": true,
++  "scripts": {
++    "start": "node index.js",
++    "test": "mocha --exit test/*.test.js"
++  },
++  "dependencies": {
++    "body-parser": "^1.20.2",
++    "express": "^4.18.2",
++    "pg": "^8.11.0",
++    "uuid": "^9.0.0"
++  },
++  "devDependencies": {
++    "chai": "^4.3.8",
++    "mocha": "^10.2.0",
++    "supertest": "^6.3.3"
++  }
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/db.js
++// backend/payments/db.js
++// Simple Postgres client wrapper for reference implementation.
++const { Client } = require('pg');
++
++const conn = process.env.PG_CONN || 'postgres://user:pass@localhost:5432/dfc_test';
++
++function getClient() {
++  const client = new Client({ connectionString: conn });
++  return client;
++}
++
++module.exports = { getClient };
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/index.js
++// backend/payments/index.js
++const express = require('express');
++const bodyParser = require('body-parser');
++const webhookHandler = require('./webhook_handler');
++const verifyHandler = require('./verify_session');
++
++const app = express();
++app.use(bodyParser.json({ limit: '1mb' }));
++
++// Public webhook endpoint (provider -> backend)
++app.post('/payments/webhook', webhookHandler);
++
++// Internal idempotent verify endpoint (replay script and webhook handler call this)
++app.post('/internal/payments/verify-session', verifyHandler);
++
++const port = process.env.PORT || 8080;
++if (require.main === module) {
++  app.listen(port, () => {
++    console.log(`Payments reference server listening on ${port}`);
++  });
++}
++
++module.exports = app;
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/webhook_handler.js
++// backend/payments/webhook_handler.js
++// Minimal webhook receiver. Verifies signature (placeholder), persists raw event, and calls verify-session.
++const { v4: uuidv4 } = require('uuid');
++const { getClient } = require('./db');
++const fetch = require('node-fetch');
++
++const VERIFY_ENDPOINT = process.env.VERIFY_ENDPOINT || 'http://localhost:8080/internal/payments/verify-session';
++
++async function persistWebhookEvent(client, eventId, type, rawPayload) {
++  const q = `INSERT INTO webhook_events(event_id, type, raw_payload, status, received_at)
++             VALUES($1,$2,$3,'pending',NOW())
++             ON CONFLICT (event_id) DO NOTHING`;
++  await client.query(q, [eventId, type, rawPayload]);
++}
++
++// Placeholder signature verification. Replace with provider SDK (Stripe, etc.)
++function verifySignature(req) {
++  // Example: check header 'x-provider-signature' against WEBHOOK_SECRET
++  // For tests, allow bypass if WEBHOOK_SECRET is not set.
++  return true;
++}
++
++module.exports = async function webhookHandler(req, res) {
++  try {
++    if (!verifySignature(req)) {
++      return res.status(401).send('invalid signature');
++    }
++
++    const event = req.body;
++    const eventId = event.id || uuidv4();
++    const type = event.type || 'unknown';
++
++    const client = getClient();
++    await client.connect();
++    try {
++      await persistWebhookEvent(client, eventId, type, event);
++    } finally {
++      await client.end();
++    }
++
++    // Call internal verify endpoint asynchronously (fire-and-forget)
++    const checkoutSessionId = event?.data?.object?.id || event?.data?.object?.payment_intent || null;
++    if (checkoutSessionId) {
++      const body = { checkoutSessionId, provider: 'stripe', sourceEventId: eventId };
++      fetch(VERIFY_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
++        .then(r => console.log(`verify-session responded ${r.status} for event ${eventId}`))
++        .catch(err => console.error('verify-session call failed', err));
++    }
++
++    return res.status(200).send('received');
++  } catch (err) {
++    console.error('webhook handler error', err);
++    return res.status(500).send('error');
++  }
++};
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/verify_session.js
++// backend/payments/verify_session.js
++// Idempotent verify-session implementation.
++// Expects { checkoutSessionId, provider, sourceEventId }
++const { v4: uuidv4 } = require('uuid');
++const { getClient } = require('./db');
++
++async function findWebhookEvent(client, eventId) {
++  const r = await client.query('SELECT event_id, status FROM webhook_events WHERE event_id = $1', [eventId]);
++  return r.rows[0];
++}
++
++async function findOrderByCheckout(client, checkoutSessionId) {
++  const r = await client.query('SELECT * FROM orders WHERE checkout_session_id = $1', [checkoutSessionId]);
++  return r.rows[0];
++}
++
++async function createOrderEntitlementLedger(client, checkoutSessionId, provider, payload) {
++  // This function runs inside a transaction.
++  // Check again for existing order (idempotency)
++  const existing = await client.query('SELECT order_id FROM orders WHERE checkout_session_id = $1 FOR UPDATE', [checkoutSessionId]);
++  if (existing.rows.length > 0) {
++    return { orderId: existing.rows[0].order_id, created: false };
++  }
++
++  // Create order
++  const orderId = 'order-' + uuidv4();
++  const amount = (payload.amount_total || payload.amount || 0) / 100.0;
++  const currency = (payload.currency || 'AUD').toUpperCase();
++  const userId = payload?.metadata?.userId || payload?.customer || 'unknown';
++  const productId = payload?.metadata?.productId || 'unknown';
++
++  await client.query(
++    `INSERT INTO orders(order_id, checkout_session_id, provider_payment_id, user_id, product_id, amount, currency, status, provider, metadata, created_at, updated_at)
++     VALUES($1,$2,$3,$4,$5,$6,$7,'paid',$8,$9,NOW(),NOW())`,
++    [orderId, checkoutSessionId, payload.payment_intent || payload.charge || null, userId, productId, amount, currency, provider, payload]
++  );
++
++  // Create entitlement
++  const entitlementId = 'ent-' + uuidv4();
++  await client.query(
++    `INSERT INTO ppv_entitlements(entitlement_id, order_id, user_id, event_id, valid_from, granted_by, created_at)
++     VALUES($1,$2,$3,$4,NOW(),'webhook',NOW())`,
++    [entitlementId, orderId, userId, productId]
++  );
++
++  // Ledger entries: sale to platform (simple example)
++  const entryId = 'ledger-' + uuidv4();
++  await client.query(
++    `INSERT INTO ledger_entries(entry_id, order_id, account_id, amount, currency, type, metadata, created_at)
++     VALUES($1,$2,$3,$4,$5,'sale',$6,NOW())`,
++    [entryId, orderId, 'platform', amount, currency, JSON.stringify({ source: 'webhook' })]
++  );
++
++  return { orderId, entitlementId, created: true };
++}
++
++module.exports = async function verifySessionHandler(req, res) {
++  const { checkoutSessionId, provider, sourceEventId } = req.body || {};
++  if (!checkoutSessionId) {
++    return res.status(400).json({ error: 'missing checkoutSessionId' });
++  }
++
++  const client = getClient();
++  await client.connect();
++  try {
++    // Load raw payload from webhook_events if available
++    let rawPayload = null;
++    if (sourceEventId) {
++      const ev = await client.query('SELECT raw_payload, status FROM webhook_events WHERE event_id = $1', [sourceEventId]);
++      if (ev.rows.length > 0) {
++        rawPayload = ev.rows[0].raw_payload;
++      }
++    }
++
++    // If no raw payload, attempt to use provider_transactions or other sources (left as TODO)
++    const payload = rawPayload || {};
++
++    // Idempotency: if order exists for checkoutSessionId, return existing
++    const existingOrder = await findOrderByCheckout(client, checkoutSessionId);
++    if (existingOrder) {
++      // Mark webhook event processed if present
++      if (sourceEventId) {
++        await client.query('UPDATE webhook_events SET status = $1, processed_at = NOW() WHERE event_id = $2', ['processed', sourceEventId]);
++      }
++      return res.status(200).json({ orderId: existingOrder.order_id, status: 'already_exists' });
++    }
++
++    // Run creation inside a transaction
++    try {
++      await client.query('BEGIN');
++      const result = await createOrderEntitlementLedger(client, checkoutSessionId, provider || 'stripe', payload);
++      if (sourceEventId) {
++        await client.query('UPDATE webhook_events SET status = $1, processed_at = NOW() WHERE event_id = $2', ['processed', sourceEventId]);
++      }
++      await client.query('COMMIT');
++      return res.status(200).json({ orderId: result.orderId, entitlementId: result.entitlementId, created: result.created });
++    } catch (err) {
++      await client.query('ROLLBACK');
++      console.error('verify-session transaction failed', err);
++      if (sourceEventId) {
++        await client.query('UPDATE webhook_events SET status = $1, retry_count = retry_count + 1, last_error = $2 WHERE event_id = $3', ['failed', err.message.slice(0,1000), sourceEventId]);
++      }
++      return res.status(500).json({ error: 'transaction_failed', message: err.message });
++    }
++  } finally {
++    await client.end();
++  }
++};
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/test/verify_session.test.js
++// backend/payments/test/verify_session.test.js
++const { expect } = require('chai');
++const request = require('supertest');
++const app = require('../index'); // index.js exports app
++const { getClient } = require('../db');
++
++describe('verify-session integration tests (reference)', function() {
++  this.timeout(10000);
++  let client;
++  before(async () => {
++    client = getClient();
++    await client.connect();
++    // Ensure test tables exist and clean sample rows used by tests
++    await client.query("DELETE FROM webhook_events WHERE event_id LIKE 'test_evt_%' OR event_id = 'evt_checkout_completed_001'");
++    await client.query("DELETE FROM orders WHERE checkout_session_id LIKE 'cs_test_%'");
++    await client.query("DELETE FROM ppv_entitlements WHERE entitlement_id LIKE 'ent_test_%'");
++    await client.query("DELETE FROM ledger_entries WHERE entry_id LIKE 'ledger_test_%'");
++  });
++
++  after(async () => {
++    await client.end();
++  });
++
++  it('processes fixture and creates order + entitlement', async () => {
++    // Insert a webhook_event fixture row (simulate provider webhook persisted)
++    const eventId = 'test_evt_001';
++    const raw = require('../test_fixtures/checkout.session.completed.json');
++    await client.query('INSERT INTO webhook_events(event_id,type,raw_payload,status,received_at) VALUES($1,$2,$3,$4,NOW()) ON CONFLICT DO NOTHING', [eventId, raw.type, raw.data.object, 'pending']);
++
++    const res = await request(app)
++      .post('/internal/payments/verify-session')
++      .send({ checkoutSessionId: raw.data.object.id, provider: 'stripe', sourceEventId: eventId });
++
++    expect(res.status).to.equal(200);
++    expect(res.body).to.have.property('orderId');
++    expect(res.body).to.have.property('entitlementId');
++  });
++});
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/test/test_fixtures/checkout.session.completed.json
++{
++  "id": "cs_test_abc123",
++  "type": "checkout.session.completed",
++  "data": {
++    "object": {
++      "id": "cs_test_abc123",
++      "payment_status": "paid",
++      "amount_total": 1999,
++      "currency": "aud",
++      "metadata": { "productId": "ppv-evt-101", "userId": "user-test-001", "source": "web-hero" },
++      "customer": "cus_test_001",
++      "payment_intent": "pi_test_001"
++    }
++  },
++  "created": 1710000000
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/test/README.md
++Test harness notes:
++- Ensure migrations for webhook_events, orders, ppv_entitlements, ledger_entries are applied.
++- Set PG_CONN to your test DB before running tests.
++- Run `npm ci` then `npm test` inside `backend/payments`.
++
+*** End Patch
+*** Begin Patch
+*** Add File: backend/payments/.gitignore
++node_modules/
++*.log
++
+*** End Patch

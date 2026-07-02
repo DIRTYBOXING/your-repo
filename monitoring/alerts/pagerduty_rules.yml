@@ -1,0 +1,98 @@
+# PagerDuty & Prometheus Alerting Rules - DFC Payments Mesh
+
+This spec outlines Prometheus Alertmanager alerting rules, PagerDuty integration setups, escalation paths, and diagnostic parameters to manage the DFC payments and experiments mesh during rollout.
+
+---
+
+## 1. Prometheus Alertmanager Configuration (`/etc/alertmanager/alertmanager.yml`)
+
+Add this receiver block to route core combat network payment warnings and pages appropriately:
+
+```yaml
+route:
+  group_by: ['alertname', 'tier', 'service']
+  group_wait: 15s
+  group_interval: 5m
+  repeat_interval: 4h
+  receiver: 'slack-default'
+  routes:
+    # Route High-Severity payment alerts directly to PagerDuty Primary On-Call
+    - match:
+        severity: critical
+        tier: payments
+      receiver: 'pagerduty-payments-critical'
+
+    # Route High-Severity finance mismatch alerts directly to finance pager hook
+    - match:
+        severity: critical
+        tier: finance
+      receiver: 'pagerduty-finance'
+
+    # Route Staging warnings and general notices to Slack channels only
+    - match:
+        severity: warning
+      receiver: 'slack-warning-channel'
+
+receivers:
+- name: 'slack-default'
+  slack_configs:
+  - api_url: 'SLACK_WEBHOOK_URL_PLACEHOLDER'
+    channel: '#platform-monitor'
+    text: "Status: {{ .Status }}\nAlert: {{ .GroupLabels.alertname }}\nSummary: {{ .CommonAnnotations.summary }}\nLink: {{ .CommonAnnotations.runbook }}"
+
+- name: 'slack-warning-channel'
+  slack_configs:
+  - api_url: 'SLACK_WEBHOOK_URL_PLACEHOLDER'
+    channel: '#payments-ops'
+    send_resolved: true
+    title: "⚠️ [WARNING] {{ .CommonAnnotations.summary }}"
+    text: "{{ range .Alerts }}{{ .Annotations.description }}\nRunbook: {{ .Annotations.runbook }}\n{{ end }}"
+
+- name: 'pagerduty-payments-critical'
+  pagerduty_configs:
+  - service_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY_PAYMENTS'
+    severity: '{{ if eq .CommonLabels.severity "critical" }}critical{{ else }}warning{{ end }}'
+    client: 'Prometheus'
+    client_url: 'https://monitoring.datafightcentral.com'
+    description: 'DFC Payments Mesh Failure: {{ .CommonAnnotations.summary }}'
+    details:
+      runbook_url: '{{ .CommonAnnotations.runbook }}'
+      dashboard_url: 'https://grafana.datafightcentral.com/d/dfc_canary_dashboard'
+
+- name: 'pagerduty-finance'
+  pagerduty_configs:
+  - service_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY_FINANCE'
+    severity: 'critical'
+    description: 'DFC Ledger Mismatch Detected: {{ .CommonAnnotations.summary }}'
+    details:
+      runbook_url: '{{ .CommonAnnotations.runbook }}'
+```
+
+---
+
+## 2. On-Call Escalation Protocols
+
+### Tier 1 Primary Alert (SRE / Payments Engineer)
+- **Action**: Alert triggered. On-call has **15 minutes** to acknowledge the incident inside the PagerDuty console.
+- **Diagnostics**: Access Grafana [Canary Control Dashboard](https://grafana.datafightcentral.com/d/dfc_canary_dashboard) and inspect logs.
+- **Remediation**: Revert the feature flag `ppv_payments_flow = OFF` via admin UI or ffctl CLI.
+
+### Tier 2 Escalation (Payments Lead / SRE Lead)
+- **Trigger**: No Acknowledge from Tier 1 within **15 minutes**, or unresolved status with critical customer payment success deterioration after **30 minutes**.
+- **Action**: Auto-escalates via PagerDuty policy to secondary group, notifying SRE Engineering Lead.
+- **Emergency Action**: Trigger regional geoblock/lockdown and execute graceful checkout fallback to hosted partner screens.
+
+### Tier 3 Executive escalation (FinTech compliance & Legal Tech)
+- **Trigger**: Systemic ledger corruption detected, or payment API/Gateway keys exposed/compromised.
+- **Action**: Notify compliance officers, finance managers, and legal leads via secure channel. Invoke Disaster Recovery procedurals to execute backup point DB recovery and full ledger event replay.
+
+---
+
+## 3. Alerts Metric Mapping & Threshold formulas
+
+| Alert Name | Prometheus Metric Query | Evaluation | Routing Severity |
+|---|---|---|---|
+| `DFCWebhookFailureElevated` | `sum(rate(payments_webhook_failures_total[5m])) / sum(rate(payments_webhook_requests_total[5m])) * 100 > 1.0` | 5m | critical |
+| `DFCPaymentLatencyElevated` | `histogram_quantile(0.95, sum(rate(verify_session_duration_seconds_bucket[5m])) by (le)) > 5.0` | 5m | warning |
+| `DFCReconciliationMismatchCritical` | `sum(dfc_reconciliation_mismatch_count) > 0` | 1m | critical |
+| `DFCExposurePipelineDelay` | `histogram_quantile(0.5, sum(rate(exposure_ingest_latency_seconds_bucket[5m])) by (le)) > 30.0` | 5m | warning |

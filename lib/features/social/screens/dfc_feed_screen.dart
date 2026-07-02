@@ -218,19 +218,13 @@ class _DFCFeedScreenState extends State<DFCFeedScreen>
     }
   }
 
-  void loadPPVEvents() {
+  Future<void> loadPPVEvents() async {
     try {
-      PPVService()
-          .getUpcomingPPVEvents()
-          .take(1)
-          .listen(
-            (events) {
-              if (mounted) setState(() => _ppvEvents = events.take(2).toList());
-            },
-            onError: (_) {
-              // Non-blocking — feed works without PPV cards
-            },
-          );
+      final ppv = PPVService();
+      await ppv.loadUpcomingPPVs();
+      if (mounted) {
+        setState(() => _ppvEvents = ppv.upcomingPPVs.take(2).toList());
+      }
     } catch (_) {
       // Non-blocking — feed works without PPV cards
     }

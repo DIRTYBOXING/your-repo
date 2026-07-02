@@ -4927,7 +4927,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
                                 userId,
                                 text,
                                 displayName: displayName,
-                                role: auth.userRole,
+                                role: auth.userRole?.name,
                               )
                               .then((_) {
                                 commentController.clear();

@@ -1,6 +1,27 @@
 import 'dart:convert';
-import 'dart:math';
+
 import 'experiment_service.dart';
+
+String computeDeterministicVariant({
+  required String userId,
+  required String experimentId,
+  required int configVersion,
+  required List<String> variants,
+}) {
+  if (variants.isEmpty) {
+    throw ArgumentError('variants must not be empty');
+  }
+
+  final input = '$userId|$experimentId|$configVersion';
+  final bytes = utf8.encode(input);
+  var hash = 0;
+  for (final b in bytes) {
+    hash = ((hash << 5) - hash) + b;
+    hash |= 0;
+  }
+  final index = hash.abs() % variants.length;
+  return variants[index];
+}
 
 class Assignment {
   final String userId;
@@ -40,7 +61,6 @@ class Assignment {
 
 class AssignmentService {
   final DbAdapter db;
-  final Random _random = Random.secure();
 
   AssignmentService(this.db);
 
@@ -52,15 +72,12 @@ class AssignmentService {
     required int configVersion,
     required List<String> variants,
   }) {
-    final input = '$userId|$experimentId|$configVersion';
-    final bytes = utf8.encode(input);
-    var hash = 0;
-    for (final b in bytes) {
-      hash = ((hash << 5) - hash) + b;
-      hash |= 0;
-    }
-    final index = hash.abs() % variants.length;
-    return variants[index];
+    return computeDeterministicVariant(
+      userId: userId,
+      experimentId: experimentId,
+      configVersion: configVersion,
+      variants: variants,
+    );
   }
 
   /// Get or create assignment for user+experiment.
@@ -122,4 +139,36 @@ class AssignmentService {
     if (result.isEmpty) return null;
     return Assignment.fromMap(result.first);
   }
+}
+
+void main(List<String> args) {
+  if (args.isEmpty || args.first != '--compute' || args.length < 5) {
+    print(
+      'Usage: dart backend/experiments/assignment_service.dart '
+      '--compute <userId> <experimentId> <configVersion> <variant1,variant2,...>',
+    );
+    return;
+  }
+
+  final userId = args[1];
+  final experimentId = args[2];
+  final configVersion = int.tryParse(args[3]);
+  final variants = args[4]
+      .split(',')
+      .map((v) => v.trim())
+      .where((v) => v.isNotEmpty)
+      .toList();
+
+  if (configVersion == null || variants.isEmpty) {
+    print('Invalid arguments for --compute');
+    return;
+  }
+
+  final variant = computeDeterministicVariant(
+    userId: userId,
+    experimentId: experimentId,
+    configVersion: configVersion,
+    variants: variants,
+  );
+  print(variant);
 }

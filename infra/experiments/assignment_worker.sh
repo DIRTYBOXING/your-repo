@@ -28,9 +28,16 @@ while IFS= read -r USER_ID; do
 
   # Query current assignment from DB
   CURRENT="$(psql "$DB_DSN" -tAc \
-    "SELECT variant FROM assignments WHERE experimentId='${EXPERIMENT_ID}' AND userId='${USER_ID}' LIMIT 1;")"
+    "SELECT variant FROM assignments WHERE \"experimentId\"='${EXPERIMENT_ID}' AND \"userId\"='${USER_ID}' LIMIT 1;")"
 
-  if [[ -z "$CURRENT" ]]; then
+  # Load experiment configVersion and variants for deterministic recompute
+  EXP_ROW="$(psql "$DB_DSN" -tA -F '|' -c \
+    "SELECT COALESCE(\"configVersion\", 1), array_to_string(\"variants\", ',') FROM experiments WHERE \"experimentId\"='${EXPERIMENT_ID}' LIMIT 1;")"
+
+  CONFIG_VERSION="$(echo "$EXP_ROW" | cut -d'|' -f1 | xargs)"
+  VARIANTS_CSV="$(echo "$EXP_ROW" | cut -d'|' -f2 | xargs)"
+
+  if [[ -z "$CURRENT" || -z "$CONFIG_VERSION" || -z "$VARIANTS_CSV" ]]; then
     echo "MISSING assignment for user=$USER_ID experiment=$EXPERIMENT_ID"
     FAIL=$((FAIL + 1))
     continue
@@ -38,7 +45,7 @@ while IFS= read -r USER_ID; do
 
   # Recompute assignment deterministically
   EXPECTED="$(dart ./backend/experiments/assignment_service.dart \
-    --compute "$USER_ID" "$EXPERIMENT_ID" || true)"
+    --compute "$USER_ID" "$EXPERIMENT_ID" "$CONFIG_VERSION" "$VARIANTS_CSV" || true)"
 
   if [[ "$CURRENT" == "$EXPECTED" ]]; then
     PASS=$((PASS + 1))

@@ -6,6 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../shared/services/enhanced_friends_service.dart';
 import '../../../shared/services/friend_suggestions_engine.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
+import '../../../core/theme/glass_panel.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// FRIEND SUGGESTIONS SCREEN — AI-Powered Recommendations
@@ -233,8 +234,10 @@ class _SuggestionCardState extends State<SuggestionCard> {
     final suggestion = widget.suggestion;
     final scoreColor = _getScoreColor(suggestion.score);
 
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: GlassPanel(
+      padding: EdgeInsets.zero,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -437,6 +440,7 @@ class _SuggestionCardState extends State<SuggestionCard> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

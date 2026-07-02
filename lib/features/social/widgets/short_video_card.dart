@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
 import '../../../shared/models/community/short_video_model.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
@@ -21,13 +22,11 @@ class ShortVideoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: DesignTokens.bgCard,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white10),
-        ),
-        clipBehavior: Clip.antiAlias,
+      child: GlassPanel(
+        padding: EdgeInsets.zero,
+        borderRadius: BorderRadius.circular(12),
+        backgroundColor: DesignTokens.bgCard,
+        borderColor: Colors.white10,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

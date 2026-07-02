@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
 import '../../../shared/services/enhanced_friends_service.dart';
 import '../../../shared/widgets/dfc_tab_intro_header.dart';
 import '../widgets/stories_bar.dart';
@@ -117,40 +120,34 @@ class _QuickNavRow extends StatelessWidget {
         final isNarrow = constraints.maxWidth < 380;
 
         Widget tile(_NavChip item) {
-          return GestureDetector(
+          return GlassPanel(
             onTap: () => context.push(item.route),
-            child: Container(
-              width: isNarrow ? 82 : null,
-              padding: EdgeInsets.symmetric(vertical: isNarrow ? 9 : 10),
-              decoration: BoxDecoration(
-                color: const Color(0xFF10192A),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.08),
-                  width: 0.5,
+            width: isNarrow ? 82 : null,
+            padding: EdgeInsets.symmetric(vertical: isNarrow ? 9 : 10),
+            borderRadius: BorderRadius.circular(10),
+            backgroundColor: AppColors.glassMedium,
+            borderColor: item.color.withValues(alpha: 0.22),
+            shadows: item.color == DesignTokens.neonMagenta
+                ? NeonGlow.softMagenta()
+                : item.color == DesignTokens.neonGreen
+                ? NeonGlow.softLime()
+                : NeonGlow.softCyan(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(item.icon, color: Colors.white70, size: isNarrow ? 18 : 20),
+                const SizedBox(height: 4),
+                Text(
+                  item.label,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.82),
+                    fontSize: isNarrow ? 10 : 10.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    item.icon,
-                    color: Colors.white70,
-                    size: isNarrow ? 18 : 20,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item.label,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.82),
-                      fontSize: isNarrow ? 10 : 10.5,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+              ],
             ),
           );
         }
@@ -222,20 +219,17 @@ class _NetworkPulseBand extends StatelessWidget {
 
         return Padding(
           padding: const EdgeInsets.fromLTRB(12, 6, 12, 4),
-          child: Container(
+          child: GlassPanel(
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF132238), Color(0xFF0E1726)],
-              ),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08),
-                width: 0.6,
-              ),
+            borderRadius: BorderRadius.circular(16),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF132238), Color(0xFF0E1726)],
             ),
+            backgroundColor: AppColors.glassMedium,
+            borderColor: AppColors.neonCyan.withValues(alpha: 0.16),
+            shadows: NeonGlow.softCyan(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -509,16 +503,14 @@ class _NavCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: GlassPanel(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: DesignTokens.bgCard,
-          borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.08),
-            width: 0.5,
-          ),
-        ),
+        borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
+        backgroundColor: AppColors.glassMedium,
+        borderColor: color.withValues(alpha: 0.22),
+        shadows: color == DesignTokens.neonAmber
+            ? NeonGlow.softLime()
+            : NeonGlow.softCyan(),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

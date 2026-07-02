@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
-import '../widgets/chat_tile.dart';
+import 'chat_tile.dart';
 
 class InboxScreen extends StatelessWidget {
   const InboxScreen({super.key});

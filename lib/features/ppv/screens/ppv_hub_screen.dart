@@ -1,17 +1,21 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../../core/utils/web_route_test_hook.dart';
+import 'package:provider/provider.dart';
+
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/design_tokens.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
+import '../../../core/utils/web_route_test_hook.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../../../shared/models/ppv_presentation_model.dart';
-import '../../../shared/services/ppv_service.dart';
 import '../../../shared/services/auth_service.dart';
-import '../../../shared/widgets/dfc_state_panel.dart';
+import '../../../shared/services/ppv_service.dart';
 import '../../../shared/widgets/dfc_poster_frame.dart';
+import '../../../shared/widgets/dfc_state_panel.dart';
 import '../../../shared/widgets/ppv_ai_overlay.dart';
 import '../../../widgets/poster_card.dart';
 import '../widgets/fight_card_poster.dart';
@@ -335,251 +339,196 @@ class _PPVHubScreenState extends State<PPVHubScreen>
   SliverToBoxAdapter _buildHeroBanner() {
     final width = MediaQuery.of(context).size.width;
     final isNarrow = width < 380;
+
     return SliverToBoxAdapter(
       child: AnimatedBuilder(
         animation: _glowAnim,
         builder: (_, child) => Container(
           margin: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(DesignTokens.radiusLarge),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                const Color(0xFF0D1825),
-                Color.lerp(
-                  const Color(0xFF0D1825),
-                  DesignTokens.neonMagenta.withValues(alpha: 0.12),
-                  _glowAnim.value,
-                )!,
-              ],
+          child: GlassCard(
+            withGlow: true,
+            padding: EdgeInsets.zero,
+            accentColor: Color.lerp(
+              AppColors.neonCyan,
+              AppColors.neonMagenta,
+              _glowAnim.value,
             ),
-            border: Border.all(
-              color: Color.lerp(
-                DesignTokens.neonCyan.withValues(alpha: 0.3),
-                DesignTokens.neonMagenta.withValues(alpha: 0.6),
-                _glowAnim.value,
-              )!,
-              width: 1.5,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: DesignTokens.neonCyan.withValues(
-                  alpha: 0.1 + 0.15 * _glowAnim.value,
-                ),
-                blurRadius: 28,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: child,
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(DesignTokens.radiusLarge - 2),
-          child: Stack(
-            children: [
-              // Radial glow top-right
-              Positioned(
-                top: -60,
-                right: -40,
-                child: Container(
-                  width: 260,
-                  height: 260,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        DesignTokens.neonMagenta.withValues(alpha: 0.12),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: -40,
-                left: -30,
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        DesignTokens.neonCyan.withValues(alpha: 0.09),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              // Grid pattern
-              Positioned.fill(
-                child: CustomPaint(painter: _GridPatternPainter()),
-              ),
-              // Content
-              Padding(
-                padding: EdgeInsets.fromLTRB(
-                  isNarrow ? 18 : 24,
-                  isNarrow ? 22 : 28,
-                  isNarrow ? 18 : 24,
-                  isNarrow ? 18 : 24,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Neon badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 5,
+            child: Stack(
+              children: [
+                // Radial glow top-right
+                Positioned(
+                  top: -60,
+                  right: -40,
+                  child: Container(
+                    width: 260,
+                    height: 260,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          AppColors.neonMagenta.withValues(alpha: 0.15),
+                          Colors.transparent,
+                        ],
                       ),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            DesignTokens.neonCyan.withValues(alpha: 0.15),
-                            DesignTokens.neonMagenta.withValues(alpha: 0.15),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: -40,
+                  left: -30,
+                  child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          AppColors.neonCyan.withValues(alpha: 0.15),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Grid pattern backing
+                Positioned.fill(
+                  child: CustomPaint(painter: _GridPatternPainter()),
+                ),
+                // Content
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    isNarrow ? 18 : 24,
+                    isNarrow ? 22 : 28,
+                    isNarrow ? 18 : 24,
+                    isNarrow ? 18 : 24,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Neon badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.glassLight,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppColors.neonCyan.withValues(alpha: 0.5),
+                          ),
+                          boxShadow: NeonGlow.softCyan(),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(
+                                color: AppColors.neonCyan,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 7),
+                            const Text(
+                              'PROMOTIONAL PPV DISTRIBUTION',
+                              style: TextStyle(
+                                color: AppColors.neonCyan,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 1.1,
+                              ),
+                            ),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: DesignTokens.neonCyan.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 16),
+                      // Gradient headline
+                      ShaderMask(
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [
+                            Colors.white,
+                            AppColors.neonCyan,
+                            Colors.white,
+                          ],
+                          stops: [0.0, 0.5, 1.0],
+                        ).createShader(bounds),
+                        child: Text(
+                          'Live Events, Replays,\nAnd Secure Access',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: isNarrow ? 24 : 30,
+                            fontWeight: FontWeight.w900,
+                            height: 1.1,
+                            letterSpacing: -0.5,
+                          ),
                         ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: const BoxDecoration(
-                              color: DesignTokens.neonCyan,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 7),
-                          const Text(
-                            'PROMOTIONAL PPV DISTRIBUTION',
-                            style: TextStyle(
-                              color: DesignTokens.neonCyan,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.1,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Gradient headline
-                    ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [
-                          Colors.white,
-                          DesignTokens.neonCyan,
-                          Colors.white,
-                        ],
-                        stops: [0.0, 0.5, 1.0],
-                      ).createShader(bounds),
-                      child: Text(
-                        'Live Events, Replays,\nAnd Secure Access',
+                      const SizedBox(height: 6),
+                      Text(
+                        'Operational PPV Delivery For Combat Sports',
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: isNarrow ? 24 : 30,
-                          fontWeight: FontWeight.w900,
-                          height: 1.1,
-                          letterSpacing: -0.5,
+                          color: AppColors.neonMagenta.withValues(alpha: 0.9),
+                          fontSize: isNarrow ? 13 : 15,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Operational PPV Delivery For Combat Sports',
-                      style: TextStyle(
-                        color: DesignTokens.neonMagenta.withValues(alpha: 0.9),
-                        fontSize: isNarrow ? 13 : 15,
-                        fontWeight: FontWeight.w700,
+                      const SizedBox(height: 10),
+                      Text(
+                        'Browse licensed events, complete secure checkout, and stream with backend-verified entitlements across live and replay windows.',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          fontSize: isNarrow ? 11 : 12.5,
+                          height: 1.45,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Browse licensed events, complete secure checkout, and stream with backend-verified entitlements across live and replay windows.',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: isNarrow ? 11 : 12.5,
-                        height: 1.45,
-                      ),
-                    ),
-                    SizedBox(height: isNarrow ? 16 : 20),
-                    // Glowing CTAs
-                    Row(
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => context.push('/subscription'),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    DesignTokens.neonCyan,
-                                    DesignTokens.neonMagenta,
-                                  ],
+                      SizedBox(height: isNarrow ? 16 : 20),
+                      // Glowing CTAs
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () => context.push('/subscription'),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.gradientPPV,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: NeonGlow.pulsingMagenta(intensity: 0.6),
                                 ),
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: DesignTokens.neonCyan.withValues(
-                                      alpha: 0.45,
+                                child: const Center(
+                                  child: Text(
+                                    'View Plans',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w800,
                                     ),
-                                    blurRadius: 18,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'View Plans',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w800,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => setState(() => _selectedTab = 0),
-                            child: Container(
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: GlassButton(
+                              onPressed: () => setState(() => _selectedTab = 0),
                               padding: const EdgeInsets.symmetric(vertical: 14),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: DesignTokens.neonCyan.withValues(
-                                    alpha: 0.45,
-                                  ),
-                                ),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'Browse Events',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              accentColor: AppColors.neonCyan,
+                              child: const Text(
+                                'Browse Events',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                     SizedBox(height: isNarrow ? 10 : 14),
                     const Wrap(
                       spacing: 8,
@@ -647,7 +596,7 @@ class _PPVHubScreenState extends State<PPVHubScreen>
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildLiveIndicator() {
@@ -1069,7 +1018,7 @@ class _PPVHubScreenState extends State<PPVHubScreen>
     return widgets;
   }
 
-  // ── Horizontal PPV Card (TrillerTV-style tile) ──
+  // ── Horizontal PPV Card (TrillerTV-style tile with APEX styling) ──
 
   Widget _buildHorizontalPPVCard(PPVEvent ppv) {
     final width = MediaQuery.of(context).size.width;
@@ -1085,17 +1034,10 @@ class _PPVHubScreenState extends State<PPVHubScreen>
       child: Container(
         width: isNarrow ? 176 : 200,
         margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [palette.bg1, palette.bg2],
-          ),
-          border: Border.all(color: palette.accent.withValues(alpha: 0.3)),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(14),
+        child: GlassCard(
+          padding: EdgeInsets.zero,
+          accentColor: palette.accent,
+          withGlow: true,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1127,8 +1069,9 @@ class _PPVHubScreenState extends State<PPVHubScreen>
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withValues(alpha: 0.7),
+                              Colors.black.withValues(alpha: 0.9),
                             ],
+                            stops: const [0.5, 1.0],
                           ),
                         ),
                       ),
@@ -1144,16 +1087,17 @@ class _PPVHubScreenState extends State<PPVHubScreen>
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: palette.accent.withValues(alpha: 0.85),
+                            color: palette.accent.withValues(alpha: 0.15),
+                            border: Border.all(color: palette.accent.withValues(alpha: 0.5)),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             (ppv.promotion ?? ppv.sport ?? '').toUpperCase(),
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: palette.accent,
                               fontSize: 9,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.8,
                             ),
                           ),
                         ),
@@ -1169,15 +1113,15 @@ class _PPVHubScreenState extends State<PPVHubScreen>
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.7),
+                            color: AppColors.glassLight,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(
                             ppv.streamPlatforms.first,
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: Colors.white,
                               fontSize: 8,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
@@ -1187,8 +1131,11 @@ class _PPVHubScreenState extends State<PPVHubScreen>
               ),
               // Bottom info section
               Container(
-                padding: EdgeInsets.all(isNarrow ? 8 : 10),
-                color: const Color(0xFF0A0E1A),
+                padding: EdgeInsets.all(isNarrow ? 10 : 12),
+                decoration: BoxDecoration(
+                  color: AppColors.bgSecondary.withValues(alpha: 0.8),
+                  border: Border(top: BorderSide(color: palette.accent.withValues(alpha: 0.2))),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1198,7 +1145,7 @@ class _PPVHubScreenState extends State<PPVHubScreen>
                       style: TextStyle(
                         color: palette.accent,
                         fontSize: 11,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: 4),

@@ -11,7 +11,10 @@ import '../../../core/theme/design_tokens.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 import '../../../shared/widgets/dfc_state_panel.dart';
 import '../../../shared/widgets/dfc_tab_intro_header.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/glass_panel.dart';
+import '../../../core/theme/glow_effects.dart';
 import '../../../shared/services/enhanced_friends_service.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -995,138 +998,126 @@ class _ExploreScreenState extends State<ExploreScreen>
 
         return GestureDetector(
           onTap: () => context.push('/user/${result.id}'),
-          child: Card(
-            color: useShellV2
-                ? DesignTokens.shellSurface
-                : AppTheme.cardBackground,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(
-                color: useShellV2
-                    ? DesignTokens.shellBorder
-                    : AppTheme.neonCyan.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  // Profile Photo
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: useShellV2
-                            ? DesignTokens.shellBorder
-                            : AppTheme.neonCyan,
-                        width: 2,
-                      ),
+          child: GlassCard(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                // Profile Photo
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: useShellV2
+                          ? DesignTokens.shellBorder
+                          : AppColors.neonCyan,
+                      width: 2,
                     ),
-                    child: ClipOval(
-                      child: result.photoUrl != null
-                          ? DfcNetworkImage(
-                              url: result.photoUrl!,
-                            )
-                          : Icon(
-                              Icons.person,
-                              size: 30,
+                    boxShadow: useShellV2 ? null : NeonGlow.softCyan(),
+                  ),
+                  child: ClipOval(
+                    child: result.photoUrl != null
+                        ? DfcNetworkImage(
+                            url: result.photoUrl!,
+                          )
+                        : Icon(
+                            Icons.person,
+                            size: 30,
+                            color: useShellV2
+                                ? DesignTokens.shellTextMuted
+                                : AppColors.neonCyan,
+                          ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+
+                // Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            result.name,
+                            style: TextStyle(
                               color: useShellV2
-                                  ? DesignTokens.shellTextMuted
+                                  ? DesignTokens.shellText
+                                  : Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          if (result.metadata['isVerified'] == true) ...[
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.verified,
+                              size: 16,
+                              color: useShellV2
+                                  ? DesignTokens.ppvAccent
                                   : AppTheme.neonCyan,
                             ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-
-                  // Info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      _buildTypePill(result.type, useShellV2: useShellV2),
+                      const SizedBox(height: 6),
+                      // Location: City, Country with flag
+                      if (result.metadata['city'] != null ||
+                          result.metadata['country'] != null)
                         Row(
                           children: [
-                            Text(
-                              result.name,
-                              style: TextStyle(
-                                color: useShellV2
-                                    ? DesignTokens.shellText
-                                    : Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            if (result.metadata['isVerified'] == true) ...[
-                              const SizedBox(width: 4),
-                              Icon(
-                                Icons.verified,
-                                size: 16,
-                                color: useShellV2
-                                    ? DesignTokens.ppvAccent
-                                    : AppTheme.neonCyan,
-                              ),
-                            ],
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        _buildTypePill(result.type, useShellV2: useShellV2),
-                        const SizedBox(height: 6),
-                        // Location: City, Country with flag
-                        if (result.metadata['city'] != null ||
-                            result.metadata['country'] != null)
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                size: 14,
-                                color: useShellV2
-                                    ? DesignTokens.shellTextMuted
-                                    : AppTheme.neonCyan,
-                              ),
-                              const SizedBox(width: 4),
-                              Flexible(
-                                child: Text(
-                                  '${result.metadata['city'] ?? ''}${result.metadata['city'] != null && result.metadata['country'] != null ? ', ' : ''}${result.metadata['country'] ?? ''}',
-                                  style: TextStyle(
-                                    color: useShellV2
-                                        ? DesignTokens.shellTextMuted
-                                        : AppTheme.neonCyan,
-                                    fontSize: 13,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          )
-                        else if (result.distance != null)
-                          Text(
-                            '${result.distance!.toStringAsFixed(1)} km away',
-                            style: TextStyle(
+                            Icon(
+                              Icons.location_on,
+                              size: 14,
                               color: useShellV2
                                   ? DesignTokens.shellTextMuted
                                   : AppTheme.neonCyan,
-                              fontSize: 13,
                             ),
-                          ),
-                        if (result.description != null)
-                          Text(
-                            result.description!,
-                            style: TextStyle(
-                              color: useShellV2
-                                  ? DesignTokens.shellTextMuted
-                                  : Colors.white70,
-                              fontSize: 13,
+                            const SizedBox(width: 4),
+                            Flexible(
+                              child: Text(
+                                '${result.metadata['city'] ?? ''}${result.metadata['city'] != null && result.metadata['country'] != null ? ', ' : ''}${result.metadata['country'] ?? ''}',
+                                style: TextStyle(
+                                  color: useShellV2
+                                      ? DesignTokens.shellTextMuted
+                                      : AppTheme.neonCyan,
+                                  fontSize: 13,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
+                          ],
+                        )
+                      else if (result.distance != null)
+                        Text(
+                          '${result.distance!.toStringAsFixed(1)} km away',
+                          style: TextStyle(
+                            color: useShellV2
+                                ? DesignTokens.shellTextMuted
+                                : AppTheme.neonCyan,
+                            fontSize: 13,
                           ),
-                      ],
-                    ),
+                        ),
+                      if (result.description != null)
+                        Text(
+                          result.description!,
+                          style: TextStyle(
+                            color: useShellV2
+                                ? DesignTokens.shellTextMuted
+                                : Colors.white70,
+                            fontSize: 13,
+                          ),
+                        ),
+                    ],
                   ),
+                ),
 
-                  // Follow/Connect Button
-                  _buildActionButton(status, result.id),
-                ],
-              ),
+                // Follow/Connect Button
+                _buildActionButton(status, result.id),
+              ],
             ),
           ),
         );

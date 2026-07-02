@@ -1,100 +1,100 @@
 import 'package:flutter/material.dart';
+
+import 'app_colors.dart';
 import 'design_tokens.dart';
 import 'semantic_colors.dart';
 
-/// DataFightCentral Theme Configuration
-/// Dark theme with neon accents for combat sports aesthetic
-/// NOTE: Colors now unified with DesignTokens system
+/// ═══════════════════════════════════════════════════════════════════════════
+/// DFC PREMIUM THEME - Social + PPV Platform
+/// Dark neon theme with glassmorphism, glow effects, and premium typography
+/// Ready for TikTok-style feeds, Facebook-style profiles, and PPV monetization
+/// ═══════════════════════════════════════════════════════════════════════════
 class AppTheme {
   AppTheme._();
 
-  // Brand Colors — unified with DesignTokens
-  static const Color primaryBackground = DesignTokens.bgPrimary;
-  static const Color secondaryBackground = DesignTokens.bgSecondary;
-  static const Color cardBackground = DesignTokens.bgCard;
-  static const Color surfaceColor = Color(0xFF142236);
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BRAND COLORS (Unified with AppColors for consistency)
+  // ═══════════════════════════════════════════════════════════════════════════
+  static const Color primaryBackground = AppColors.bgPrimary;
+  static const Color secondaryBackground = AppColors.bgSecondary;
+  static const Color cardBackground = AppColors.cardBackground;
+  static const Color surfaceColor = AppColors.surfaceElevated;
 
   // Neon Accent Colors — unified with DesignTokens
-  static const Color neonCyan = DesignTokens.neonCyan;
-  static const Color neonMagenta = DesignTokens.neonMagenta;
-  static const Color neonGreen = DesignTokens.neonGreen;
-  static const Color neonOrange = DesignTokens.neonAmber;
-  static const Color neonPurple = DesignTokens.neonPurple;
+  static const Color neonCyan = AppColors.neonCyan;
+  static const Color neonMagenta = AppColors.neonMagenta;
+  static const Color neonGreen = AppColors.neonLime;
+  static const Color neonOrange = AppColors.neonOrange;
+  static const Color neonPurple = AppColors.neonViolet;
 
   // Additional theme colors
-  static const Color background = DesignTokens.bgPrimary;
-  static const Color accentTeal = DesignTokens.neonCyan;
-  static const Color accentCyan = DesignTokens.neonCyan;
-  static const Color accentPurple = DesignTokens.neonPurple;
-  static const Color neonPink = DesignTokens.neonPink;
-  static const Color surfaceDark = DesignTokens.bgOverlay;
+  static const Color background = AppColors.bgPrimary;
+  static const Color accentTeal = AppColors.neonCyan;
+  static const Color accentCyan = AppColors.neonCyan;
+  static const Color accentPurple = AppColors.neonViolet;
+  static const Color neonPink = AppColors.neonPink;
+  static const Color surfaceDark = AppColors.bgSecondary;
 
   // Semantic Colors
-  static const Color success = DesignTokens.neonGreen;
-  static const Color error = DesignTokens.neonRed;
-  static const Color warning = DesignTokens.neonAmber;
-  static const Color info = DesignTokens.neonCyan;
+  static const Color success = AppColors.successGreen;
+  static const Color error = AppColors.dangerRed;
+  static const Color warning = AppColors.warningOrange;
+  static const Color info = AppColors.infoBlue;
 
   // Text Colors — unified with DesignTokens
-  static const Color textPrimary = DesignTokens.textPrimary;
-  static const Color textSecondary = DesignTokens.textSecondary;
-  static const Color textMuted = DesignTokens.textMuted;
+  static const Color textPrimary = AppColors.textPrimary;
+  static const Color textSecondary = AppColors.textSecondary;
+  static const Color textMuted = AppColors.textTertiary;
 
   // Role-specific Colors
-  static const Map<String, Color> roleColors = {
-    'fighter': neonCyan,
-    'coach': neonOrange,
-    'gym': neonPurple,
-    'promoter': neonMagenta,
-    'sponsor': neonGreen,
-    'fan': Color(0xFF4A9EFF),
-    'admin': Color(0xFFFFD700),
-  };
+  static final Map<String, Color> roleColors = AppColors.roleColors;
 
   static Color getRoleColor(String role) {
-    return roleColors[role.toLowerCase()] ?? neonCyan;
+    return AppColors.getRoleColor(role);
   }
 
   static const Color errorColor = error;
-  static const Color textDisabled = DesignTokens.textDisabled;
+  static const Color textDisabled = AppColors.textDisabled;
 
   // Aliases for common usage
   static const Color backgroundDark = primaryBackground;
   static const Color cardDark = cardBackground;
 
-  // Text Styles
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PREMIUM TYPOGRAPHY (Highly Readable, UI Friendly)
+  // ═══════════════════════════════════════════════════════════════════════════
   static const TextStyle headingLarge = TextStyle(
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: FontWeight.w800,
-    letterSpacing: 0.5,
+    letterSpacing: -0.5,
+    height: 1.2,
     color: textPrimary,
   );
 
   static const TextStyle headingSmall = TextStyle(
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: FontWeight.w700,
-    letterSpacing: 0.3,
+    letterSpacing: -0.2,
+    height: 1.3,
     color: textPrimary,
   );
 
   static const TextStyle bodyMedium = TextStyle(
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: FontWeight.w500,
+    height: 1.5,
     color: textSecondary,
   );
 
   static const TextStyle bodySmall = TextStyle(
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: FontWeight.w400,
+    height: 1.4,
     color: textSecondary,
   );
 
   // Gradients
-  static const LinearGradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [neonCyan, neonMagenta],
-  );
+  static const LinearGradient primaryGradient = AppColors.gradientPPV;
 
   static ThemeData get darkTheme {
     return ThemeData(
@@ -119,67 +119,70 @@ class AppTheme {
         'Segoe UI Emoji',
         'Noto Color Emoji',
         'Noto Sans Symbols',
-        'Noto Sans Symbols 2',
       ],
 
-      // Semantic color extensions (success / warning / danger / info)
+      // Semantic color extensions
       extensions: const <ThemeExtension<dynamic>>[DFCSemanticColors.neonDark],
 
-      // AppBar Theme
+      // AppBar Theme (Clean & UI Friendly)
       appBarTheme: const AppBarTheme(
         backgroundColor: primaryBackground,
         foregroundColor: textPrimary,
         elevation: 0,
         centerTitle: true,
+        scrolledUnderElevation: 4,
+        shadowColor: Colors.black45,
         titleTextStyle: TextStyle(
           color: textPrimary,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.5,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.2,
         ),
       ),
 
-      // Card Theme
+      // Card Theme (Premium with subtle borders)
       cardTheme: CardThemeData(
         color: cardBackground,
-        elevation: 0,
+        elevation: 0, // We use NeonGlow/GlassPanel instead of default elevation
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: surfaceColor),
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.borderLight, width: 1),
         ),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       ),
 
-      // Elevated Button Theme
+      // Elevated Button Theme (Primary Call to Action, e.g., Buy PPV)
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: neonCyan,
           foregroundColor: primaryBackground,
-          elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          elevation: 4,
+          shadowColor: AppColors.glowCyanSoft.withValues(alpha: 0.5),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.2,
           ),
         ),
       ),
 
-      // Outlined Button Theme
+      // Outlined Button Theme (Secondary Actions)
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: neonCyan,
-          side: const BorderSide(color: neonCyan, width: 1.5),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          side: NeonBorder.cyan(),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           textStyle: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
+            letterSpacing: 0.2,
           ),
         ),
       ),

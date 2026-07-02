@@ -3,7 +3,7 @@ import '../../../core/constants/app_constants.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode, kIsWeb;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:datafightcentral/features/social/screens/dfc_feed_screen.dart';
+import 'package:datafightcentral/features/home/screens/home_feed_screen.dart';
 import 'package:datafightcentral/features/ppv/screens/ppv_hub_screen.dart';
 import 'package:datafightcentral/features/discovery/screens/explore_screen.dart';
 import 'package:datafightcentral/features/profile/screens/profile_screen_v2.dart';
@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _tabForIndex(int index) {
     return _builtTabs.putIfAbsent(index, () {
       final tabs = <Widget>[
-        _SafeTab(childBuilder: () => const DFCFeedScreen()),
+        _SafeTab(childBuilder: () => const HomeFeedScreen()),
         _SafeTab(childBuilder: () => const PPVHubScreen()),
         _SafeTab(childBuilder: () => const ExploreScreen()),
         _SafeTab(childBuilder: () => const SocialHubScreen()),

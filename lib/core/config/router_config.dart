@@ -41,6 +41,7 @@ import '../../features/social/screens/upload_reel_screen.dart';
 import '../../features/legacy_root/sponsorship_system_screen.dart';
 import '../../features/fight_card/screens/fight_card_builder_screen.dart';
 import '../../features/spotlight/screens/whos_who_screen.dart';
+import '../../features/creator/screens/showmaker_profile_screen.dart';
 import '../../shared/widgets/coming_soon_screen.dart';
 import '../../features/wallet/screens/digital_wallet_screen.dart';
 import '../../features/revenue/screens/commercial_revenue_dashboard_screen.dart';
@@ -302,6 +303,12 @@ class AppRouter {
       GoRoute(
         path: '/whos-who',
         builder: (context, state) => const WhosWhoScreen(),
+      ),
+      GoRoute(
+        path: '/creator/:id',
+        builder: (context, state) => ShowmakerProfileScreen(
+          creatorId: state.pathParameters['id']!,
+        ),
       ),
       // Social module
       GoRoute(

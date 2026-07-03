@@ -57,7 +57,25 @@ class AuthService extends ChangeNotifier {
   User? get firebaseUser => _firebaseUser;
   UserModel? get userModel => _userModel;
   UserRole? get userRole => _userModel?.role;
-  bool get isAdmin => _userModel?.role == UserRole.admin;
+
+  // ─── AUTHORITY CHECKS ─────────────────────────────────────────────────────
+  /// True for the Head Pilot / Platform Owner (superadmin role)
+  bool get isSuperAdmin => _userModel?.role == UserRole.superadmin;
+
+  /// True for superadmin OR admin — both have elevated authority
+  bool get isAdmin =>
+      _userModel?.role == UserRole.admin ||
+      _userModel?.role == UserRole.superadmin;
+
+  /// Full authority: can access every screen, override any rule
+  bool get isOwner => _userModel?.role == UserRole.superadmin;
+
+  /// Promoter-level access (includes owner/admin)
+  bool get canManageEvents =>
+      isOwner ||
+      isAdmin ||
+      _userModel?.role == UserRole.promoter;
+
   String? get error => _error;
 
   /// Stable fallback user id used across demo/guest screens when there is

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../shared/widgets/glass_card.dart';
 import '../../../shared/widgets/neon_glow_button.dart';
+import '../../../core/constants/app_constants.dart';
 
 class SystemCockpitScreen extends StatelessWidget {
   const SystemCockpitScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return Scaffold(
-      backgroundColor: const Color(0xFF030810), // Deep NASA control room blue/black
+      backgroundColor: const Color(0xFF030810),
       appBar: AppBar(
         title: const Text(
           'DFC MASTER COCKPIT',
@@ -17,10 +20,48 @@ class SystemCockpitScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
+          // ── HEAD PILOT BADGE ──────────────────────────────────
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.cyanAccent, width: 1.5),
+              color: Colors.cyanAccent.withOpacity(0.08),
+              boxShadow: [
+                BoxShadow(color: Colors.cyanAccent.withOpacity(0.3), blurRadius: 8),
+              ],
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.stars, color: Colors.cyanAccent, size: 16),
+                const SizedBox(width: 6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'HEAD PILOT · PLATFORM OWNER',
+                      style: TextStyle(
+                        color: Colors.cyanAccent,
+                        fontSize: 9,
+                        letterSpacing: 1.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      user?.email ?? AppConstants.ownerEmail,
+                      style: const TextStyle(color: Colors.white70, fontSize: 10),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           const Center(
             child: Text(
               'SYS: OPTIMAL',
-              style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold, marginRight: 20),
+              style: TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold),
             ),
           ),
           IconButton(

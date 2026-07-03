@@ -3,18 +3,21 @@ import 'package:equatable/equatable.dart';
 
 /// User roles in the platform
 enum UserRole {
+  superadmin, // ⭐ Head Pilot — Platform Owner (full authority)
+  admin,
   fighter,
   coach,
   gym,
   promoter,
   sponsor,
-  fan,
-  admin;
+  fan;
 
   String get displayName {
     switch (this) {
-      case UserRole.fighter:
-        return 'Fighter';
+      case UserRole.superadmin:
+        return '⭐ Head Pilot';
+      case UserRole.admin:
+        return 'Admin';
       case UserRole.coach:
         return 'Coach';
       case UserRole.gym:
@@ -32,6 +35,10 @@ enum UserRole {
 
   String get description {
     switch (this) {
+      case UserRole.superadmin:
+        return 'Head Pilot & Platform Owner — full authority over all DFC systems';
+      case UserRole.admin:
+        return 'Platform administration';
       case UserRole.fighter:
         return 'Compete and track your career';
       case UserRole.coach:
@@ -44,8 +51,6 @@ enum UserRole {
         return 'Connect with athletes and events';
       case UserRole.fan:
         return 'Follow fighters and engage with the community';
-      case UserRole.admin:
-        return 'Platform administration';
     }
   }
 

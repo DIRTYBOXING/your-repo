@@ -17,11 +17,55 @@ const mux = new Mux({
   tokenSecret: process.env.MUX_TOKEN_SECRET || ''
 });
 
-// Helper: Check if user is Promoter
-async function isPromoter(uid: string): Promise<boolean> {
+// ── Role Helpers ──────────────────────────────────────────────────────────
+
+async function getUserData(uid: string) {
   const doc = await admin.firestore().collection('users').doc(uid).get();
-  return doc.exists && doc.data()?.role === 'promoter';
+  return doc.exists ? doc.data() : null;
 }
+
+async function isSuperAdmin(uid: string): Promise<boolean> {
+  const data = await getUserData(uid);
+  return data?.role === 'superadmin' || data?.role === 'admin';
+}
+
+async function isPromoter(uid: string): Promise<boolean> {
+  const data = await getUserData(uid);
+  // superadmin/admin can do everything a promoter can
+  return data?.role === 'promoter' || data?.role === 'superadmin' || data?.role === 'admin';
+}
+
+// ── Owner Bootstrap ───────────────────────────────────────────────────────
+// Call once to seed the platform owner record in Firestore
+export const bootstrapOwner = functions.https.onRequest(async (req, res) => {
+  const secret = req.headers['x-bootstrap-secret'];
+  if (secret !== process.env.BOOTSTRAP_SECRET) {
+    res.status(403).send('Forbidden');
+    return;
+  }
+
+  const ownerEmail = 'owner@datafightcentral.com';
+  const existing = await admin.firestore()
+    .collection('users')
+    .where('email', '==', ownerEmail)
+    .limit(1)
+    .get();
+
+  if (!existing.empty) {
+    res.status(200).send('Owner already seeded.');
+    return;
+  }
+
+  await admin.firestore().collection('platform_config').doc('ownership').set({
+    headPilot: ownerEmail,
+    role: 'superadmin',
+    title: 'Head Pilot & Platform Owner — Data Fight Central',
+    seededAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  functions.logger.info('DFC Owner bootstrapped:', ownerEmail);
+  res.status(200).send(`Platform Owner seeded: ${ownerEmail}`);
+});
 
 export const createFightStream = functions.https.onCall(async (data, context) => {
   if (!context.auth) {

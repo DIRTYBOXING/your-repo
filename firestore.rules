@@ -7,7 +7,7 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isOwner(userId) {
+    function isDocOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
@@ -15,15 +15,39 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
 
+    // ⭐ HEAD PILOT — Platform Owner has full authority over ALL collections
+    function isSuperAdmin() {
+      return isAuthenticated() && getUserRole() == 'superadmin';
+    }
+
     function isAdmin() {
-      return getUserRole() == 'admin';
+      return isAuthenticated() && (getUserRole() == 'admin' || getUserRole() == 'superadmin');
+    }
+
+    function isPromoter() {
+      return isAuthenticated() && (
+        getUserRole() == 'promoter' ||
+        getUserRole() == 'admin' ||
+        getUserRole() == 'superadmin'
+      );
+    }
+
+    // ⭐ SUPERADMIN BYPASS — Owner can read/write EVERYTHING
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    // ─── PLATFORM OWNERSHIP CONFIG ───
+    match /platform_config/{doc} {
+      allow read: if isAdmin();
+      allow write: if isSuperAdmin();
     }
 
     // ─── IDENTITY ───
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow create: if isOwner(userId);
-      allow update, delete: if isOwner(userId) || isAdmin();
+      allow create: if isDocOwner(userId);
+      allow update, delete: if isDocOwner(userId) || isAdmin();
     }
 
     // ─── COMMERCE & PPV ───

@@ -9,6 +9,12 @@ import '../../shared/models/stats/combat_stats.dart';
 class AppConstants {
   AppConstants._();
 
+  // ─── PLATFORM OWNERSHIP ───────────────────────────────────────────────────
+  /// Head Pilot & Platform Owner — full superadmin access
+  static const String ownerEmail = 'owner@datafightcentral.com';
+  static const String ownerRole  = 'superadmin';
+  static const String platformName = 'Data Fight Central';
+
   // App Information
   static const String appName = 'Data Fight Central';
   static const String appVersion = '1.0.0';
@@ -114,15 +120,16 @@ class AppConstants {
   static const String regionPostsSubcollection = 'posts';
   static const String regionMembersSubcollection = 'members';
 
-  // User Roles
+  // User Roles (ordered by privilege level)
   static const List<String> userRoles = [
+    'superadmin', // Head Pilot — Platform Owner (you)
+    'admin',
     'fighter',
     'coach',
     'gym',
     'promoter',
     'sponsor',
     'fan',
-    'admin',
   ];
 
   // Post Content Types (FightWire 2.0)

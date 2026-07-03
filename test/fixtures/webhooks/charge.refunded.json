@@ -1,0 +1,14 @@
+{
+  "id": "evt_charge_refunded_001",
+  "type": "charge.refunded",
+  "data": {
+    "object": {
+      "id": "ch_test_001",
+      "amount_refunded": 1999,
+      "currency": "aud",
+      "refunds": { "data": [{ "id": "re_test_001", "amount": 1999 }] },
+      "metadata": { "orderId": "order-789", "userId": "user-test-001" }
+    }
+  },
+  "created": 1710000100
+}

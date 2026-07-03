@@ -1,19 +1,23 @@
-import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
 
 import '../../features/coach/screens/admin_console_screen.dart';
 import '../../features/promoter/screens/economy_control_room_screen.dart';
 import '../../features/admin/screens/google_ecosystem_hub_screen.dart';
 import '../../features/legacy_root/performance_lab_screen.dart';
-import '../../features/astrohealth/screens/astro_health_monitor_screen.dart';
+import '../../features/astrohealth/screens/neural_coach_dashboard_screen.dart';
+import '../../features/astrohealth/screens/fighter_wellness_journal_screen.dart';
 import '../../features/coach/screens/login_onboarding_screen.dart';
 import '../../features/promoter/screens/broadcast_overlay_screen.dart';
-import '../../features/coach/screens/neural_coach_screen.dart';
 import '../../features/coach/screens/website_home_screen.dart';
 import '../../features/creative_hub/screens/creative_hub_screen.dart';
 import '../../features/devices/screens/device_hub_screen.dart';
 import '../../features/feed/screens/feed_screen.dart';
 import '../../features/fempower/screens/only_fit_portal_screen.dart';
+import '../../features/gyms/screens/gym_directory_map_screen.dart';
+import '../../features/sponsorships/screens/google_nvidia_landing_screen.dart';
+import '../../features/ppv/screens/ppv_explore_screen.dart';
+import '../../features/ppv/screens/ppv_door_sales_screen.dart';
 import '../../features/legacy_root/stripe_connect_onboarding_screen.dart';
 import '../../shared/widgets/gym_team_hub_screen.dart';
 import '../../core/config/medical_safety_screen.dart';
@@ -22,6 +26,8 @@ import '../../features/ppv/services/ppv_detail_screen.dart';
 import '../../features/ppv/services/ppv_storefront_screen.dart';
 import '../../features/ppv/services/ppv_streaming_screen.dart';
 import '../../features/profile/screens/fighter_public_profile_screen.dart';
+import '../../features/fighter/screens/fighter_profile_screen.dart';
+import '../../features/gym/screens/gym_profile_screen.dart';
 import '../../features/profile/screens/profile_screen_v2.dart';
 import '../../features/promoter/screens/promoter_dashboard_screen.dart';
 import '../../features/social/fight_wire_post_screen.dart';
@@ -34,7 +40,8 @@ import '../../features/social/screens/upload_reel_screen.dart';
 import '../../features/legacy_root/sponsorship_system_screen.dart';
 import '../../features/fight_card/screens/fight_card_builder_screen.dart';
 import '../../shared/widgets/coming_soon_screen.dart';
-import 'fighter_economy_dashboard.dart';
+import '../../features/wallet/screens/digital_wallet_screen.dart';
+import '../../features/revenue/screens/commercial_revenue_dashboard_screen.dart';
 import 'gym_economy_dashboard.dart';
 import 'promoter_economy_dashboard.dart';
 
@@ -57,7 +64,7 @@ class AppRouter {
       // Coach & Training
       GoRoute(
         path: '/neural-coach',
-        builder: (context, state) => const NeuralCoachScreen(),
+        builder: (context, state) => const NeuralCoachDashboardScreen(),
       ),
       GoRoute(
         path: '/corner-coach',
@@ -82,7 +89,11 @@ class AppRouter {
       ),
       GoRoute(
         path: '/astrohealth',
-        builder: (context, state) => const AstroHealthMonitorScreen(),
+        builder: (context, state) => const NeuralCoachDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/fighter-wellness',
+        builder: (context, state) => const FighterWellnessJournalScreen(),
       ),
 
       // Analytics & History
@@ -97,6 +108,14 @@ class AppRouter {
       ),
 
       // Identity & Social
+      GoRoute(
+        path: '/fighter-profile',
+        builder: (context, state) => const FighterProfileScreen(),
+      ),
+      GoRoute(
+        path: '/gym-profile',
+        builder: (context, state) => const GymProfileScreen(),
+      ),
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
@@ -115,6 +134,24 @@ class AppRouter {
       GoRoute(
         path: '/gym-hub',
         builder: (context, state) => const GymTeamHubScreen(),
+      ),
+      GoRoute(
+        path: '/gym-map',
+        builder: (context, state) => const GymDirectoryMapScreen(),
+      ),
+      GoRoute(
+        path: '/sponsorship-landing',
+        builder: (context, state) => const GoogleNvidiaLandingScreen(),
+      ),
+      GoRoute(
+        path: '/ppv-explore',
+        builder: (context, state) => const PpvExploreScreen(),
+      ),
+      GoRoute(
+        path: '/door-sales/:eventId',
+        builder: (context, state) => PpvDoorSalesScreen(
+          eventId: state.pathParameters['eventId'] ?? 'demo_event',
+        ),
       ),
 
       // Events & Streaming
@@ -210,6 +247,14 @@ class AppRouter {
       ),
 
       // Economy & Finances
+      GoRoute(
+        path: '/commercial-revenue',
+        builder: (context, state) => const CommercialRevenueDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/digital-wallet',
+        builder: (context, state) => const DigitalWalletScreen(),
+      ),
       GoRoute(
         path: '/finance/promoter/:id',
         builder: (context, state) =>

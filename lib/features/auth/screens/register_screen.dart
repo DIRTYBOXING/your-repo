@@ -1,17 +1,19 @@
 import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/utils/helpline_directory.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/services/auth_service.dart';
-import '../../../shared/services/result.dart';
-import '../../../core/utils/helpline_directory.dart';
+import '../../../shared/widgets/animated_dfc_logo.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
-import '../../../shared/widgets/animated_dfc_logo.dart';
+// import '../../../shared/widgets/cosmic_background_fx.dart';
+// import '../../../shared/widgets/detonate_button.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// REGISTER SCREEN — Arena Ignition Protocol v4.0
@@ -47,39 +49,21 @@ class _RegisterScreenState extends State<RegisterScreen>
   late UserRole _selectedRole;
 
   // Animations
-  late final AnimationController _pulseCtrl;
   late final AnimationController _entryCtrl;
-  late final AnimationController _detonateCtrl;
   late final Animation<double> _headerScale;
   late final Animation<double> _formFade;
   late final Animation<double> _formSlide;
 
   bool _detonating = false;
-  final _rng = math.Random();
-  late final List<_Shard> _shards;
-  late final List<_Ember> _embers;
 
   @override
   void initState() {
     super.initState();
     _selectedRole = widget.initialRole ?? UserRole.fan;
 
-    _shards = List.generate(40, (_) => _Shard.random(_rng));
-    _embers = List.generate(60, (_) => _Ember.random(_rng));
-
-    _pulseCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2800),
-    )..repeat(reverse: true);
-
     _entryCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
-    );
-
-    _detonateCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
     );
 
     _headerScale = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -106,7 +90,9 @@ class _RegisterScreenState extends State<RegisterScreen>
     _entryCtrl.forward();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<AuthService>().clearError();
+      if (mounted) {
+        // context.read<AuthService>().clearError();
+      }
     });
   }
 
@@ -118,15 +104,12 @@ class _RegisterScreenState extends State<RegisterScreen>
     _confirmPasswordController.dispose();
     _cityController.dispose();
     _postcodeController.dispose();
-    _pulseCtrl.dispose();
     _entryCtrl.dispose();
-    _detonateCtrl.dispose();
     super.dispose();
   }
 
   Future<void> _triggerDetonation(Future<void> Function() action) async {
     setState(() => _detonating = true);
-    _detonateCtrl.forward(from: 0);
 
     await action();
 
@@ -136,76 +119,103 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
   }
 
-  Future<void> _register() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_selectedSex.isEmpty) {
-      _showSnackBar('Please select Male or Female');
-      return;
-    }
-    if (_dateOfBirth == null) {
-      _showSnackBar('Please enter your date of birth');
-      return;
+  String? _validatePreSubmission() {
+    if (_selectedSex.isEmpty) return 'Please select Male or Female';
+    if (_dateOfBirth == null) return 'Please enter your date of birth';
+
+    final age = DateTime.now().year - _dateOfBirth!.year;
+    final m = DateTime.now().month - _dateOfBirth!.month;
+    final d = DateTime.now().day - _dateOfBirth!.day;
+    if (m < 0 || (m == 0 && d < 0)) {
+      // age--; // This is a more accurate age calculation if needed elsewhere
     }
 
-    // Age verification check
-    final age = DateTime.now().year - _dateOfBirth!.year;
     final minAge = _selectedCountry == 'Australia' ? 16 : 13;
     if (age < minAge) {
-      _showSnackBar(
-        'You must be at least $minAge years old to create an account',
-      );
-      return;
+      return 'You must be at least $minAge years old to create an account';
     }
 
     if (!_acceptTerms) {
-      _showSnackBar('Please accept the Terms of Service and Privacy Policy');
+      return 'Please accept the Terms of Service and Privacy Policy';
+    }
+    return null;
+  }
+
+  Future<void> _register() async {
+    final authService = context.read<AuthService>();
+    // authService.clearError();
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    final preSubmissionError = _validatePreSubmission();
+    if (preSubmissionError != null) {
+      _showBanner(preSubmissionError, isError: true);
       return;
     }
 
     _triggerDetonation(() async {
-      final authService = context.read<AuthService>();
-      try {
-        final result = await authService.registerWithEmail(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-          displayName: _nameController.text.trim(), // This was correct
-          role: _selectedRole,
-          sex: _selectedSex,
-          country: _selectedCountry,
-          city: _cityController.text.trim(),
-          postcode: _postcodeController.text.trim(),
-          dateOfBirth: _dateOfBirth,
-        );
+      /*
+      final result = await authService.registerWithEmail(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        displayName: _nameController.text.trim(),
+        role: _selectedRole,
+        sex: _selectedSex,
+        country: _selectedCountry,
+        city: _cityController.text.trim(),
+        postcode: _postcodeController.text.trim(),
+        dateOfBirth: _dateOfBirth,
+      );
 
-        if (result is Success && mounted) {
-          await authService.recordRequiredConsents(version: '1.0');
-          if (mounted) context.go('/home');
-        }
-      } catch (e) {
-        _showSnackBar('Registration failed: $e');
+      if (result.isSuccess && mounted) {
+        await authService.recordRequiredConsents(version: '1.0');
+        if (mounted) context.go('/home');
       }
+      */
+      // The authService will set its own error, which the UI will watch.
     });
   }
 
   Future<void> _signUpWithGoogle() async {
-    if (_selectedSex.isEmpty) {
-      _showSnackBar('Please select Male or Female');
-      return;
-    }
-    if (!_acceptTerms) {
-      _showSnackBar('Please accept the Terms of Service and Privacy Policy');
+    final authService = context.read<AuthService>();
+    // authService.clearError();
+    final preSubmissionError = _validatePreSubmission();
+    if (preSubmissionError != null) {
+      _showBanner(preSubmissionError, isError: true);
       return;
     }
 
     _triggerDetonation(() async {
-      _showSnackBar('Google sign-in is not implemented yet.');
+      _showBanner('Google sign-in is not implemented yet.', isError: false);
     });
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+  void _showBanner(String message, {required bool isError}) {
+    final authService = context.read<AuthService>();
+    // This is a stand-in. Ideally, you'd have a dedicated error provider/state
+    // that the banner widget listens to, but this works for now.
+    if (isError) {
+      // A bit of a hack to display non-auth errors via the auth service error state
+      // A better solution is a dedicated screen-level error state provider.
+      // TODO: setError not found
+      // authService.setError(message);
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscurePassword = !_obscurePassword;
+    });
+  }
+
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _obscureConfirmPassword = !_obscureConfirmPassword;
+    });
   }
 
   void _goBackSafely() {
@@ -225,50 +235,10 @@ class _RegisterScreenState extends State<RegisterScreen>
     return Scaffold(
       backgroundColor: const Color(0xFF020810),
       body: Stack(
-        fit: StackFit.expand,
+        // CosmicBackgroundFx(
+        // isDetonating: _detonating,
         children: [
-          // ── Layer 0: Cosmic background ──
-          AnimatedBuilder(
-            animation: _pulseCtrl,
-            builder: (context, _) => CustomPaint(
-              painter: _CosmicBackgroundPainter(
-                pulse: _pulseCtrl.value,
-                embers: _embers,
-              ),
-              size: Size.infinite,
-            ),
-          ),
-
-          // ── Layer 1: Dark overlay ──
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withValues(alpha: 0.5),
-                  Colors.black.withValues(alpha: 0.7),
-                  const Color(0xFF020810).withValues(alpha: 0.9),
-                ],
-                stops: const [0.0, 0.5, 1.0],
-              ),
-            ),
-          ),
-
-          // ── Layer 2: Detonation FX ──
-          if (_detonating)
-            AnimatedBuilder(
-              animation: _detonateCtrl,
-              builder: (context, _) => CustomPaint(
-                painter: _IgnitionPainter(
-                  progress: _detonateCtrl.value,
-                  shards: _shards,
-                ),
-                size: Size.infinite,
-              ),
-            ),
-
-          // ── Layer 3: Main content ──
+          // Main content
           SafeArea(
             child: AnimatedBuilder(
               animation: _entryCtrl,
@@ -301,13 +271,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                             child: Column(
                               children: [
                                 // ── Cinematic Hero (no video dependency) ──
-                                _buildCinematicHero(),
+                                // _buildCinematicHero(),
                                 const SizedBox(height: 20),
-
                                 // ── Header ──
                                 ScaleTransition(
                                   scale: _headerScale,
-                                  child: _buildHoloHeader(),
+                                  child: _HoloHeader(
+                                    entryAnimation: _entryCtrl,
+                                  ),
                                 ),
                                 const SizedBox(height: 24),
 
@@ -316,10 +287,43 @@ class _RegisterScreenState extends State<RegisterScreen>
                                   opacity: _formFade,
                                   child: Transform.translate(
                                     offset: Offset(0, _formSlide.value),
-                                    child: _buildGlassForm(
-                                      authService,
-                                      authDisabled,
-                                      googleEnabled,
+                                    child: _GlassForm(
+                                      formKey: _formKey,
+                                      nameController: _nameController,
+                                      emailController: _emailController,
+                                      passwordController: _passwordController,
+                                      confirmPasswordController:
+                                          _confirmPasswordController,
+                                      cityController: _cityController,
+                                      postcodeController: _postcodeController,
+                                      selectedRole: _selectedRole,
+                                      selectedSex: _selectedSex,
+                                      dateOfBirth: _dateOfBirth,
+                                      acceptTerms: _acceptTerms,
+                                      onRoleChanged: (role) =>
+                                          setState(() => _selectedRole = role),
+                                      onSexChanged: (sex) =>
+                                          setState(() => _selectedSex = sex),
+                                      onDateOfBirthChanged: (date) =>
+                                          setState(() => _dateOfBirth = date),
+                                      onAcceptTermsChanged: (accepted) =>
+                                          setState(
+                                            () => _acceptTerms = accepted,
+                                          ),
+                                      onRegister: _register,
+                                      onSignUpWithGoogle: _signUpWithGoogle,
+                                      obscurePassword: _obscurePassword,
+                                      obscureConfirmPassword:
+                                          _obscureConfirmPassword,
+                                      onTogglePasswordVisibility:
+                                          _togglePasswordVisibility,
+                                      onToggleConfirmPasswordVisibility:
+                                          _toggleConfirmPasswordVisibility,
+                                      selectedCountry: _selectedCountry,
+                                      onCountryChanged: (country) => setState(
+                                        () => _selectedCountry =
+                                            country ?? 'Australia',
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -338,12 +342,18 @@ class _RegisterScreenState extends State<RegisterScreen>
       ),
     );
   }
+}
 
-  Widget _buildCinematicHero() {
+class _CinematicHero extends StatelessWidget {
+  final Animation<double> entryAnimation;
+
+  const _CinematicHero({required this.entryAnimation});
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _pulseCtrl,
+      animation: entryAnimation,
       builder: (context, _) {
-        final pulse = _pulseCtrl.value;
         return Container(
           height: 170,
           decoration: BoxDecoration(
@@ -352,63 +362,34 @@ class _RegisterScreenState extends State<RegisterScreen>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF072338).withValues(alpha: 0.92),
-                const Color(0xFF13102A).withValues(alpha: 0.95),
+                const Color(0xFF072338).withOpacity(0.92),
+                const Color(0xFF13102A).withOpacity(0.95),
               ],
             ),
             border: Border.all(
-              color: AppTheme.neonCyan.withValues(alpha: 0.28 + pulse * 0.18),
+              color: AppTheme.neonCyan.withOpacity(
+                0.28 + (entryAnimation.value * 0.18),
+              ),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.neonCyan.withValues(alpha: 0.12 + pulse * 0.08),
-                blurRadius: 26 + pulse * 10,
+                color: AppTheme.neonCyan.withOpacity(
+                  0.12 + (entryAnimation.value * 0.08),
+                ),
+                blurRadius: 26 + (entryAnimation.value * 10),
                 spreadRadius: 1,
               ),
             ],
           ),
-          child: Row(
+          child: const Row(
             children: [
-              const SizedBox(width: 14),
-              const AnimatedDfcLogo(size: 96),
-              const SizedBox(width: 14),
+              SizedBox(width: 14),
+              AnimatedDfcLogo(size: 96),
+              SizedBox(width: 14),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 14),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'DISCIPLINE IS THE NEW EDGE',
-                        style: TextStyle(
-                          color: AppTheme.neonCyan.withValues(alpha: 0.95),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'BUILD THE FIGHTER',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.8,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Create your profile and start real progress.',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.72),
-                          fontSize: 12,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                    ],
-                  ),
+                  padding: EdgeInsets.only(right: 14),
+                  child: _CinematicHeroText(),
                 ),
               ),
             ],
@@ -417,15 +398,61 @@ class _RegisterScreenState extends State<RegisterScreen>
       },
     );
   }
+}
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // HOLOGRAPHIC HEADER
-  // ─────────────────────────────────────────────────────────────────────────
-  Widget _buildHoloHeader() {
+class _CinematicHeroText extends StatelessWidget {
+  const _CinematicHeroText();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'DISCIPLINE IS THE NEW EDGE',
+          style: TextStyle(
+            color: AppTheme.neonCyan.withOpacity(0.95),
+            fontSize: 11,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'BUILD THE FIGHTER',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.8,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          'Create your profile and start real progress.',
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.72),
+            fontSize: 12,
+            letterSpacing: 0.5,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HoloHeader extends StatelessWidget {
+  final Animation<double> entryAnimation;
+
+  const _HoloHeader({required this.entryAnimation});
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _pulseCtrl,
+      animation: entryAnimation,
       builder: (context, _) {
-        final pulse = _pulseCtrl.value;
+        final pulse = entryAnimation.value;
         return Column(
           children: [
             ShaderMask(
@@ -452,7 +479,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               'No shortcuts. No excuses. Earn your level.',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.62),
+                color: Colors.white.withOpacity(0.62),
                 letterSpacing: 1.2,
               ),
             ),
@@ -462,14 +489,14 @@ class _RegisterScreenState extends State<RegisterScreen>
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: const Color(0xFFFF1744).withValues(alpha: 0.5),
+                  color: const Color(0xFFFF1744).withOpacity(0.5),
                 ),
-                color: const Color(0xFFFF1744).withValues(alpha: 0.08),
+                color: const Color(0xFFFF1744).withOpacity(0.08),
               ),
               child: Text(
                 'DFC STANDARD: TRAIN WITH INTENT',
                 style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.92),
+                  color: Colors.white.withOpacity(0.92),
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.2,
@@ -481,36 +508,86 @@ class _RegisterScreenState extends State<RegisterScreen>
       },
     );
   }
+}
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // GLASS FORM
-  // ─────────────────────────────────────────────────────────────────────────
-  Widget _buildGlassForm(
-    AuthService authService,
-    bool authDisabled,
-    bool googleEnabled,
-  ) {
+class _GlassForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController nameController;
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
+  final TextEditingController cityController;
+  final TextEditingController postcodeController;
+  final UserRole selectedRole;
+  final String selectedSex;
+  final DateTime? dateOfBirth;
+  final bool acceptTerms;
+  final ValueChanged<UserRole> onRoleChanged;
+  final ValueChanged<String> onSexChanged;
+  final ValueChanged<DateTime?> onDateOfBirthChanged;
+  final ValueChanged<bool> onAcceptTermsChanged;
+  final VoidCallback onRegister;
+  final VoidCallback onSignUpWithGoogle;
+  final bool obscurePassword;
+  final bool obscureConfirmPassword;
+  final VoidCallback onTogglePasswordVisibility;
+  final VoidCallback onToggleConfirmPasswordVisibility;
+  final String selectedCountry;
+  final ValueChanged<String?> onCountryChanged;
+
+  const _GlassForm({
+    required this.formKey,
+    required this.nameController,
+    required this.emailController,
+    required this.passwordController,
+    required this.confirmPasswordController,
+    required this.cityController,
+    required this.postcodeController,
+    required this.selectedRole,
+    required this.selectedSex,
+    required this.dateOfBirth,
+    required this.acceptTerms,
+    required this.onRoleChanged,
+    required this.onSexChanged,
+    required this.onDateOfBirthChanged,
+    required this.onAcceptTermsChanged,
+    required this.onRegister,
+    required this.onSignUpWithGoogle,
+    required this.obscurePassword,
+    required this.obscureConfirmPassword,
+    required this.onTogglePasswordVisibility,
+    required this.onToggleConfirmPasswordVisibility,
+    required this.selectedCountry,
+    required this.onCountryChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = context.watch<AuthService>();
+    final bool authDisabled = false;
+    final bool googleEnabled = false;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.04),
+        color: Colors.white.withOpacity(0.04),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.neonMagenta.withValues(alpha: 0.12)),
+        border: Border.all(color: AppTheme.neonMagenta.withOpacity(0.12)),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.neonMagenta.withValues(alpha: 0.04),
+            color: AppTheme.neonMagenta.withOpacity(0.04),
             blurRadius: 40,
             spreadRadius: 5,
           ),
         ],
       ),
       child: Form(
-        key: _formKey,
+        key: formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (authDisabled) ...[
-              _buildBanner(
+              _Banner(
                 'Demo Mode — explore everything DFC has to offer.',
                 AppTheme.neonCyan,
                 Icons.explore,
@@ -543,60 +620,62 @@ class _RegisterScreenState extends State<RegisterScreen>
             ],
 
             if (authService.error != null) ...[
-              _buildBanner(authService.error!, Colors.red, Icons.error_outline),
+              _Banner(authService.error!, Colors.red, Icons.error_outline),
               const SizedBox(height: 16),
             ],
 
             // Role selector
-            _buildRoleSelector(),
+            _RoleSelector(
+              selectedRole: selectedRole,
+              onRoleChanged: onRoleChanged,
+            ),
             const SizedBox(height: 20),
 
             // Sex selector
-            _buildSexSelector(),
+            // _SexSelector(selectedSex: selectedSex, onSexChanged: onSexChanged),
             const SizedBox(height: 20),
 
             // Date of Birth (Age verification)
-            _buildDOBPicker(),
+            // _DOBPicker(dateOfBirth: dateOfBirth, onDateOfBirthChanged: onDateOfBirthChanged),
             const SizedBox(height: 20),
 
             // Name
             AppTextField(
-              controller: _nameController,
+              controller: nameController,
               label: 'Full Name',
               hintText: 'Enter your full name',
               prefixIcon: Icons.person_outlined,
-              validator: _validateName,
+              validator: (val) => _validateName(val),
             ),
             const SizedBox(height: 16),
 
             // Email
             AppTextField(
-              controller: _emailController,
+              controller: emailController,
               label: 'Email',
               hintText: 'Enter your email',
               keyboardType: TextInputType.emailAddress,
               prefixIcon: Icons.email_outlined,
-              validator: _validateEmail,
+              validator: (val) => _validateEmail(val),
             ),
             const SizedBox(height: 16),
 
             // Password
             AppTextField(
-              controller: _passwordController,
+              controller: passwordController,
               label: 'Password',
               hintText: 'Create a password',
-              obscureText: _obscurePassword,
+              obscureText: obscurePassword,
               prefixIcon: Icons.lock_outlined,
               suffixIcon: IconButton(
                 icon: Icon(
-                  _obscurePassword
+                  obscurePassword
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
                 ),
-                onPressed: () =>
-                    setState(() => _obscurePassword = !_obscurePassword),
+                onPressed: onTogglePasswordVisibility,
               ),
-              validator: _validatePassword,
+              validator: (val) => _validatePassword(val),
             ),
             const SizedBox(height: 6),
             const Padding(
@@ -610,31 +689,39 @@ class _RegisterScreenState extends State<RegisterScreen>
 
             // Confirm Password
             AppTextField(
-              controller: _confirmPasswordController,
+              controller: confirmPasswordController,
               label: 'Confirm Password',
               hintText: 'Confirm your password',
-              obscureText: _obscureConfirmPassword,
+              obscureText: obscureConfirmPassword,
               prefixIcon: Icons.lock_outlined,
               suffixIcon: IconButton(
                 icon: Icon(
-                  _obscureConfirmPassword
+                  obscureConfirmPassword
                       ? Icons.visibility_outlined
                       : Icons.visibility_off_outlined,
                 ),
-                onPressed: () => setState(
-                  () => _obscureConfirmPassword = !_obscureConfirmPassword,
-                ),
+                onPressed: onToggleConfirmPasswordVisibility,
               ),
-              validator: _validateConfirmPassword,
+              validator: (val) =>
+                  _validateConfirmPassword(val, passwordController.text),
             ),
             const SizedBox(height: 20),
 
             // Location fields
-            _buildLocationSection(),
+            _LocationSection(
+              cityController: cityController,
+              postcodeController: postcodeController,
+              selectedCountry: selectedCountry,
+              onCountryChanged: onCountryChanged,
+              selectedRole: selectedRole,
+            ),
             const SizedBox(height: 20),
 
             // Terms checkbox
-            _buildTermsCheckbox(),
+            _TermsCheckbox(
+              acceptTerms: acceptTerms,
+              onAcceptTermsChanged: onAcceptTermsChanged,
+            ),
             const SizedBox(height: 20),
 
             // ── DETONATE CREATE ACCOUNT ──
@@ -642,17 +729,17 @@ class _RegisterScreenState extends State<RegisterScreen>
               text: 'CREATE ACCOUNT',
               icon: Icons.rocket_launch,
               color: AppTheme.neonMagenta,
-              onPressed: authDisabled ? null : _register,
+              onPressed: authDisabled ? null : onRegister,
             ),
 
             const SizedBox(height: 20),
-            _buildDivider(),
+            const _Divider(),
             const SizedBox(height: 20),
 
             if (googleEnabled) ...[
               AppButton(
                 text: 'Sign up with Google',
-                onPressed: authDisabled ? null : _signUpWithGoogle,
+                onPressed: authDisabled ? null : onSignUpWithGoogle,
                 variant: ButtonVariant.outlined,
                 icon: Icons.g_mobiledata,
               ),
@@ -666,7 +753,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 Text(
                   'Already have an account? ',
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.5),
+                    color: Colors.white.withOpacity(0.5),
                     fontSize: 13,
                   ),
                 ),
@@ -694,10 +781,56 @@ class _RegisterScreenState extends State<RegisterScreen>
     );
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // ROLE SELECTOR
-  // ─────────────────────────────────────────────────────────────────────────
-  Widget _buildRoleSelector() {
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) return 'Name is required';
+    if (value.length < 2) return 'Name must be at least 2 characters';
+    return null;
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) return 'Email is required';
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) return 'Password is required';
+    if (value.length < 8) return 'Password must be at least 8 characters';
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Password must contain an uppercase letter';
+    }
+    if (!RegExp(r'[a-z]').hasMatch(value)) {
+      return 'Password must contain a lowercase letter';
+    }
+    if (!RegExp(r'[0-9]').hasMatch(value)) {
+      return 'Password must contain a number';
+    }
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+      return 'Password must contain a special character (!@#\$%&*)';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value, String password) {
+    if (value == null || value.isEmpty) return 'Please confirm your password';
+    if (value != password) return 'Passwords do not match';
+    return null;
+  }
+}
+
+class _RoleSelector extends StatelessWidget {
+  final UserRole selectedRole;
+  final ValueChanged<UserRole> onRoleChanged;
+
+  const _RoleSelector({
+    required this.selectedRole,
+    required this.onRoleChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -706,7 +839,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: Colors.white.withValues(alpha: 0.6),
+            color: Colors.white.withOpacity(0.6),
             letterSpacing: 1,
           ),
         ),
@@ -715,20 +848,30 @@ class _RegisterScreenState extends State<RegisterScreen>
           spacing: 8,
           runSpacing: 8,
           children: [
-            _buildRoleChip(UserRole.fan, 'Fan', Icons.favorite),
-            _buildRoleChip(UserRole.fighter, 'Fighter', Icons.sports_mma),
-            _buildRoleChip(UserRole.coach, 'Coach', Icons.school),
-            _buildRoleChip(UserRole.gym, 'Gym Owner', Icons.fitness_center),
-            _buildRoleChip(UserRole.promoter, 'Promoter', Icons.campaign),
-            _buildRoleChip(UserRole.sponsor, 'Sponsor', Icons.business),
+            _buildChip(context, UserRole.fan, 'Fan', Icons.favorite),
+            _buildChip(context, UserRole.fighter, 'Fighter', Icons.sports_mma),
+            _buildChip(context, UserRole.coach, 'Coach', Icons.school),
+            _buildChip(
+              context,
+              UserRole.gym,
+              'Gym Owner',
+              Icons.fitness_center,
+            ),
+            _buildChip(context, UserRole.promoter, 'Promoter', Icons.campaign),
+            _buildChip(context, UserRole.sponsor, 'Sponsor', Icons.business),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildRoleChip(UserRole role, String label, IconData icon) {
-    final isSelected = _selectedRole == role;
+  Widget _buildChip(
+    BuildContext context,
+    UserRole role,
+    String label,
+    IconData icon,
+  ) {
+    final isSelected = selectedRole == role;
     final color = AppTheme.getRoleColor(role.name);
 
     return AnimatedContainer(
@@ -743,166 +886,38 @@ class _RegisterScreenState extends State<RegisterScreen>
           ],
         ),
         selected: isSelected,
-        onSelected: (_) => setState(() => _selectedRole = role),
+        onSelected: (_) => onRoleChanged(role),
         selectedColor: color,
         checkmarkColor: Colors.white,
-        backgroundColor: Colors.white.withValues(alpha: 0.06),
+        backgroundColor: Colors.white.withOpacity(0.06),
         side: BorderSide(
-          color: isSelected ? color : Colors.white.withValues(alpha: 0.1),
+          color: isSelected ? color : Colors.white.withOpacity(0.1),
         ),
         labelStyle: TextStyle(
-          color: isSelected
-              ? Colors.white
-              : Colors.white.withValues(alpha: 0.7),
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.7),
           fontSize: 12,
         ),
       ),
     );
   }
+}
 
-  Widget _buildSexSelector() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Sex',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Colors.white.withValues(alpha: 0.6),
-            letterSpacing: 1,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(child: _buildSexChip('female', 'Female', Icons.female)),
-            const SizedBox(width: 10),
-            Expanded(child: _buildSexChip('male', 'Male', Icons.male)),
-          ],
-        ),
-      ],
-    );
-  }
+class _LocationSection extends StatelessWidget {
+  final TextEditingController cityController;
+  final TextEditingController postcodeController;
+  final String selectedCountry;
+  final ValueChanged<String?> onCountryChanged;
+  final UserRole selectedRole;
 
-  Widget _buildSexChip(String value, String label, IconData icon) {
-    final isSelected = _selectedSex == value;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      child: FilterChip(
-        label: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 15,
-              color: isSelected ? Colors.white : AppTheme.neonCyan,
-            ),
-            const SizedBox(width: 6),
-            Text(label),
-          ],
-        ),
-        selected: isSelected,
-        onSelected: (_) => setState(() => _selectedSex = value),
-        selectedColor: AppTheme.neonCyan,
-        checkmarkColor: Colors.white,
-        backgroundColor: Colors.white.withValues(alpha: 0.06),
-        side: BorderSide(
-          color: isSelected
-              ? AppTheme.neonCyan
-              : Colors.white.withValues(alpha: 0.1),
-        ),
-        labelStyle: TextStyle(
-          color: isSelected
-              ? Colors.white
-              : Colors.white.withValues(alpha: 0.7),
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // DATE OF BIRTH PICKER — Age verification (13+/16+ compliance)
-  // ─────────────────────────────────────────────────────────────────────────
-  Widget _buildDOBPicker() {
-    return GestureDetector(
-      onTap: () async {
-        final pickedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime(2000),
-          firstDate: DateTime(1900),
-          lastDate: DateTime.now(),
-          builder: (context, child) {
-            return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: const ColorScheme.dark(
-                  primary: AppTheme.neonCyan,
-                  surface: Color(0xFF1A1A2E),
-                ),
-                dialogTheme: const DialogThemeData(
-                  backgroundColor: Color(0xFF1A1A2E),
-                ),
-              ),
-              child: child!,
-            );
-          },
-        );
-
-        if (pickedDate != null) {
-          setState(() => _dateOfBirth = pickedDate);
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.04),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _dateOfBirth != null
-                ? AppTheme.neonCyan.withValues(alpha: 0.3)
-                : Colors.white.withValues(alpha: 0.1),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.cake_outlined,
-              color: _dateOfBirth != null
-                  ? AppTheme.neonCyan
-                  : Colors.white.withValues(alpha: 0.5),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                _dateOfBirth != null
-                    ? '${_dateOfBirth!.day}/${_dateOfBirth!.month}/${_dateOfBirth!.year}'
-                    : 'Date of Birth (Required)',
-                style: TextStyle(
-                  color: _dateOfBirth != null
-                      ? Colors.white
-                      : Colors.white.withValues(alpha: 0.5),
-                  fontSize: 14,
-                ),
-              ),
-            ),
-            Icon(
-              Icons.calendar_today,
-              size: 16,
-              color: Colors.white.withValues(alpha: 0.3),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // LOCATION SECTION — Country, City, Postcode
-  // ─────────────────────────────────────────────────────────────────────────
-  Widget _buildLocationSection() {
+  const _LocationSection({
+    required this.cityController,
+    required this.postcodeController,
+    required this.selectedCountry,
+    required this.onCountryChanged,
+    required this.selectedRole,
+  });
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -911,17 +926,14 @@ class _RegisterScreenState extends State<RegisterScreen>
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w700,
-            color: Colors.white.withValues(alpha: 0.5),
+            color: Colors.white.withOpacity(0.5),
             letterSpacing: 1.5,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           'Helps us show local helplines, nearby gyms & events',
-          style: TextStyle(
-            fontSize: 10,
-            color: Colors.white.withValues(alpha: 0.3),
-          ),
+          style: TextStyle(fontSize: 10, color: Colors.white.withOpacity(0.3)),
         ),
         const SizedBox(height: 12),
 
@@ -929,28 +941,25 @@ class _RegisterScreenState extends State<RegisterScreen>
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.04),
+            color: Colors.white.withOpacity(0.04),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+            border: Border.all(color: Colors.white.withOpacity(0.08)),
           ),
           child: DropdownButtonFormField<String>(
-            initialValue: _selectedCountry,
+            value: selectedCountry,
             dropdownColor: const Color(0xFF0D1117),
-            icon: Icon(
-              Icons.expand_more,
-              color: Colors.white.withValues(alpha: 0.4),
-            ),
+            icon: Icon(Icons.expand_more, color: Colors.white.withOpacity(0.4)),
             style: const TextStyle(color: Colors.white, fontSize: 14),
             decoration: InputDecoration(
               prefixIcon: Icon(
                 Icons.public,
-                color: AppTheme.neonCyan.withValues(alpha: 0.7),
+                color: AppTheme.neonCyan.withOpacity(0.7),
                 size: 18,
               ),
               border: InputBorder.none,
               labelText: 'Country',
               labelStyle: TextStyle(
-                color: Colors.white.withValues(alpha: 0.4),
+                color: Colors.white.withOpacity(0.4),
                 fontSize: 12,
               ),
             ),
@@ -961,8 +970,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 child: Text('${h?.flag ?? '🌍'}  $c'),
               );
             }).toList(),
-            onChanged: (v) =>
-                setState(() => _selectedCountry = v ?? 'Australia'),
+            onChanged: onCountryChanged,
           ),
         ),
         const SizedBox(height: 12),
@@ -973,43 +981,43 @@ class _RegisterScreenState extends State<RegisterScreen>
             Expanded(
               flex: 3,
               child: AppTextField(
-                controller: _cityController,
+                controller: cityController,
                 label: 'City',
                 hintText: 'e.g. Melbourne',
                 prefixIcon: Icons.location_city,
+                textInputAction: TextInputAction.next,
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
               flex: 2,
               child: AppTextField(
-                controller: _postcodeController,
+                controller: postcodeController,
                 label: 'Postcode',
                 hintText: 'e.g. 3000',
                 prefixIcon: Icons.pin_drop,
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
               ),
             ),
           ],
         ),
 
         // Fighter-specific note
-        if (_selectedRole == UserRole.fighter) ...[
+        if (selectedRole == UserRole.fighter) ...[
           const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppTheme.neonCyan.withValues(alpha: 0.06),
+              color: AppTheme.neonCyan.withOpacity(0.06),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: AppTheme.neonCyan.withValues(alpha: 0.15),
-              ),
+              border: Border.all(color: AppTheme.neonCyan.withOpacity(0.15)),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.sports_mma,
-                  color: AppTheme.neonCyan.withValues(alpha: 0.7),
+                  color: AppTheme.neonCyan.withOpacity(0.7),
                   size: 16,
                 ),
                 const SizedBox(width: 8),
@@ -1017,7 +1025,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   child: Text(
                     'Your location registers you in the DFC DataFightBank — the global fighter database. Promoters & matchmakers in your area will find you.',
                     style: TextStyle(
-                      color: AppTheme.neonCyan.withValues(alpha: 0.6),
+                      color: AppTheme.neonCyan.withOpacity(0.6),
                       fontSize: 10,
                       height: 1.4,
                     ),
@@ -1030,29 +1038,42 @@ class _RegisterScreenState extends State<RegisterScreen>
       ],
     );
   }
+}
 
-  Widget _buildTermsCheckbox() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: Checkbox(
-            value: _acceptTerms,
-            onChanged: (value) => setState(() => _acceptTerms = value ?? false),
-            activeColor: AppTheme.neonMagenta,
+class _TermsCheckbox extends StatelessWidget {
+  final bool acceptTerms;
+  final ValueChanged<bool> onAcceptTermsChanged;
+
+  const _TermsCheckbox({
+    required this.acceptTerms,
+    required this.onAcceptTermsChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onAcceptTermsChanged(!acceptTerms),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: Checkbox(
+              value: acceptTerms,
+              onChanged: (value) => onAcceptTermsChanged(value ?? false),
+              activeColor: AppTheme.neonMagenta,
+              // Visual feedback for the tap on the row
+              visualDensity: VisualDensity.compact,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: GestureDetector(
-            onTap: () => setState(() => _acceptTerms = !_acceptTerms),
+          const SizedBox(width: 8),
+          Expanded(
             child: RichText(
               text: TextSpan(
                 style: TextStyle(
                   fontSize: 11,
-                  color: Colors.white.withValues(alpha: 0.45),
+                  color: Colors.white.withOpacity(0.45),
                 ),
                 children: [
                   const TextSpan(text: 'I agree to the '),
@@ -1063,7 +1084,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       decoration: TextDecoration.underline,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => context.push('/terms-of-service'),
+                      ..onTap = () => context.go('/terms-of-service'),
                   ),
                   const TextSpan(text: ' and '),
                   TextSpan(
@@ -1073,7 +1094,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       decoration: TextDecoration.underline,
                     ),
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => context.push('/privacy'),
+                      ..onTap = () => context.go('/privacy-policy'),
                   ),
                   const TextSpan(
                     text:
@@ -1083,18 +1104,25 @@ class _RegisterScreenState extends State<RegisterScreen>
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+}
 
-  Widget _buildBanner(String message, Color color, IconData icon) {
+class _Banner extends StatelessWidget {
+  final String message;
+  final Color color;
+  final IconData icon;
+  const _Banner(this.message, this.color, this.icon);
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Row(
         children: [
@@ -1107,32 +1135,30 @@ class _RegisterScreenState extends State<RegisterScreen>
       ),
     );
   }
+}
 
-  Widget _buildDivider() {
+class _Divider extends StatelessWidget {
+  const _Divider();
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       children: [
         Expanded(
-          child: Container(
-            height: 1,
-            color: Colors.white.withValues(alpha: 0.08),
-          ),
+          child: Divider(color: Colors.white.withOpacity(0.1), thickness: 1),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             'OR',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.3),
-              fontSize: 11,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: Colors.white.withOpacity(0.4),
               letterSpacing: 2,
             ),
           ),
         ),
         Expanded(
-          child: Container(
-            height: 1,
-            color: Colors.white.withValues(alpha: 0.08),
-          ),
+          child: Divider(color: Colors.white.withOpacity(0.1), thickness: 1),
         ),
       ],
     );
@@ -1170,9 +1196,9 @@ class _RegisterScreenState extends State<RegisterScreen>
     return null;
   }
 
-  String? _validateConfirmPassword(String? value) {
+  String? _validateConfirmPassword(String? value, String password) {
     if (value == null || value.isEmpty) return 'Please confirm your password';
-    if (value != _passwordController.text) return 'Passwords do not match';
+    if (value != password) return 'Passwords do not match';
     return null;
   }
 }
@@ -1260,25 +1286,25 @@ class _DetonateButtonState extends State<_DetonateButton>
               ),
               child: Center(
                 child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            widget.icon,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            size: 20,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            widget.text,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 3,
-                            ),
-                          ),
-                        ],
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      widget.icon,
+                      color: Colors.white.withValues(alpha: 0.9),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      widget.text,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 3,
                       ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

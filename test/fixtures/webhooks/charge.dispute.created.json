@@ -1,0 +1,14 @@
+{
+  "id": "evt_dispute_001",
+  "type": "charge.dispute.created",
+  "data": {
+    "object": {
+      "id": "dp_test_001",
+      "charge": "ch_test_001",
+      "reason": "fraudulent",
+      "amount": 1999,
+      "metadata": { "orderId": "order-789" }
+    }
+  },
+  "created": 1710000200
+}

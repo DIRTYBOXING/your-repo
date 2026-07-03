@@ -75,6 +75,7 @@ dependencies:
   app_links: ^6.3.3
   wakelock_plus: ^1.2.8
   firebase_app_check: ^0.4.3
+  webview_flutter: ^4.14.0
 
 dev_dependencies:
   flutter_test:

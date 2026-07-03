@@ -1,0 +1,14 @@
+{
+  "id": "evt_payment_intent_001",
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_test_001",
+      "amount": 1999,
+      "currency": "aud",
+      "charges": { "data": [{ "id": "ch_test_001", "status": "succeeded" }] },
+      "metadata": { "orderRef": "order-789" }
+    }
+  },
+  "created": 1710000001
+}

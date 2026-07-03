@@ -114,7 +114,7 @@
   "editor.codeActions.triggerOnFocusChange": true,
   "flutterTools.displayGetxContextMenu": false,
   "flutterTools.displayMobxContextMenu": false,
-  "flutterTools.displayRiverpodContextMenu": false,
+  "flutterTools.displayRiverpodContextMenu": true,
   "flutterTools.displayModularContextMenu": false,
   "flutterTools.displaySignalsContextMenu": false,
   // ── RELOAD HINT ───────────────────────────────────────────

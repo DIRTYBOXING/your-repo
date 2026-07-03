@@ -10,14 +10,33 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
+    // Helper functions for Role-Based Access Control
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserRole() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    function isPromoterOrAdmin() {
+      return isAuthenticated() && 
+        (getUserRole() == 'admin' || getUserRole() == 'promoter');
+    }
+
     // Public read for all media (posters, avatars, event images)
     match /{allPaths=**} {
       allow read: if true;
     }
 
+    // Secured folder for Wearable Data and Private Journals
+    match /private/{userId}/{allPaths=**} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
     // User profile uploads — authenticated, max 10 MB, images only
     match /users/{userId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isAuthenticated()
                    && request.auth.uid == userId
                    && request.resource.size < 10 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
@@ -25,13 +44,13 @@ service firebase.storage {
 
     // Post media — authenticated, max 50 MB (images + video)
     match /posts/{postId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isAuthenticated()
                    && request.resource.size < 50 * 1024 * 1024;
     }
 
     // Short videos (Reels) — authenticated, max 100 MB, video only
     match /short_videos/{userId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isAuthenticated()
                    && request.auth.uid == userId
                    && request.resource.size < 100 * 1024 * 1024
                    && request.resource.contentType.matches('video/.*');
@@ -39,27 +58,27 @@ service firebase.storage {
 
     // Video thumbnails — authenticated, max 5 MB, images only
     match /video_thumbnails/{userId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isAuthenticated()
                    && request.auth.uid == userId
                    && request.resource.size < 5 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
     }
 
-    // Event/PPV assets — authenticated, max 100 MB
+    // Event/PPV assets — restricted to Admins & Promoters, max 100 MB
     match /events/{eventId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isPromoterOrAdmin()
                    && request.resource.size < 100 * 1024 * 1024;
     }
 
     // Fighter media — authenticated, max 50 MB
     match /fighters/{fighterId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isAuthenticated()
                    && request.resource.size < 50 * 1024 * 1024;
     }
 
-    // Gym media — authenticated, max 25 MB
+    // Gym media — restricted to Admins & Promoters, max 25 MB
     match /gyms/{gymId}/{allPaths=**} {
-      allow write: if request.auth != null
+      allow write: if isPromoterOrAdmin()
                    && request.resource.size < 25 * 1024 * 1024;
     }
 

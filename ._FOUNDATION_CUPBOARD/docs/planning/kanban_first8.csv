@@ -1,0 +1,9 @@
+Epic,Module,Owner,Priority,Estimated weeks,Status,Notes
+Core Shell,App Shell and Navigation,@frontend-lead,High,1,To Do,Add shell drawer and bottom nav with feature gating
+PPV,PPV Event List,@ppv-owner,High,1,To Do,Load and route to watch flow
+PPV,PPV Live Watch Stub,@ppv-owner,High,1,To Do,Access gate and playback placeholder
+Payments,Stripe Checkout Frontend Stub,@payments-owner,High,1,To Do,Create checkout session via backend and handle states
+Prediction,Prediction Dashboard,@data-product-owner,Medium,2,To Do,Connect dashboard cards to predictions endpoints
+Rankings,Rankings Dashboard and P4P,@rankings-owner,Medium,2,To Do,Render ladder and division rankings
+Platform,Feature Flags and Environment,@platform,High,0.5,To Do,Safe defaults and remote overrides optional
+Platform,Self Check UI,@sre,Medium,1,To Do,Display runtime checks for core services

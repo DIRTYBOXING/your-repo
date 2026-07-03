@@ -12,8 +12,17 @@ void main() async {
   await Firebase.initializeApp();
 
   // 2. Initialize Stripe
-  // Replace with your actual Stripe Publishable Key (pk_test_... or pk_live_...)
-  Stripe.publishableKey = 'pk_test_your_stripe_publishable_key_here';
+    // Load Stripe Key securely from the environment via dart-define
+    const stripePublishableKey = String.fromEnvironment(
+      'STRIPE_PK_TEST',
+      defaultValue: '',
+    );
+
+    if (stripePublishableKey.isNotEmpty) {
+      Stripe.publishableKey = stripePublishableKey;
+    } else {
+      debugPrint('WARNING: STRIPE_PK_TEST not found in environment.');
+    }
   await Stripe.instance.applySettings();
 
   runApp(const ProviderScope(child: DataFightCentralApp()));

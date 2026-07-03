@@ -1,12 +1,12 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // ─── UTILITY FUNCTIONS ───
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
@@ -37,13 +37,19 @@ service cloud.firestore {
       allow write: if false; // Strictly written by Stripe Webhooks
     }
 
+    match /subscriptions/{subId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      // Writes should only come from a trusted server/webhook environment
+      allow write: if false;
+    }
+
     match /watchHistory/{docId} {
       allow read, write: if isOwner(resource.data.userId);
     }
 
     // ─── ECONOMY & PAYOUTS ───
     match /revenueEvents/{revId} {
-      allow read: if isAdmin() || 
+      allow read: if isAdmin() ||
                   resource.data.participants.promoter == request.auth.uid ||
                   request.auth.uid in resource.data.participants.fighters;
       allow write: if false; // Strictly written by Stripe Webhooks
@@ -82,11 +88,36 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin() || getUserRole() == 'promoter';
     }
-    
+
     match /sponsorBids/{bidId} {
       allow read: if isAdmin() || isOwner(resource.data.brandId) || (getUserRole() == 'promoter' && resource.data.promoterId == request.auth.uid);
       allow create: if getUserRole() == 'sponsor' || isAdmin();
       allow update, delete: if isAdmin();
+    }
+
+    // ─── CHUKYA RADAR SYSTEM ───
+    // Critical security: Only the user can manage their own watchlist and safe zones.
+    // Alerts are immutable logs written by a trusted service account (via Cloud Functions).
+    match /threat_watchlist/{profileId} {
+      allow read, create, update, delete: if isOwner(request.resource.data.victimUserId) || isOwner(resource.data.victimUserId);
+    }
+
+    match /safe_zones/{zoneId} {
+      allow read, create, update, delete: if isOwner(request.resource.data.userId) || isOwner(resource.data.userId);
+    }
+
+    match /proximity_alerts/{alertId} {
+      allow read: if isOwner(resource.data.victimUserId) || isAdmin();
+      // Proximity alerts should be append-only, created by a backend service.
+      // A user can only update the 'status' to acknowledge/resolve.
+      allow create: if false;
+      allow update: if isOwner(resource.data.victimUserId) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'resolvedAt']);
+      allow delete: if false;
+    }
+
+    match /safety_notifications/{notificationId} {
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+      allow write: if false; // Written by backend service only
     }
   }
 }

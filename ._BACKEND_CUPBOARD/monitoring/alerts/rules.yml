@@ -1,0 +1,100 @@
+groups:
+  - name: kubernetes-infrastructure-alerts
+    rules:
+      - alert: KubePodCrashLooping
+        expr: sum by (namespace, pod) (rate(kube_pod_container_status_restarts_total{namespace="dfc"}[15m])) * 900 > 5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Pod {{ $labels.pod }} in {{ $labels.namespace }} is crash-looping"
+          description: "Pod {{ $labels.pod }} has restarted more than 5 times in the last 15 minutes."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pod-crashloopbackoff-or-node-pressure"
+
+      - alert: KubeDeploymentReplicasUnavailable
+        expr: sum(kube_deployment_status_replicas_unavailable{deployment=~"dfc-.*", namespace="dfc"}) by (deployment) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Deployment {{ $labels.deployment }} has unavailable replicas"
+          description: "The deployment {{ $labels.deployment }} has unavailable pods, which may impact service availability."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pod-crashloopbackoff-or-node-pressure"
+
+      - alert: KubeNodeCPUHigh
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 90
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.instance }} has high CPU usage"
+          description: "The node {{ $labels.instance }} has had CPU usage above 90% for 10 minutes."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pod-crashloopbackoff-or-node-pressure"
+
+      - alert: KubeNodeMemoryHigh
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 10
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.instance }} has low memory"
+          description: "The node {{ $labels.instance }} has had less than 10% available memory for 10 minutes."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pod-crashloopbackoff-or-node-pressure"
+
+      - alert: KubePVCUsageCritical
+        expr: (kubelet_volume_stats_used_bytes{namespace="dfc"} / kubelet_volume_stats_capacity_bytes{namespace="dfc"}) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PVC usage is critically high in namespace {{ $labels.namespace }}"
+          description: "The PersistentVolumeClaim {{ $labels.persistentvolumeclaim }} is over 90% full."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pvc-critical"
+
+      - alert: KubePVCUsageWarning
+        expr: (kubelet_volume_stats_used_bytes{namespace="dfc"} / kubelet_volume_stats_capacity_bytes{namespace="dfc"}) * 100 > 80
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PVC usage is high in namespace {{ $labels.namespace }}"
+          description: "The PersistentVolumeClaim {{ $labels.persistentvolumeclaim }} is over 80% full."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pvc-critical"
+
+  - name: application-alerts
+    rules:
+      - alert: DfcApiGatewayHigh5xxRate
+        expr: sum(rate(nginx_ingress_controller_requests{status=~"5..", namespace="dfc", ingress="dfc-gateway"}[5m])) / sum(rate(nginx_ingress_controller_requests{namespace="dfc", ingress="dfc-gateway"}[5m])) > 0.02
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High 5xx error rate on API Gateway"
+          description: "The API gateway is returning a high rate of 5xx errors, indicating a backend service failure."
+          runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-pod-crashloopbackoff-or-node-pressure"
+
+- name: meta-capi-integration-alerts
+  rules:
+  - alert: MetaCapiHighFailureRate
+    # This assumes your meta_forward service exposes Prometheus metrics
+    # like 'meta_capi_requests_total' with a 'status' label ('success' or 'failure').
+    expr: (sum(rate(meta_capi_requests_total{status="failure"}[5m])) / sum(rate(meta_capi_requests_total[5m]))) > 0.05
+    for: 10m
+    labels:
+      severity: critical
+      tier: marketing # Or a new tier for marketing integrations
+    annotations:
+      summary: "High failure rate sending events to Meta CAPI"
+      description: "More than 5% of server-side events sent to the Meta Conversions API are failing. This will impact ad attribution and campaign performance. Check the meta_forward service logs."
+      runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-meta-capi-failure"
+
+  - alert: MetaCapiHighLatency
+    # This assumes a histogram metric 'meta_capi_request_duration_seconds_bucket'
+    expr: histogram_quantile(0.95, sum(rate(meta_capi_request_duration_seconds_bucket[5m])) by (le)) > 2.5
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High P95 latency sending events to Meta CAPI"
+      description: "The 95th percentile latency for sending events to the Meta Conversions API is over 2.5 seconds. This may delay event processing and could indicate a network or Meta-side issue."
+      runbook: "https://github.com/DIRTYBOXING/Data-Fight-Central/blob/main/ops/incident-runbook-chukya.md#on-meta-capi-failure"

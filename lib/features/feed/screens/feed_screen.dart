@@ -3,10 +3,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../../../shared/services/ai_content_service.dart';
+import '../services/auto_feed_orchestrator.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -37,8 +35,11 @@ class _FeedScreenState extends State<FeedScreen> {
       _lastError = null;
     });
     try {
-      final service = context.read<AiContentService>();
-      final posts = await service.getMainFeed();
+      final orchestrator = AutoFeedOrchestratorService();
+      final feedItems = await orchestrator.getMasterFeed();
+      // Map to the existing Map format to preserve the UI code below
+      final posts = feedItems.map((item) => item.toMap()).toList();
+      
       if (!mounted) return;
       setState(() {
         _items = posts;
@@ -173,7 +174,9 @@ class _FeedScreenState extends State<FeedScreen> {
 
   Widget _buildFeedItemCard(BuildContext context, Map<String, dynamic> item) {
     final type = item['type']?.toString() ?? 'news';
-    final source = item['profiles']?['display_name'] ?? 'DFC Network';
+    // Fix avoid_dynamic_calls by casting to Map before accessing
+    final profiles = item['profiles'] as Map<String, dynamic>?;
+    final source = profiles?['display_name']?.toString() ?? 'DFC Network';
     final publishedAtStr = item['created_at']?.toString();
     final publishedAt = publishedAtStr != null
         ? DateTime.tryParse(publishedAtStr) ?? DateTime.now()
@@ -300,11 +303,5 @@ class _FeedScreenState extends State<FeedScreen> {
     if (diff.inMinutes < 60) return '${diff.inMinutes}m';
     if (diff.inHours < 48) return '${diff.inHours}h';
     return '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
-  }
-
-  Future<void> _openLink(String url) async {
-    final uri = Uri.tryParse(url);
-    if (uri == null) return;
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }

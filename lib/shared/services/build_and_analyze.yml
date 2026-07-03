@@ -1,0 +1,57 @@
+# .github/workflows/build_and_analyze.yml
+
+name: DFC Build and Analyze
+
+# This workflow automates the "Repo Hygiene and Build Checks" section of your
+# RELEASE_CHECKLIST.md to ensure code quality on every push and pull request.
+
+on:
+  push:
+    branches:
+      - main
+      - "release/**"
+      - "feature/**"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_analyze:
+    name: Flutter Build & Analyze
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Step 1: Checkout Repository"
+        uses: actions/checkout@v4
+
+      - name: "Step 2: Set up Java environment"
+        # Required for Flutter's Android build toolchain.
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: "Step 3: Set up Flutter SDK"
+        # Uses a popular action to install the Flutter SDK and caches it for speed.
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable" # Use the stable channel
+          cache: true # Enable caching for faster builds
+
+      - name: "Step 4: Install Dependencies"
+        # Corresponds to "Repo Hygiene" check in RELEASE_CHECKLIST.md.
+        run: flutter pub get
+
+      - name: "Step 5: Run Pre-Push Secret Scan"
+        # Enforces "Safety and Secrets" check from RELEASE_CHECKLIST.md in CI.
+        # This script must be executable: `git update-index --chmod=+x scripts/pre-push-secret-check.sh`
+        run: ./scripts/pre-push-secret-check.sh
+
+      - name: "Step 6: Analyze Project Source (as per checklist)"
+        run: flutter analyze --fatal-infos
+
+      - name: "Step 7: Run Tests (as per checklist)"
+        run: flutter test
+
+      - name: "Step 8: Verify App Builds (as per checklist)"
+        run: flutter build apk --debug

@@ -1,0 +1,66 @@
+{
+  "id": "shakura",
+  "name": "Shakura",
+  "title": "Emotional Guardian",
+  "gender_scope": "female_only",
+  "role": "Emotional Core of DFC AI",
+  "domains": [
+    "guardian_screen",
+    "awareness_tap",
+    "wellness_journal",
+    "emotional_scan"
+  ],
+  "activation_rules": {
+    "on_sign_in": {
+      "condition": "user.gender == female",
+      "screen": "ShakuraGuardianScreen"
+    },
+    "on_male_user": {
+      "condition": "user.gender != female",
+      "action": "deactivate_shakura"
+    }
+  },
+  "routing_rules": {
+    "stable": {
+      "recommendation": "JournalEntry",
+      "routes": []
+    },
+    "concern": {
+      "recommendation": "AwarenessTap",
+      "routes": [
+        "friend",
+        "family",
+        "coach"
+      ]
+    }
+  },
+  "memory_rules": {
+    "awareness_tap": {
+      "type": "episode",
+      "store": "ai_memory",
+      "fields": [
+        "contactId",
+        "contactType",
+        "moodScore",
+        "stressScore",
+        "message"
+      ]
+    },
+    "emotional_scan": {
+      "type": "session",
+      "store": "ai_memory",
+      "fields": [
+        "moodScore",
+        "stressScore",
+        "tone"
+      ]
+    }
+  },
+  "boundaries": [
+    "no_medical_advice",
+    "no_fight_strategy",
+    "no_weight_cut_guidance",
+    "no_business_advice",
+    "no_male_user_processing"
+  ]
+}

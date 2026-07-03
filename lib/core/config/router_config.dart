@@ -1,8 +1,10 @@
 
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../shared/models/fighter_model.dart';
 import '../../core/config/fighter_economy_dashboard.dart';
+import '../../features/home/screens/home_screen.dart';
 
 import '../../features/coach/screens/admin_console_screen.dart';
 import '../../features/promoter/screens/economy_control_room_screen.dart';
@@ -59,10 +61,26 @@ import 'promoter_economy_dashboard.dart';
 class AppRouter {
   static final router = GoRouter(
     initialLocation: '/',
+    redirect: (context, state) {
+      final user = FirebaseAuth.instance.currentUser;
+      final isOnAuth = state.matchedLocation == '/login';
+      if (user == null && !isOnAuth) return '/login';
+      if (user != null && isOnAuth) return '/home';
+      return null;
+    },
     routes: [
-      // Main Hub
+      // ── Real platform entry point ──────────────────────────────────────
       GoRoute(
         path: '/',
+        redirect: (_, __) => '/home',
+      ),
+      GoRoute(
+        path: '/home',
+        builder: (context, state) => const HomeScreen(),
+      ),
+      // Launchpad kept for direct nav if needed
+      GoRoute(
+        path: '/launchpad',
         builder: (context, state) => const PlatformLaunchpadScreen(),
       ),
       GoRoute(
@@ -409,4 +427,6 @@ class RouterConfig {
   static const String neuralCoachPath = '/neural-coach';
   static const String healthDashboardPath = '/health-dashboard';
   static const String bodyMonitorPath = '/body-monitor';
+  static const String ppvStorePath = '/ppv';
+  static const String missionControlPath = '/cockpit';
 }

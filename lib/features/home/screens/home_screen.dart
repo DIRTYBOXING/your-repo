@@ -1010,7 +1010,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {
               Navigator.of(dlg).pop();
-              ctx.read<AuthService>().signOut();
+              ctx.read<AuthService>().logout();
               GoRouter.of(ctx).go('/login');
             },
             child: const Text('Log Out'),

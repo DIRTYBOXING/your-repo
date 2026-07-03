@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DFCNavDrawer extends StatelessWidget {
-  const DFCNavDrawer({super.key});
+  final ValueChanged<int>? onTabSelected;
+  const DFCNavDrawer({super.key, this.onTabSelected});
 
   @override
   Widget build(BuildContext context) {

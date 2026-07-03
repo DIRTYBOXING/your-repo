@@ -584,7 +584,7 @@ class _PromoCommandCenterScreenState extends State<PromoCommandCenterScreen> {
         title: 'Content Engine',
         subtitle: 'Swarm AI + Pipeline',
         color: AppTheme.neonCyan,
-        route: RouterConfig.contentPipelineDashboardPath,
+        route: '', // TODO: RouterConfig.contentPipelineDashboardPath,
       ),
       _Category(
         icon: Icons.share,
@@ -598,35 +598,35 @@ class _PromoCommandCenterScreenState extends State<PromoCommandCenterScreen> {
         title: 'Events & Promos',
         subtitle: 'Create & Promote',
         color: AppTheme.neonOrange,
-        route: RouterConfig.eventsPath,
+        route: '', // TODO: RouterConfig.eventsPath,
       ),
       _Category(
         icon: Icons.analytics,
         title: 'Analytics',
         subtitle: 'KPIs & Engagement',
         color: AppTheme.neonPurple,
-        route: RouterConfig.marketingAnalyticsPath,
+        route: '', // TODO: RouterConfig.marketingAnalyticsPath,
       ),
       _Category(
         icon: Icons.campaign,
         title: 'Campaigns',
         subtitle: 'A/B Tests & Targeting',
         color: const Color(0xFF4A9EFF),
-        route: RouterConfig.marketingHQPath,
+        route: '', // TODO: RouterConfig.marketingHQPath,
       ),
       _Category(
         icon: Icons.qr_code,
         title: 'QR & Links',
         subtitle: 'QR Codes & Link-in-Bio',
         color: const Color(0xFFFFD700),
-        route: RouterConfig.qrPromoPath,
+        route: '', // TODO: RouterConfig.qrPromoPath,
       ),
       _Category(
         icon: Icons.calendar_month,
         title: 'Content Calendar',
         subtitle: 'Schedule & Plan',
         color: const Color(0xFFFF6B6B),
-        route: RouterConfig.contentCalendarPath,
+        route: '', // TODO: RouterConfig.contentCalendarPath,
       ),
     ];
 
@@ -649,7 +649,11 @@ class _PromoCommandCenterScreenState extends State<PromoCommandCenterScreen> {
 
   Widget _buildCategoryCard(_Category cat) {
     return GestureDetector(
-      onTap: () => context.push(cat.route),
+      onTap: () {
+        if (cat.route.isNotEmpty) {
+          context.push(cat.route);
+        }
+      },
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -694,7 +698,7 @@ class _PromoCommandCenterScreenState extends State<PromoCommandCenterScreen> {
         'New Campaign',
         Icons.add_circle,
         AppTheme.neonCyan,
-        () => context.push(RouterConfig.marketingHQPath),
+        () {}, // TODO: context.push(RouterConfig.marketingHQPath),
       ),
       _QuickAction(
         'Post Now',
@@ -706,37 +710,37 @@ class _PromoCommandCenterScreenState extends State<PromoCommandCenterScreen> {
         'Generate QR',
         Icons.qr_code_2,
         AppTheme.neonGreen,
-        () => context.push(RouterConfig.qrPromoPath),
+        () {}, // TODO: context.push(RouterConfig.qrPromoPath),
       ),
       _QuickAction(
         'Link-in-Bio',
         Icons.link,
         AppTheme.neonOrange,
-        () => context.push(RouterConfig.linkInBioPath),
+        () {}, // TODO: context.push(RouterConfig.linkInBioPath),
       ),
       _QuickAction(
         'View Pipeline',
         Icons.water,
         AppTheme.neonPurple,
-        () => context.push(RouterConfig.contentPipelineDashboardPath),
+        () {}, // TODO: context.push(RouterConfig.contentPipelineDashboardPath),
       ),
       _QuickAction(
         'Engagement',
         Icons.trending_up,
         const Color(0xFFFFD700),
-        () => context.push(RouterConfig.engagementDashboardPath),
+        () {}, // TODO: context.push(RouterConfig.engagementDashboardPath),
       ),
       _QuickAction(
         'Poster Maker',
         Icons.brush,
         const Color(0xFFFF6B6B),
-        () => context.push(RouterConfig.posterGeneratorPath),
+        () {}, // TODO: context.push(RouterConfig.posterGeneratorPath),
       ),
       _QuickAction(
         'Warehouse',
         Icons.factory,
         const Color(0xFF00E5FF),
-        () => context.push(RouterConfig.promotionWarehousePath),
+        () {}, // TODO: context.push(RouterConfig.promotionWarehousePath),
       ),
     ];
 

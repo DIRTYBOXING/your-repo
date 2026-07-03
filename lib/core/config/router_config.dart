@@ -30,6 +30,7 @@ import '../../features/fighter/screens/fighter_profile_screen.dart';
 import '../../features/gym/screens/gym_profile_screen.dart';
 import '../../features/profile/screens/profile_screen_v2.dart';
 import '../../features/promoter/screens/promoter_dashboard_screen.dart';
+import '../../features/promoter/screens/promoter_control_room_screen.dart';
 import '../../features/social/fight_wire_post_screen.dart';
 import '../../features/social/screens/create_group_screen.dart';
 import '../../features/social/screens/create_story_screen.dart';
@@ -42,6 +43,8 @@ import '../../features/fight_card/screens/fight_card_builder_screen.dart';
 import '../../shared/widgets/coming_soon_screen.dart';
 import '../../features/wallet/screens/digital_wallet_screen.dart';
 import '../../features/revenue/screens/commercial_revenue_dashboard_screen.dart';
+import '../../features/shakura/screens/shakura_guardian_screen.dart';
+import '../../features/ppv/screens/ppv_checkout_screen.dart';
 import 'gym_economy_dashboard.dart';
 import 'promoter_economy_dashboard.dart';
 
@@ -188,11 +191,23 @@ class AppRouter {
         builder: (context, state) =>
             BroadcastOverlayScreen(eventId: state.pathParameters['eventId']!),
       ),
+      GoRoute(
+        path: '/shakura',
+        builder: (context, state) => const ShakuraGuardianScreen(),
+      ),
+      GoRoute(
+        path: '/ppv-checkout/:eventId',
+        builder: (context, state) => PpvCheckoutScreen(
+          eventId: state.pathParameters['eventId']!,
+          eventTitle: state.uri.queryParameters['title'] ?? 'Live Event',
+          muxPlaybackId: state.uri.queryParameters['playbackId'] ?? '',
+        ),
+      ),
 
       // Promoter & Operations
       GoRoute(
         path: '/promoter',
-        builder: (context, state) => const PromoterDashboardScreen(),
+        builder: (context, state) => const PromoterControlRoomScreen(),
       ),
       GoRoute(
         path: '/card-builder',

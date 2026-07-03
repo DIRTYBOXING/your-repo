@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../features/coach/screens/admin_console_screen.dart';
 import '../../features/promoter/screens/economy_control_room_screen.dart';
 import '../../features/admin/screens/google_ecosystem_hub_screen.dart';
+import '../../features/splash/screens/platform_launchpad_screen.dart';
+import '../../features/admin/screens/system_cockpit_screen.dart';
 import '../../features/legacy_root/performance_lab_screen.dart';
 import '../../features/astrohealth/screens/neural_coach_dashboard_screen.dart';
 import '../../features/astrohealth/screens/fighter_wellness_journal_screen.dart';
@@ -58,6 +60,14 @@ class AppRouter {
       // Main Hub
       GoRoute(
         path: '/',
+        builder: (context, state) => const PlatformLaunchpadScreen(),
+      ),
+      GoRoute(
+        path: '/cockpit',
+        builder: (context, state) => const SystemCockpitScreen(),
+      ),
+      GoRoute(
+        path: '/website',
         builder: (context, state) => const WebsiteHomeScreen(),
       ),
 

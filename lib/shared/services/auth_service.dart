@@ -56,7 +56,13 @@ class AuthService extends ChangeNotifier {
   User? get currentUser => _firebaseUser;
   User? get firebaseUser => _firebaseUser;
   UserModel? get userModel => _userModel;
+  UserRole? get userRole => _userModel?.role;
+  bool get isAdmin => _userModel?.role == UserRole.admin;
   String? get error => _error;
+
+  /// Stable fallback user id used across demo/guest screens when there is
+  /// no live Firebase-authenticated user to key Firestore writes/reads by.
+  static const String demoUserId = 'demo_user';
 
   /// True when running without a live Firebase-backed account (guest/demo
   /// sandbox lane), meaning writes should be skipped rather than sent to

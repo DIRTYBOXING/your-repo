@@ -5,6 +5,45 @@ import Mux from '@mux/mux-node';
 
 admin.initializeApp();
 
+// ─── COST SAFETY CONFIG ───────────────────────────────────────────────────
+// Max Cloud Function invocations per instance — prevents runaway billing
+const FUNCTION_RUNTIME_OPTS: functions.RuntimeOptions = {
+  timeoutSeconds: 30,       // Kill any function running > 30s (default 60s)
+  memory: '256MB',          // Minimum memory (default 256MB, saves cost)
+  maxInstances: 10,         // Hard cap: max 10 concurrent instances
+};
+
+// Rate limit: max writes per user per minute (Firestore abuse guard)
+const MAX_WRITES_PER_MINUTE = 20;
+
+async function checkRateLimit(uid: string, action: string): Promise<boolean> {
+  const key = `rate_limits/${uid}_${action}`;
+  const now = Date.now();
+  const windowMs = 60 * 1000; // 1 minute window
+
+  const ref = admin.firestore().doc(key);
+  const doc = await ref.get();
+
+  if (doc.exists) {
+    const data = doc.data()!;
+    const windowStart = data.windowStart || 0;
+    const count = data.count || 0;
+
+    if (now - windowStart < windowMs) {
+      if (count >= MAX_WRITES_PER_MINUTE) {
+        functions.logger.warn(`Rate limit hit: uid=${uid} action=${action}`);
+        return false; // blocked
+      }
+      await ref.update({ count: admin.firestore.FieldValue.increment(1) });
+    } else {
+      await ref.set({ windowStart: now, count: 1 });
+    }
+  } else {
+    await ref.set({ windowStart: now, count: 1 });
+  }
+  return true; // allowed
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2023-10-16', // Ensure you are using the correct version
 });
@@ -67,9 +106,15 @@ export const bootstrapOwner = functions.https.onRequest(async (req, res) => {
   res.status(200).send(`Platform Owner seeded: ${ownerEmail}`);
 });
 
-export const createFightStream = functions.https.onCall(async (data, context) => {
+export const createFightStream = functions.runWith(FUNCTION_RUNTIME_OPTS).https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
+  }
+
+  // ── Rate limit check ──
+  const allowed = await checkRateLimit(context.auth.uid, 'createFightStream');
+  if (!allowed) {
+    throw new functions.https.HttpsError('resource-exhausted', 'Rate limit exceeded. Try again in 1 minute.');
   }
 
   const isUserPromoter = await isPromoter(context.auth.uid);

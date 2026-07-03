@@ -1,39 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/admin/screens/admin_console_screen.dart';
-import '../../features/admin/screens/economy_control_room_screen.dart';
+import '../../features/coach/screens/admin_console_screen.dart';
+import '../../features/promoter/screens/economy_control_room_screen.dart';
 import '../../features/admin/screens/google_ecosystem_hub_screen.dart';
-import '../../features/analytics/screens/performance_lab_screen.dart';
+import '../../features/legacy_root/performance_lab_screen.dart';
 import '../../features/astrohealth/screens/astro_health_monitor_screen.dart';
-import '../../features/auth/screens/login_onboarding_screen.dart';
-import '../../features/broadcast/screens/broadcast_overlay_screen.dart';
-import '../../features/coach/screens/coach_hub_screen.dart';
-import '../../features/coach/screens/corner_coach_screen.dart';
+import '../../features/coach/screens/login_onboarding_screen.dart';
+import '../../features/promoter/screens/broadcast_overlay_screen.dart';
 import '../../features/coach/screens/neural_coach_screen.dart';
 import '../../features/coach/screens/website_home_screen.dart';
-import '../../features/creative/screens/creative_hub_screen.dart';
+import '../../features/creative_hub/screens/creative_hub_screen.dart';
 import '../../features/devices/screens/device_hub_screen.dart';
-import '../../features/events/screens/event_center_screen.dart';
-import '../../features/events/screens/fight_card_builder_screen.dart';
 import '../../features/feed/screens/feed_screen.dart';
 import '../../features/fempower/screens/only_fit_portal_screen.dart';
-import '../../features/finance/screens/payouts_finance_screen.dart';
-import '../../features/finance/screens/stripe_connect_onboarding_screen.dart';
-import '../../features/gym/screens/gym_team_hub_screen.dart';
-import '../../features/history/screens/fight_history_screen.dart';
-// Import your screens here (adjust paths if your folder structure differs slightly)
-import '../../features/home/screens/home_screen.dart';
-import '../../features/legal/screens/contracts_legal_screen.dart';
-import '../../features/medical/screens/medical_safety_screen.dart';
-import '../../features/officials/screens/officials_tablet_screen.dart';
-import '../../features/ppv/screens/ppv_detail_screen.dart';
-import '../../features/ppv/screens/ppv_storefront_screen.dart';
-import '../../features/ppv/screens/ppv_streaming_screen.dart';
+import '../../features/legacy_root/stripe_connect_onboarding_screen.dart';
+import '../../shared/widgets/gym_team_hub_screen.dart';
+import '../../core/config/medical_safety_screen.dart';
+import '../../features/promoter/screens/officials_tablet_screen.dart';
+import '../../features/ppv/services/ppv_detail_screen.dart';
+import '../../features/ppv/services/ppv_storefront_screen.dart';
+import '../../features/ppv/services/ppv_streaming_screen.dart';
 import '../../features/profile/screens/fighter_public_profile_screen.dart';
 import '../../features/profile/screens/profile_screen_v2.dart';
 import '../../features/promoter/screens/promoter_dashboard_screen.dart';
-import '../../features/replay/screens/replay_center_screen.dart';
 import '../../features/social/fight_wire_post_screen.dart';
 import '../../features/social/screens/create_group_screen.dart';
 import '../../features/social/screens/create_story_screen.dart';
@@ -41,11 +31,9 @@ import '../../features/social/screens/cross_platform_publish_screen.dart';
 import '../../features/social/screens/group_detail_screen.dart';
 import '../../features/social/screens/story_viewer_screen.dart';
 import '../../features/social/screens/upload_reel_screen.dart';
-import '../../features/sponsors/screens/sponsorship_system_screen.dart';
-import '../../features/streaming/screens/streaming_center_screen.dart';
-import '../../features/training/screens/fight_summary_screen.dart';
-import '../../features/training/screens/training_session_screen.dart';
-import '../../features/venue/screens/venue_operations_screen.dart';
+import '../../features/legacy_root/sponsorship_system_screen.dart';
+import '../../features/fight_card/screens/fight_card_builder_screen.dart';
+import '../../shared/widgets/coming_soon_screen.dart';
 import 'fighter_economy_dashboard.dart';
 import 'gym_economy_dashboard.dart';
 import 'promoter_economy_dashboard.dart';
@@ -73,15 +61,18 @@ class AppRouter {
       ),
       GoRoute(
         path: '/corner-coach',
-        builder: (context, state) => const CornerCoachScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Corner Coach'),
       ),
       GoRoute(
         path: '/training-session',
-        builder: (context, state) => const TrainingSessionScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Training Session'),
       ),
       GoRoute(
         path: '/fight-summary',
-        builder: (context, state) => const FightSummaryScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Fight Summary'),
       ),
 
       // Devices & Biometrics
@@ -101,7 +92,8 @@ class AppRouter {
       ),
       GoRoute(
         path: '/fight-history',
-        builder: (context, state) => const FightHistoryScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Fight History'),
       ),
 
       // Identity & Social
@@ -118,7 +110,7 @@ class AppRouter {
       // Gyms & Teams
       GoRoute(
         path: '/coach-hub',
-        builder: (context, state) => const CoachHubScreen(),
+        builder: (context, state) => const ComingSoonScreen(title: 'Coach Hub'),
       ),
       GoRoute(
         path: '/gym-hub',
@@ -128,11 +120,13 @@ class AppRouter {
       // Events & Streaming
       GoRoute(
         path: '/event-center',
-        builder: (context, state) => const EventCenterScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Event Center'),
       ),
       GoRoute(
         path: '/streaming',
-        builder: (context, state) => const StreamingCenterScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Streaming Center'),
       ),
       GoRoute(
         path: '/ppv',
@@ -150,11 +144,12 @@ class AppRouter {
       ),
       GoRoute(
         path: '/replay',
-        builder: (context, state) => const ReplayCenterScreen(),
+        builder: (context, state) => const ComingSoonScreen(title: 'Replay Center'),
       ),
       GoRoute(
-        path: '/broadcast',
-        builder: (context, state) => const BroadcastOverlayScreen(),
+        path: '/broadcast/:eventId',
+        builder: (context, state) =>
+            BroadcastOverlayScreen(eventId: state.pathParameters['eventId']!),
       ),
 
       // Promoter & Operations
@@ -168,7 +163,8 @@ class AppRouter {
       ),
       GoRoute(
         path: '/venue-ops',
-        builder: (context, state) => const VenueOperationsScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Venue Operations'),
       ),
 
       // Regulatory & Back Office
@@ -182,11 +178,13 @@ class AppRouter {
       ),
       GoRoute(
         path: '/legal',
-        builder: (context, state) => const ContractsLegalScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Contracts & Legal'),
       ),
       GoRoute(
         path: '/finance',
-        builder: (context, state) => const PayoutsFinanceScreen(),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Payouts & Finance'),
       ),
       GoRoute(
         path: '/sponsors',

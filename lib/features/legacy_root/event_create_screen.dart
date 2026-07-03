@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/event_model.dart';
-import '../providers/event_providers.dart';
-import '../../../core/layout/dfc_layout.dart';
-import '../../../core/layout/dfc_padding.dart';
-import '../../../core/cards/dfc_card.dart';
-import '../../../core/motion/dfc_motion.dart';
-import 'fight_card_builder_screen.dart';
+import '../../../shared/models/event_model.dart';
+import 'event_providers.dart';
+import 'dfc_layout.dart';
+import 'dfc_padding.dart';
+import 'dfc_card.dart';
 
 class EventCreateScreen extends ConsumerStatefulWidget {
   const EventCreateScreen({super.key});
@@ -76,9 +74,10 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
       name: _nameCtrl.text.trim(),
       venue: _venueCtrl.text.trim(),
       city: _cityCtrl.text.trim(),
-      startTime: startDateTime,
+      country: 'Unknown', // Required parameter missing in UI
+      eventDate: startDateTime, // Fixed 'startTime' -> 'eventDate'
       posterUrl: '', // To be hooked up to media uploader
-      promotionId: 'p_001',
+      promoterId: 'p_001', // Fixed 'promotionId' -> 'promoterId'
       ppvPriceCents: priceInCents.toInt(),
     );
 

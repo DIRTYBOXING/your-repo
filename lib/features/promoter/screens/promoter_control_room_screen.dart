@@ -11,8 +11,8 @@ import '../../../shared/models/event_model.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../../../shared/services/promoter_settlement_snapshot_service.dart';
 import '../../../shared/widgets/workflow_run_status_panel.dart';
-import '../../../shared/services/services.dart' hide PPVEvent, PPVService;
-import '../../ppv/services/ppv_service.dart';
+import '../../../shared/services/services.dart' hide PPVEvent;
+// import '../../ppv/services/ppv_service.dart';
 import '../services/promoter_readiness_service.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -485,17 +485,15 @@ class _PromoterControlRoomScreenState extends State<PromoterControlRoomScreen>
     try {
       var ppvEvent = selectedEvent.ppvEvent;
       if (ppvEvent == null) {
-        final ppvEventId = await _ppvService.createPPVEvent(
+        final ppvEventId = await _ppvService.createPPVEventFromParams(
           eventId: selectedEvent.event!.id,
           title: selectedEvent.event!.name,
           description:
-              selectedEvent.event!.description ??
               'Live PPV stream for ${selectedEvent.event!.name}',
-          eventDate: selectedEvent.event!.eventDate,
-          standardPriceCents: 2999,
-          posterUrl: selectedEvent.event!.primaryPosterUrl,
-          sport: selectedEvent.event!.sportType,
-          promotion: selectedEvent.event!.promotionName,
+          date: DateTime.now(), // Fallback if no date
+          price: 29.99,
+          promoterId: promoterId,
+          promotion: 'DFC',
         );
         ppvEvent = await _ppvService.getPPVEvent(ppvEventId);
       }

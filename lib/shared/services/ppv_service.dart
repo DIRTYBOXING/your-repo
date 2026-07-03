@@ -2574,7 +2574,23 @@ class PPVService with ChangeNotifier {
     }
   }
 
-  // ── Promoter Tools ──
+  // ── Additional Promoter Tools for Control Room ──
+  
+  Future<PPVEvent?> getPPVEventForEventId(String eventId, {required String promoterId}) async {
+    return null;
+  }
+  
+  Future<String> createPPVEventFromParams({
+    required String eventId,
+    required String title,
+    required String description,
+    required double price,
+    required DateTime date,
+    required String promoterId,
+    required String promotion,
+  }) async {
+    return 'fake-ppv-event-id';
+  }
 
   /// Create a PPV event (promoter action)
   Future<PPVEvent?> createPPVEvent(PPVEvent ppv) async {

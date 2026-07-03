@@ -80,7 +80,6 @@ class _StripeConnectOnboardingScreenState
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: DfcGlassPanel(
-            accent: AppColors.neonGreen,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(

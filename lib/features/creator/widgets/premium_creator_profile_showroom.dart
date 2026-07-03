@@ -248,7 +248,7 @@ class _PremiumCreatorProfileShowroomState
                             Text(
                               _creator.bio,
                               style: const TextStyle(
-                                color: Colors.white80,
+                                color: Colors.white70,
                                 fontSize: 14,
                                 height: 1.5,
                               ),
@@ -407,7 +407,7 @@ class _PremiumCreatorProfileShowroomState
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                icon: const Icon(Icons.apple_wallet, size: 20),
+                                icon: const Icon(Icons.wallet, size: 20),
                                 label: const Text(
                                   'ADD TO APPLE WALLET',
                                   style: TextStyle(

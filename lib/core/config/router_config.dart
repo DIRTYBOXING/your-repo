@@ -1,6 +1,9 @@
 
 import 'package:go_router/go_router.dart';
 
+import '../../shared/models/fighter_model.dart';
+import '../../core/config/fighter_economy_dashboard.dart';
+
 import '../../features/coach/screens/admin_console_screen.dart';
 import '../../features/promoter/screens/economy_control_room_screen.dart';
 import '../../features/admin/screens/google_ecosystem_hub_screen.dart';
@@ -126,7 +129,26 @@ class AppRouter {
       // Identity & Social
       GoRoute(
         path: '/fighter-profile',
-        builder: (context, state) => const FighterProfileScreen(),
+        builder: (context, state) => FighterProfileScreen(
+          fighter: state.extra as FighterModel? ?? 
+              FighterModel(
+                id: '', 
+                userId: '', 
+                fullName: 'Unknown Fighter', 
+                gender: FighterGender.male, 
+                status: FighterStatus.active,
+                wins: 0,
+                losses: 0,
+                draws: 0,
+                noContests: 0,
+                knockouts: 0,
+                submissions: 0,
+                previousGymIds: const [],
+                matchupAvailability: MatchupAvailability.unavailable,
+                createdAt: DateTime(2024),
+                updatedAt: DateTime(2024),
+              ),
+        ),
       ),
       GoRoute(
         path: '/gym-profile',
@@ -383,4 +405,8 @@ class RouterConfig {
   static const String socialQueuePath = '/social-queue';
   static const String eventPromotionPath = '/event-promotion';
   static const String socialMediaToolkitPath = '/social-media-toolkit';
+  static const String fightCampToolsPath = '/fight-camp-tools';
+  static const String neuralCoachPath = '/neural-coach';
+  static const String healthDashboardPath = '/health-dashboard';
+  static const String bodyMonitorPath = '/body-monitor';
 }

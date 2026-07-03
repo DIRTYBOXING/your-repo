@@ -65,4 +65,19 @@ class EventService extends ChangeNotifier {
       return null;
     }
   }
+
+  /// Get Upcoming Events
+  Future<List<dynamic>> getUpcomingEvents({int limit = 10}) async {
+    return [];
+  }
+
+  /// Get Live Events
+  Future<List<dynamic>> getLiveEvents() async {
+    return [];
+  }
+
+  /// Get Event by ID
+  Future<dynamic> getEvent(String eventId) async {
+    return null;
+  }
 }

@@ -18,6 +18,8 @@ enum UserRole {
         return '⭐ Head Pilot';
       case UserRole.admin:
         return 'Admin';
+      case UserRole.fighter:
+        return 'Fighter';
       case UserRole.coach:
         return 'Coach';
       case UserRole.gym:
@@ -28,8 +30,6 @@ enum UserRole {
         return 'Sponsor';
       case UserRole.fan:
         return 'Fan';
-      case UserRole.admin:
-        return 'Admin';
     }
   }
 

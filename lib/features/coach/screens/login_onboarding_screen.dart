@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/services/auth_service.dart';
+import '../../../shared/services/result.dart';
 
 class LoginOnboardingScreen extends StatefulWidget {
   const LoginOnboardingScreen({super.key});
@@ -26,23 +28,22 @@ class _LoginOnboardingScreenState extends State<LoginOnboardingScreen> {
 
     if (mounted) {
       setState(() => _isLoading = false);
-      result.fold(
-        (user) async {
-          if (!isLogin) {
-            // Auto-complete onboarding to drop them straight into the platform
-            await auth.completeOnboarding();
-          }
-          if (mounted) context.go('/admin-console');
-        },
-        (error) => ScaffoldMessenger.of(context).showSnackBar(
+      if (result is Success<User>) {
+        if (!isLogin) {
+          // Auto-complete onboarding to drop them straight into the platform
+          await auth.completeOnboarding();
+        }
+        if (mounted) context.go('/admin-console');
+      } else if (result is Error<User>) {
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              error.message,
+              result.failure.message,
               style: const TextStyle(color: Colors.white),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
   }
 

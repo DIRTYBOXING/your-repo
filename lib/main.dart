@@ -41,7 +41,7 @@ void main() async {
   final astroHealth = AstroHealthService();
 
   // Perform any async boot-ups needed before UI
-  await persistentAuth.checkSession();
+  await persistentAuth.hasValidSession();
   
   runApp(const ProviderScope(child: DataFightCentralApp()));
 }

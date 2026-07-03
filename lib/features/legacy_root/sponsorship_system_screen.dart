@@ -62,7 +62,7 @@ class _SponsorshipSystemScreenState extends State<SponsorshipSystemScreen> {
         title: const Text(
           'AD SPOTLIGHT & BIDDING',
           style: TextStyle(
-            color: AppColors.neonGold,
+            color: Colors.amberAccent,
             fontWeight: FontWeight.w900,
             letterSpacing: 1.5,
           ),
@@ -115,14 +115,14 @@ class _SponsorshipSystemScreenState extends State<SponsorshipSystemScreen> {
       decoration: BoxDecoration(
         color: AppColors.panel,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.neonGold.withValues(alpha: 0.3)),
+        border: Border.all(color: Colors.amberAccent.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: AppColors.neonGold),
+              Icon(icon, color: Colors.amberAccent),
               const SizedBox(width: 8),
               Text(
                 title,
@@ -149,7 +149,7 @@ class _SponsorshipSystemScreenState extends State<SponsorshipSystemScreen> {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.neonGold,
+                backgroundColor: Colors.amberAccent,
                 foregroundColor: Colors.black,
               ),
               onPressed: _isBidding

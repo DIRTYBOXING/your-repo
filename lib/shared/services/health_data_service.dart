@@ -345,12 +345,14 @@ class HealthDataService with ChangeNotifier {
     }
   }
 
-  Future<WearableHealthData?> getTodayHealthData() async {
+  WearableHealthData? get latestData {
     final snapshot = _connector.mergedSnapshot;
-    if (snapshot == null) {
-      return null;
-    }
+    if (snapshot == null) return null;
     return _mapPayload(snapshot);
+  }
+
+  Future<WearableHealthData?> getTodayHealthData() async {
+    return latestData;
   }
 
   Future<List<WearableHealthData>> getHealthDataRange({

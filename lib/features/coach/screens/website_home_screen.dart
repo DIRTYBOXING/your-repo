@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../widgets/dfc_responsive.dart';
 import '../../../core/theme/app_colors.dart';
 import '../widgets/website_hero.dart';
-import '../widgets/dfc_responsive.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// DATAFIGHTCENTRAL.COM STOREFRONT
@@ -20,7 +20,7 @@ class WebsiteHomeScreen extends StatelessWidget {
 
           SliverPadding(
             padding: EdgeInsets.symmetric(
-              horizontal: DfcResponsive.isDesktop(context) ? 120 : 20,
+              horizontal: MediaQuery.of(context).size.width >= 850 ? 120 : 20,
               vertical: 40,
             ),
             sliver: SliverList(

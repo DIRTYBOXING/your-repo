@@ -14,7 +14,7 @@ class PromoterEconomyDashboard extends StatefulWidget {
 
 class _PromoterEconomyDashboardState extends State<PromoterEconomyDashboard> {
   final _economy = EconomyService();
-  Map<String, dynamic>? _balance;
+  double _balance = 0.0;
   List<Map<String, dynamic>> _statements = [];
   List<Map<String, dynamic>> _events = [];
   bool _loading = true;
@@ -42,8 +42,8 @@ class _PromoterEconomyDashboardState extends State<PromoterEconomyDashboard> {
     if (mounted) {
       setState(() {
         _balance = balance;
-        _statements = statements;
-        _events = events;
+        _statements = statements.cast<Map<String, dynamic>>();
+        _events = events.cast<Map<String, dynamic>>();
         _loading = false;
       });
     }
@@ -60,7 +60,7 @@ class _PromoterEconomyDashboardState extends State<PromoterEconomyDashboard> {
       );
     }
 
-    final currentBalance = (_balance?['balanceCents'] ?? 0) / 100.0;
+    final currentBalance = _balance;
 
     return Scaffold(
       backgroundColor: AppColors.bg,

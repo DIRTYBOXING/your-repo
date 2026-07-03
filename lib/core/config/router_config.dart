@@ -40,6 +40,7 @@ import '../../features/social/screens/story_viewer_screen.dart';
 import '../../features/social/screens/upload_reel_screen.dart';
 import '../../features/legacy_root/sponsorship_system_screen.dart';
 import '../../features/fight_card/screens/fight_card_builder_screen.dart';
+import '../../features/spotlight/screens/whos_who_screen.dart';
 import '../../shared/widgets/coming_soon_screen.dart';
 import '../../features/wallet/screens/digital_wallet_screen.dart';
 import '../../features/revenue/screens/commercial_revenue_dashboard_screen.dart';
@@ -298,6 +299,10 @@ class AppRouter {
         builder: (context, state) => const OnlyFitPortalScreen(),
       ),
 
+      GoRoute(
+        path: '/whos-who',
+        builder: (context, state) => const WhosWhoScreen(),
+      ),
       // Social module
       GoRoute(
         path: RouterConfig.createGroupPath,

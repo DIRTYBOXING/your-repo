@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import Stripe from 'stripe';
+import Mux from '@mux/mux-node';
 
 admin.initializeApp();
 
@@ -9,6 +10,55 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 });
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
+
+// Mux Initialization
+const mux = new Mux({
+  tokenId: process.env.MUX_TOKEN_ID || '',
+  tokenSecret: process.env.MUX_TOKEN_SECRET || ''
+});
+
+// Helper: Check if user is Promoter
+async function isPromoter(uid: string): Promise<boolean> {
+  const doc = await admin.firestore().collection('users').doc(uid).get();
+  return doc.exists && doc.data()?.role === 'promoter';
+}
+
+export const createFightStream = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be logged in');
+  }
+
+  const isUserPromoter = await isPromoter(context.auth.uid);
+  if (!isUserPromoter) {
+    throw new functions.https.HttpsError('permission-denied', 'Only promoters can create streams');
+  }
+
+  const { eventId, title } = data;
+  if (!eventId) {
+    throw new functions.https.HttpsError('invalid-argument', 'Event ID is required');
+  }
+
+  try {
+    const liveStream = await mux.video.liveStreams.create({
+      playback_policy: ['public'],
+      new_asset_settings: { playback_policy: ['public'] },
+      test: process.env.NODE_ENV !== 'production'
+    });
+
+    await admin.firestore().collection('events').doc(eventId).update({
+      streamId: liveStream.id,
+      streamKey: liveStream.stream_key,
+      playbackId: liveStream.playback_ids?.[0]?.id,
+      streamStatus: 'created',
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    return { success: true, liveStreamId: liveStream.id };
+  } catch (error: any) {
+    functions.logger.error('Error creating Mux stream', error);
+    throw new functions.https.HttpsError('internal', error.message);
+  }
+});
 
 export const stripeWebhook = functions.https.onRequest(async (req, res) => {
   const sig = req.headers['stripe-signature'];

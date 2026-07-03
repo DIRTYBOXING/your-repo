@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:datafightcentral/lib/features/ppv/screens/ppv_watch_gatekeeper_screen.dart';
-import 'package:datafightcentral/lib/features/ppv/screens/ppv_live_watch_screen.dart';
-import 'package:datafightcentral/lib/features/ppv/services/ppv_access_service.dart';
-import 'package:datafightcentral/lib/features/ppv/widgets/ppv_gate.dart';
+import 'package:datafightcentral/features/ppv/screens/ppv_watch_gatekeeper_screen.dart';
+import 'package:datafightcentral/features/ppv/screens/ppv_live_watch_screen.dart';
+import 'package:datafightcentral/features/ppv/services/ppv_access_service.dart';
+import 'package:datafightcentral/features/ppv/widgets/ppv_gate.dart';
 
 class MockPPVAccessService extends Mock implements PPVAccessService {}
 

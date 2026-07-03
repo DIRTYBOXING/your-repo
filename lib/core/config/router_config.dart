@@ -15,6 +15,8 @@ import '../../features/legacy_root/performance_lab_screen.dart';
 import '../../features/astrohealth/screens/neural_coach_dashboard_screen.dart';
 import '../../features/astrohealth/screens/fighter_wellness_journal_screen.dart';
 import '../../features/coach/screens/login_onboarding_screen.dart';
+import '../../features/auth/screens/login_screen.dart';
+import '../../features/auth/screens/register_screen.dart';
 import '../../features/promoter/screens/broadcast_overlay_screen.dart';
 import '../../features/coach/screens/website_home_screen.dart';
 import '../../features/creative_hub/screens/creative_hub_screen.dart';
@@ -95,6 +97,14 @@ class AppRouter {
       // Auth & Onboarding
       GoRoute(
         path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
         builder: (context, state) => const LoginOnboardingScreen(),
       ),
 

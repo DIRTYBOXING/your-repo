@@ -4,8 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/app_constants.dart';
+
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/services/auth_service.dart';
+import '../../../shared/services/result.dart';
 import '../../../shared/services/video_intro_service.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../../shared/widgets/animated_dfc_logo.dart';
@@ -92,10 +95,6 @@ class _LoginScreenState extends State<LoginScreen>
     );
 
     _entryCtrl.forward();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<AuthService>().clearError();
-    });
   }
 
   @override
@@ -140,7 +139,7 @@ class _LoginScreenState extends State<LoginScreen>
   Future<void> _signInWithEmail() async {
     if (!_formKey.currentState!.validate()) return;
 
-    _triggerDetonation(() async {
+    await _triggerDetonation(() async {
       final authService = context.read<AuthService>();
       final result = await authService.loginWithEmail(
         _emailController.text.trim(),
@@ -150,29 +149,14 @@ class _LoginScreenState extends State<LoginScreen>
         await _showPowerIntroIfFirstSignIn(authService);
         if (!mounted) return;
         context.go('/home');
-      } else if (mounted) {
-        // Emergency local session removed
+      } else if (result is Error<dynamic> && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.shield, color: Colors.white, size: 18),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Operating in demo mode. Full Firebase sync when available.',
-                    style: TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.deepPurple.withValues(alpha: 0.8),
-            duration: const Duration(seconds: 5),
+            content: Text((result as Error).failure.message),
+            backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
           ),
         );
-        context.go('/home');
       }
       // Error is displayed via authService.error in the UI automatically
     });
@@ -212,7 +196,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     final authService = context.watch<AuthService>();
-    final bool authDisabled = false;
+    final bool authDisabled = !AppConstants.authEnabled;
 
     return Scaffold(
       backgroundColor: const Color(0xFF020810),
@@ -623,6 +607,7 @@ class _LoginScreenState extends State<LoginScreen>
               text: 'SIGN IN',
               icon: Icons.sports_mma,
               color: AppTheme.neonCyan,
+              isLoading: _detonating,
               onPressed: authDisabled ? null : _signInWithEmail,
             ),
 
@@ -670,7 +655,7 @@ class _LoginScreenState extends State<LoginScreen>
                     onPressed: authDisabled
                         ? null
                         : () async {
-                            _triggerDetonation(() async {
+                            await _triggerDetonation(() async {
                               // Google sign-in is not implemented yet
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Google sign-in is not implemented yet.')),
@@ -688,7 +673,7 @@ class _LoginScreenState extends State<LoginScreen>
                     onPressed: authDisabled
                         ? null
                         : () async {
-                            _triggerDetonation(() async {
+                            await _triggerDetonation(() async {
                               // Facebook sign-in is not implemented yet
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Facebook sign-in is not implemented yet.')),
@@ -706,7 +691,7 @@ class _LoginScreenState extends State<LoginScreen>
                     onPressed: authDisabled
                         ? null
                         : () async {
-                            _triggerDetonation(() async {
+                            await _triggerDetonation(() async {
                               // Apple sign-in is not implemented yet
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Apple sign-in is not implemented yet.')),
@@ -1224,3 +1209,7 @@ class _DetonationPainter extends CustomPainter {
   bool shouldRepaint(covariant _DetonationPainter old) =>
       old.progress != progress;
 }
+
+
+
+

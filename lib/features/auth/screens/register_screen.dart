@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/helpline_directory.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/services/auth_service.dart';
+import '../../../shared/services/result.dart';
 import '../../../shared/widgets/animated_dfc_logo.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
@@ -120,21 +122,6 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   String? _validatePreSubmission() {
-    if (_selectedSex.isEmpty) return 'Please select Male or Female';
-    if (_dateOfBirth == null) return 'Please enter your date of birth';
-
-    final age = DateTime.now().year - _dateOfBirth!.year;
-    final m = DateTime.now().month - _dateOfBirth!.month;
-    final d = DateTime.now().day - _dateOfBirth!.day;
-    if (m < 0 || (m == 0 && d < 0)) {
-      // age--; // This is a more accurate age calculation if needed elsewhere
-    }
-
-    final minAge = _selectedCountry == 'Australia' ? 16 : 13;
-    if (age < minAge) {
-      return 'You must be at least $minAge years old to create an account';
-    }
-
     if (!_acceptTerms) {
       return 'Please accept the Terms of Service and Privacy Policy';
     }
@@ -143,7 +130,6 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   Future<void> _register() async {
     final authService = context.read<AuthService>();
-    // authService.clearError();
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -153,57 +139,53 @@ class _RegisterScreenState extends State<RegisterScreen>
       return;
     }
 
-    _triggerDetonation(() async {
-      /*
+    await _triggerDetonation(() async {
       final result = await authService.registerWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-        displayName: _nameController.text.trim(),
-        role: _selectedRole,
-        sex: _selectedSex,
-        country: _selectedCountry,
-        city: _cityController.text.trim(),
-        postcode: _postcodeController.text.trim(),
-        dateOfBirth: _dateOfBirth,
+        _emailController.text.trim(),
+        _passwordController.text,
       );
 
-      if (result.isSuccess && mounted) {
-        await authService.recordRequiredConsents(version: '1.0');
+      if (result is Success && mounted) {
+        await authService.updateProfile(
+          displayName: _nameController.text.trim(),
+        );
+        await authService.updateUserRole(_selectedRole);
+        await authService.updateProfileMetadata({
+          'sex': _selectedSex,
+          'country': _selectedCountry,
+          'city': _cityController.text.trim(),
+          'postcode': _postcodeController.text.trim(),
+          if (_dateOfBirth != null)
+            'dateOfBirth': _dateOfBirth!.toIso8601String(),
+        });
         if (mounted) context.go('/home');
+      } else if (mounted) {
+        _showBanner('Registration failed. Please try again.', isError: true);
       }
-      */
-      // The authService will set its own error, which the UI will watch.
     });
   }
 
   Future<void> _signUpWithGoogle() async {
-    final authService = context.read<AuthService>();
-    // authService.clearError();
+    
     final preSubmissionError = _validatePreSubmission();
     if (preSubmissionError != null) {
       _showBanner(preSubmissionError, isError: true);
       return;
     }
 
-    _triggerDetonation(() async {
+    await _triggerDetonation(() async {
       _showBanner('Google sign-in is not implemented yet.', isError: false);
     });
   }
 
   void _showBanner(String message, {required bool isError}) {
-    final authService = context.read<AuthService>();
-    // This is a stand-in. Ideally, you'd have a dedicated error provider/state
-    // that the banner widget listens to, but this works for now.
-    if (isError) {
-      // A bit of a hack to display non-auth errors via the auth service error state
-      // A better solution is a dedicated screen-level error state provider.
-      // TODO: setError not found
-      // authService.setError(message);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(message)));
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.redAccent : Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   void _togglePasswordVisibility() {
@@ -229,8 +211,8 @@ class _RegisterScreenState extends State<RegisterScreen>
   @override
   Widget build(BuildContext context) {
     final authService = context.watch<AuthService>();
-    final bool authDisabled = false;
-    final bool googleEnabled = false;
+    final bool authDisabled = !AppConstants.authEnabled;
+    final bool googleEnabled = AppConstants.googleSignInEnabled;
 
     return Scaffold(
       backgroundColor: const Color(0xFF020810),
@@ -564,8 +546,8 @@ class _GlassForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = context.watch<AuthService>();
-    final bool authDisabled = false;
-    final bool googleEnabled = false;
+    final bool authDisabled = !AppConstants.authEnabled;
+    final bool googleEnabled = AppConstants.googleSignInEnabled;
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -1541,3 +1523,9 @@ class _IgnitionPainter extends CustomPainter {
   bool shouldRepaint(covariant _IgnitionPainter old) =>
       old.progress != progress;
 }
+
+
+
+
+
+

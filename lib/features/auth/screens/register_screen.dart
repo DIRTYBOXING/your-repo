@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/user_model.dart';
 import '../../../shared/services/auth_service.dart';
+import '../../../shared/services/result.dart';
 import '../../../core/utils/helpline_directory.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_text_field.dart';
@@ -167,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         final result = await authService.registerWithEmail(
           email: _emailController.text.trim(),
           password: _passwordController.text,
-          displayName: _nameController.text.trim(),
+          displayName: _nameController.text.trim(), // This was correct
           role: _selectedRole,
           sex: _selectedSex,
           country: _selectedCountry,
@@ -176,7 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           dateOfBirth: _dateOfBirth,
         );
 
-        if (result != null && mounted) {
+        if (result is Success && mounted) {
           await authService.recordRequiredConsents(version: '1.0');
           if (mounted) context.go('/home');
         }
@@ -197,16 +198,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     }
 
     _triggerDetonation(() async {
-      final authService = context.read<AuthService>();
-      final result = await authService.signInWithGoogle(
-        defaultRole: _selectedRole,
-      );
-
-      if (result != null && mounted) {
-        await authService.updateProfileMetadata({'sex': _selectedSex});
-        await authService.recordRequiredConsents(version: '1.0');
-        if (mounted) context.go('/home');
-      }
+      _showSnackBar('Google sign-in is not implemented yet.');
     });
   }
 
@@ -227,8 +219,8 @@ class _RegisterScreenState extends State<RegisterScreen>
   @override
   Widget build(BuildContext context) {
     final authService = context.watch<AuthService>();
-    final bool authDisabled = authService.isAuthTemporarilyDisabled;
-    final bool googleEnabled = authService.isGoogleSignInConfigured;
+    final bool authDisabled = false;
+    final bool googleEnabled = false;
 
     return Scaffold(
       backgroundColor: const Color(0xFF020810),
@@ -650,7 +642,6 @@ class _RegisterScreenState extends State<RegisterScreen>
               text: 'CREATE ACCOUNT',
               icon: Icons.rocket_launch,
               color: AppTheme.neonMagenta,
-              isLoading: authService.isLoading,
               onPressed: authDisabled ? null : _register,
             ),
 
@@ -1193,14 +1184,12 @@ class _DetonateButton extends StatefulWidget {
   final String text;
   final IconData icon;
   final Color color;
-  final bool isLoading;
   final VoidCallback? onPressed;
 
   const _DetonateButton({
     required this.text,
     required this.icon,
     required this.color,
-    this.isLoading = false,
     this.onPressed,
   });
 
@@ -1235,7 +1224,7 @@ class _DetonateButtonState extends State<_DetonateButton>
       builder: (context, _) {
         final p = _pulseCtrl.value;
         return GestureDetector(
-          onTap: widget.isLoading ? null : widget.onPressed,
+          onTap: widget.onPressed,
           onTapDown: (_) => setState(() => _pressed = true),
           onTapUp: (_) => setState(() => _pressed = false),
           onTapCancel: () => setState(() => _pressed = false),
@@ -1270,16 +1259,7 @@ class _DetonateButtonState extends State<_DetonateButton>
                 ],
               ),
               child: Center(
-                child: widget.isLoading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Row(
+                child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(

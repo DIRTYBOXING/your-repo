@@ -252,28 +252,29 @@ class MetaContentService {
         final response = await http.get(Uri.parse(url));
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
-          final posts = data['data'] as List? ?? [];
-          for (final post in posts) {
-            results.add(
-              MetaContent(
-                id: post['id'] ?? '',
-                platform: 'facebook',
-                title: '',
-                body: post['message'] ?? '',
-                imageUrl: post['full_picture'],
-                sourceUrl: 'https://facebook.com/$pageId/posts/${post['id']}',
-                authorName: 'Facebook Page',
-                authorHandle: '@page',
-                publishedAt:
-                    DateTime.tryParse(post['created_time'] ?? '') ??
-                    DateTime.now(),
-                likes: post['reactions']?['summary']?['total_count'] ?? 0,
-                comments: post['comments']?['summary']?['total_count'] ?? 0,
-                shares: post['shares']?['count'] ?? 0,
-                isVerified: true,
-              ),
-            );
-          }
+        final posts = data['data'] as List<dynamic>? ?? [];
+    for (final dynamic post in posts) {
+      if (post is! Map<String, dynamic>) continue;
+      results.add(
+        MetaContent(
+          id: post['id']?.toString() ?? '',
+          platform: 'facebook',
+          title: '',
+          body: post['message']?.toString() ?? '',
+          imageUrl: post['full_picture']?.toString(),
+          sourceUrl: 'https://facebook.com/$pageId/posts/${post['id']}',
+          authorName: 'Facebook Page',
+          authorHandle: '@page',
+          publishedAt:
+              DateTime.tryParse(post['created_time']?.toString() ?? '') ??
+              DateTime.now(),
+          likes: (post['reactions'] as Map<String, dynamic>?)?['summary']?['total_count'] as int? ?? 0,
+          comments: (post['comments'] as Map<String, dynamic>?)?['summary']?['total_count'] as int? ?? 0,
+          shares: (post['shares'] as Map<String, dynamic>?)?['count'] as int? ?? 0,
+          isVerified: true,
+        ),
+      );
+    }
         }
       }
       return results;
@@ -294,29 +295,41 @@ class MetaContentService {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final items = data['data'] as List? ?? [];
-        return items.map<MetaContent>((item) {
+        final items = data['data'] as List<dynamic>? ?? [];
+        return items.map<MetaContent>((dynamic item) {
+          if (item is! Map<String, dynamic>) {
+            return MetaContent(
+              id: '', 
+              platform: 'instagram', 
+              title: '', 
+              body: '', 
+              sourceUrl: '', 
+              authorName: '', 
+              authorHandle: '', 
+              publishedAt: DateTime.fromMicrosecondsSinceEpoch(0)
+            );
+          }
           return MetaContent(
-            id: item['id'] ?? '',
+            id: item['id']?.toString() ?? '',
             platform: 'instagram',
             title: '',
-            body: item['caption'] ?? '',
+            body: item['caption']?.toString() ?? '',
             imageUrl: item['media_type'] == 'VIDEO'
-                ? item['thumbnail_url']
-                : item['media_url'],
-            videoUrl: item['media_type'] == 'VIDEO' ? item['media_url'] : null,
-            sourceUrl: item['permalink'] ?? '',
+                ? item['thumbnail_url']?.toString()
+                : item['media_url']?.toString(),
+            videoUrl: item['media_type'] == 'VIDEO' ? item['media_url']?.toString() : null,
+            sourceUrl: item['permalink']?.toString() ?? '',
             authorName: 'Instagram',
             authorHandle: '@datafightcentral',
             publishedAt:
-                DateTime.tryParse(item['timestamp'] ?? '') ?? DateTime.now(),
-            likes: item['like_count'] ?? 0,
-            comments: item['comments_count'] ?? 0,
+                DateTime.tryParse(item['timestamp']?.toString() ?? '') ?? DateTime.now(),
+            likes: item['like_count'] as int? ?? 0,
+            comments: item['comments_count'] as int? ?? 0,
             type: item['media_type'] == 'VIDEO'
                 ? MetaContentType.reel
                 : MetaContentType.post,
           );
-        }).toList();
+        }).where((c) => c.id.isNotEmpty).toList();
       }
       return [];
     } catch (_) {

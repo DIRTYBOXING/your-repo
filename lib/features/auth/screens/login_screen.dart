@@ -142,18 +142,16 @@ class _LoginScreenState extends State<LoginScreen>
 
     _triggerDetonation(() async {
       final authService = context.read<AuthService>();
-      final result = await authService.signInWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      final result = await authService.loginWithEmail(
+        _emailController.text.trim(),
+        _passwordController.text,
       );
-      if (result != null && mounted) {
+      if (result is Success && mounted) {
         await _showPowerIntroIfFirstSignIn(authService);
         if (!mounted) return;
         context.go('/home');
-      } else if (mounted && authService.shouldUseEmergencyLocalSession()) {
-        authService.enableEmergencyLocalSession(
-          emailHint: _emailController.text.trim(),
-        );
+      } else if (mounted) {
+        // Emergency local session removed
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
@@ -214,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     final authService = context.watch<AuthService>();
-    final bool authDisabled = authService.isAuthTemporarilyDisabled;
+    final bool authDisabled = false;
 
     return Scaffold(
       backgroundColor: const Color(0xFF020810),
@@ -625,7 +623,6 @@ class _LoginScreenState extends State<LoginScreen>
               text: 'SIGN IN',
               icon: Icons.sports_mma,
               color: AppTheme.neonCyan,
-              isLoading: authService.isLoading,
               onPressed: authDisabled ? null : _signInWithEmail,
             ),
 
@@ -674,28 +671,10 @@ class _LoginScreenState extends State<LoginScreen>
                         ? null
                         : () async {
                             _triggerDetonation(() async {
-                              final result = await authService
-                                  .signInWithGoogle();
-                              if (result != null && mounted) {
-                                await _showPowerIntroIfFirstSignIn(authService);
-                                if (!mounted) return;
-                                context.go('/home');
-                              } else if (mounted &&
-                                  authService
-                                      .shouldUseEmergencyLocalSession()) {
-                                authService.enableEmergencyLocalSession(
-                                  emailHint: _emailController.text.trim(),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Google auth API is blocked. Emergency local session enabled.',
-                                    ),
-                                    backgroundColor: Colors.orange,
-                                  ),
-                                );
-                                context.go('/home');
-                              }
+                              // Google sign-in is not implemented yet
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Google sign-in is not implemented yet.')),
+                              );
                             });
                           },
                   ),
@@ -710,28 +689,10 @@ class _LoginScreenState extends State<LoginScreen>
                         ? null
                         : () async {
                             _triggerDetonation(() async {
-                              final result = await authService
-                                  .signInWithFacebook();
-                              if (result != null && mounted) {
-                                await _showPowerIntroIfFirstSignIn(authService);
-                                if (!mounted) return;
-                                context.go('/home');
-                              } else if (mounted &&
-                                  authService
-                                      .shouldUseEmergencyLocalSession()) {
-                                authService.enableEmergencyLocalSession(
-                                  emailHint: _emailController.text.trim(),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Facebook auth API is blocked. Emergency local session enabled.',
-                                    ),
-                                    backgroundColor: Colors.orange,
-                                  ),
-                                );
-                                context.go('/home');
-                              }
+                              // Facebook sign-in is not implemented yet
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Facebook sign-in is not implemented yet.')),
+                              );
                             });
                           },
                   ),
@@ -746,28 +707,10 @@ class _LoginScreenState extends State<LoginScreen>
                         ? null
                         : () async {
                             _triggerDetonation(() async {
-                              final result = await authService
-                                  .signInWithApple();
-                              if (result != null && mounted) {
-                                await _showPowerIntroIfFirstSignIn(authService);
-                                if (!mounted) return;
-                                context.go('/home');
-                              } else if (mounted &&
-                                  authService
-                                      .shouldUseEmergencyLocalSession()) {
-                                authService.enableEmergencyLocalSession(
-                                  emailHint: _emailController.text.trim(),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Apple auth API is blocked. Emergency local session enabled.',
-                                    ),
-                                    backgroundColor: Colors.orange,
-                                  ),
-                                );
-                                context.go('/home');
-                              }
+                              // Apple sign-in is not implemented yet
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Apple sign-in is not implemented yet.')),
+                              );
                             });
                           },
                   ),
@@ -808,9 +751,6 @@ class _LoginScreenState extends State<LoginScreen>
               height: 48,
               child: OutlinedButton.icon(
                 onPressed: () {
-                  authService.enableEmergencyLocalSession(
-                    emailHint: 'guest@datafightcentral.app',
-                  );
                   context.go('/home');
                 },
                 icon: const Icon(Icons.explore, size: 18),

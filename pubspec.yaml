@@ -94,13 +94,13 @@ dependency_overrides:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: assets/icons/Icon-1024.png
+  image_path: "assets/logos/dfc_app_icon.png"
   adaptive_icon_background: "#0A0E1A"
-  adaptive_icon_foreground: assets/icons/Icon-1024.png
+  adaptive_icon_foreground: "assets/logos/dfc_app_icon.png"
   remove_alpha_ios: true
   web:
     generate: true
-    image_path: assets/icons/Icon-1024.png
+    image_path: "assets/logos/dfc_app_icon.png"
     background_color: "#030810"
     theme_color: "#00E5FF"
   windows:

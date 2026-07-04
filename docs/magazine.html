@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Data Fight Central Editorial Magazine — The premier destination for combat sports culture, fighter stories, and high-impact investigative reporting from around the globe." />
+  <title>DFC Editorial Magazine – Combat Culture & Human Stories</title>
+  <style>
+    :root {
+      --bg: #030712;
+      --card: #0b0f19;
+      --accent: #10b981;
+      --accent-dim: rgba(16, 185, 129, 0.1);
+      --ink: #f3f4f6;
+      --muted: #9ca3af;
+      --line: #1f2937;
+      --gold: #f59e0b;
+      --red: #ef4444;
+      --font-serif: "Playfair Display", Georgia, Cambria, "Times New Roman", Times, serif;
+      --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+    }
+
+    /* Top Utility Header */
+    .top-bar {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 4%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+    .top-bar .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .top-bar .live-indicator::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    /* Magazine Master Title Area */
+    .magazine-header {
+      padding: 40px 4% 20px;
+      text-align: center;
+      border-bottom: 2px double var(--line);
+      margin: 0 4%;
+    }
+    .magazine-brand {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 8vw, 6.5rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+      margin: 0;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 30%, #a3a3a3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .magazine-sub-brand {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: var(--accent);
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    /* Layout Wrapper */
+    .magazine-wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 4%;
+    }
+
+    /* Issue Cover / Feature Section */
+    .magazine-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+    @media (min-width: 962px) {
+      .magazine-hero {
+        grid-template-columns: 1.8fr 1fr;
+      }
+    }
+
+    /* High-impact Feature Cover Story card */
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 520px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    /* Dynamic background graphic mimicking a premium poster */
+    .feature-card-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(0deg, rgba(3,7,18,1) 0%, rgba(3,7,18,0.73) 50%, rgba(3,7,18,0.2) 100%),
+                  radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.3) 0%, transparent 60%);
+      z-index: 1;
+    }
+    .feature-card-content {
+      position: relative;
+      z-index: 2;
+      max-width: 750px;
+    }
+    .tag-kicker {
+      background-color: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .feature-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0 0 15px;
+      color: #ffffff;
+    }
+    .feature-excerpt {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .author-byline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--ink);
+    }
+    .author-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--accent), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: #030712;
+    }
+
+    /* Sidebar Table of Contents / Quick Stories list */
+    .magazine-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .sidebar-block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .sidebar-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .sidebar-issue-num {
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .toc-item {
+      display: flex;
+      gap: 15px;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .toc-item:last-child {
+      border: none;
+      padding-bottom: 0;
+    }
+    .toc-num {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      opacity: 0.8;
+    }
+    .toc-text {
+      flex: 1;
+    }
+    .toc-category {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      margin-bottom: 2px;
+    }
+    .toc-headline {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+      line-height: 1.3;
+    }
+    .toc-headline a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .toc-headline a:hover {
+      color: var(--accent);
+    }
+
+    /* Pull Quotes / Middle Banner */
+    .pullquote-banner {
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 40px 0;
+      margin: 40px 0 65px;
+      text-align: center;
+    }
+    .pullquote-text {
+      font-family: var(--font-serif);
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      font-style: italic;
+      color: #ffffff;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.35;
+    }
+    .pullquote-attribution {
+      margin-top: 15px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Grid of Editorial Stories */
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0,1fr));
+      gap: 30px;
+    }
+    .story-column-4 {
+      grid-column: span 12;
+    }
+    @media (min-width: 768px) {
+      .story-column-4 {
+        grid-column: span 6;
+      }
+    }
+    @media (min-width: 1024px) {
+      .story-column-4 {
+        grid-column: span 4;
+      }
+    }
+
+    .story-column-6 {
+      grid-column: span 12;
+    }
+    @media (min-width: 768px) {
+      .story-column-6 {
+        grid-column: span 6;
+      }
+    }
+
+    .magazine-article {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .magazine-article:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(16,185,129,0.15);
+    }
+    .article-image-box {
+      width: 100%;
+      height: 220px;
+      position: relative;
+      background: #111827;
+      overflow: hidden;
+    }
+    .article-image-graphic {
+      width: 100%; height: 100%;
+      opacity: 0.7;
+      background: linear-gradient(135deg, #1f2937, #0b0f19);
+      position: relative;
+    }
+    .article-image-graphic::after {
+      content: "DFC STORY SPEC";
+      position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-size: 0.8rem; font-weight: 800; letter-spacing: 0.15em;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      padding: 6px 12px;
+    }
+
+    /* Custom SVGs acting as rich stylized placeholder posters */
+    .poster-anatomy-svg { width: 100%; height: 100%; object-fit: cover; }
+
+    .article-content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .art-category {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+    .art-title {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      margin: 0 0 10px;
+      line-height: 1.25;
+    }
+    .art-title a {
+      color: #ffffff;
+      text-decoration: none;
+    }
+    .art-title a:hover {
+      color: var(--accent);
+    }
+    .art-excerpt {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+      flex: 1;
+    }
+    .art-footer {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Subscription Banner */
+    .magazine-newsletter {
+      background: radial-gradient(circle at right, var(--accent-dim), var(--card));
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 40px;
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+      align-items: center;
+    }
+    @media (min-width: 860px) {
+      .magazine-newsletter {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    .newsletter-text h3 {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    .newsletter-form {
+      display: flex;
+      gap: 12px;
+    }
+    .newsletter-input {
+      background: #020408;
+      border: 1px solid var(--line);
+      padding: 12px 18px;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      flex: 1;
+    }
+    .newsletter-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .newsletter-btn {
+      background-color: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background-color 0.2s;
+    }
+    .newsletter-btn:hover {
+      background-color: #34d399;
+    }
+
+    /* Back To Hub */
+    .back-btn-box {
+      margin-bottom: 25px;
+    }
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .back-link:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div>Edition: Vol. 04 / No. 12</div>
+    <div class="live-indicator">DFC Network Feed Online</div>
+  </div>
+
+  <header class="magazine-header">
+    <div class="back-btn-box">
+      <a href="index.html" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+        </svg>
+        Go to Platform Index
+      </a>
+    </div>
+    <h1 class="magazine-brand">DATA FIGHT</h1>
+    <div class="magazine-sub-brand">The Journal of Combat Culture & Athlete Safety</div>
+  </header>
+
+  <main class="magazine-wrap">
+    <!-- HERO COVER SECTION -->
+    <section class="magazine-hero">
+
+      <!-- Leading Cover Article banner -->
+      <article class="feature-card">
+        <!-- SVG Poster styling to give high-quality look -->
+        <div class="feature-card-bg"></div>
+        <div class="feature-card-content">
+          <div class="tag-kicker">COVER STORY / FIGHT GRAPH EXCLUSIVE</div>
+          <h2 class="feature-title">The Shadow in the Corner: Unmasking CTE and Athlete Isolation</h2>
+          <p class="feature-excerpt">At 3:00 AM, when the gym doors lock and the cheers fade, is when the real battle begins. Introducing the 12-Pillar Fighter Protection Protocol, tracking brain fatigue before the final ring.</p>
+          <div class="author-byline">
+            <div class="author-avatar">JW</div>
+            <div>By <strong>Jesse White</strong> • Senior Investigative Lead</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sidebar Editorial / TOC -->
+      <aside class="magazine-sidebar">
+        <div class="sidebar-block">
+          <div class="sidebar-title">
+            <span>In This Issue</span>
+            <span class="sidebar-issue-num">DEC 2026</span>
+          </div>
+
+          <div class="toc-item">
+            <div class="toc-num">01</div>
+            <div class="toc-text">
+              <div class="toc-category">Underdog Spotlight</div>
+              <h4 class="toc-headline"><a href="#fight-to-live">Fight to Live: The Muay Thai Gym of Redirection</a></h4>
+            </div>
+          </div>
+
+          <div class="toc-item">
+            <div class="toc-num">02</div>
+            <div class="toc-text">
+              <div class="toc-category">Special Report</div>
+              <h4 class="toc-headline"><a href="#pink-shield">The Pink Shield: Breaking the Circle of Domestic Abuse</a></h4>
+            </div>
+          </div>
+
+          <div class="toc-item">
+            <div class="toc-num">03</div>
+            <div class="toc-text">
+              <div class="toc-category">Fighter Commerce</div>
+              <h4 class="toc-headline"><a href="#smartshop">Non-Custodial Stripe Wallets & Fighter Merchantry</a></h4>
+            </div>
+          </div>
+
+        </div>
+      </aside>
+    </section>
+
+    <!-- SLAYER BANNER PULL QUOTE -->
+    <section class="pullquote-banner">
+      <blockquote class="pullquote-text">
+        "We aren’t just looking to build a social media app. We are building a guidance center to catch those drifting into dark gutters — and redirecting that raw adrenaline toward mental resilience, gym families, and mutual support."
+      </blockquote>
+      <div class="pullquote-attribution">— Marcus "Vandal" Harris, DFC Founder</div>
+    </section>
+
+    <!-- MAGAZINE GRID -->
+    <section class="story-grid">
+
+      <!-- Article 1 -->
+      <div class="story-column-4">
+        <article class="magazine-article" id="fight-to-live">
+          <div class="article-image-box">
+            <!-- NASA / Premium SVG Poster Illustration -->
+            <svg class="poster-anatomy-svg" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="220" fill="#0c1126"/>
+              <defs>
+                <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#030712" stop-opacity="1"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="220" fill="url(#g1)"/>
+              <circle cx="200" cy="110" r="60" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.6"/>
+              <line x1="200" y1="20" x2="200" y2="200" stroke="#1f2937" stroke-dasharray="2 2"/>
+              <line x1="100" y1="110" x2="300" y2="110" stroke="#1f2937" stroke-dasharray="2 2"/>
+              <text x="200" y="115" fill="#ffffff" font-family="sans-serif" font-weight="900" font-size="11" text-anchor="middle" letter-spacing="1.5">REDIRECTION HUB</text>
+            </svg>
+          </div>
+          <div class="article-content">
+            <div class="art-category">Underdog Spotlight</div>
+            <h3 class="art-title"><a href="#">Fighters in the Gutter: Gyms Not Jails</a></h3>
+            <p class="art-excerpt">How small community clubs are working alongside DFC to identify youth drifting toward street crimes and guiding them into supervised, high-discipline combat sports families.</p>
+            <div class="art-footer">
+              <span>By Sam Taylor</span>
+              <span>7 min read</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Article 2 -->
+      <div class="story-column-4">
+        <article class="magazine-article" id="pink-shield">
+          <div class="article-image-box">
+            <!-- NASA / Premium SVG Poster Illustration -->
+            <svg class="poster-anatomy-svg" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="220" fill="#080811"/>
+              <defs>
+                <linearGradient id="g2" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ff007f" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#020617" stop-opacity="0.9"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="220" fill="url(#g2)"/>
+              <path d="M200 40 L260 70 L260 140 L200 180 L140 140 L140 70 Z" stroke="#ff007f" stroke-width="2" fill="none" opacity="0.6"/>
+              <text x="200" y="115" fill="#ff007f" font-family="sans-serif" font-weight="800" font-size="11" text-anchor="middle" letter-spacing="2">PINK SHIELD</text>
+            </svg>
+          </div>
+          <div class="article-content">
+            <div class="art-category">Community Safety</div>
+            <h3 class="art-title"><a href="#">The Pink Shield: Safe Spaces Initiative</a></h3>
+            <p class="art-excerpt">A systematic analysis of our silent panic mechanics, emergency contact hotlines, and partner martial arts gyms acting as physical sanctuaries for families escapes.</p>
+            <div class="art-footer">
+              <span>By Lisa Carter</span>
+              <span>12 min read</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Article 3 -->
+      <div class="story-column-4">
+        <article class="magazine-article" id="smartshop">
+          <div class="article-image-box">
+            <!-- NASA / Premium SVG Poster Illustration -->
+            <svg class="poster-anatomy-svg" viewBox="0 0 400 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="220" fill="#050a12"/>
+              <defs>
+                <linearGradient id="g3" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#10b981" stop-opacity="0.1"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="220" fill="url(#g3)"/>
+              <rect x="120" y="70" width="160" height="80" rx="8" stroke="#3b82f6" stroke-width="1.5" opacity="0.5"/>
+              <circle cx="250" cy="110" r="15" stroke="#10b981" stroke-width="1.5" opacity="0.6"/>
+              <text x="200" y="113" fill="#3b82f6" font-family="sans-serif" font-weight="800" font-size="9" text-anchor="middle" letter-spacing="1">WALLET INFRA</text>
+            </svg>
+          </div>
+          <div class="article-content">
+            <div class="art-category">Fight Economics</div>
+            <h3 class="art-title"><a href="#">Connected Purses: Eliminating the Promoter Fee Middleman</a></h3>
+            <p class="art-excerpt">Why the non-custodial Stripe Connect structure integrated directly within DFC empowers independent fighters to control their pay-per-view payouts.</p>
+            <div class="art-footer">
+              <span>By Marcus Harris</span>
+              <span>5 min read</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <!-- HIGHLIGHT CHANNELS NEWSLETTER -->
+    <section class="magazine-newsletter">
+      <div class="newsletter-text">
+        <h3>Subscribe to The Journal</h3>
+        <p>Get investigative reporting on combat culture, fighter welfare studies, and platform updates delivered straight to your inbox monthly.</p>
+      </div>
+      <div>
+        <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing to DFC Editorial!');">
+          <input type="email" class="newsletter-input" placeholder="Enter your email address" required />
+          <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+      <div>
+        <strong>DATA FIGHT CENTRAL (DFC)</strong>
+        <p style="margin: 5px 0 0; font-size: 0.8rem; max-width: 400px;">Turning raw combat passion, fighter biometrics, and adrenaline into direct public guidance and mental support network structures.</p>
+      </div>
+      <div style="font-size: 0.8rem; align-self: flex-end;">
+        © 2026 Data Fight Central. All rights reserved.
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

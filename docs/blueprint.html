@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFC Platform Blueprint</title>
+    <meta
+      name="description"
+      content="DFC platform blueprint: promoter-first, community-first combat sports ecosystem including campaigns, safety zones, mentoring, social, PPV, and partner growth."
+    />
+    <meta property="og:title" content="DFC Platform Blueprint" />
+    <meta
+      property="og:description"
+      content="Promoter-first and community-first ecosystem with PPV, social, analytics, safety campaigns, and global distribution."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://www.datafightcentral.com/blueprint.html"
+    />
+    <link rel="canonical" href="https://www.datafightcentral.com/blueprint.html" />
+    <style>
+      :root {
+        --bg: #06111f;
+        --bg2: #091b31;
+        --panel: rgba(10, 29, 49, 0.75);
+        --line: rgba(96, 216, 255, 0.4);
+        --line-strong: #5ce0ff;
+        --text: #e9f7ff;
+        --muted: #9dc8db;
+        --accent: #93ff77;
+        --warn: #ffbd66;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+        background:
+          radial-gradient(circle at 20% 15%, rgba(80, 165, 255, 0.22), transparent 30%),
+          radial-gradient(circle at 80% 0%, rgba(147, 255, 119, 0.18), transparent 28%),
+          linear-gradient(160deg, var(--bg), var(--bg2));
+        min-height: 100vh;
+      }
+
+      .grid-overlay {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(88, 184, 227, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(88, 184, 227, 0.08) 1px, transparent 1px);
+        background-size: 26px 26px;
+        mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+      }
+
+      main {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px 18px 40px;
+      }
+
+      .topbar {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px 16px;
+        text-align: center;
+        background: rgba(6, 18, 32, 0.8);
+        box-shadow: 0 0 20px rgba(78, 209, 255, 0.25);
+      }
+
+      .topbar h1 {
+        margin: 0;
+        font-size: clamp(1.2rem, 2.8vw, 2.1rem);
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .topbar p {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
+
+      .blueprint {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 1fr;
+        gap: 14px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .node {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: var(--panel);
+        box-shadow: inset 0 0 20px rgba(79, 182, 255, 0.09);
+      }
+
+      .node h2,
+      .node h3 {
+        margin: 0 0 8px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #d8f2ff;
+      }
+
+      .node ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .core {
+        border: 1px solid var(--line-strong);
+        border-radius: 14px;
+        padding: 14px;
+        background: rgba(7, 30, 48, 0.78);
+        box-shadow: 0 0 28px rgba(92, 224, 255, 0.27);
+      }
+
+      .core h2 {
+        margin: 0;
+        text-align: center;
+        font-size: clamp(1.2rem, 2vw, 1.9rem);
+        text-transform: uppercase;
+      }
+
+      .pill-row {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        text-align: center;
+        padding: 6px;
+        font-size: 0.86rem;
+        background: rgba(5, 22, 40, 0.8);
+      }
+
+      .slogan {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        text-align: center;
+        padding: 8px;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .bridge {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: rgba(8, 23, 39, 0.86);
+      }
+
+      .bridge h3 {
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+
+      .bridge p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .cta {
+        margin-top: 18px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 14px;
+        text-align: center;
+        background: rgba(4, 20, 34, 0.88);
+      }
+
+      .cta a {
+        display: inline-block;
+        margin: 8px 6px 0;
+        text-decoration: none;
+        color: #041320;
+        background: var(--line-strong);
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-weight: 700;
+      }
+
+      .cta a.secondary {
+        background: var(--warn);
+      }
+
+      @media (max-width: 980px) {
+        .blueprint {
+          grid-template-columns: 1fr;
+        }
+
+        .pill-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-overlay"></div>
+    <main>
+      <section class="topbar" data-test="blueprint-hero">
+        <h1>DFC Full Master Blueprint</h1>
+        <p>
+          Promoter-first. Community-first. Built in Logan/Woodridge for global reach.
+        </p>
+      </section>
+
+      <section class="blueprint" aria-label="DFC blueprint map" data-test="blueprint-canvas">
+        <div class="stack">
+          <article class="node">
+            <h2>Promoter Layer</h2>
+            <ul>
+              <li>Brand and audience ownership</li>
+              <li>Event tools and scheduling</li>
+              <li>Multi-surface sales workflows</li>
+            </ul>
+          </article>
+          <article class="node">
+            <h2>Campaign Layer</h2>
+            <ul>
+              <li>Coffee Not a Coffin</li>
+              <li>Pink Shield</li>
+              <li>Gold Coin Campaign</li>
+              <li>Mentor Meetups</li>
+              <li>Safety Zones</li>
+            </ul>
+          </article>
+          <article class="node">
+            <h2>Community Outcomes</h2>
+            <ul>
+              <li>Anti-violence pathways</li>
+              <li>Youth engagement and purpose</li>
+              <li>Gyms as safe community hubs</li>
+              <li>Leadership and resilience</li>
+            </ul>
+          </article>
+        </div>
+
+        <div>
+          <section class="core">
+            <h2>DFC Platform Core</h2>
+            <div class="pill-row">
+              <div class="pill">Streaming and PPV</div>
+              <div class="pill">Social and Messaging</div>
+              <div class="pill">Payments and Payouts</div>
+              <div class="pill">Event Operations</div>
+              <div class="pill">AI and Analytics</div>
+              <div class="pill">Trust and Safety</div>
+            </div>
+            <div class="slogan">Sell like major leagues, keep promoter control.</div>
+          </section>
+
+          <section class="bridge">
+            <h3>Ecosystem Participants</h3>
+            <p>
+              Promoters, fighters, gyms, sponsors, hotels, tourism boards, fans,
+              and communities connected in one operational stack.
+            </p>
+          </section>
+
+          <section class="bridge">
+            <h3>Mission</h3>
+            <p>
+              Sport with responsibility: empowering people, creating safety,
+              reducing violence, and building pathways from hardship to leadership.
+            </p>
+          </section>
+        </div>
+
+        <div class="stack">
+          <article class="node">
+            <h2>Fighter and Gym Growth</h2>
+            <ul>
+              <li>Profiles and global exposure</li>
+              <li>Sponsorship opportunities</li>
+              <li>Mentorship and leadership pathways</li>
+            </ul>
+          </article>
+          <article class="node">
+            <h2>Partners and Sponsors</h2>
+            <ul>
+              <li>Targeted placement and reporting</li>
+              <li>Tourism package integration</li>
+              <li>Community impact alignment</li>
+            </ul>
+          </article>
+          <article class="node">
+            <h2>Global Reach</h2>
+            <ul>
+              <li>Worldwide event distribution</li>
+              <li>Fan participation at scale</li>
+              <li>Local mission with global footprint</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta" data-test="blueprint-cta">
+        <h3>DFC Communications and Operator Pack</h3>
+        <p>
+          Use this blueprint with the communications suite to pitch promoters,
+          fighters, gyms, sponsors, tourism partners, and community stakeholders.
+        </p>
+        <a href="/promoters.html">Promoter Entry</a>
+        <a href="/blueprint-engineering.html">Engineering Variant</a>
+        <a class="secondary" href="/">Main Site</a>
+      </section>
+    </main>
+  </body>
+</html>

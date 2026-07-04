@@ -247,7 +247,7 @@ class _SmartCoachScreenState extends ConsumerState<SmartCoachScreen> {
             color: DesignTokens.neonMagenta.withValues(alpha: 0.3),
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
@@ -258,8 +258,8 @@ class _SmartCoachScreenState extends ConsumerState<SmartCoachScreen> {
                 color: DesignTokens.neonMagenta,
               ),
             ),
-            const SizedBox(width: 12),
-            const Text(
+            SizedBox(width: 12),
+            Text(
               "Coach is analyzing...",
               style: TextStyle(
                 color: DesignTokens.textMuted,

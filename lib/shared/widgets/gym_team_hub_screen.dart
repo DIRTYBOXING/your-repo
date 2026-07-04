@@ -139,12 +139,12 @@ class _GymTeamHubScreenState extends State<GymTeamHubScreen> {
                     const SizedBox(height: 16),
 
                     // 2. AI Team Insight
-                    DfcGlassPanel(
+                    const DfcGlassPanel(
                       glowColor: AppColors.neonMagenta,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             children: [
                               Icon(
                                 Icons.psychology,
@@ -155,8 +155,8 @@ class _GymTeamHubScreenState extends State<GymTeamHubScreen> {
                               Text("AI TEAM INSIGHT", style: subheadingStyle),
                             ],
                           ),
-                          const SizedBox(height: 12),
-                          const Text(
+                          SizedBox(height: 12),
+                          Text(
                             "Your pro team is peaking perfectly for the upcoming event. Team average HRV is up 12% this week. Keep sparring volume light to maintain the taper.",
                             style: bodyStyle,
                           ),

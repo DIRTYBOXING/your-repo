@@ -31,10 +31,11 @@ class _EconomyControlRoomScreenState extends State<EconomyControlRoomScreen> {
         );
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => _runningSelfCheck = false);
     }
@@ -51,10 +52,11 @@ class _EconomyControlRoomScreenState extends State<EconomyControlRoomScreen> {
         );
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Failed: $e')));
+      }
     } finally {
       if (mounted) setState(() => _runningAutoFix = false);
     }
@@ -343,13 +345,13 @@ class _AlertsPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!hasAlert)
-            const Text(
+            Text(
               'No active alerts',
               style: TextStyle(color: Colors.white70, fontSize: 12),
             )
           else
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.redAccent.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(6),
@@ -359,12 +361,12 @@ class _AlertsPanel extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.warning, color: Colors.redAccent, size: 16),
-                  const SizedBox(width: 8),
+                  Icon(Icons.warning, color: Colors.redAccent, size: 16),
+                  SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'CRITICAL: $missingOwners Payout Balance(s) missing an owner profile.',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.redAccent,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,

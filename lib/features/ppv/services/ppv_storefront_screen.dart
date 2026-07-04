@@ -23,9 +23,9 @@ class PpvStorefrontScreen extends StatelessWidget {
           Container(
             height: 220,
             decoration: BoxDecoration(
-              color: AppColors.neonMagenta.withOpacity(0.1),
+              color: AppColors.neonMagenta.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.neonMagenta.withOpacity(0.5)),
+              border: Border.all(color: AppColors.neonMagenta.withValues(alpha: 0.5)),
             ),
             child: const Center(
               child: Text(

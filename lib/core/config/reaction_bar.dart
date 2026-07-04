@@ -40,10 +40,10 @@ class _ReactionBarState extends State<ReactionBar> {
           color: _fired ? DesignTokens.neonOrange : DesignTokens.textMuted,
           onTap: () => _toggle(() => setState(() => _fired = !_fired)),
         ),
-        _ReactionButton(
+        const _ReactionButton(
           icon: Icons.share_outlined,
           color: DesignTokens.textMuted,
-          onTap: () => HapticFeedback.lightImpact(),
+          onTap: HapticFeedback.lightImpact,
         ),
       ],
     );

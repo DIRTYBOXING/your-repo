@@ -130,9 +130,18 @@ steps:
       - --max-instances=5
       - --timeout=300
 
+  # ─── Ensure DataConnect SDK is generated for Python ─────────────────────────
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: generate-dataconnect-sdk
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'curl -sL https://firebase.tools | bash && firebase dataconnect:sdk:generate'
+
   # ─── atlas_backend ──────────────────────────────────────────────────────────
   - name: "gcr.io/cloud-builders/docker"
     id: build-atlas
+    waitFor: ["generate-dataconnect-sdk"]
     args:
       - build
       - -t

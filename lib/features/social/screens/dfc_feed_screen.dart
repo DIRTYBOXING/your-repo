@@ -24,7 +24,6 @@ import '../widgets/dfc_live_carousel.dart';
 import '../widgets/create_post_bar.dart';
 import '../../../shared/widgets/dfc_skeletons.dart';
 import '../widgets/feed_ppv_card.dart';
-import '../../ppv/services/ppv_service.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
 class DFCFeedScreen extends StatefulWidget {

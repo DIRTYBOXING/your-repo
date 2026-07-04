@@ -1,0 +1,12 @@
+# Get official rankings filtered by weight class
+query GetRankingsByWeightClass($weightClass: String!) @auth(level: PUBLIC) {
+  rankings(where: { weightClass: { eq: $weightClass } }, orderBy: [{ rank: ASC }]) {
+    rank
+    weightClass
+    fighter {
+      id
+      name
+      nickname
+    }
+  }
+}

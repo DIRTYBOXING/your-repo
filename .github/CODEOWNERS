@@ -1,11 +1,40 @@
-# Default owner for all files
-* @DIRTYBOXING
+# CODEOWNERS - Auto-assign reviewers based on path
 
-# Critical backend surfaces
-/server/ @DIRTYBOXING
-/monitoring/ @DIRTYBOXING
-/deploy/ @DIRTYBOXING
+# Default owners for everything
+* @DIRTYBOXING/platform-leads
 
-# CI and repo policy
-/.github/workflows/ @DIRTYBOXING
-/.github/CODEOWNERS @DIRTYBOXING
+# Service and backend code
+/atlas_backend/ @DIRTYBOXING/backend
+/atlas_backend/routers/ @DIRTYBOXING/backend
+
+# Frontend
+/dfc_frontend/ @DIRTYBOXING/mobile
+/admin_dashboard_screen.dart @DIRTYBOXING/mobile
+/chat_room_screen.dart @DIRTYBOXING/mobile
+/events_screen.dart @DIRTYBOXING/mobile
+/fighters_screen.dart @DIRTYBOXING/mobile
+
+# Infrastructure and deploy
+/k8s/ @DIRTYBOXING/platform
+/deploy-gke.sh @DIRTYBOXING/platform
+/.github/workflows/ @DIRTYBOXING/platform
+
+# Monitoring, observability, and runbooks
+/monitoring/ @DIRTYBOXING/platform
+/monitoring/runbooks/ @DIRTYBOXING/platform
+/docs/runbooks/ @DIRTYBOXING/platform
+
+# AI and data
+/ai_bots/ @DIRTYBOXING/ai
+/global_pipeline/ @DIRTYBOXING/ai
+/genkit/ @DIRTYBOXING/ai
+
+# Payments and compliance
+/atlas_backend/routers/stripe.py @DIRTYBOXING/finance
+/atlas_backend/routers/ticketing.py @DIRTYBOXING/finance
+/legal/ @DIRTYBOXING/finance
+
+# DevOps and CI
+/ci/ @DIRTYBOXING/devops
+/.devcontainer/ @DIRTYBOXING/devops
+/.pre-commit-config.yaml @DIRTYBOXING/devops

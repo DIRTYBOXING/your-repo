@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../services/economy_service.dart';
 
@@ -40,13 +41,14 @@ class _GymEconomyDashboardState extends State<GymEconomyDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading)
+    if (_loading) {
       return const Scaffold(
         backgroundColor: AppColors.bg,
         body: Center(
           child: CircularProgressIndicator(color: AppColors.neonBlue),
         ),
       );
+    }
 
     final currentBalance = (_balance?['balanceCents'] ?? 0) / 100.0;
 
@@ -114,7 +116,22 @@ class _GymEconomyDashboardState extends State<GymEconomyDashboard> {
               'No revenue events yet.',
               style: TextStyle(color: Colors.white38),
             ),
-          // TODO: Map over _statements and display custom ListTile widgets
+          ..._statements
+              .map(
+                (stmt) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(stmt['label'] ?? 'General Revenue'),
+                  subtitle: Text(stmt['date'] ?? 'Recent'),
+                  trailing: Text(
+                    '+ \$${stmt['amount'] ?? '0.00'}',
+                    style: const TextStyle(
+                      color: Colors.greenAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
         ],
       ),
     );

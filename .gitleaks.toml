@@ -1,0 +1,17 @@
+title = "DFC gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Ignore baseline and known test/docs fixture false positives"
+paths = [
+  '''^\.secrets\.baseline$''',
+  '''^chuckya-radar/control_room_test_checklist\.txt$''',
+  '''^functions/auth_count\.json$''',
+  '''^docs/ENV_VARS\.md$''',
+  '''^lib/shared/services/dfc_social_engine\.dart$''',
+  '''^lib/shared/widgets/age_verification_badge\.dart$''',
+  '''^monitoring/health-monitor\.py$''',
+  '''^server/test/ai-sales-ppv\.test\.js$'''
+]

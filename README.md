@@ -148,6 +148,30 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\.vscode\scripts\recreate-w
 - `docs/api/dfc-events-api.contract.json`: Machine-readable contract for `GET /api/events/{id}` page truth endpoint.
 - `web/blueprint.html`: Visual promoter-first and community-first blueprint page for stakeholder briefings.
 
+## Strategic and Operator Docs
+
+- `docs/ONLY_FIT_CREATOR_PLAYBOOK.md`: Brand standards, direct-commerce profiles, and Stripe Express compliance checklists for combat and fitness creators.
+- `docs/DFC_SPINE.md`: Canonical founder and operator definition of the DFC platform spine.
+- `docs/ARCHITECTURE_ONE_PAGER.md`: One-page architecture and deploy summary for partners and funding applications.
+- `docs/ARCHITECTURE_DIAGRAM.mmd`: Mermaid system diagram source for frontend, backend, data, AI, media, and ops.
+- `docs/REPO_VS_SPINE_AUDIT.md`: Prioritized mismatch list between declared spine and current repo state.
+- `docs/DFC_FACE_BUILD_PLAN.md`: When and where to build the public and operational DFC face.
+- `docs/API_CONTRACTS/face.md`: Minimum frontend contract for feed, event, promo, and health surfaces.
+- `docs/DFC_GOOGLE_PLATFORM_PLAN.md`: Canonical Google-native plan for Maps, Earth, storefront, PPV, and AI sales.
+- `docs/NVIDIA_GOOGLE_PILOT_BRIEF.md`: Partner-ready pilot brief for credits, co-engineering, and introductions.
+- `docs/AI_BENCHMARK_PLAN.md`: Reproducible CPU baseline to GPU validation plan for DFC AI workloads.
+- `docs/SOCIAL_IMPACT_PROGRAM.md`: Operating framework for Pink Shields, Buy a Coffee Not a Coffin, and Gold Coin Gym.
+- `docs/SOCIAL_IMPACT_LANDING_COPY.md`: Ready-to-paste landing page and campaign copy.
+- `docs/legal/DFC_PARTNER_MOU_TEMPLATE.md`: Partner MOU template for local NGO and gym collaborations.
+- `docs/legal/DFC_TRAINER_ONBOARDING_CHECKLIST.md`: Standard trainer and mentor onboarding checklist.
+- `docs/INVESTOR_PARTNER_ONE_PAGER.md`: One-page investor and strategic partner briefing sheet.
+- `docs/OUTREACH_APEX_ELLIOTT_TEMPLATE.md`: Outreach email template for apex investors and strategic partners.
+- `docs/APEX_5_MIN_DEMO_SCRIPT.md`: Timed meeting demo script and pitch bullets for Apex or Elliott calls.
+- `docs/PILOT_SOW_4_WEEK.md`: Four-week co-engineering pilot statement of work template.
+- `docs/FUNDING_CHECKLIST.md`: Funding and application readiness checklist.
+- `docs/OPEN_SOURCE_PLAN.md`: Open-source subset and sponsor-readiness plan.
+- `docs/CAMPAIGNS_PLAN.md`: Campaign plan for Google, NVIDIA, and GitHub ecosystem outreach.
+
 ## Authentication Setup (Phase 1)
 
 - **Enable providers:** In Firebase Console > Authentication > Sign-in method, enable Email/Password and Google.

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
-import '../errors/failure.dart';
-import '../errors/result.dart';
+
+import '../../shared/services/failure.dart';
+import '../../shared/services/result.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// DFC BASE API CLIENT (BLUE TIER)
@@ -101,9 +103,12 @@ class ApiClient {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.acceptHeader: 'application/json',
     };
+
+    // Auto-inject Firebase token if not explicitly provided
     if (token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
+
     if (customHeaders != null) {
       headers.addAll(customHeaders);
     }

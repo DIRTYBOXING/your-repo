@@ -7,7 +7,6 @@ import '../../../core/theme/design_tokens.dart';
 import '../../../core/theme/adrenaline_theme.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../../ppv/widgets/ppv_payment_sheet.dart';
-import '../../ppv/services/ppv_service.dart';
 
 /// Compact in-feed PPV buy card — zero-friction micro-monetisation
 /// Shows upcoming/live PPV events inline with Buy Now CTA.

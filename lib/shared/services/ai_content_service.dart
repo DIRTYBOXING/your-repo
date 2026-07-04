@@ -19,7 +19,7 @@ class AiContentService extends ChangeNotifier {
           .get();
 
       // Manually resolve relational profile data since NoSQL lacks SQL joins
-      List<Map<String, dynamic>> posts = [];
+      final List<Map<String, dynamic>> posts = [];
       for (var doc in snap.docs) {
         final data = doc.data();
         final authorId = data['author_id'] ?? data['authorId'];

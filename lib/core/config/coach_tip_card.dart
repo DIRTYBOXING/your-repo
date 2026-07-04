@@ -15,20 +15,20 @@ class CoachTipCard extends StatelessWidget {
           color: DesignTokens.neonMagenta.withValues(alpha: 0.3),
         ),
       ),
-      child: Row(
+      child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
+          Icon(
             Icons.psychology,
             color: DesignTokens.neonMagenta,
             size: 28,
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'COACH INSIGHT',
                   style: TextStyle(
                     color: DesignTokens.neonMagenta,
@@ -37,8 +37,8 @@ class CoachTipCard extends StatelessWidget {
                     letterSpacing: 1.5,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: 8),
+                Text(
                   'Your heart rate variability dropped 12% overnight. I am dialing back your sparring intensity today to prevent injury. Focus on footwork and technique.',
                   style: TextStyle(
                     color: Colors.white,

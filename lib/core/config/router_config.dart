@@ -1,82 +1,115 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// Import your screens here (adjust paths if your folder structure differs slightly)
+// ── Screens that exist at confirmed paths ─────────────────────────────────────
 import '../../features/home/screens/home_screen.dart';
 import '../../features/coach/screens/website_home_screen.dart';
 import '../../features/coach/screens/neural_coach_screen.dart';
-import '../../features/auth/screens/login_onboarding_screen.dart';
-import '../../features/coach/screens/corner_coach_screen.dart';
+import '../../features/coach/screens/login_onboarding_screen.dart';
+import '../../features/coach/screens/admin_console_screen.dart';
 import '../../features/devices/screens/device_hub_screen.dart';
 import '../../features/profile/screens/profile_screen_v2.dart';
-import '../../features/feed/screens/feed_screen.dart';
-import '../../features/training/screens/training_session_screen.dart';
-import '../../features/training/screens/fight_summary_screen.dart';
-import '../../features/analytics/screens/performance_lab_screen.dart';
-import '../../features/history/screens/fight_history_screen.dart';
 import '../../features/profile/screens/fighter_public_profile_screen.dart';
-import '../../features/coach/screens/coach_hub_screen.dart';
-import '../../features/gym/screens/gym_team_hub_screen.dart';
-import '../../features/events/screens/event_center_screen.dart';
-import '../../features/streaming/screens/streaming_center_screen.dart';
-import '../../features/ppv/screens/ppv_storefront_screen.dart';
-import '../../features/ppv/screens/ppv_detail_screen.dart';
-import '../../features/ppv/screens/ppv_streaming_screen.dart';
-import '../../features/replay/screens/replay_center_screen.dart';
-import '../../features/broadcast/screens/broadcast_overlay_screen.dart';
-import '../../features/events/screens/fight_card_builder_screen.dart';
-import '../../features/promoter/screens/promoter_dashboard_screen.dart';
-import '../../features/venue/screens/venue_operations_screen.dart';
-import '../../features/officials/screens/officials_tablet_screen.dart';
-import '../../features/medical/screens/medical_safety_screen.dart';
-import '../../features/legal/screens/contracts_legal_screen.dart';
-import '../../features/finance/screens/payouts_finance_screen.dart';
-import '../../features/sponsors/screens/sponsorship_system_screen.dart';
+import '../../features/feed/screens/feed_screen.dart';
+import '../../shared/widgets/gym_team_hub_screen.dart';
+import '../../features/ppv/services/ppv_storefront_screen.dart';
+import '../../features/ppv/services/ppv_detail_screen.dart';
+import '../../features/ppv/services/ppv_streaming_screen.dart';
+import '../../features/ppv/screens/promoter_dashboard_screen.dart';
+import '../../features/promoter/screens/broadcast_overlay_screen.dart';
+import '../../features/promoter/screens/economy_control_room_screen.dart';
+import '../../features/promoter/screens/officials_tablet_screen.dart';
+import '../../features/fight_card/screens/fight_card_builder_screen.dart';
 import '../../features/astrohealth/screens/astro_health_monitor_screen.dart';
 import '../../features/admin/screens/google_ecosystem_hub_screen.dart';
-import '../../features/admin/screens/admin_console_screen.dart';
+import '../../features/creative_hub/screens/creative_hub_screen.dart';
 import 'promoter_economy_dashboard.dart';
 import 'fighter_economy_dashboard.dart';
 import 'gym_economy_dashboard.dart';
-import '../../features/creative/screens/creative_hub_screen.dart';
-import '../../features/admin/screens/economy_control_room_screen.dart';
-import '../../features/finance/screens/stripe_connect_onboarding_screen.dart';
+import 'medical_safety_screen.dart';
+// ── Partnership landing pages ─────────────────────────────────────────────────
+import '../../features/partnership/screens/google_partnership_screen.dart';
+import '../../features/partnership/screens/nvidia_partnership_screen.dart';
+import '../../features/partnership/screens/github_partnership_screen.dart';
+
+// ── Stub for routes whose screens are not yet built ───────────────────────────
+class _ComingSoon extends StatelessWidget {
+  final String title;
+  const _ComingSoon(this.title);
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: const Color(0xFF050A14),
+    appBar: AppBar(
+      backgroundColor: const Color(0xFF0A1628),
+      foregroundColor: const Color(0xFF00E5FF),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+      ),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.construction, color: Color(0xFF00E5FF), size: 48),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Module coming soon',
+            style: TextStyle(color: Colors.white38),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
 class AppRouter {
   static final router = GoRouter(
     initialLocation: '/',
     routes: [
-      // Main Hub
+      // ── Root ────────────────────────────────────────────────────────────────
       GoRoute(
         path: '/',
         builder: (context, state) => const WebsiteHomeScreen(),
       ),
 
-      // Auth & Onboarding
+      // ── Auth ─────────────────────────────────────────────────────────────────
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginOnboardingScreen(),
       ),
 
-      // Coach & Training
+      // ── Home shell ───────────────────────────────────────────────────────────
+      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+
+      // ── Coach & Training ─────────────────────────────────────────────────────
       GoRoute(
         path: '/neural-coach',
         builder: (context, state) => const NeuralCoachScreen(),
       ),
       GoRoute(
         path: '/corner-coach',
-        builder: (context, state) => const CornerCoachScreen(),
+        builder: (context, state) => const _ComingSoon('Corner Coach'),
       ),
       GoRoute(
         path: '/training-session',
-        builder: (context, state) => const TrainingSessionScreen(),
+        builder: (context, state) => const _ComingSoon('Training Session'),
       ),
       GoRoute(
         path: '/fight-summary',
-        builder: (context, state) => const FightSummaryScreen(),
+        builder: (context, state) => const _ComingSoon('Fight Summary'),
       ),
 
-      // Devices & Biometrics
+      // ── Devices & Biometrics ─────────────────────────────────────────────────
       GoRoute(
         path: '/devices',
         builder: (context, state) => const DeviceHubScreen(),
@@ -86,17 +119,17 @@ class AppRouter {
         builder: (context, state) => const AstroHealthMonitorScreen(),
       ),
 
-      // Analytics & History
+      // ── Analytics & History ──────────────────────────────────────────────────
       GoRoute(
         path: '/performance-lab',
-        builder: (context, state) => const PerformanceLabScreen(),
+        builder: (context, state) => const _ComingSoon('Performance Lab'),
       ),
       GoRoute(
         path: '/fight-history',
-        builder: (context, state) => const FightHistoryScreen(),
+        builder: (context, state) => const _ComingSoon('Fight History'),
       ),
 
-      // Identity & Social
+      // ── Identity & Social ────────────────────────────────────────────────────
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
@@ -107,24 +140,24 @@ class AppRouter {
       ),
       GoRoute(path: '/feed', builder: (context, state) => const FeedScreen()),
 
-      // Gyms & Teams
+      // ── Gyms & Teams ─────────────────────────────────────────────────────────
       GoRoute(
         path: '/coach-hub',
-        builder: (context, state) => const CoachHubScreen(),
+        builder: (context, state) => const _ComingSoon('Coach Hub'),
       ),
       GoRoute(
         path: '/gym-hub',
         builder: (context, state) => const GymTeamHubScreen(),
       ),
 
-      // Events & Streaming
+      // ── Events & Streaming ───────────────────────────────────────────────────
       GoRoute(
         path: '/event-center',
-        builder: (context, state) => const EventCenterScreen(),
+        builder: (context, state) => const _ComingSoon('Event Center'),
       ),
       GoRoute(
         path: '/streaming',
-        builder: (context, state) => const StreamingCenterScreen(),
+        builder: (context, state) => const _ComingSoon('Streaming Center'),
       ),
       GoRoute(
         path: '/ppv',
@@ -142,14 +175,14 @@ class AppRouter {
       ),
       GoRoute(
         path: '/replay',
-        builder: (context, state) => const ReplayCenterScreen(),
+        builder: (context, state) => const _ComingSoon('Replay Center'),
       ),
       GoRoute(
         path: '/broadcast',
         builder: (context, state) => const BroadcastOverlayScreen(),
       ),
 
-      // Promoter & Operations
+      // ── Promoter & Operations ────────────────────────────────────────────────
       GoRoute(
         path: '/promoter',
         builder: (context, state) => const PromoterDashboardScreen(),
@@ -160,10 +193,10 @@ class AppRouter {
       ),
       GoRoute(
         path: '/venue-ops',
-        builder: (context, state) => const VenueOperationsScreen(),
+        builder: (context, state) => const _ComingSoon('Venue Operations'),
       ),
 
-      // Regulatory & Back Office
+      // ── Regulatory & Back Office ─────────────────────────────────────────────
       GoRoute(
         path: '/officials',
         builder: (context, state) => const OfficialsTabletScreen(),
@@ -174,18 +207,18 @@ class AppRouter {
       ),
       GoRoute(
         path: '/legal',
-        builder: (context, state) => const ContractsLegalScreen(),
+        builder: (context, state) => const _ComingSoon('Contracts & Legal'),
       ),
       GoRoute(
         path: '/finance',
-        builder: (context, state) => const PayoutsFinanceScreen(),
+        builder: (context, state) => const _ComingSoon('Payouts & Finance'),
       ),
       GoRoute(
         path: '/sponsors',
-        builder: (context, state) => const SponsorshipSystemScreen(),
+        builder: (context, state) => const _ComingSoon('Sponsorship'),
       ),
 
-      // Admin
+      // ── Admin ────────────────────────────────────────────────────────────────
       GoRoute(
         path: '/google-hub',
         builder: (context, state) => const GoogleEcosystemHubScreen(),
@@ -200,10 +233,11 @@ class AppRouter {
       ),
       GoRoute(
         path: '/finance/onboarding',
-        builder: (context, state) => const StripeConnectOnboardingScreen(),
+        builder: (context, state) =>
+            const _ComingSoon('Stripe Connect Onboarding'),
       ),
 
-      // Economy & Finances
+      // ── Economy dashboards ───────────────────────────────────────────────────
       GoRoute(
         path: '/finance/promoter/:id',
         builder: (context, state) =>
@@ -220,10 +254,24 @@ class AppRouter {
             GymEconomyDashboard(gymId: state.pathParameters['id']!),
       ),
 
-      // Content & Marketing
+      // ── Content & Marketing ──────────────────────────────────────────────────
       GoRoute(
         path: '/creative-hub',
         builder: (context, state) => const CreativeHubScreen(),
+      ),
+
+      // ── Partnership Landing Pages ─────────────────────────────────────────────
+      GoRoute(
+        path: '/partners/google',
+        builder: (context, state) => const GooglePartnershipScreen(),
+      ),
+      GoRoute(
+        path: '/partners/nvidia',
+        builder: (context, state) => const NvidiaPartnershipScreen(),
+      ),
+      GoRoute(
+        path: '/partners/github',
+        builder: (context, state) => const GithubPartnershipScreen(),
       ),
     ],
   );

@@ -4,6 +4,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../shared/services/combat_intelligence_engine.dart';
 import '../../../shared/services/quantum_optimization_service.dart';
+import '../../../shared/services/predictor_live_inputs_service.dart';
+import '../widgets/animated_probability_ring.dart';
+import '../widgets/conditioning_panel.dart';
+import '../widgets/shap_explanation_card.dart';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // AI FIGHT PREDICTIONS — Samurai Swarm Intelligence × Quantum Analytics Engine
@@ -26,12 +30,16 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
 
   final _intel = CombatIntelligenceEngine();
   final _quantum = QuantumOptimizationService();
+  final _livePredictor = PredictorLiveInputsService();
 
   int _selectedMatchup = 0;
   bool _analyzing = false;
   StyleClashAnalysis? _intelResult;
   FightProbabilities? _quantumResult;
   String? _userPick; // 'A' or 'B'
+
+  // ── Live Inputs (Option F) ──────────────────────────────────────────────
+  ConditioningInputs _conditioning = const ConditioningInputs();
 
   // ── Man vs Machine state ───────────────────────────────────────────────
   final Map<int, _HumanPrediction> _humanPicks = {};
@@ -265,7 +273,7 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 4, vsync: this);
+    _tabCtrl = TabController(length: 5, vsync: this);
     _pulseCtrl = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -284,6 +292,7 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
     _tabCtrl.dispose();
     _pulseCtrl.dispose();
     _analyzeCtrl.dispose();
+    _livePredictor.dispose();
     super.dispose();
   }
 
@@ -292,6 +301,11 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
     _analyzeCtrl.forward(from: 0);
 
     final m = _matchups[_selectedMatchup];
+
+    // Wire live predictor to current matchup
+    _livePredictor.setFighterA(m.fighterA.id, m.fighterA.name);
+    _livePredictor.setFighterB(m.fighterB.id, m.fighterB.name);
+    _livePredictor.updateInputs(_conditioning);
 
     // Profile fighters
     _intel.profileFighter(
@@ -398,6 +412,7 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
                     _buildBreakdownTab(),
                     _buildTrainingTab(),
                     _buildManVsMachineTab(),
+                    _buildLiveInputsTab(),
                   ],
                 ),
               ),
@@ -621,6 +636,7 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
           Tab(icon: Icon(Icons.compare_arrows, size: 16), text: 'BREAKDOWN'),
           Tab(icon: Icon(Icons.fitness_center, size: 16), text: 'TRAINING'),
           Tab(icon: Icon(Icons.sports_esports, size: 16), text: 'MAN vs AI'),
+          Tab(icon: Icon(Icons.tune, size: 16), text: 'LIVE INPUTS'),
         ],
       ),
     );
@@ -1094,7 +1110,10 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('▸ ', style: TextStyle(color: _gold, fontSize: 10)),
+                  const Text(
+                    '▸ ',
+                    style: TextStyle(color: _gold, fontSize: 10),
+                  ),
                   Expanded(
                     child: Text(
                       f,
@@ -1691,7 +1710,11 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
                         ),
                         if (_userPick == 'A') ...[
                           const SizedBox(height: 4),
-                          const Icon(Icons.check_circle, color: _cyan, size: 14),
+                          const Icon(
+                            Icons.check_circle,
+                            color: _cyan,
+                            size: 14,
+                          ),
                         ],
                       ],
                     ),
@@ -2573,6 +2596,166 @@ class _AiFightPredictionsScreenState extends State<AiFightPredictionsScreen>
         ),
       ),
     );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // TAB 5 — LIVE INPUTS (Option F — Predictor Engine Live Inputs)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  Widget _buildLiveInputsTab() {
+    final m = _matchups[_selectedMatchup];
+    return ListenableBuilder(
+      listenable: _livePredictor,
+      builder: (_, __) {
+        final result = _livePredictor.result;
+        final computing = _livePredictor.computing;
+        final error = _livePredictor.error;
+
+        // Base probabilities from dual-engine analysis (fallback when live result absent)
+        final baseA = _intelResult != null && _quantumResult != null
+            ? (_intelResult!.fighterAWinProb + _quantumResult!.fighter1Win) / 2
+            : 0.5;
+        final baseB = 1.0 - baseA;
+
+        final probA = result?.winProbA ?? baseA;
+        final probB = result?.winProbB ?? baseB;
+        final method = result?.predictedMethod ?? 'Decision';
+        final confidence = result?.confidence ?? 0.65;
+        final shapFeatures = result?.shapFeatures ?? [];
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              // Error banner
+              if (error != null)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFD600).withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: const Color(0xFFFFD600).withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber,
+                        color: Color(0xFFFFD600),
+                        size: 14,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          error,
+                          style: const TextStyle(
+                            color: Color(0xFFFFD600),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Animated probability ring
+              AnimatedProbabilityRing(
+                probA: probA,
+                probB: probB,
+                nameA: m.fighterA.name,
+                nameB: m.fighterB.name,
+                flagA: m.fighterA.flag,
+                flagB: m.fighterB.flag,
+                colorA: _cyan,
+                colorB: _red,
+                method: method,
+                confidence: confidence,
+                isComputing: computing,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Conditioning sliders
+              ConditioningPanel(
+                inputs: _conditioning,
+                nameA: m.fighterA.name,
+                nameB: m.fighterB.name,
+                colorA: _cyan,
+                colorB: _red,
+                onChanged: (updated) {
+                  setState(() => _conditioning = updated);
+                  _livePredictor.updateInputs(updated);
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              // SHAP explanation tree
+              ShapExplanationCard(
+                features: shapFeatures,
+                nameA: m.fighterA.name,
+                nameB: m.fighterB.name,
+                isLoading: computing && shapFeatures.isEmpty,
+              ),
+
+              const SizedBox(height: 16),
+
+              // Force recalculate button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: computing ? null : _livePredictor.forceRecompute,
+                  icon: const Icon(Icons.refresh, size: 16),
+                  label: const Text(
+                    'RECALCULATE NOW',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.5,
+                      fontSize: 12,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _purple,
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: Colors.white10,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Source + timestamp
+              if (result != null)
+                Text(
+                  result.fromCache
+                      ? 'Result from cache · ${_timeAgo(result.computedAt)}'
+                      : 'Live result · computed ${_timeAgo(result.computedAt)}',
+                  style: const TextStyle(color: Colors.white24, fontSize: 10),
+                  textAlign: TextAlign.center,
+                ),
+
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  String _timeAgo(DateTime t) {
+    final diff = DateTime.now().difference(t);
+    if (diff.inSeconds < 60) return 'just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    return '${diff.inHours}h ago';
   }
 }
 

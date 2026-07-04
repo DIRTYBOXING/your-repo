@@ -1,0 +1,31 @@
+{
+  "ai_fight_predictor": {
+    "simulation_id": "string",
+    "fused_fighter_metrics": [
+      {
+        "fighter_id": "string",
+        "name": "string",
+        "record": "string",
+        "stance": "orthodox | southpaw | switch",
+        "weight_class": "string",
+        "biometrics": {
+          "reach_inches": 0,
+          "cardio_load_score": 0.0,
+          "camp_intensity_score": 0.0
+        }
+      }
+    ],
+    "prediction_outputs": {
+      "favored_fighter_id": "string",
+      "win_probability_percent": 0,
+      "explainable_weights": [
+        {
+          "factor": "string",
+          "weight_impact": 0.0,
+          "direction": "positive | negative"
+        }
+      ],
+      "confidence_index": "high | medium | low"
+    }
+  }
+}

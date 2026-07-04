@@ -1,0 +1,28 @@
+{
+  "promoter_territory": {
+    "zone_id": "string",
+    "promoter_id": "string",
+    "name": "string",
+    "bounds": {
+      "points": [
+        {
+          "latitude": 0.0,
+          "longitude": 0.0
+        }
+      ],
+      "center": {
+        "latitude": 0.0,
+        "longitude": 0.0
+      }
+    },
+    "jurisdiction": {
+      "country": "string",
+      "licensing_class": "exclusive | non-exclusive | broadcast-only",
+      "restrictions": ["string"]
+    },
+    "compliance": {
+      "tax_rate_cents": 0,
+      "requires_commission_approval": true
+    }
+  }
+}

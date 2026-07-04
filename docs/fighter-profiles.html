@@ -3,45 +3,536 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fighter Profiles & Stats | Data Fight Central</title>
+  <meta name="description" content="DFC High-Fidelity Fighter Profiles and Biometric Analytics command board. Real interactive athlete management, real-time stress simulators, and physical metrics logs." />
+  <title>Fighter Profiles & Biometrics | Data Fight Central</title>
   <style>
     :root {
-      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #10b981; --ink: #f3f4f6; --muted: #9ca3af;
+      --bg: #020408;
+      --card: #090d1a;
+      --line: #162447;
+      --accent: #10b981;
+      --accent-dim: rgba(16, 185, 129, 0.15);
+      --ink: #f3f4f6;
+      --muted: #8fa3c2;
+      --neon-cyan: #00e5ff;
+      --magenta: #ff007f;
+      --gold: #f59e0b;
     }
+
+    * { box-sizing: border-box; }
     body {
-      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #11224d 0%, var(--bg) 65%);
+      color: var(--ink);
+      line-height: 1.5;
+      padding: 30.23px 4vw;
     }
-    .wrapper { max-width: 1000px; margin: 0 auto; }
-    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
-    p { color: var(--muted); font-size: 1.1rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
-    .profile-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; text-align: center; }
-    .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(45deg, #10b981, #3b82f6); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: #000; }
-    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
-    .back:hover { color: var(--accent); }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin: 0;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+    }
+    .back {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back:hover { color: var(--neon-cyan); }
+
+    /* Interactive Filters Bar */
+    .filter-bar {
+      background: rgba(9, 13, 26, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 30px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      background: #020408;
+      border: 1px solid var(--line);
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      flex: 1;
+      min-width: 250px;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
+    }
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Primary Profile Grid Layout */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 900px) {
+      .dashboard-layout {
+        grid-template-columns: 1.2fr 1.8fr;
+      }
+    }
+
+    /* Cards Panel */
+    .cards-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .fighter-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .fighter-box:hover {
+      transform: translateY(-2px);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 8px 24px rgba(0, 229, 255, 0.1);
+    }
+    .fighter-box.active {
+      border-color: var(--accent);
+      background: rgba(16, 185, 129, 0.04);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+    }
+    .fighter-box-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--magenta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #020408;
+    }
+    .fighter-box-info { flex: 1; }
+    .fighter-box-info h3 { margin: 0 0 3px; font-size: 1.2rem; font-weight: 800; color: #fff; }
+    .fighter-box-info p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+    
+    .trust-chip {
+      position: absolute;
+      top: 15px; right: 15px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* Unified Bio Surface / Detail Panel */
+    .detail-panel {
+      background: rgba(9, 13, 26, 0.75);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      backdrop-filter: blur(10px);
+    }
+    .detail-header {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 20px;
+    }
+    .large-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--neon-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #020408;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+    }
+    .large-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 15px;
+    }
+    .large-stat-card { text-align: center; }
+    .large-stat-val { font-size: 1.3rem; font-weight: 900; color: #fff; }
+    .large-stat-label { font-size: 0.72rem; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+
+    /* Biometric Simulation Trackers */
+    .biometric-rack {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #040813;
+      padding: 20px;
+    }
+    .progress-bar-container {
+      margin-top: 15px;
+    }
+    .progress-header {
+      display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px; font-weight: 600;
+    }
+    .progress-bg {
+      height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--magenta), var(--accent)); width: 75%; border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dynamic User Calculator Form */
+    .interactive-calculator {
+      border: 1.5px dashed var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      background: rgba(0, 229, 255, 0.02);
+    }
+    .calc-row {
+      display: flex; gap: 12px; margin-top: 12px;
+    }
+    .calc-input {
+      background: #020408; border: 1px solid var(--line); padding: 10px; border-radius: 8px; color: #fff; font-size: 0.9rem; flex: 1;
+    }
+    .calc-btn {
+      background: var(--neon-cyan); color: #020408; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
+    }
+    .calc-btn:hover { background: #3fefff; }
+
+    .calc-result {
+      background: #020408; border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-top: 15px; font-size: 0.92rem; display: none;
+    }
   </style>
 </head>
 <body>
   <div class="wrapper">
-    <a href="index.html" class="back">← Back to Index</a>
-    <h1>Fighter Profiles & Stats Surface</h1>
-    <p>Explore unified athlete histories detailing biomechanical stamina index ratings, verified weigh-in audits, and combat-graph connection density levels.</p>
+    <header>
+      <div>
+        <a href="index.html" class="back">← Exit Surface</a>
+        <h1>Fighter Profiles & Biometrics</h1>
+      </div>
+      <div>
+        <span style="font-size:0.8rem; font-weight: 800; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
+          <span style="width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 8px var(--accent);"></span>
+          Live Ingestion Sync Active
+        </span>
+      </div>
+    </header>
 
-    <div class="grid">
-      <div class="profile-card">
-        <div class="avatar">AC</div>
-        <h3>Ariana Cruz</h3>
-        <p style="font-size:0.9rem; margin-bottom:5px;">Lightweight Challenger (14-2-0)</p>
-        <p style="font-size:0.85rem; color:var(--accent);">Stance: Southpaw • Angle Dominant</p>
+    <!-- Filters -->
+    <div class="filter-bar">
+      <input type="text" class="search-input" id="search-box" placeholder="Search athletes by name/stance..." oninput="filterFighters()" />
+      <button class="filter-btn active" id="btn-all" onclick="setStanceFilter('all')">All Division</button>
+      <button class="filter-btn" id="btn-southpaw" onclick="setStanceFilter('Southpaw')">Southpaw</button>
+      <button class="filter-btn" id="btn-orthodox" onclick="setStanceFilter('Orthodox')">Orthodox</button>
+    </div>
+
+    <!-- Layout -->
+    <div class="dashboard-layout">
+      
+      <!-- Cards list -->
+      <div class="cards-panel" id="fighters-container">
+        <!-- Ariana Cruz -->
+        <div class="fighter-box active" onclick="selectFighter('cruz')" id="box-cruz">
+          <span class="trust-chip">A+ Trust</span>
+          <div class="fighter-box-header">
+            <div class="avatar" style="background:linear-gradient(135deg, var(--neon-cyan), #3b82f6)">AC</div>
+            <div class="fighter-box-info">
+              <h3>Ariana Cruz</h3>
+              <p>Lightweight • 14-2-0 • Southpaw</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- John Doe -->
+        <div class="fighter-box" onclick="selectFighter('doe')" id="box-doe">
+          <span class="trust-chip">A Trust</span>
+          <div class="fighter-box-header">
+            <div class="avatar" style="background:linear-gradient(135deg, var(--magenta), #8b5cf6)">JD</div>
+            <div class="fighter-box-info">
+              <h3>John Doe</h3>
+              <p>Lightweight • 12-3-0 • Orthodox</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sam Taylor -->
+        <div class="fighter-box" onclick="selectFighter('taylor')" id="box-taylor">
+          <span class="trust-chip">A+ Trust</span>
+          <div class="fighter-box-header">
+            <div class="avatar" style="background:linear-gradient(135deg, var(--accent), #10b981)">ST</div>
+            <div class="fighter-box-info">
+              <h3>Sam Taylor</h3>
+              <p>Welterweight • 11-1-0 • Southpaw</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="profile-card">
-        <div class="avatar">JD</div>
-        <h3>John Doe</h3>
-        <p style="font-size:0.9rem; margin-bottom:5px;">Lightweight Contender (12-3-0)</p>
-        <p style="font-size:0.85rem; color:var(--accent);">Stance: Orthodox • Reach Edge (+2")</p>
+      <!-- Detail Command Surface -->
+      <div class="detail-panel">
+        <div class="detail-header">
+          <div class="large-avatar" id="detail-large-avatar">AC</div>
+          <div>
+            <h2 id="detail-name" style="margin:0 0 4px; font-weight:900;">Ariana Cruz</h2>
+            <p id="detail-meta" style="margin:0; font-size:0.95rem; color:var(--muted);">Lightweight Division • Southpaw</p>
+          </div>
+        </div>
+
+        <!-- Large statistics grid -->
+        <div class="large-stats-grid">
+          <div class="large-stat-card">
+            <div class="large-stat-val" id="stat-record">14-2-0</div>
+            <div class="large-stat-label">Record</div>
+          </div>
+          <div class="large-stat-card">
+            <div class="large-stat-val" id="stat-elo">1985</div>
+            <div class="large-stat-label">Elo Score</div>
+          </div>
+          <div class="large-stat-card">
+            <div class="large-stat-val" id="stat-connection">88%</div>
+            <div class="large-stat-label">Graph Conn</div>
+          </div>
+        </div>
+
+        <!-- Live Biometric Trackers -->
+        <div class="biometric-rack">
+          <h3 style="margin:0 0 15px; font-weight:800; font-size:1.1rem; color:#fff;">Live Biometrics Simulator</h3>
+          
+          <div class="progress-bar-container">
+            <div class="progress-header">
+              <span>Cardio Strain Capacity</span>
+              <span id="bio-cardio-val">90%</span>
+            </div>
+            <div class="progress-bg">
+              <div class="progress-fill" id="bio-cardio-bar" style="width: 90%; background:var(--accent);"></div>
+            </div>
+          </div>
+
+          <div class="progress-bar-container">
+            <div class="progress-header">
+              <span>Nervous Central Fatigue (CTE Guard)</span>
+              <span id="bio-nervous-val">12%</span>
+            </div>
+            <div class="progress-bg">
+              <div class="progress-fill" id="bio-nervous-bar" style="width: 12%; background:var(--magenta);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Weight Cutting Progress Tool -->
+        <div class="interactive-calculator">
+          <h3 style="margin:0 0 6px; font-weight:800; font-size:1.1rem; color:#fff;">Interactive Weigh-In Calibrator</h3>
+          <p style="font-size:0.85rem; margin-bottom:12px;">Simulate live weight hydration offsets to predict safe clearance tolerances:</p>
+          <div class="calc-row">
+            <input type="number" class="calc-input" id="current-weight" placeholder="Weight (kg) e.g., 73" />
+            <input type="number" class="calc-input" id="target-weight" placeholder="Target (kg) e.g., 70" />
+            <button class="calc-btn" onclick="runWeighInMath()">Calibrate</button>
+          </div>
+          <div class="calc-result" id="calc-output"></div>
+        </div>
+
       </div>
+
     </div>
   </div>
+
+  <script>
+    const fighters = {
+      cruz: {
+        name: "Ariana Cruz",
+        meta: "Lightweight Division • Southpaw Stance",
+        record: "14-2-0",
+        elo: 1985,
+        conn: "88%",
+        cardioStr: "90%",
+        nervousFatigue: "12%",
+        initials: "AC",
+        color: "linear-gradient(135deg, var(--neon-cyan), #3b82f6)"
+      },
+      doe: {
+        name: "John Doe",
+        meta: "Lightweight Division • Orthodox Stance",
+        record: "12-3-0",
+        elo: 1812,
+        conn: "74%",
+        cardioStr: "65%",
+        nervousFatigue: "34%",
+        initials: "JD",
+        color: "linear-gradient(135deg, var(--magenta), #8b5cf6)"
+      },
+      taylor: {
+        name: "Sam Taylor",
+        meta: "Welterweight Division • Southpaw Stance",
+        record: "11-1-0",
+        elo: 1790,
+        conn: "81%",
+        cardioStr: "85%",
+        nervousFatigue: "16%",
+        initials: "ST",
+        color: "linear-gradient(135deg, var(--accent), #10b981)"
+      }
+    };
+
+    let activeFighterKey = 'cruz';
+    let currentStanceFilter = 'all';
+
+    function selectFighter(key) {
+      activeFighterKey = key;
+      const f = fighters[key];
+
+      // Remove active from all boxes
+      document.querySelectorAll(".fighter-box").forEach(el => el.classList.remove("active"));
+      document.getElementById(`box-${key}`).classList.add("active");
+
+      // Set Detail information fields
+      document.getElementById("detail-name").textContent = f.name;
+      document.getElementById("detail-meta").textContent = f.meta;
+      document.getElementById("stat-record").textContent = f.record;
+      document.getElementById("stat-elo").textContent = f.elo;
+      document.getElementById("stat-connection").textContent = f.conn;
+
+      // Update biometrics simulator values and progress bars
+      document.getElementById("bio-cardio-val").textContent = f.cardioStr;
+      document.getElementById("bio-cardio-bar").style.width = f.cardioStr;
+      document.getElementById("bio-nervous-val").textContent = f.nervousFatigue;
+      document.getElementById("bio-nervous-bar").style.width = f.nervousFatigue;
+
+      document.getElementById("detail-large-avatar").textContent = f.initials;
+      document.getElementById("detail-large-avatar").style.background = f.color;
+
+      // Clear previous weigh-in output on switch
+      document.getElementById("calc-output").style.display = "none";
+    }
+
+    function setStanceFilter(stance) {
+      currentStanceFilter = stance;
+      document.querySelectorAll(".filter-btn").forEach(el => el.classList.remove("active"));
+      if(stance === 'all') document.getElementById("btn-all").classList.add("active");
+      if(stance === 'Southpaw') document.getElementById("btn-southpaw").classList.add("active");
+      if(stance === 'Orthodox') document.getElementById("btn-orthodox").classList.add("active");
+
+      filterFighters();
+    }
+
+    function filterFighters() {
+      const query = document.getElementById("search-box").value.toLowerCase();
+      
+      Object.keys(fighters).forEach(key => {
+        const f = fighters[key];
+        const matchName = f.name.toLowerCase().includes(query) || f.meta.toLowerCase().includes(query);
+        const matchStance = currentStanceFilter === 'all' || f.meta.includes(currentStanceFilter);
+
+        const cardBox = document.getElementById(`box-${key}`);
+        if(matchName && matchStance) {
+          cardBox.style.display = "block";
+        } else {
+          cardBox.style.display = "none";
+        }
+      });
+    }
+
+    function runWeighInMath() {
+      const cur = parseFloat(document.getElementById("current-weight").value);
+      const tar = parseFloat(document.getElementById("target-weight").value);
+      const out = document.getElementById("calc-output");
+
+      if (isNaN(cur) || !cur || isNaN(tar) || !tar) {
+        alert("Please provide valid number inputs.");
+        return;
+      }
+
+      const diff = cur - tar;
+      out.style.display = "block";
+
+      if (diff <= 0) {
+        out.innerHTML = `<span style="color:var(--accent);">✔ Clear to go scale! No depletion needed. Weight offset is balanced.</span>`;
+      } else {
+        const fluidLossPercent = ((diff / cur) * 100).toFixed(1);
+        let safetyClass = "var(--accent)";
+        let msg = "Clear / Hydration levels perfectly normal.";
+
+        if(parseFloat(fluidLossPercent) > 5.0) {
+          safetyClass = "var(--magenta)";
+          msg = "CRITICAL LIMIT: Exceeds safe 5% bodily water depletion. CTE susceptibility risk spikes!";
+        } else if(parseFloat(fluidLossPercent) > 3.0) {
+          safetyClass = "var(--gold)";
+          msg = "WARNING: Moderate dehydration. Monitor kidney hydration loops.";
+        }
+
+        out.innerHTML = `
+          <div>Water Loss Needed: <strong style="color:${safetyClass}">${diff.toFixed(2)} kg</strong> (${fluidLossPercent}%)</div>
+          <div style="font-size:0.85rem; color:var(--muted); margin-top:5px;">${msg}</div>
+        `;
+      }
+    }
+  </script>
 </body>
 </html>

@@ -12,12 +12,18 @@ class EconomyService extends ChangeNotifier {
   final _fs = FirebaseFirestore.instance;
 
   // ── Promoter ──────────────────────────────────────────────────────────────
-  Future<double> getPayoutBalance(String type, String id) async {
+  Future<Map<String, dynamic>> getPayoutBalance(String type, String id) async {
     try {
       final doc = await _fs.collection('payout_balances').doc(id).get();
-      return (doc.data()?['balance'] ?? 0).toDouble();
+      final data = doc.data() ?? {};
+      return {
+        'balanceCents': (((data['balance'] ?? 0) as num) * 100).round(),
+        'balance': ((data['balance'] ?? 0) as num).toDouble(),
+        'currency': data['currency'] ?? 'AUD',
+        ...data,
+      };
     } catch (_) {
-      return 0;
+      return {'balanceCents': 0, 'balance': 0.0, 'currency': 'AUD'};
     }
   }
 

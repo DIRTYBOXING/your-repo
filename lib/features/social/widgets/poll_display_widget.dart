@@ -85,9 +85,9 @@ class _PollDisplayWidgetState extends State<PollDisplayWidget> {
 
     try {
       await context.read<SocialService>().votePoll(
-        postId: post.id,
-        optionIndex: index,
-        userId: _uid!,
+        post.id,
+        index.toString(),
+        _uid!,
       );
     } catch (_) {
       // revert would be complex — just leave optimistic state

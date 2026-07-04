@@ -186,4 +186,13 @@ class SocialService {
       'pollOptions.$optionId.votes': FieldValue.increment(1),
     });
   }
+
+  // Named-param overload for poll_display_widget compatibility
+  Future<void> votePollByIndex({
+    required String postId,
+    required int optionIndex,
+    required String userId,
+  }) async {
+    await votePoll(postId, optionIndex.toString(), userId);
+  }
 }

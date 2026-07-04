@@ -19,6 +19,22 @@ class PpvService {
         .get();
   }
 
+  /// Returns upcoming PPV events as a stream (used by social feed).
+  Stream<List<PPVEvent>> getUpcomingPPVEvents({int limit = 10}) {
+    return _db
+        .collection('ppv_events')
+        .where(
+          'status',
+          whereIn: ['upcoming', 'presale', 'onSale', 'announced'],
+        )
+        .orderBy('eventDate')
+        .limit(limit)
+        .snapshots()
+        .map(
+          (snap) => snap.docs.map((d) => PPVEvent.fromFirestore(d)).toList(),
+        );
+  }
+
   /// Returns a stream of PPV events by category
   Stream<QuerySnapshot> getPpvRow(String category) {
     return _db
@@ -76,12 +92,12 @@ class PpvService {
     });
   }
 
-  /// Records a PPV purchase (called from payment widgets).
+  /// Returns a PPV purchase (called from payment widgets).
   Future<void> purchasePPV({
     required String ppvEventId,
     String? paymentIntentId,
     String? paymentMethod,
-    String? tier,
+    PPVTier? tier,
     int? pricePaidCents,
   }) async {
     await _db.collection('ppv_purchases').add({

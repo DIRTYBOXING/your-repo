@@ -547,7 +547,7 @@ class _PPVPaymentSheetState extends State<PPVPaymentSheet>
         userId: userId,
         ppvId: widget.event.id,
         ppvTitle: widget.event.title,
-        tierId: _selectedTierId,
+        tierId: _selectedTierId.toString(),
       );
 
       if (!opened) {

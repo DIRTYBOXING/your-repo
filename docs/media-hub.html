@@ -3,440 +3,1171 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="DFC Cinema-Grade Media Hub & Live Poster Designer. Interactive streaming reels, premium event posters, and social distribution tools for fighters and promoters." />
-  <title>Cinema-Grade Media Hub & Live Poster | Data Fight Central</title>
+  <title>Cinema Poster, Store & Social Studio | Data Fight Central</title>
+  <meta name="description" content="DFC cinema-grade fight poster studio, fighter social media kit, promoter campaign store, and PPV product visualizer." />
   <style>
     :root {
+      color-scheme: dark;
       --bg: #020408;
-      --card: #090d1a;
-      --line: #162447;
-      --accent: #00ffd8;
-      --accent-dim: rgba(0, 255, 216, 0.15);
-      --ink: #f3f4f6;
-      --muted: #8fa3c2;
-      --magenta: #ff007f;
-      --magenta-dim: rgba(255, 0, 127, 0.15);
-      --gold: #f59e0b;
+      --panel: rgba(7, 12, 24, 0.92);
+      --panel-strong: #090d1a;
+      --ink: #f8fbff;
+      --muted: #9fb0c5;
+      --line: rgba(0, 255, 216, 0.22);
+      --cyan: #00ffd8;
+      --blue: #3aa0ff;
+      --pink: #ff007f;
+      --gold: #ffd166;
+      --green: #10b981;
+      --danger: #ff4d6d;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+      --radius: 26px;
     }
 
     * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(1300px 650px at 50% -10%, #0c122c 0%, var(--bg) 70%);
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--ink);
-      line-height: 1.5;
-      padding: 30px 4vw;
+      background:
+        radial-gradient(circle at 12% 6%, rgba(255, 0, 127, 0.22), transparent 30%),
+        radial-gradient(circle at 85% 4%, rgba(0, 255, 216, 0.18), transparent 32%),
+        radial-gradient(circle at 50% 55%, rgba(58, 160, 255, 0.14), transparent 42%),
+        linear-gradient(145deg, #010204 0%, #061020 45%, #020408 100%);
+      line-height: 1.55;
     }
 
-    .wrapper {
-      max-width: 1200px;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+      background-size: 46px 46px;
+      mask-image: radial-gradient(circle at 50% 20%, #000 0%, transparent 78%);
+      opacity: 0.5;
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(1460px, calc(100% - 32px));
       margin: 0 auto;
+      padding: 28px 0 64px;
     }
 
-    header {
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 15px;
-      margin-bottom: 30px;
+    .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .back:hover, .back:focus-visible { color: var(--cyan); }
+
+    .status-row {
+      display: flex;
       flex-wrap: wrap;
-      gap: 15px;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .status-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      background: rgba(2, 6, 23, 0.65);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(360px, 0.76fr);
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+
+    .hero-copy,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(8, 13, 28, 0.94), rgba(2, 4, 8, 0.92));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-copy {
+      position: relative;
+      padding: clamp(26px, 4vw, 58px);
+      min-height: 520px;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto -90px -180px auto;
+      width: 480px;
+      height: 480px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 255, 216, 0.35);
+      box-shadow: inset 0 0 60px rgba(0, 255, 216, 0.15), 0 0 120px rgba(255, 0, 127, 0.14);
+      transform: rotate(-18deg);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.78rem;
+      font-weight: 950;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--pink));
+      box-shadow: 0 0 18px var(--cyan);
     }
 
     h1 {
-      font-size: 2.2rem;
-      font-weight: 900;
+      max-width: 960px;
       margin: 0;
-      color: #fff;
-      text-shadow: 0 0 15px rgba(0, 255, 216, 0.2);
-    }
-    .back {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: clamp(3rem, 7.5vw, 7.8rem);
+      line-height: 0.86;
+      letter-spacing: -0.08em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+    }
+
+    h1 span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.78);
+      text-shadow: 0 0 34px rgba(0, 255, 216, 0.24);
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 830px;
+      margin: 24px 0 0;
+      color: #d7e2ef;
+      font-size: clamp(1.03rem, 2vw, 1.3rem);
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button,
+    button.button {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-    }
-    .back:hover { color: var(--accent); }
-
-    /* Layout structure */
-    .media-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    @media (min-width: 900px) {
-      .media-grid {
-        grid-template-columns: 1.4fr 1.6fr;
-      }
-    }
-
-    /* Left: Live Gritty Poster Designer & Card */
-    .poster-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .poster-card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
-    }
-
-    /* Cinema Poster Frame Object */
-    .cinema-frame {
-      width: 100%;
-      height: 480px;
-      border-radius: 12px;
-      border: 2px solid var(--line);
-      position: relative;
-      overflow: hidden;
-      background-color: #030612;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 30px;
-      box-shadow: inset 0 0 50px rgba(0, 255, 216, 0.1);
-    }
-    /* Dynamic background posters using premium overlay masks resembling a movie studio filter */
-    .cinema-frame-bg {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(180deg, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.7) 60%, rgba(2,4,8,1) 100%),
-                  radial-gradient(ellipse at 50% 30%, rgba(0, 255, 216, 0.25) 0%, transparent 70%);
-      z-index: 1;
-    }
-    /* Dynamic grid lens overlay mimicking a heavy retro combat filter */
-    .cinema-grid-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-size: 2px 2px;
-      background-image: linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-      z-index: 2;
-    }
-
-    .cinema-content-top {
-      position: relative;
-      z-index: 3;
-      text-align: center;
-    }
-    .cinema-kicker {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--accent);
-      font-weight: 800;
-      text-shadow: 0 0 8px var(--accent);
-    }
-    .cinema-promo-name {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      margin-top: 5px;
-    }
-
-    .cinema-content-middle {
-      position: relative;
-      z-index: 3;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 40px 0;
-    }
-    .fighter-photo-placeholder {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 2px solid var(--line);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
-      font-weight: 900;
-      text-shadow: 0 0 10px rgba(255,255,255,0.2);
-    }
-    .vs-sign {
-      font-size: 1.4rem;
-      font-style: italic;
-      color: var(--magenta);
-      font-weight: 900;
-      text-shadow: 0 0 8px var(--magenta);
-    }
-
-    .cinema-content-bottom {
-      position: relative;
-      z-index: 3;
-      text-align: center;
-    }
-    .cinema-title {
-      font-size: 1.8rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: -0.01em;
-      margin: 0 0 5px;
-      color: #fff;
-    }
-    .cinema-date {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--gold);
-      font-weight: 700;
-    }
-
-    /* Right: Interactive Controls & Video Stream Mock */
-    .controls-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .control-card {
-      background: rgba(9, 13, 26, 0.75);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-      backdrop-filter: blur(8px);
-    }
-
-    .control-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-bottom: 18px;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .form-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      font-weight: 700;
-    }
-    .form-input {
-      background: #020408;
-      border: 1px solid var(--line);
-      padding: 10px 14px;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 0.9rem;
-    }
-    .form-input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .btn-action-distribution {
-      width: 100%;
-      padding: 14px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      transition: all 0.2s;
-      background-color: var(--accent);
+      gap: 9px;
+      border-radius: 999px;
+      padding: 13px 18px;
+      min-height: 46px;
+      font: inherit;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+      text-decoration: none;
       color: #020408;
-      box-shadow: 0 0 15px rgba(0, 255, 216, 0.2);
-    }
-    .btn-action-distribution:hover {
-      background-color: #3effef;
+      background: linear-gradient(135deg, var(--cyan), var(--gold));
+      box-shadow: 0 0 34px rgba(0, 255, 216, 0.22);
     }
 
-    /* Reels feed track mock */
-    .reels-scroller {
-      display: flex;
-      gap: 15px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-      margin-top: 15px;
+    .button.secondary {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: none;
     }
-    .reel-thumb-card {
-      flex-shrink: 0;
-      width: 140px;
-      height: 220px;
-      border-radius: 10px;
-      border: 1px solid var(--line);
-      background-color: #030612;
+
+    .button.pink { background: linear-gradient(135deg, var(--pink), var(--gold)); }
+
+    .button:focus-visible,
+    .poster-tab:focus-visible,
+    .social-tab:focus-visible,
+    .platform-button:focus-visible,
+    .store-button:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .director-card {
+      position: relative;
+      padding: 24px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 520px;
+    }
+
+    .director-screen {
+      position: relative;
+      border-radius: 22px;
+      min-height: 340px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background:
+        linear-gradient(150deg, rgba(0, 255, 216, 0.08), rgba(255, 0, 127, 0.08)),
+        #040710;
+    }
+
+    .director-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.78), transparent 55%),
+        radial-gradient(circle at 74% 28%, rgba(255, 209, 102, 0.34), transparent 18%),
+        radial-gradient(circle at 35% 35%, rgba(0, 255, 216, 0.22), transparent 22%),
+        linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(2, 4, 8, 0.95));
+    }
+
+    .fighter-silhouette {
+      position: absolute;
+      right: 8%;
+      bottom: 0;
+      width: 230px;
+      height: 300px;
+      filter: drop-shadow(0 0 48px rgba(0, 255, 216, 0.28));
+    }
+
+    .poster-title {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      right: 24px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    .poster-title strong {
+      display: block;
+      font-size: clamp(2rem, 4vw, 4.6rem);
+      line-height: 0.82;
+      letter-spacing: -0.08em;
+    }
+
+    .poster-title span {
+      display: inline-block;
+      margin-top: 10px;
+      color: var(--cyan);
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      font-weight: 950;
+    }
+
+    .director-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .metric {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 13px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .metric b { display: block; color: var(--cyan); font-size: 1.2rem; }
+    .metric small { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 850; }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin: 34px 0 16px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      text-transform: uppercase;
+    }
+
+    .section-title p { margin: 0; max-width: 620px; color: var(--muted); }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(330px, 0.9fr) minmax(0, 1.1fr) minmax(330px, 0.9fr);
+      gap: 18px;
+    }
+
+    .panel { padding: 20px; }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      font-size: 1.25rem;
+    }
+
+    .panel p { color: var(--muted); margin: 0 0 14px; }
+
+    .control-group { margin: 16px 0; }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: #d7e2ef;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--ink);
+      background: rgba(2, 6, 23, 0.88);
+      padding: 11px 13px;
+      font: inherit;
+    }
+
+    textarea { min-height: 126px; resize: vertical; }
+
+    .poster-tabs,
+    .social-tabs,
+    .store-buttons,
+    .platform-buttons {
+      display: grid;
+      gap: 10px;
+    }
+
+    fieldset.poster-tabs,
+    fieldset.social-tabs,
+    fieldset.platform-buttons {
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    legend {
+      margin: 0 0 10px;
+      color: #d7e2ef;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .poster-tab,
+    .social-tab,
+    .store-button,
+    .platform-button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 17px;
+      cursor: pointer;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 13px 14px;
+      font: inherit;
+      text-align: left;
+    }
+
+    .poster-tab[aria-pressed="true"],
+    .social-tab[aria-pressed="true"],
+    .store-button[aria-pressed="true"],
+    .platform-button[aria-pressed="true"] {
+      border-color: rgba(0, 255, 216, 0.72);
+      background: linear-gradient(135deg, rgba(0, 255, 216, 0.16), rgba(255, 0, 127, 0.08));
+      box-shadow: inset 0 0 0 1px rgba(0, 255, 216, 0.14), 0 0 26px rgba(0, 255, 216, 0.12);
+    }
+
+    .poster-tab strong,
+    .social-tab strong,
+    .store-button strong,
+    .platform-button strong { display: block; }
+
+    .poster-tab span,
+    .social-tab span,
+    .store-button span,
+    .platform-button span { color: var(--muted); font-size: 0.88rem; }
+
+    .poster-stage {
+      padding: 18px;
+      display: grid;
+      place-items: center;
+      min-height: 760px;
+    }
+
+    .poster-frame {
+      width: min(100%, 430px);
+      aspect-ratio: 4 / 5.65;
       position: relative;
       overflow: hidden;
-      cursor: pointer;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: #020408;
+      box-shadow: 0 42px 110px rgba(0, 0, 0, 0.72), 0 0 70px rgba(0, 255, 216, 0.18);
+    }
+
+    .poster-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(0deg, rgba(0, 0, 0, 0.82), transparent 46%, rgba(255, 255, 255, 0.08)),
+        radial-gradient(circle at 50% 12%, rgba(255, 255, 255, 0.3), transparent 16%),
+        radial-gradient(circle at 70% 28%, var(--poster-glow, rgba(0, 255, 216, 0.28)), transparent 28%),
+        linear-gradient(155deg, var(--poster-a, #0f172a), var(--poster-b, #020408));
+    }
+
+    .poster-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 100% 8px;
+      mix-blend-mode: screen;
+      opacity: 0.36;
+    }
+
+    .poster-frame[data-theme="gold"] { --poster-a: #3a2408; --poster-b: #020408; --poster-glow: rgba(255, 209, 102, 0.34); }
+    .poster-frame[data-theme="pink"] { --poster-a: #2a0b20; --poster-b: #020408; --poster-glow: rgba(255, 0, 127, 0.34); }
+    .poster-frame[data-theme="cyan"] { --poster-a: #06242a; --poster-b: #020408; --poster-glow: rgba(0, 255, 216, 0.3); }
+
+    .poster-logo {
+      position: absolute;
+      top: 22px;
+      left: 24px;
+      z-index: 2;
+      color: var(--cyan);
+      font-weight: 1000;
+      letter-spacing: 0.2em;
+      font-size: 0.8rem;
+    }
+
+    .poster-badge {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 2;
+      border: 1px solid rgba(255,255,255,0.32);
+      border-radius: 999px;
+      padding: 8px 10px;
+      color: #fff;
+      background: rgba(0,0,0,0.28);
+      font-weight: 900;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .poster-figures {
+      position: absolute;
+      inset: 100px 20px 170px;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: end;
+      opacity: 0.96;
+    }
+
+    .figure {
+      position: relative;
+      height: 310px;
+      filter: drop-shadow(0 0 38px rgba(0, 255, 216, 0.18));
+    }
+
+    .figure::before,
+    .figure::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(#f8fbff, #738199);
+      opacity: 0.9;
+    }
+
+    .figure::before { top: 0; width: 72px; height: 72px; border-radius: 999px; }
+    .figure::after { top: 62px; width: 92px; height: 186px; border-radius: 46px 46px 18px 18px; }
+    .figure.left { transform: rotate(-7deg) translateX(18px); }
+    .figure.right { transform: rotate(7deg) translateX(-18px) scaleX(-1); }
+
+    .poster-copy {
+      position: absolute;
+      z-index: 3;
+      left: 24px;
+      right: 24px;
+      bottom: 28px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .poster-copy .event-line {
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.2em;
+    }
+
+    .poster-copy h2 {
+      margin: 8px 0 4px;
+      font-size: clamp(2.3rem, 7vw, 4.6rem);
+      line-height: 0.78;
+      letter-spacing: -0.09em;
+    }
+
+    .poster-copy .fight-line {
+      color: #d9e7f7;
+      font-size: 0.84rem;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+    }
+
+    .poster-copy .venue-line {
+      margin-top: 13px;
+      color: var(--cyan);
+      font-size: 0.74rem;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+    }
+
+    .poster-footer {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+    }
+
+    .render-specs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+      width: min(100%, 430px);
+    }
+
+    .spec {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255,255,255,0.045);
+      text-align: center;
+    }
+
+    .spec b { display: block; color: var(--cyan); }
+    .spec small { color: var(--muted); font-weight: 850; text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .social-preview {
+      display: grid;
+      grid-template-columns: 0.78fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .phone {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 32px;
+      padding: 12px;
+      min-height: 500px;
+      background: #05070d;
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,0.03), var(--shadow);
+    }
+
+    .phone-screen {
+      height: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(0deg, rgba(0,0,0,0.92), transparent 52%),
+        radial-gradient(circle at 70% 22%, rgba(255,0,127,0.3), transparent 23%),
+        linear-gradient(145deg, #0b1020, #020408);
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end;
-      padding: 12px;
+      justify-content: space-between;
     }
-    .reel-thumb-card::after {
-      content: "▶";
-      font-size: 1.5rem; color: #fff; opacity: 0.6;
-      position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+
+    .story-card {
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 22px;
+      padding: 16px;
+      min-height: 310px;
+      background:
+        linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+        radial-gradient(circle at 40% 25%, rgba(0,255,216,0.24), transparent 26%);
     }
-    .reel-caption {
+
+    .story-card .avatar {
+      width: 68px;
+      height: 68px;
+      border-radius: 999px;
+      border: 2px solid var(--cyan);
+      background: linear-gradient(145deg, #172554, #020408);
+      box-shadow: 0 0 34px rgba(0,255,216,0.24);
+    }
+
+    .story-card h3 {
+      margin: 80px 0 6px;
+      font-size: 2.4rem;
+      line-height: 0.86;
+      letter-spacing: -0.08em;
+      text-transform: uppercase;
+    }
+
+    .story-card p { margin: 0; color: #dbeafe; }
+
+    .caption-box {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+      padding: 14px;
+    }
+
+    .caption-box h4 { margin: 0 0 8px; text-transform: uppercase; }
+    .caption-box p { color: #d7e2ef; }
+
+    .commerce-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .product-card {
       position: relative;
-      z-index: 2;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: #fff;
+      min-height: 310px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 24px;
+      padding: 18px;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(11,16,32,0.95), rgba(2,4,8,0.95));
+      box-shadow: var(--shadow);
+    }
+
+    .product-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 78% 18%, rgba(0,255,216,0.18), transparent 25%);
+      pointer-events: none;
+    }
+
+    .product-card h3 { position: relative; margin: 0 0 10px; text-transform: uppercase; letter-spacing: -0.04em; }
+    .product-card p { position: relative; color: var(--muted); }
+
+    .price {
+      position: relative;
+      margin-top: 22px;
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      font-weight: 1000;
+      color: var(--gold);
+      font-size: 2.4rem;
+      letter-spacing: -0.05em;
+    }
+
+    .price small { font-size: 0.78rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .qr-block {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      width: 72px;
+      height: 72px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 6px;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .qr-block i { background: #020408; border-radius: 2px; }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .workflow-step {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 16px;
+      background: rgba(255,255,255,0.045);
+    }
+
+    .workflow-step b {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      color: #020408;
+      background: var(--cyan);
+      margin-bottom: 12px;
+    }
+
+    .workflow-step strong { display: block; text-transform: uppercase; }
+    .workflow-step span { color: var(--muted); font-size: 0.92rem; }
+
+    .export-strip {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+      margin-top: 16px;
+    }
+
+    .export-card {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255,255,255,0.045);
+    }
+
+    .export-card strong { display: block; text-transform: uppercase; margin-bottom: 8px; }
+    .export-card span { color: var(--muted); }
+
+    @media (max-width: 1180px) {
+      .hero, .studio-grid, .social-preview, .export-strip { grid-template-columns: 1fr; }
+      .poster-stage { min-height: auto; }
+      .commerce-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workflow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 20px, 1460px); padding-top: 16px; }
+      .topbar, .section-title { align-items: flex-start; flex-direction: column; }
+      .hero-copy { min-height: auto; }
+      .director-meta, .render-specs, .commerce-grid, .workflow { grid-template-columns: 1fr; }
+      .poster-frame { border-radius: 18px; }
+      .phone { min-height: 440px; }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <header>
-      <div>
-        <a href="index.html" class="back">← Exit Studio</a>
-        <h1>Gritty Poster Designer & Media Hub</h1>
+  <main class="shell">
+    <div class="topbar">
+      <a href="index.html" class="back">← Back to DFC Index</a>
+      <div class="status-row" aria-label="Studio status">
+        <span class="status-pill">Poster Engine: Active</span>
+        <span class="status-pill">Fighter Social: Active</span>
+        <span class="status-pill">Promoter Store: Active</span>
       </div>
-      <div>
-        <span style="font-size:0.8rem; font-weight: 800; color:var(--accent); letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
-          <span style="width:8px; height:8px; background:var(--accent); border-radius:50%; box-shadow:0 0 8px var(--accent);"></span>
-          Cinema Pipeline Active
-        </span>
+    </div>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow">DFC media command room</div>
+        <h1 id="hero-title">Cinema-grade <span>fight assets</span></h1>
+        <p class="lead">
+          This is the fighter and promoter media floor: posters, social stories, PPV product cards,
+          sponsor-safe captions, QR storefronts, and launch packs all generated from the same event data.
+          No generic thumbnails — every surface is built to sell the bout, protect the athlete, and move the audience.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="#poster-studio">Open Poster Studio</a>
+          <a class="button secondary" href="#social-kit">View Social Kit</a>
+          <a class="button pink" href="#storefront">Launch Storefront</a>
+        </div>
       </div>
-    </header>
 
-    <p>Empowering fighters and promoters to auto-generate gritty, high-definition promotional posters and short video teasers for immediate decentralized socials stream sharing.</p>
-
-    <div class="media-grid">
-
-      <!-- Left side: Cinema Poster Frame -->
-      <section class="poster-panel">
-        <div class="cinema-frame" id="live-poster">
-          <div class="cinema-frame-bg" id="poster-bg"></div>
-          <div class="cinema-grid-overlay"></div>
-
-          <div class="cinema-content-top">
-            <span class="cinema-kicker" id="poster-kicker">Queensland Fight Night</span>
-            <div class="cinema-promo-name" id="poster-promo-subtitle">AUTONOMOUS SPORTS SEED SYNC</div>
-          </div>
-
-          <div class="cinema-content-middle">
-            <div class="fighter-photo-placeholder" id="avatar-red" style="border-color: var(--magenta);">AC</div>
-            <span class="vs-sign">VS</span>
-            <div class="fighter-photo-placeholder" id="avatar-blue" style="border-color: var(--accent);">JD</div>
-          </div>
-
-          <div class="cinema-content-bottom">
-            <h2 class="cinema-title" id="poster-championship-title">Lightweight Edge</h2>
-            <div class="cinema-date" id="poster-event-time">DEC 2026 • BRISBANE SANCTUARY</div>
+      <aside class="panel director-card" aria-label="Cinema campaign preview">
+        <div>
+          <h2 style="margin:0;text-transform:uppercase;letter-spacing:-0.05em;line-height:.9;font-size:2.1rem;">Campaign Director</h2>
+          <p>Live preview of how the DFC campaign package looks across posters, socials, and store cards.</p>
+        </div>
+        <div class="director-screen" aria-hidden="true">
+          <svg class="fighter-silhouette" viewBox="0 0 220 300" role="img" aria-label="Stylized fighter silhouette">
+            <defs>
+              <linearGradient id="fighterGlow" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0" stop-color="#f8fbff" />
+                <stop offset="1" stop-color="#00ffd8" />
+              </linearGradient>
+            </defs>
+            <circle cx="116" cy="40" r="31" fill="url(#fighterGlow)" opacity="0.9" />
+            <path d="M90 78 C132 58 169 89 160 135 L151 212 C147 252 84 251 79 211 L69 132 C65 106 72 89 90 78Z" fill="url(#fighterGlow)" opacity="0.82" />
+            <path d="M79 116 C42 102 18 120 10 150" stroke="#ff007f" stroke-width="18" stroke-linecap="round" opacity="0.82" />
+            <path d="M151 117 C186 99 211 116 214 152" stroke="#ffd166" stroke-width="18" stroke-linecap="round" opacity="0.82" />
+          </svg>
+          <div class="poster-title">
+            <span>Saturday · Brisbane · Live PPV</span>
+            <strong>Redirection Fight Night</strong>
           </div>
         </div>
-      </section>
+        <div class="director-meta">
+          <div class="metric"><b>9:16</b><small>Story</small></div>
+          <div class="metric"><b>4:5</b><small>Poster</small></div>
+          <div class="metric"><b>1:1</b><small>Store</small></div>
+        </div>
+      </aside>
+    </section>
 
-      <!-- Right side: Real-time Calibrator Form -->
-      <section class="controls-panel">
-        <div class="control-card">
-          <h3 style="margin-top:0; color:#fff; font-size:1.15rem; font-weight:800;">Real-Time Poster Customizer</h3>
-          <p style="font-size:0.85rem; margin-bottom:15px; color:var(--muted);">Simulate live render modifications. Adjust title strings, fighter initials, and theme filters instantly:</p>
+    <section id="poster-studio" aria-labelledby="poster-title">
+      <div class="section-title">
+        <div>
+          <div class="eyebrow">poster generator</div>
+          <h2 id="poster-title">Fighter vs promoter cinema posters</h2>
+        </div>
+        <p>Choose an event package and the page recalibrates the poster title, fight card, venue, export sizes, social caption, and PPV store product bundle.</p>
+      </div>
 
-          <div class="control-row">
-            <div class="form-group">
-              <label class="form-label" for="input-kicker">Kicker / Event subtitle</label>
-              <input type="text" class="form-input" id="input-kicker" value="Queensland Fight Night" oninput="reRenderPoster()" />
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="input-championship">Championship Title</label>
-              <input type="text" class="form-input" id="input-championship" value="Lightweight Edge" oninput="reRenderPoster()" />
-            </div>
+      <div class="studio-grid">
+        <aside class="panel" aria-label="Poster controls">
+          <h3>Campaign presets</h3>
+          <p>These are platform-ready campaign states, not stock graphics. Each preset is tied to event, fighter, promoter, and store data.</p>
+
+          <fieldset class="poster-tabs">
+            <legend>Poster presets</legend>
+            <button class="poster-tab" type="button" data-campaign="redirection" aria-pressed="true">
+              <strong>Redirection Fight Night</strong>
+              <span>Community PPV, safety-first fighter story, Brisbane arena poster.</span>
+            </button>
+            <button class="poster-tab" type="button" data-campaign="titleRun" aria-pressed="false">
+              <strong>Title Run: Cruz vs Doe</strong>
+              <span>Premium championship art with gold title typography and sponsor lanes.</span>
+            </button>
+            <button class="poster-tab" type="button" data-campaign="promoterLaunch" aria-pressed="false">
+              <strong>Promoter Launch Pack</strong>
+              <span>Promoter-facing ticket/store push with QR merchandising and PPV callout.</span>
+            </button>
+          </fieldset>
+
+          <div class="control-group">
+            <label for="eventName">Event headline</label>
+            <input id="eventName" type="text" value="Redirection Fight Night" />
           </div>
+          <div class="control-group">
+            <label for="mainEvent">Main event</label>
+            <input id="mainEvent" type="text" value="Ariana Cruz vs John Doe" />
+          </div>
+          <div class="control-group">
+            <label for="venueName">Venue and market</label>
+            <input id="venueName" type="text" value="Brisbane Entertainment Arena · Live PPV" />
+          </div>
+          <button class="button" type="button" id="renderPoster">Render Campaign Preview</button>
+        </aside>
 
-          <div class="control-row">
-            <div class="form-group">
-              <span class="form-label">Left Fighter (Initials / Stance Color)</span>
-              <div style="display:flex; gap:8px;">
-                <label for="val-avatar-red" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">Fighter initials left</label>
-                <input type="text" class="form-input" style="width:50px; text-align:center;" id="val-avatar-red" value="AC" oninput="reRenderPoster()" />
-                <select class="form-input" style="flex:1;" id="select-filter" onchange="reRenderPoster()">
-                  <option value="cyber">Cyber Cyan Filter</option>
-                  <option value="magenta">Neon Pink Filter</option>
-                  <option value="gold">Sundance Vintage Filter</option>
-                </select>
+        <section class="panel poster-stage" aria-label="Poster preview">
+          <article class="poster-frame" id="posterFrame" data-theme="cyan" aria-label="Generated fight poster preview">
+            <div class="poster-logo">DFC · COMBAT OS</div>
+            <div class="poster-badge" id="posterBadge">Live PPV</div>
+            <div class="poster-figures" aria-hidden="true">
+              <div class="figure left"></div>
+              <div class="figure right"></div>
+            </div>
+            <div class="poster-copy">
+              <div class="event-line" id="posterEvent">Redirection Fight Night</div>
+              <h2 id="posterMain">Ariana Cruz<br />vs John Doe</h2>
+              <div class="fight-line" id="posterSubline">Fighter safety · mentor pathway · PPV store</div>
+              <div class="venue-line" id="posterVenue">Brisbane Entertainment Arena · Live PPV</div>
+              <div class="poster-footer" aria-hidden="true">
+                <span>Tickets</span><span>PPV</span><span>Merch</span>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="val-avatar-blue">Right Fighter (Initials)</label>
-              <input type="text" class="form-input" id="val-avatar-blue" value="JD" oninput="reRenderPoster()" />
+          </article>
+          <div class="render-specs" aria-label="Export specifications">
+            <div class="spec"><b>2160p</b><small>Poster master</small></div>
+            <div class="spec"><b>1080×1920</b><small>Story cut</small></div>
+            <div class="spec"><b>1200×628</b><small>Ad cut</small></div>
+          </div>
+        </section>
+
+        <aside class="panel" aria-label="Campaign output">
+          <h3>Copy + safety output</h3>
+          <p>Promoters get aggressive selling language; fighters get human story framing; DFC keeps brand safety baked in.</p>
+          <div class="control-group">
+            <label for="campaignTone">Campaign tone</label>
+            <select id="campaignTone">
+              <option value="fighter">Fighter story</option>
+              <option value="promoter">Promoter sell-out push</option>
+              <option value="sponsor">Sponsor-safe grant pitch</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="captionOutput">Generated caption pack</label>
+            <textarea id="captionOutput">Ariana Cruz vs John Doe goes live from Brisbane. Every ticket, PPV buy, and store drop helps power a safer combat pathway: athletes seen, fans connected, communities redirected. #DFC #FightNight #TurningAdrenalineIntoDirection</textarea>
+          </div>
+          <div class="export-strip" style="grid-template-columns:1fr;">
+            <div class="export-card"><strong>Rights layer</strong><span>Poster tagged for fighter, promoter, sponsor, venue, and PPV product ownership.</span></div>
+            <div class="export-card"><strong>Trust layer</strong><span>Captions avoid unsafe medical claims and route high-risk outreach to support channels.</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="social-kit" aria-labelledby="social-title">
+      <div class="section-title">
+        <div>
+          <div class="eyebrow">social command kit</div>
+          <h2 id="social-title">Fighter stories, promoter posts, sponsor clips</h2>
+        </div>
+        <p>One event produces story frames, short-form captions, countdown hooks, profile badges, and link-in-bio store actions.</p>
+      </div>
+
+      <div class="panel social-preview">
+        <div class="phone" aria-label="Mobile social story preview">
+          <div class="phone-screen">
+            <div class="story-card">
+              <div class="avatar" aria-hidden="true"></div>
+              <h3 id="storyHeadline">Ariana Cruz fight week</h3>
+              <p id="storyBody">From camp footage to PPV launch, every post drives fans into the DFC event store.</p>
+            </div>
+            <div>
+              <button class="button" type="button" id="storyCta">Tap for PPV + merch</button>
             </div>
           </div>
-
-          <button class="btn-action-distribution" onclick="shareToPlatform()">⚡ Share to DFC social Stream</button>
-
         </div>
 
-        <!-- Cinema Streams scroller -->
-        <div class="control-card">
-          <h3 style="margin-top:0; color:#fff; font-size:1.15rem; font-weight:800;">Fighter Stories & Reels Flow</h3>
-          <p style="font-size:0.85rem; color:var(--muted); margin-bottom:12px;">Active cinema-loop compilations updating on profile feeds in real-time:</p>
+        <div>
+          <h3>Social surfaces</h3>
+          <p>Switch channels to see how the same fight asset becomes native social content instead of a dead static flyer.</p>
+          <fieldset class="social-tabs">
+            <legend>Social channel presets</legend>
+            <button class="social-tab" type="button" data-social="fighter" aria-pressed="true"><strong>Fighter profile drop</strong><span>Personal story, stats, gym, walkout quote, sponsor-safe CTA.</span></button>
+            <button class="social-tab" type="button" data-social="promoter" aria-pressed="false"><strong>Promoter sell-out post</strong><span>Urgency, tickets, PPV, venue, limited merch inventory.</span></button>
+            <button class="social-tab" type="button" data-social="sponsor" aria-pressed="false"><strong>Grant / sponsor proof</strong><span>Community impact, safety pathway, analytics receipts.</span></button>
+          </fieldset>
 
-          <div class="reels-scroller">
-            <!-- Reel 1 -->
-            <div class="reel-thumb-card" onclick="alert('Playing Teaser 1...')">
-              <div style="position:absolute; bottom:0; left:0; width:100%; height:80px; background:linear-gradient(transparent, #000); z-index:1;"></div>
-              <span class="reel-caption">Cruz Sparring Comp</span>
-            </div>
-            <!-- Reel 2 -->
-            <div class="reel-thumb-card" onclick="alert('Playing Teaser 2...')">
-              <div style="position:absolute; bottom:0; left:0; width:100%; height:80px; background:linear-gradient(transparent, #000); z-index:1;"></div>
-              <span class="reel-caption">Doe Boxing Spar</span>
-            </div>
-            <!-- Reel 3 -->
-            <div class="reel-thumb-card" onclick="alert('Playing Teaser 3...')">
-              <div style="position:absolute; bottom:0; left:0; width:100%; height:80px; background:linear-gradient(transparent, #000); z-index:1;"></div>
-              <span class="reel-caption">Redirection Muay Thai</span>
-            </div>
+          <div class="control-group">
+            <label for="socialCaption">Native social copy</label>
+            <textarea id="socialCaption">Fight week starts now. Ariana Cruz brings the camp, John Doe brings pressure, and Brisbane gets the full DFC experience: PPV, merch, mentorship, and a safer fight pathway.</textarea>
           </div>
+
+          <fieldset class="platform-buttons">
+            <legend>Platform export presets</legend>
+            <button class="platform-button" type="button" data-platform="instagram" aria-pressed="true"><strong>Instagram / Reels</strong><span>9:16 story, 15s teaser, fighter stat overlay.</span></button>
+            <button class="platform-button" type="button" data-platform="youtube" aria-pressed="false"><strong>YouTube Shorts</strong><span>Hook, countdown timer, replay CTA, subscribed event card.</span></button>
+            <button class="platform-button" type="button" data-platform="x" aria-pressed="false"><strong>X / Threads</strong><span>Fight graphic, odds-safe debate prompt, ticket link.</span></button>
+          </fieldset>
         </div>
+      </div>
+    </section>
 
-      </section>
+    <section id="storefront" aria-labelledby="store-title">
+      <div class="section-title">
+        <div>
+          <div class="eyebrow">store and ticket wall</div>
+          <h2 id="store-title">Cinema product cards that sell the fight</h2>
+        </div>
+        <p>Promoters can package PPV, tickets, posters, fighter merch, after-party access, and sponsor activations without leaving the event campaign.</p>
+      </div>
 
-    </div>
-  </div>
+      <div class="commerce-grid" aria-label="Event store product cards">
+        <article class="product-card">
+          <h3>PPV main card</h3>
+          <p>Premium live stream pass with replay access, fighter intro package, and digital ticket proof.</p>
+          <div class="price">$19<small>.99</small></div>
+          <div class="qr-block" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="product-card">
+          <h3>Signed poster drop</h3>
+          <p>Limited event artwork product tied to fighter wallet splits and promoter inventory controls.</p>
+          <div class="price">$49<small>.00</small></div>
+          <div class="qr-block" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="product-card">
+          <h3>Promoter sponsor tile</h3>
+          <p>Brand-safe visual slot embedded into posters, stories, venue screens, and event checkout.</p>
+          <div class="price">$250<small>slot</small></div>
+          <div class="qr-block" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="product-card">
+          <h3>Fighter merch bundle</h3>
+          <p>Walkout tee, digital badge, fan shoutout, and social unlocks connected to fighter profiles.</p>
+          <div class="price">$79<small>.00</small></div>
+          <div class="qr-block" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+      </div>
+
+      <div class="panel" style="margin-top:16px;">
+        <h3>One campaign, five outputs</h3>
+        <div class="workflow" aria-label="Media campaign workflow">
+          <div class="workflow-step"><b>1</b><strong>Intake</strong><span>Event, fighters, venue, sponsor rules, store prices.</span></div>
+          <div class="workflow-step"><b>2</b><strong>Poster</strong><span>Cinema key art, event wall, thumbnails, QR ticket layer.</span></div>
+          <div class="workflow-step"><b>3</b><strong>Social</strong><span>Fighter stories, promoter countdowns, sponsor proof posts.</span></div>
+          <div class="workflow-step"><b>4</b><strong>Store</strong><span>PPV, posters, merch, ticket bundles, split-ledger attribution.</span></div>
+          <div class="workflow-step"><b>5</b><strong>Publish</strong><span>Fan clicks route to event page, payment flow, profiles, and analytics.</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    function reRenderPoster() {
-      const kicker = document.getElementById("input-kicker").value;
-      const champ = document.getElementById("input-championship").value;
-      const initRed = document.getElementById("val-avatar-red").value;
-      const initBlue = document.getElementById("val-avatar-blue").value;
-      const filter = document.getElementById("select-filter").value;
-
-      document.getElementById("poster-kicker").textContent = kicker;
-      document.getElementById("poster-championship-title").textContent = champ;
-      document.getElementById("avatar-red").textContent = initRed;
-      document.getElementById("avatar-blue").textContent = initBlue;
-
-      const bg = document.getElementById("poster-bg");
-      if(filter === 'cyber') {
-        bg.style.background = `linear-gradient(180deg, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.7) 60%, rgba(2,4,8,1) 100%),
-                               radial-gradient(ellipse at 50% 30%, rgba(0, 255, 216, 0.25) 0%, transparent 70%)`;
-      } else if(filter === 'magenta') {
-        bg.style.background = `linear-gradient(180deg, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.7) 60%, rgba(2,4,8,1) 100%),
-                               radial-gradient(ellipse at 50% 30%, rgba(255, 0, 127, 0.25) 0%, transparent 70%)`;
-      } else if(filter === 'gold') {
-        bg.style.background = `linear-gradient(180deg, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.7) 60%, rgba(2,4,8,1) 100%),
-                               radial-gradient(ellipse at 50% 30%, rgba(255, 215, 0, 0.2) 0%, transparent 70%)`;
+    const campaigns = {
+      redirection: {
+        event: 'Redirection Fight Night',
+        main: 'Ariana Cruz vs John Doe',
+        venue: 'Brisbane Entertainment Arena · Live PPV',
+        badge: 'Live PPV',
+        theme: 'cyan',
+        subline: 'Fighter safety · mentor pathway · PPV store',
+        caption: 'Ariana Cruz vs John Doe goes live from Brisbane. Every ticket, PPV buy, and store drop helps power a safer combat pathway: athletes seen, fans connected, communities redirected. #DFC #FightNight #TurningAdrenalineIntoDirection'
+      },
+      titleRun: {
+        event: 'Title Run: Cruz vs Doe',
+        main: 'Cruz vs Doe',
+        venue: 'Gold Coast Convention Hall · Championship feed',
+        badge: 'Title Run',
+        theme: 'gold',
+        subline: 'Champion energy · premium PPV · title walkout',
+        caption: 'The title run is live. Cruz vs Doe brings a championship-grade PPV package with poster drops, sponsor tiles, and a fan store designed to convert attention into real fighter revenue.'
+      },
+      promoterLaunch: {
+        event: 'Promoter Launch Pack',
+        main: 'Next Wave Prospects',
+        venue: 'Melbourne Elite Athletic · Promoter series',
+        badge: 'Store Drop',
+        theme: 'pink',
+        subline: 'Tickets · merch · sponsor wall · QR checkout',
+        caption: 'Promoters: launch the card, sell the room, move PPV, and track every poster, story, ticket, and sponsor tile from one DFC campaign surface.'
       }
+    };
+
+    const socialModes = {
+      fighter: {
+        headline: 'Ariana Cruz fight week',
+        body: 'From camp footage to PPV launch, every post drives fans into the DFC event store.',
+        caption: 'Fight week starts now. Ariana Cruz brings the camp, John Doe brings pressure, and Brisbane gets the full DFC experience: PPV, merch, mentorship, and a safer fight pathway.'
+      },
+      promoter: {
+        headline: 'Promoter sell-out push',
+        body: 'Tickets, PPV, posters, and sponsor inventory move from one live campaign wall.',
+        caption: 'Doors, stream, merch, and poster drops are live. Promoters can now push one campaign across venue screens, social posts, PPV checkout, and fighter profiles.'
+      },
+      sponsor: {
+        headline: 'Impact proof pack',
+        body: 'Brand-safe creative connects sponsorship to safety, community, and measurable event outcomes.',
+        caption: 'DFC turns fight-night attention into measurable community infrastructure: safer athlete pathways, mentored youth, transparent revenue rails, and analytics that sponsors can actually understand.'
+      }
+    };
+
+    const platformText = {
+      instagram: 'Exporting 9:16 story, Reels hook, fighter stat overlay, and link sticker copy.',
+      youtube: 'Exporting Shorts thumbnail, 15-second teaser script, countdown title, and replay CTA.',
+      x: 'Exporting fight debate post, horizontal banner, quote card, and ticket/PPV link copy.'
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+
+    function setPressed(buttons, activeButton) {
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button === activeButton)));
     }
 
-    function shareToPlatform() {
-      alert("Cinema-grade Event Poster successfully exported and shared onto the DFC social feed!");
+    function syncPosterFromFields() {
+      $('#posterEvent').textContent = $('#eventName').value.trim() || 'DFC Fight Night';
+      const mainText = $('#mainEvent').value.trim() || 'Main Event';
+      $('#posterMain').innerHTML = mainText.replace(/\s+vs\s+/i, '<br />vs ');
+      $('#posterVenue').textContent = $('#venueName').value.trim() || 'Venue · Live PPV';
     }
+
+    function applyCampaign(key) {
+      const campaign = campaigns[key];
+      if (!campaign) return;
+      $('#eventName').value = campaign.event;
+      $('#mainEvent').value = campaign.main;
+      $('#venueName').value = campaign.venue;
+      $('#posterBadge').textContent = campaign.badge;
+      $('#posterSubline').textContent = campaign.subline;
+      $('#posterFrame').dataset.theme = campaign.theme;
+      $('#captionOutput').value = campaign.caption;
+      syncPosterFromFields();
+    }
+
+    $$('.poster-tab').forEach((button) => {
+      button.addEventListener('click', () => {
+        setPressed($$('.poster-tab'), button);
+        applyCampaign(button.dataset.campaign);
+      });
+    });
+
+    $$('#eventName, #mainEvent, #venueName').forEach((input) => {
+      input.addEventListener('input', syncPosterFromFields);
+    });
+
+    $('#renderPoster').addEventListener('click', syncPosterFromFields);
+
+    $('#campaignTone').addEventListener('change', (event) => {
+      const tone = event.target.value;
+      if (tone === 'fighter') {
+        $('#captionOutput').value = campaigns.redirection.caption;
+      }
+      if (tone === 'promoter') {
+        $('#captionOutput').value = campaigns.promoterLaunch.caption;
+      }
+      if (tone === 'sponsor') {
+        $('#captionOutput').value = socialModes.sponsor.caption;
+      }
+    });
+
+    $$('.social-tab').forEach((button) => {
+      button.addEventListener('click', () => {
+        setPressed($$('.social-tab'), button);
+        const mode = socialModes[button.dataset.social];
+        $('#storyHeadline').textContent = mode.headline;
+        $('#storyBody').textContent = mode.body;
+        $('#socialCaption').value = mode.caption;
+      });
+    });
+
+    $$('.platform-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        setPressed($$('.platform-button'), button);
+        const platform = platformText[button.dataset.platform];
+        $('#storyCta').textContent = platform || 'Tap for PPV + merch';
+      });
+    });
   </script>
 </body>
 </html>

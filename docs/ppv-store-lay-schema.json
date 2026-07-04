@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PPVStoreLaySchema",
+  "description": "JSON Schema specification documenting data payloads, peer-to-peer risk liabilities, odds spreads, and visual layout properties for the PPV Store & Lay Trading Exchange.",
+  "type": "object",
+  "properties": {
+    "marketStatus": {
+      "type": "string",
+      "enum": ["suspended", "active", "completed"]
+    },
+    "event": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "division": { "type": "string" },
+        "visualPoster": {
+          "type": "object",
+          "properties": {
+            "source": { "type": "string" },
+            "opacity": { "type": "number" },
+            "dimensions": { "type": "string" }
+          },
+          "required": ["source", "opacity"]
+        }
+      },
+      "required": ["title", "division", "visualPoster"]
+    },
+    "contractHolders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "runner": { "type": "string" },
+          "store": {
+            "type": "object",
+            "properties": {
+              "multiplier": { "type": "number" },
+              "volume": { "type": "number" }
+            },
+            "required": ["multiplier", "volume"]
+          },
+          "lay": {
+            "type": "object",
+            "properties": {
+              "multiplier": { "type": "number" },
+              "volume": { "type": "number" }
+            },
+            "required": ["multiplier", "volume"]
+          }
+        },
+        "required": ["runner", "store", "lay"]
+      }
+    }
+  },
+  "required": ["marketStatus", "event", "contractHolders"]
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DFC Auto Approval Tour | 5 Second Review</title>
+  <meta name="description" content="Automatic 5-second approval tour through the key Data Fight Central platform pages." />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020408;
+      --panel: rgba(3, 7, 18, 0.9);
+      --line: rgba(0, 255, 216, 0.28);
+      --cyan: #00ffd8;
+      --pink: #ff007f;
+      --gold: #ffd166;
+      --ink: #f8fbff;
+      --muted: #a8b5c7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 8%, rgba(255, 0, 127, 0.18), transparent 30%),
+        radial-gradient(circle at 86% 0%, rgba(0, 255, 216, 0.2), transparent 32%),
+        #020408;
+    }
+
+    .tour-shell {
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    header,
+    footer {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 22px;
+      border-color: var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+    }
+
+    header { border-bottom: 1px solid var(--line); }
+    footer { border-top: 1px solid var(--line); }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .brand strong {
+      color: var(--cyan);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      font-weight: 1000;
+    }
+
+    .brand span,
+    .counter,
+    .timer-label {
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .active-title {
+      flex: 1;
+      text-align: center;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      font-weight: 950;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    a,
+    button {
+      font: inherit;
+    }
+
+    .button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      min-height: 40px;
+      padding: 9px 13px;
+      cursor: pointer;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.07);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .button.primary {
+      color: #020408;
+      border-color: var(--cyan);
+      background: linear-gradient(135deg, var(--cyan), var(--gold));
+    }
+
+    .button.pink {
+      color: #020408;
+      border-color: var(--pink);
+      background: linear-gradient(135deg, var(--pink), var(--gold));
+    }
+
+    .stage {
+      position: relative;
+      min-height: 0;
+      background: #010204;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #020408;
+    }
+
+    .progress-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 3;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--pink), var(--gold));
+      box-shadow: 0 0 18px rgba(0, 255, 216, 0.4);
+    }
+
+    .progress-fill.running {
+      animation: fillBar 5s linear forwards;
+    }
+
+    @keyframes fillBar {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    .filmstrip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      padding-bottom: 2px;
+    }
+
+    .film-dot {
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 0.74rem;
+      font-weight: 900;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    .film-dot.active {
+      color: #020408;
+      border-color: var(--cyan);
+      background: var(--cyan);
+    }
+
+    @media (max-width: 780px) {
+      header,
+      footer { align-items: flex-start; flex-direction: column; }
+      .active-title { text-align: left; }
+      .actions { justify-content: flex-start; }
+      .tour-shell { grid-template-rows: auto 1fr auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="tour-shell">
+    <header>
+      <div class="brand">
+        <strong>DFC 5-second approval tour</strong>
+        <span>Auto-flicks through every hero screen for quick approval.</span>
+      </div>
+      <div class="active-title" id="activeTitle">Loading review page…</div>
+      <div class="actions">
+        <button class="button primary" type="button" id="playPause">Pause</button>
+        <button class="button" type="button" id="previousPage">Previous</button>
+        <button class="button" type="button" id="nextPage">Next</button>
+        <a class="button pink" id="openFull" href="approval-room.html">Open current</a>
+      </div>
+    </header>
+
+    <section class="stage" aria-label="Automatic approval page viewer">
+      <div class="progress-track" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+      <iframe id="tourFrame" title="DFC automatic approval tour frame" src="approval-room.html"></iframe>
+    </section>
+
+    <footer>
+      <div class="counter" id="counter">Page 1 of 8</div>
+      <div class="filmstrip" id="filmstrip" aria-label="Tour pages"></div>
+      <div class="timer-label">5 seconds each · use Pause if you want to inspect one longer</div>
+    </footer>
+  </main>
+
+  <script>
+    const pages = [
+      { title: 'Approval Room', url: 'approval-room.html' },
+      { title: 'Cinema Platform Slideshow', url: 'slideshow.html' },
+      { title: 'Cinema Poster + Social Studio', url: 'media-hub.html' },
+      { title: 'Fighter Profiles + Biometrics', url: 'fighter-profiles.html' },
+      { title: 'PPV Store + Lay Exchange', url: 'ppv-store-lay.html' },
+      { title: 'PayPal + Micropayments Terminal', url: 'ppv-paypal-micropayments.html' },
+      { title: 'Dark Neon Gym + Event Map', url: 'global-fighter-map.html' },
+      { title: 'Event Landing + Summit Page', url: 'event-landing.html' }
+    ];
+
+    const frame = document.getElementById('tourFrame');
+    const title = document.getElementById('activeTitle');
+    const counter = document.getElementById('counter');
+    const openFull = document.getElementById('openFull');
+    const progressFill = document.getElementById('progressFill');
+    const playPause = document.getElementById('playPause');
+    const filmstrip = document.getElementById('filmstrip');
+    let currentIndex = 0;
+    let timerId = 0;
+    let isPlaying = true;
+
+    pages.forEach((page, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'film-dot';
+      dot.type = 'button';
+      dot.textContent = `${index + 1}. ${page.title}`;
+      dot.addEventListener('click', () => showPage(index, true));
+      filmstrip.appendChild(dot);
+    });
+
+    function resetProgress() {
+      progressFill.classList.remove('running');
+      progressFill.getBoundingClientRect();
+      if (isPlaying) progressFill.classList.add('running');
+    }
+
+    function updateDots() {
+      Array.from(document.querySelectorAll('.film-dot')).forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    function scheduleNext() {
+      globalThis.clearInterval(timerId);
+      if (!isPlaying) return;
+      timerId = globalThis.setInterval(() => showPage(currentIndex + 1, false), 5000);
+    }
+
+    function showPage(index, manual) {
+      currentIndex = (index + pages.length) % pages.length;
+      const page = pages[currentIndex];
+      frame.src = page.url;
+      title.textContent = page.title;
+      counter.textContent = `Page ${currentIndex + 1} of ${pages.length}`;
+      openFull.href = page.url;
+      updateDots();
+      resetProgress();
+      if (manual) scheduleNext();
+    }
+
+    document.getElementById('nextPage').addEventListener('click', () => showPage(currentIndex + 1, true));
+    document.getElementById('previousPage').addEventListener('click', () => showPage(currentIndex - 1, true));
+    playPause.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      playPause.textContent = isPlaying ? 'Pause' : 'Play';
+      resetProgress();
+      scheduleNext();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') showPage(currentIndex + 1, true);
+      if (event.key === 'ArrowLeft') showPage(currentIndex - 1, true);
+      if (event.key === ' ') {
+        event.preventDefault();
+        playPause.click();
+      }
+    });
+
+    showPage(0, true);
+  </script>
+</body>
+</html>

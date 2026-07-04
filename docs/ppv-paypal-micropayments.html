@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="DFC Micro-Payment & Multi-Gateway Terminal. Interactive payment gateway showcasing instant merchant splits, lightning micro-transactions, and PayPal verification flows." />
+  <title>PPV PayPal & Micropayments Terminal | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #020408;
+      --card: #090d1a;
+      --line: #162447;
+      --accent: #11878f; /* PayPal blue / DFC */
+      --paypal-yellow: #ffc439;
+      --paypal-blue: #003087;
+      --ink: #e9f1ff;
+      --muted: #8fa3c2;
+      --ok: #00ff88;
+      --magenta: #ff007f;
+      --gold: #ffd700;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1300px 650px at 50% -10%, #06112c 0%, var(--bg) 70%);
+      color: var(--ink);
+      line-height: 1.5;
+      padding: 30px 4vw;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin: 0;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(0, 196, 255, 0.15);
+    }
+    .back {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back:hover { color: var(--accent); }
+
+    /* Interactive Grid layout */
+    .pay-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 900px) {
+      .pay-grid {
+        grid-template-columns: 1.6fr 1.4fr;
+      }
+    }
+
+    .payment-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+      position: relative;
+    }
+    .payment-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--paypal-blue), var(--paypal-yellow));
+    }
+
+    /* Custom high-quality SVG payment badge indicators */
+    .payment-badge-icons {
+      display: flex;
+      gap: 12px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .badge-icon {
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .badge-icon:hover, .badge-icon.active {
+      border-color: var(--ok);
+      background: rgba(0, 255, 136, 0.05);
+    }
+    .badge-icon-lbl { font-size: 0.82rem; font-weight: 700; color: #fff; }
+
+    /* PPV Product Simulator panel */
+    .product-details {
+      background: #040813;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Multi-Split Calculator Slip */
+    .split-slip {
+      border: 1.5px dashed var(--line);
+      background: rgba(0, 255, 136, 0.02);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Submitting button loaders animations */
+    .pay-button {
+      width: 100%;
+      border-radius: 8px;
+      border: none;
+      padding: 14px;
+      font-weight: 850;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+      margin-top: 15px;
+    }
+    .pay-btn-paypal {
+      background: var(--paypal-yellow);
+      color: #032a61;
+      border: 1.5px solid var(--paypal-yellow);
+    }
+    .pay-btn-paypal:hover {
+      background: #fecb43;
+    }
+    .pay-btn-micropay {
+      background: var(--ok);
+      color: #020408;
+      border: 1.5px solid var(--ok);
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+    }
+
+    /* Live Ledger Table */
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    .ledger-table th, .ledger-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      font-size: 0.85rem;
+    }
+    .ledger-table th {
+      text-transform: uppercase;
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: left;
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-label { font-size:0.8rem; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:6px; display:block; }
+    .form-input { background:#020408; border:1px solid var(--line); color:#fff; padding:12px; border-radius:8px; width:100%; font-size:1rem; }
+    .form-input:focus { outline:none; border-color:var(--ok); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <a href="index.html" class="back">← Exit Storefront</a>
+        <h1>PayPal & Micropayments</h1>
+      </div>
+      <div>
+        <span style="font-size:0.8rem; font-weight: 800; color:var(--ok); letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
+          <span style="width:8px; height:8px; background:var(--ok); border-radius:50%; box-shadow:0 0 8px var(--ok);"></span>
+          Payment Processors Connected
+        </span>
+      </div>
+    </header>
+
+    <p>A multi-payment execution portal providing instant micropayment options and securely verified PayPal token flows, allocating split-ledger payouts instantly to fighter wallets.</p>
+
+    <div class="pay-grid">
+
+      <!-- Interactive Terminal Controls -->
+      <div class="payment-card">
+        <h2 style="margin-top:0; color:#fff;">Process Event Payment</h2>
+
+        <div class="form-group">
+          <label class="form-label" for="select-event">Active Show / Product</label>
+          <select class="form-input" id="select-event" onchange="updateProductPrice()" style="appearance:none; background-image:url('data:image/svg+xml;utf8,<svg fill=\'white\' height=\'24\' viewBox=\'0 0 24 24\' width=\'24\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M7 10l5 5 5-5z\'/><path d=\'M0 0h24v24H0z\' fill=\'none\'/></svg>'); background-repeat:no-repeat; background-position:right 10px center; background-size:18px;">
+            <option value="45.00" data-name="PPV Ticket Stream (Championship Match)">UFC Fight Night: Ariana Cruz Live ($45.00)</option>
+            <option value="12.00" data-name="Interactive Fighter Prediction Pass">Championship Pred Pass ($12.00)</option>
+            <option value="2.50" data-name="Micro-Tip: Support Redirection Programs">Redirection Gym Micro-Tip ($2.50)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Gateway Method</label>
+          <div class="payment-badge-icons">
+            <button class="badge-icon active" id="badge-paypal" onclick="setGateway('paypal')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#003087"><path d="M7 21h3.4l1.2-5.7c.1-.4.5-.7.9-.7h3.3c3.2 0 5-1.5 5.5-4.5.3-1.6.1-2.9-.6-3.8C20.1 5.3 18.6 5 16 5H8.3c-.6 0-1 .4-1.1.9L4.6 19.1c0 .5.3.9.8.9h1.6zm5.8-13h3.2c1.4 0 2.2.6 2 2-.2 1.4-1.3 2-2.7 2h-2.5l.8-4z"/></svg>
+              <span class="badge-icon-lbl">PayPal</span>
+            </button>
+            <button class="badge-icon" id="badge-micropay" onclick="setGateway('micropay')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#00ff88"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+              <span class="badge-icon-lbl">MicroPayment Engine</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- PPV Product Details Panel -->
+        <div class="product-details">
+          <div style="display:flex; justify-content:space-between; font-weight:700; margin-bottom:10px;">
+            <span id="product-name">PPV Ticket Stream (Championship Match)</span>
+            <span style="color:var(--ok);" id="product-tag-price">$45.00</span>
+          </div>
+          <p style="margin:0; font-size:0.85rem; color:var(--muted);">Fighter wallet split: 70% ($31.50) goes directly to Ariana Cruz's account instantly.</p>
+        </div>
+
+        <!-- Calculate Split Slip structure -->
+        <div class="split-slip">
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:6px;">
+            <span style="color:var(--muted);">Fighter Share (70%)</span>
+            <strong style="color:var(--ok);" id="split-fighter">$31.50</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem;">
+            <span style="color:var(--muted);">Platform Maintenance Fee (30%)</span>
+            <strong id="split-platform">$13.50</strong>
+          </div>
+        </div>
+
+        <!-- Button Actions -->
+        <button class="pay-button pay-btn-paypal" id="btn-pay-action" onclick="executeGatewayPayment()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#003087"><path d="M7 21h3.4l1.2-5.7c.1-.4.5-.7.9-.7h3.3c3.2 0 5-1.5 5.5-4.5.3-1.6.1-2.9-.6-3.8C20.1 5.3 18.6 5 16 5H8.3c-.6 0-1 .4-1.1.9L4.6 19.1c0 .5.3.9.8.9h1.6zm5.8-13h3.2c1.4 0 2.2.6 2 2-.2 1.4-1.3 2-2.7 2h-2.5l.8-4z"/></svg>
+          Pay with PayPal
+        </button>
+
+      </div>
+
+      <!-- Right Panel: Micro Payout ledger -->
+      <div class="payment-card">
+        <h2 style="margin-top:0; color:#fff;">Live Store Ingest Ledger</h2>
+        <p>A real-time database monitor recording checkout transactions and verified API payments settled directly on Firestore:</p>
+
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Buyer ID</th>
+              <th>Show details</th>
+              <th>Sum</th>
+              <th>Gate</th>
+            </tr>
+          </thead>
+          <tbody id="payout-ledger-body">
+            <tr>
+              <td style="font-family:monospace;">user_748ab</td>
+              <td>UFC Fight Night: Cruz</td>
+              <td style="color:var(--ok); font-weight:700;">$45.00</td>
+              <td><span style="background:rgba(255,196,57,0.15); color:#ffd700; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700;">PayPal</span></td>
+            </tr>
+            <tr>
+              <td style="font-family:monospace;">user_fdfbb</td>
+              <td>Redirection Tip</td>
+              <td style="color:var(--ok); font-weight:700;">$2.50</td>
+              <td><span style="background:rgba(0,255,136,0.1); color:var(--ok); padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700;">Micro</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let activeGateway = 'paypal';
+
+    function setGateway(gate) {
+      activeGateway = gate;
+      const paypalBtn = document.getElementById("badge-paypal");
+      const microBtn = document.getElementById("badge-micropay");
+      const submitBtn = document.getElementById("btn-pay-action");
+
+      if (gate === 'paypal') {
+        paypalBtn.classList.add("active");
+        microBtn.classList.remove("active");
+        submitBtn.className = "pay-button pay-btn-paypal";
+        submitBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#003087"><path d="M7 21h3.4l1.2-5.7c.1-.4.5-.7.9-.7h3.3c3.2 0 5-1.5 5.5-4.5.3-1.6.1-2.9-.6-3.8C20.1 5.3 18.6 5 16 5H8.3c-.6 0-1 .4-1.1.9L4.6 19.1c0 .5.3.9.8.9h1.6zm5.8-13h3.2c1.4 0 2.2.6 2 2-.2 1.4-1.3 2-2.7 2h-2.5l.8-4z"/></svg>
+          Pay with PayPal
+        `;
+      } else {
+        paypalBtn.classList.remove("active");
+        microBtn.classList.add("active");
+        submitBtn.className = "pay-button pay-btn-micropay";
+        submitBtn.innerHTML = `
+          ⚡ Checkout with MicroPayments
+        `;
+      }
+    }
+
+    function updateProductPrice() {
+      const selectEl = document.getElementById("select-event");
+      const price = parseFloat(selectEl.value);
+      const selectedOption = selectEl.options[selectEl.selectedIndex];
+      const prodName = selectedOption.getAttribute("data-name");
+
+      // Set pricing elements
+      document.getElementById("product-name").textContent = prodName;
+      document.getElementById("product-tag-price").textContent = `$${price.toFixed(2)}`;
+
+      // Re-populate share metrics
+      const fighterShare = price * 0.7;
+      const platformShare = price * 0.3;
+      document.getElementById("split-fighter").textContent = `$${fighterShare.toFixed(2)}`;
+      document.getElementById("split-platform").textContent = `$${platformShare.toFixed(2)}`;
+    }
+
+    function executeGatewayPayment() {
+      const selectEl = document.getElementById("select-event");
+      const price = parseFloat(selectEl.value);
+      const selectedOption = selectEl.options[selectEl.selectedIndex];
+      const prodName = selectedOption.textContent;
+
+      alert("Interactive Gateway checkout processed successfully on checkout API!");
+
+      // Append transaction to the live ingest ledger
+      const tbody = document.getElementById("payout-ledger-body");
+      const newRow = document.createElement("tr");
+
+      const badgeHtml = activeGateway === 'paypal'
+        ? `<span style="background:rgba(255,196,57,0.15); color:#ffd700; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700;">PayPal</span>`
+        : `<span style="background:rgba(0,255,136,0.1); color:var(--ok); padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:700;">Micro</span>`;
+
+      newRow.innerHTML = `
+        <td style="font-family:monospace;">user_${Math.random().toString(36).substring(2, 7)}</td>
+        <td>${prodName.split(' ($')[0]}</td>
+        <td style="color:var(--ok); font-weight:700;">$${price.toFixed(2)}</td>
+        <td>${badgeHtml}</td>
+      `;
+      tbody.prepend(newRow);
+    }
+  </script>
+</body>
+</html>

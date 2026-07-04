@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DFC Digital Box Office & QR Ticket Scanner — local ticket checkout, QR pass generations, and promoter gate scanning interfaces." />
+  <title>Digital Box Office & QR Scanner | Data Fight Central</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f; --yellow:#ffd700;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #171135 0%, var(--bg) 60%);
+      line-height:1.55;
+    }
+    .wrap{max-width:1140px;margin:0 auto;padding:28px 18px 42px}
+    h1,h2,h3{line-height:1.2;margin:0 0 10px}
+    p{margin:0 0 12px;color:var(--muted)}
+    .hero{
+      border:1px solid var(--line);background:linear-gradient(180deg,#0a0d24,#050814);
+      border-radius:16px;padding:24px;box-shadow:0 0 0 1px rgba(58,160,255,.14),0 20px 40px rgba(0,0,0,.35);
+    }
+    .kicker{color:var(--neon2);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 10px;border-radius:999px;border:1px solid #274d86;background:#0f2144;color:#d9ecff;font-size:.78rem;font-weight:700}
+    .chip.ok{border-color:#1c6b53;background:#103529;color:#bff6df}
+    .grid{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(12,minmax(0,1fr))}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+
+    /* Interactive Scanner / Box Office Area */
+    .scanner-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media(min-width: 860px) {
+      .scanner-layout {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+    .box-office-panel {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      background: #020408;
+    }
+    .ticket-view {
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      background: #070b15;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    .qr-placeholder {
+      width: 160px;
+      height: 160px;
+      margin: 14px auto;
+      border: 2px solid var(--neon);
+      background: #020408;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+    }
+    .scanner-view {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #020408;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+    }
+    .scanner-lens {
+      border: 2px dashed var(--magenta);
+      background: #050a14;
+      height: 220px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      position: relative;
+    }
+    .scanner-line {
+      position: absolute;
+      top: 10px; left: 0; width: 100%; height: 3px;
+      background: var(--magenta);
+      box-shadow: 0 0 10px var(--magenta);
+      animation: scan 2.5s infinite ease-in-out;
+    }
+    @keyframes scan {
+      0% { top: 10px; }
+      50% { top: 210px; }
+      100% { top: 10px; }
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    input, select {
+      background: var(--bg);
+      border: 1px solid rgba(94, 163, 255, 0.25);
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: 0.92rem;
+      font-family: inherit;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--neon);
+      box-shadow: 0 0 8px rgba(0, 217, 255, 0.15);
+    }
+    .btn {
+      display: inline-block; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid #2f5ea8; background: linear-gradient(180deg,#1a4fa0,#143b79);
+      color: #eaf4ff; text-decoration: none; font-weight: 700; width: 100%; text-align: center;
+      cursor: pointer;
+    }
+    .btn.scan-btn {
+      background: linear-gradient(180deg,#aa1459,#5d0831);
+      border-color: #a02058;
+    }
+
+    .list{margin:8px 0 0 18px;padding:0}
+    .list li{margin:6px 0;color:#c6d8f4}
+
+    footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: #7f96bb; font-size: 0.9rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central Checkout</div>
+      <h1>Digital Box Office & QR Scanner (Module 23)</h1>
+      <p>Direct ticket checkout, dynamic cryptographic QR generation, and local organizer gate verification interfaces.</p>
+      <div class="chips">
+        <span class="chip ok">Module 23 Active</span>
+        <span class="chip">Checkout V1</span>
+        <span class="chip">Scanner Active</span>
+      </div>
+    </section>
+
+    <!-- Box Office Scanner Grid -->
+    <section class="grid">
+      <article class="card span-12">
+        <div class="scanner-layout">
+          <!-- Buy Panel -->
+          <div class="box-office-panel">
+            <h2>Local Ticket Checkout</h2>
+            <form id="checkout-form" onsubmit="event.preventDefault(); generateTicketSpec();">
+              <div class="form-group">
+                <label for="buyer-name">Attendees Full Name</label>
+                <input type="text" id="buyer-name" required placeholder="Ariana Cruz" />
+              </div>
+              <div class="form-group">
+                <label for="event-select">Select Match Card Venue</label>
+                <select id="event-select" required>
+                  <option value="qfn-22">Queensland Fight Night 22 (Brisbane BCEC)</option>
+                  <option value="sam-1">ONE Samurai 1 (Tokyo Korakuen)</option>
+                  <option value="cs-12">Adelaide CS12 (Adelaide Arena)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ticket-class">Pass Tier</label>
+                <select id="ticket-class" required>
+                  <option value="VIP Reserved">VIP Ringside ($150.00 AUD)</option>
+                  <option value="General Admission">General Stand admission ($50.00 AUD)</option>
+                </select>
+              </div>
+              <button type="submit" class="btn">Process Secure Payment & Generate Pass</button>
+            </form>
+
+            <div class="ticket-view" style="margin-top:15px; display:none;" id="ticket-result">
+              <h3 id="res-event">Queensland Fight Night 22</h3>
+              <p style="margin-bottom:6px;">Attendee: <strong id="res-name">Ariana Cruz</strong></p>
+              <span class="badge" id="res-class">VIP Reserved</span>
+              <div class="qr-placeholder">
+                <!-- SVG Vector of QR -->
+                <svg width="120" height="120" viewBox="0 0 100 100">
+                  <path d="M10 10h20v20H10zm0 60h20v20H10zm60 0h20v20H70zm0-60h20v20H70zm-40 20h10v10h-10zm20 10h10v10H50zm-10 10h10v10h-10zm20 10h10v10H60zm-30 0h10v10h-10z" fill="var(--neon)" />
+                </svg>
+              </div>
+              <p class="small" style="font-family: monospace; font-size:0.8rem; margin:0;" id="res-sig">DFC_SIG_90af...cbc2</p>
+            </div>
+          </div>
+
+          <!-- Scanner Simulation Panel -->
+          <div class="scanner-view">
+            <h2>Organizers Gate Checker</h2>
+            <p>Simulate local device camera scanning to verify ticket legitimacy and allow entrance parameters.</p>
+            <div class="scanner-lens">
+              <div class="scanner-line"></div>
+              <span>📷 Lens Standby</span>
+            </div>
+            <div style="margin-top:10px;">
+              <button class="btn scan-btn" onclick="verifyScannedTicket()">Scan Simulated Pass</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Technical Integration Logic -->
+      <article class="card span-12">
+        <h3>Decentralized Ticketing Architecture</h3>
+        <p>This module allows promoters and fighters to bypass ticket middle-men and keep 100% of event revenues:</p>
+        <ul class="list">
+          <li><strong>Autonomous Payments:</strong> Interfaces with Stripe Connect so proceeds settle instantly to correct promoter/fighter wallets.</li>
+          <li><strong>Geocentric Validation:</strong> Matches ticket checkouts with user-facing coordinates overlays to ensure licensing compliance.</li>
+          <li><strong>Self-Check Auditing:</strong> Scanned ticket IDs are appended to the Global Data Bus, allowing system-wise tracking of attendee entries.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      Data Fight Central • Module 23 Digital Box Office • 2026
+    </footer>
+  </main>
+
+  <script>
+    function generateTicketSpec() {
+      const name = document.getElementById("buyer-name").value;
+      const select = document.getElementById("event-select");
+      const eventName = select.options[select.selectedIndex].text;
+      const tClass = document.getElementById("ticket-class").value;
+
+      document.getElementById("res-name").textContent = name;
+      document.getElementById("res-event").textContent = eventName;
+      document.getElementById("res-class").textContent = tClass;
+
+      // Generate simulated hash signature
+      const randomHash = "DFC_SIG_" + Math.random().toString(16).substring(2, 6) + "..." + Math.random().toString(16).substring(2, 6);
+      document.getElementById("res-sig").textContent = randomHash;
+
+      document.getElementById("ticket-result").style.display = "block";
+    }
+
+    function verifyScannedTicket() {
+      const isVisible = document.getElementById("ticket-result").style.display === "block";
+      if(!isVisible) {
+        alert("Verification Fail: No active pass generated on checkout board yet!");
+        return;
+      }
+      const attendee = document.getElementById("res-name").textContent;
+      const eventName = document.getElementById("res-event").textContent;
+      alert(`✅ SCANNER PASS:\n\nLegitimacy: Verified!\nAttendee: ${attendee}\nAccess: Approved!\nEvent: ${eventName}`);
+    }
+  </script>
+</body>
+</html>

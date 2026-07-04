@@ -181,7 +181,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/broadcast',
-        builder: (context, state) => const BroadcastOverlayScreen(),
+        builder: (context, state) => const BroadcastOverlayScreen(eventId: 'live'),
       ),
 
       // ── Promoter & Operations ────────────────────────────────────────────────

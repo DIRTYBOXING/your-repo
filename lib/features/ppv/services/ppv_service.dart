@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
+import '../../../shared/models/ppv_model.dart';
 
 /// Handles PPV Event feeds, watch history, and access validation.
 class PpvService {
@@ -45,14 +46,14 @@ class PpvService {
   }
 
   // ── Promoter-specific streams ──────────────────────────────────────────────
-  Stream<List<Map<String, dynamic>>> getPromoterEvents(String promoterId) {
+  Stream<List<PPVEvent>> getPromoterEvents(String promoterId) {
     return _db
         .collection('ppv_events')
         .where('promoterId', isEqualTo: promoterId)
         .orderBy('eventDate', descending: true)
         .snapshots()
         .map(
-          (snap) => snap.docs.map((d) => {'id': d.id, ...d.data()}).toList(),
+          (snap) => snap.docs.map((d) => PPVEvent.fromFirestore(d)).toList(),
         );
   }
 
@@ -69,7 +70,28 @@ class PpvService {
         );
   }
 
-  Future<void> updateEventStatus(String eventId, String status) async {
-    await _db.collection('ppv_events').doc(eventId).update({'status': status});
+  Future<void> updateEventStatus(String eventId, PPVStatus status) async {
+    await _db.collection('ppv_events').doc(eventId).update({
+      'status': status.name,
+    });
+  }
+
+  /// Records a PPV purchase (called from payment widgets).
+  Future<void> purchasePPV({
+    required String ppvEventId,
+    String? paymentIntentId,
+    String? paymentMethod,
+    String? tier,
+    int? pricePaidCents,
+  }) async {
+    await _db.collection('ppv_purchases').add({
+      'eventId': ppvEventId,
+      'paymentIntentId': paymentIntentId,
+      'paymentMethod': paymentMethod,
+      'tier': tier,
+      'pricePaidCents': pricePaidCents,
+      'status': 'completed',
+      'purchasedAt': FieldValue.serverTimestamp(),
+    });
   }
 }

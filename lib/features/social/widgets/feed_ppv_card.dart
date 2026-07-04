@@ -98,7 +98,7 @@ class _FeedPPVCardState extends State<FeedPPVCard>
         onPaymentConfirmed: (request) async {
           final messenger = ScaffoldMessenger.of(context);
           try {
-            await PPVService().purchasePPV(
+            await PpvService().purchasePPV(
               ppvEventId: event.id,
               paymentIntentId: request.externalPaymentReference,
               paymentMethod: request.paymentMethod.key,

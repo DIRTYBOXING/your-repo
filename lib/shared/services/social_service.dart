@@ -38,7 +38,12 @@ class SocialService {
   }
 
   // ─── 2. PAGINATED LOAD MORE ───
-  Future<List<Post>> getPostsPage({bool refresh = false}) async {
+  Future<List<Post>> getPostsPage({
+    bool refresh = false,
+    String? userCity,
+    String? userState,
+    String? userCountry,
+  }) async {
     if (refresh) {
       _lastPostDocument = null;
     }
@@ -126,5 +131,59 @@ class SocialService {
 
   Future<void> deletePost(String postId) async {
     await _db.collection('posts').doc(postId).delete();
+  }
+
+  // ── Extended API used by feed, post card, and poll widgets ────────────────
+
+  bool get hasMorePosts => _hasMore;
+  bool _hasMore = true;
+
+  Future<List<String>> getFollowingIds(String userId) async {
+    try {
+      final snap = await _db
+          .collection('follows')
+          .where('followerId', isEqualTo: userId)
+          .get();
+      return snap.docs.map((d) => d.data()['followingId'] as String).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> toggleReaction(String postId, String userId, String type) async {
+    final ref = _db
+        .collection('posts')
+        .doc(postId)
+        .collection('reactions')
+        .doc(userId);
+    final doc = await ref.get();
+    if (doc.exists && doc.data()?['type'] == type) {
+      await ref.delete();
+    } else {
+      await ref.set({
+        'type': type,
+        'userId': userId,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+  }
+
+  Future<void> editPost(String postId, String newContent) async {
+    await _db.collection('posts').doc(postId).update({
+      'content': newContent,
+      'editedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<void> votePoll(String postId, String optionId, String userId) async {
+    await _db
+        .collection('posts')
+        .doc(postId)
+        .collection('poll_votes')
+        .doc(userId)
+        .set({'optionId': optionId, 'votedAt': FieldValue.serverTimestamp()});
+    await _db.collection('posts').doc(postId).update({
+      'pollOptions.$optionId.votes': FieldValue.increment(1),
+    });
   }
 }

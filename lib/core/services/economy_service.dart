@@ -12,7 +12,7 @@ class EconomyService extends ChangeNotifier {
   final _fs = FirebaseFirestore.instance;
 
   // ── Promoter ──────────────────────────────────────────────────────────────
-  Future<double> getPayoutBalance(String id) async {
+  Future<double> getPayoutBalance(String type, String id) async {
     try {
       final doc = await _fs.collection('payout_balances').doc(id).get();
       return (doc.data()?['balance'] ?? 0).toDouble();
@@ -21,7 +21,10 @@ class EconomyService extends ChangeNotifier {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getPayoutStatements(String id) async {
+  Future<List<Map<String, dynamic>>> getPayoutStatements(
+    String type,
+    String id,
+  ) async {
     try {
       final snap = await _fs
           .collection('payout_statements')
@@ -34,7 +37,10 @@ class EconomyService extends ChangeNotifier {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getRevenueEventsForOwner(String id) async {
+  Future<List<Map<String, dynamic>>> getRevenueEventsForOwner(
+    String type,
+    String id,
+  ) async {
     try {
       final snap = await _fs
           .collection('revenue_events')

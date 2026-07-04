@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../../core/logic/result.dart';
 import '../../core/logic/failure.dart';
+import '../../core/constants/app_constants.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// AUTH ENGINE (BLUE TIER)
@@ -51,6 +52,8 @@ class AuthService extends ChangeNotifier {
 
   // If the user document doesn't exist or is missing crucial setup info, they need onboarding
   bool get needsOnboarding => isAuthenticated && _userModel == null;
+
+  bool get isEmergencyLocalSession => AppConstants.guestMode;
 
   // ─── LOGIN LOGIC ───
   Future<Result<User>> loginWithEmail(String email, String password) async {

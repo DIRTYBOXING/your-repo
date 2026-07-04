@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DFC Fight Economy Heatmap — tracing global transaction flows, promoter earnings, ticketing zones, and fighter income metrics." />
+  <title>Fight Economy Heatmap | Data Fight Central</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f; --yellow:#ffd700;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #1a1535 0%, var(--bg) 60%);
+      line-height:1.55;
+    }
+    .wrap{max-width:1140px;margin:0 auto;padding:28px 18px 42px}
+    h1,h2,h3{line-height:1.2;margin:0 0 10px}
+    p{margin:0 0 12px;color:var(--muted)}
+    .hero{
+      border:1px solid var(--line);background:linear-gradient(180deg,#0a0d24,#050814);
+      border-radius:16px;padding:24px;box-shadow:0 0 0 1px rgba(58,160,255,.14),0 20px 40px rgba(0,0,0,.35);
+    }
+    .kicker{color:var(--neon2);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 10px;border-radius:999px;border:1px solid #274d86;background:#0f2144;color:#d9ecff;font-size:.78rem;font-weight:700}
+    .chip.ok{border-color:#1c6b53;background:#103529;color:#bff6df}
+    .grid{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(12,minmax(0,1fr))}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+
+    /* Economy Heatmap Canvas */
+    .economy-container {
+      position: relative;
+      height: 400px;
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 35px rgba(255, 215, 0, 0.05);
+    }
+    .gis-grid-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 20px 20px;
+      background-image:
+        linear-gradient(to right, rgba(28, 42, 74, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(28, 42, 74, 0.25) 1px, transparent 1px);
+    }
+    .gis-canvas {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 2;
+    }
+    .map-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 3;
+      display: flex;
+      gap: 8px;
+    }
+    .control-btn {
+      background: rgba(11, 16, 32, 0.85);
+      border: 1px solid var(--line);
+      color: var(--neon);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+    .control-btn:hover {
+      border-color: var(--yellow);
+      color: #fff;
+    }
+
+    .list{margin:8px 0 0 18px;padding:0}
+    .list li{margin:6px 0;color:#c6d8f4}
+
+    .economy-legend {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      background: rgba(11, 16, 32, 0.9);
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0;
+    }
+    .eco-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .eco-dot.major { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+    .eco-dot.mid { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+    .eco-dot.local { background: var(--neon2); box-shadow: 0 0 8px var(--neon2); }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .stat-metric {
+      background: #0a1122;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-metric .lbl { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; }
+    .stat-metric .val { font-size: 1.4rem; font-weight: 900; color: var(--yellow); margin-top: 4px; }
+
+    @media(max-width: 768px) {
+      .stat-row { grid-template-columns: repeat(12, 1fr); }
+      .stat-metric { grid-column: span 12; }
+    }
+    @media(min-width:900px){
+      .span-8{grid-column:span 8}
+      .span-4{grid-column:span 4}
+      .span-12{grid-column:span 12}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central Ingestion</div>
+      <h1>Fight Economy Heatmap (Module 22)</h1>
+      <p>Tracking transaction volumes of ticket checkouts, pay-per-view income splits, gym revenues, and regional fight GDP.</p>
+      <div class="chips">
+        <span class="chip ok">Module 22 Active</span>
+        <span class="chip">Financial Chi Map</span>
+        <span class="chip">Split Ledgers Online</span>
+      </div>
+    </section>
+
+    <!-- Financial Heatmap Mapping Canvas -->
+    <section class="grid">
+      <article class="card span-12">
+        <h2>Global Capital Flow Zones</h2>
+        <div class="economy-container">
+          <div class="gis-grid-bg"></div>
+          <svg class="gis-canvas" viewBox="0 0 1000 400">
+            <!-- Grid Lines and Crosshairs -->
+            <line x1="500" y1="0" x2="500" y2="400" stroke="rgba(28, 42, 74, 0.15)" stroke-dasharray="5,5" />
+            <line x1="0" y1="200" x2="1000" y2="200" stroke="rgba(28, 42, 74, 0.15)" stroke-dasharray="5,5" />
+
+            <!-- USA West Major Economy (USD) -->
+            <polygon points="260,110 390,110 360,200 230,200" fill="rgba(255, 215, 0, 0.15)" stroke="var(--yellow)" stroke-width="2" />
+            <circle cx="310" cy="155" r="5" fill="var(--yellow)" />
+            <text x="325" y="160" fill="var(--ink)" font-size="11" font-weight="bold">Western Hub ($3.4M Vol)</text>
+
+            <!-- ONE Championship Asian Economy (THB/JPY) -->
+            <polygon points="620,110 740,110 720,180 580,180" fill="rgba(42, 211, 155, 0.15)" stroke="var(--ok)" stroke-width="2" />
+            <circle cx="660" cy="145" r="5" fill="var(--ok)" />
+            <text x="675" y="150" fill="var(--ink)" font-size="11" font-weight="bold">Asia Hub ($2.8M Vol)</text>
+
+            <!-- Brisbane Oceania Local Economy (AUD) -->
+            <polygon points="760,220 860,220 880,310 780,310" fill="rgba(107, 230, 255, 0.15)" stroke="var(--neon2)" stroke-width="2" />
+            <circle cx="820" cy="265" r="5" fill="var(--neon2)" />
+            <text x="835" y="270" fill="var(--ink)" font-size="11" font-weight="bold">Brisbane Local ($750K Vol)</text>
+          </svg>
+
+          <div class="economy-legend">
+            <div class="legend-item"><span class="eco-dot major"></span> Tier 1 ($1M+ Inflow)</div>
+            <div class="legend-item"><span class="eco-dot mid"></span> Tier 2 ($500K-$1M Inflow)</div>
+            <div class="legend-item"><span class="eco-dot local"></span> Tier 3 (<$500K Inflow)</div>
+          </div>
+
+          <div class="map-controls">
+            <button class="control-btn" onclick="alert('Isolating PPV ticket splits...')">🎫 Ticket Splits</button>
+            <button class="control-btn" onclick="alert('Isolating Gym subscription revenue...')">🏢 Gym Revenues</button>
+            <button class="control-btn" onclick="alert('Updating ledger balances...')">🔄 Update Ledgers</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Ledger of Financial Capital -->
+      <article class="card span-12">
+        <h2 style="color: var(--neon2);">Active Geographical Wallets</h2>
+        <div class="stat-row">
+          <div class="stat-metric">
+            <div class="lbl">Promoter Balances</div>
+            <div class="val">$4,240,100 AUD</div>
+          </div>
+          <div class="stat-metric">
+            <div class="lbl">Fighter Pool Earnings</div>
+            <div class="val">$1,812,050 AUD</div>
+          </div>
+          <div class="stat-metric">
+            <div class="lbl">DFC Platform Share</div>
+            <div class="val">$716,090 AUD</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Technical Integration Logic -->
+      <article class="card span-12">
+        <h3>Capital Flow Matrix Surface</h3>
+        <p>This geopowered heatmap provides complete transparency across the DFC trade infrastructure:</p>
+        <ul class="list">
+          <li><strong>Ledger Synchronization:</strong> Links with the automated split engine (`calc_revenue_split`) to display real-time payout balances geographically.</li>
+          <li><strong>Sponsorship Value Tracking:</strong> Maps sponsor brand bid volumes against territorial promotion target values.</li>
+          <li><strong>Economic Tax Zoning:</strong> Programmatically adapts geographic tax rates dynamically matching local transaction coordinates.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      Data Fight Central • Module 22 Fight Economy Heatmap • 2026
+    </footer>
+  </main>
+</body>
+</html>

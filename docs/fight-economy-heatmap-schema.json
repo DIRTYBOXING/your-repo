@@ -1,0 +1,24 @@
+{
+  "fight_economy": {
+    "module_id": "string",
+    "name": "string",
+    "fused_wallets": [
+      {
+        "wallet_id": "string",
+        "entity_type": "promoter | fighter_pool | platform_dfc",
+        "balance_cents": 0,
+        "geography": {
+          "city": "string",
+          "country": "string",
+          "lat": 0.0,
+          "lng": 0.0
+        },
+        "taxation_rate_cents": 0
+      }
+    ],
+    "volume_metrics": {
+      "total_volume_usd": 0,
+      "average_transaction_usd": 0.0
+    }
+  }
+}

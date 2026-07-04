@@ -20,6 +20,17 @@
     }
 
     * { box-sizing: border-box; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
     body {
       margin: 0;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -129,11 +140,15 @@
       gap: 18px;
     }
     .fighter-box {
+      width: 100%;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 20px;
       cursor: pointer;
+      color: inherit;
+      font: inherit;
+      text-align: left;
       position: relative;
       overflow: hidden;
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
@@ -168,7 +183,7 @@
     .fighter-box-info { flex: 1; }
     .fighter-box-info h3 { margin: 0 0 3px; font-size: 1.2rem; font-weight: 800; color: #fff; }
     .fighter-box-info p { margin: 0; font-size: 0.85rem; color: var(--muted); }
-    
+
     .trust-chip {
       position: absolute;
       top: 15px; right: 15px;
@@ -288,6 +303,7 @@
 
     <!-- Filters -->
     <div class="filter-bar">
+      <label class="sr-only" for="search-box">Search athletes by name or stance</label>
       <input type="text" class="search-input" id="search-box" placeholder="Search athletes by name/stance..." oninput="filterFighters()" />
       <button class="filter-btn active" id="btn-all" onclick="setStanceFilter('all')">All Division</button>
       <button class="filter-btn" id="btn-southpaw" onclick="setStanceFilter('Southpaw')">Southpaw</button>
@@ -296,11 +312,11 @@
 
     <!-- Layout -->
     <div class="dashboard-layout">
-      
+
       <!-- Cards list -->
       <div class="cards-panel" id="fighters-container">
         <!-- Ariana Cruz -->
-        <div class="fighter-box active" onclick="selectFighter('cruz')" id="box-cruz">
+        <button class="fighter-box active" type="button" onclick="selectFighter('cruz')" id="box-cruz">
           <span class="trust-chip">A+ Trust</span>
           <div class="fighter-box-header">
             <div class="avatar" style="background:linear-gradient(135deg, var(--neon-cyan), #3b82f6)">AC</div>
@@ -309,31 +325,31 @@
               <p>Lightweight • 14-2-0 • Southpaw</p>
             </div>
           </div>
-        </div>
+        </button>
 
-        <!-- John Doe -->
-        <div class="fighter-box" onclick="selectFighter('doe')" id="box-doe">
+        <!-- Kai Latu -->
+        <button class="fighter-box" type="button" onclick="selectFighter('doe')" id="box-doe">
           <span class="trust-chip">A Trust</span>
           <div class="fighter-box-header">
-            <div class="avatar" style="background:linear-gradient(135deg, var(--magenta), #8b5cf6)">JD</div>
+            <div class="avatar" style="background:linear-gradient(135deg, var(--magenta), #8b5cf6)">KL</div>
             <div class="fighter-box-info">
-              <h3>John Doe</h3>
-              <p>Lightweight • 12-3-0 • Orthodox</p>
+              <h3>Kai Latu</h3>
+              <p>Lightweight • 12-3-0 • Orthodox • Brisbane Redirection Gym</p>
             </div>
           </div>
-        </div>
+        </button>
 
-        <!-- Sam Taylor -->
-        <div class="fighter-box" onclick="selectFighter('taylor')" id="box-taylor">
+        <!-- Mia Hart -->
+        <button class="fighter-box" type="button" onclick="selectFighter('taylor')" id="box-taylor">
           <span class="trust-chip">A+ Trust</span>
           <div class="fighter-box-header">
-            <div class="avatar" style="background:linear-gradient(135deg, var(--accent), #10b981)">ST</div>
+            <div class="avatar" style="background:linear-gradient(135deg, var(--accent), #10b981)">MH</div>
             <div class="fighter-box-info">
-              <h3>Sam Taylor</h3>
-              <p>Welterweight • 11-1-0 • Southpaw</p>
+              <h3>Mia Hart</h3>
+              <p>Welterweight • 11-1-0 • Southpaw • Melbourne Elite Athletic</p>
             </div>
           </div>
-        </div>
+        </button>
       </div>
 
       <!-- Detail Command Surface -->
@@ -365,7 +381,7 @@
         <!-- Live Biometric Trackers -->
         <div class="biometric-rack">
           <h3 style="margin:0 0 15px; font-weight:800; font-size:1.1rem; color:#fff;">Live Biometrics Simulator</h3>
-          
+
           <div class="progress-bar-container">
             <div class="progress-header">
               <span>Cardio Strain Capacity</span>
@@ -392,7 +408,9 @@
           <h3 style="margin:0 0 6px; font-weight:800; font-size:1.1rem; color:#fff;">Interactive Weigh-In Calibrator</h3>
           <p style="font-size:0.85rem; margin-bottom:12px;">Simulate live weight hydration offsets to predict safe clearance tolerances:</p>
           <div class="calc-row">
+            <label class="sr-only" for="current-weight">Current weight in kilograms</label>
             <input type="number" class="calc-input" id="current-weight" placeholder="Weight (kg) e.g., 73" />
+            <label class="sr-only" for="target-weight">Target weight in kilograms</label>
             <input type="number" class="calc-input" id="target-weight" placeholder="Target (kg) e.g., 70" />
             <button class="calc-btn" onclick="runWeighInMath()">Calibrate</button>
           </div>
@@ -418,25 +436,25 @@
         color: "linear-gradient(135deg, var(--neon-cyan), #3b82f6)"
       },
       doe: {
-        name: "John Doe",
-        meta: "Lightweight Division • Orthodox Stance",
+        name: "Kai Latu",
+        meta: "Lightweight Division • Orthodox Stance • Brisbane Redirection Gym",
         record: "12-3-0",
         elo: 1812,
         conn: "74%",
         cardioStr: "65%",
         nervousFatigue: "34%",
-        initials: "JD",
+        initials: "KL",
         color: "linear-gradient(135deg, var(--magenta), #8b5cf6)"
       },
       taylor: {
-        name: "Sam Taylor",
-        meta: "Welterweight Division • Southpaw Stance",
+        name: "Mia Hart",
+        meta: "Welterweight Division • Southpaw Stance • Melbourne Elite Athletic",
         record: "11-1-0",
         elo: 1790,
         conn: "81%",
         cardioStr: "85%",
         nervousFatigue: "16%",
-        initials: "ST",
+        initials: "MH",
         color: "linear-gradient(135deg, var(--accent), #10b981)"
       }
     };
@@ -484,7 +502,7 @@
 
     function filterFighters() {
       const query = document.getElementById("search-box").value.toLowerCase();
-      
+
       Object.keys(fighters).forEach(key => {
         const f = fighters[key];
         const matchName = f.name.toLowerCase().includes(query) || f.meta.toLowerCase().includes(query);
@@ -500,11 +518,11 @@
     }
 
     function runWeighInMath() {
-      const cur = parseFloat(document.getElementById("current-weight").value);
-      const tar = parseFloat(document.getElementById("target-weight").value);
+      const cur = Number.parseFloat(document.getElementById("current-weight").value);
+      const tar = Number.parseFloat(document.getElementById("target-weight").value);
       const out = document.getElementById("calc-output");
 
-      if (isNaN(cur) || !cur || isNaN(tar) || !tar) {
+      if (Number.isNaN(cur) || !cur || Number.isNaN(tar) || !tar) {
         alert("Please provide valid number inputs.");
         return;
       }
@@ -519,10 +537,11 @@
         let safetyClass = "var(--accent)";
         let msg = "Clear / Hydration levels perfectly normal.";
 
-        if(parseFloat(fluidLossPercent) > 5.0) {
+        const fluidLossNumber = Number.parseFloat(fluidLossPercent);
+        if(fluidLossNumber > 5) {
           safetyClass = "var(--magenta)";
           msg = "CRITICAL LIMIT: Exceeds safe 5% bodily water depletion. CTE susceptibility risk spikes!";
-        } else if(parseFloat(fluidLossPercent) > 3.0) {
+        } else if(fluidLossNumber > 3) {
           safetyClass = "var(--gold)";
           msg = "WARNING: Moderate dehydration. Monitor kidney hydration loops.";
         }

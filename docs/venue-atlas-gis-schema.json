@@ -1,0 +1,25 @@
+{
+  "venue_gis": {
+    "location_id": "string",
+    "name": "string",
+    "coordinates": {
+      "latitude": 0.0,
+      "longitude": 0.0
+    },
+    "bounds": {
+      "zone_id": "string",
+      "minimum_lat": 0.0,
+      "maximum_lat": 0.0,
+      "minimum_lng": 0.0,
+      "maximum_lng": 0.0
+    },
+    "regional_licensing": {
+      "restricted_stream_classes": ["string"],
+      "allowed_countries": ["string"]
+    },
+    "relations": {
+      "hosted_event_ids": ["string"],
+      "active_trainer_gym_ids": ["string"]
+    }
+  }
+}

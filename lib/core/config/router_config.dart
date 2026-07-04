@@ -33,6 +33,8 @@ import 'medical_safety_screen.dart';
 import '../../features/partnership/screens/google_partnership_screen.dart';
 import '../../features/partnership/screens/nvidia_partnership_screen.dart';
 import '../../features/partnership/screens/github_partnership_screen.dart';
+// ── TikeRocket ────────────────────────────────────────────────────────────────
+import '../../features/passes/screens/tikerocket_screen.dart';
 
 // ── Stub for routes whose screens are not yet built ───────────────────────────
 class _ComingSoon extends StatelessWidget {
@@ -260,6 +262,15 @@ class AppRouter {
       GoRoute(
         path: '/creative-hub',
         builder: (context, state) => const CreativeHubScreen(),
+      ),
+
+      // ── TikeRocket ────────────────────────────────────────────────────────────
+      GoRoute(
+        path: '/tikerocket',
+        builder: (context, state) => TikeRocketScreen(
+          userId: state.uri.queryParameters['userId'] ?? 'guest',
+          userName: state.uri.queryParameters['userName'] ?? 'Fighter Fan',
+        ),
       ),
 
       // ── Partnership Landing Pages ─────────────────────────────────────────────

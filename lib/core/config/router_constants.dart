@@ -68,6 +68,9 @@ class RouterConfig {
   static const String nvidiaPartnerPath = '/partners/nvidia';
   static const String githubPartnerPath = '/partners/github';
 
+  // ── TikeRocket ────────────────────────────────────────────────────────────
+  static const String tikeRocket        = '/tikerocket';
+
   // ── Social content ───────────────────────────────────────────────────────
   static const String createStoryPath = '/stories/create';
   static const String storyViewerPath = '/stories/view';

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Global Fighter Map | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #10b981; --ink: #f3f4f6; --muted: #9ca3af;
+    }
+    body {
+      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+    }
+    .wrapper { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
+    p { color: var(--muted); font-size: 1.1rem; }
+    .map-box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 30px; margin-top: 30px; text-align: center; }
+    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
+    .back:hover { color: var(--accent); }
+    .svg-map { width: 100%; max-width: 500px; margin: 25px auto; display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="index.html" class="back">← Back to Index</a>
+    <h1>Global Fighter Map</h1>
+    <p>Mapping active training sanctuaries, combat gyms, and localized humanitarian support programs across active regional hubs.</p>
+
+    <div class="map-box">
+      <h3>🌍 Global Network Coordinate Densities</h3>
+      <svg class="svg-map" viewBox="0 0 350 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="350" height="200" fill="#0c1126" rx="10"/>
+        <!-- Map outline placeholder -->
+        <circle cx="100" cy="80" r="40" stroke="#1f2937" stroke-width="1.5" />
+        <circle cx="250" cy="110" r="35" stroke="#1f2937" stroke-width="1.5" />
+
+        <!-- Live Hotspot Pings -->
+        <circle cx="110" cy="80" r="6" fill="#10b981" />
+        <circle cx="110" cy="80" r="14" stroke="#10b981" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+
+        <circle cx="240" cy="110" r="6" fill="#10b981" />
+        <circle cx="240" cy="110" r="14" stroke="#10b981" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+
+        <text x="175" y="150" fill="#9ca3af" font-size="9" text-anchor="middle">ACTIVE CHANNELS ONLINE</text>
+      </svg>
+      <p style="font-size:0.9rem; color:var(--muted);">Visualizing sparring frequencies and public assistance checks dynamically.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fight Graph Network | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #00ffd8; --accent-dim: rgba(0, 255, 216, 0.15); --ink: #f3f4f6; --muted: #9ca3af;
+    }
+    body {
+      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+    }
+    .wrapper { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
+    p { color: var(--muted); font-size: 1.1rem; }
+    .network-container {
+      background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 30px; margin-top: 30px; text-align: center;
+    }
+    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
+    .back:hover { color: var(--accent); }
+    .svg-canvas { width: 100%; max-width: 600px; margin: 30px auto; display: block; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="index.html" class="back">← Back to Index</a>
+    <h1>Fight Graph Network (Signal Node Engine)</h1>
+    <p>Pioneering multi-hop connectivity maps linking fighters, weight divisions, sparring logs, and gym networks to automatically verify training histories and combat integrity.</p>
+
+    <div class="network-container">
+      <h3>Active Connectivity Map</h3>
+      <svg class="svg-canvas" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="200" cy="150" r="100" stroke="#1f2937" stroke-width="1.5" stroke-dasharray="4 4" />
+        <!-- Node Connections -->
+        <line x1="200" y1="50" x2="300" y2="150" stroke="#00ffd8" stroke-width="1.5" />
+        <line x1="300" y1="150" x2="200" y2="250" stroke="#00ffd8" stroke-width="1.5" />
+        <line x1="200" y1="250" x2="100" y2="150" stroke="#00ffd8" stroke-width="1.5" />
+        <line x1="100" y1="150" x2="200" y2="50" stroke="#00ffd8" stroke-width="1.5" />
+        <line x1="200" y1="50" x2="200" y2="250" stroke="#00ffd8" stroke-dasharray="2 2" />
+        <line x1="100" y1="150" x2="300" y2="150" stroke="#00ffd8" stroke-dasharray="2 2" />
+
+        <!-- Nodes -->
+        <circle cx="200" cy="50" r="14" fill="#030712" stroke="#00ffd8" stroke-width="3" />
+        <text x="200" y="54" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">J.D</text>
+
+        <circle cx="300" cy="150" r="14" fill="#030712" stroke="#00ffd8" stroke-width="3" />
+        <text x="300" y="154" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">A.C</text>
+
+        <circle cx="200" cy="250" r="14" fill="#030712" stroke="#00ffd8" stroke-width="3" />
+        <text x="200" y="254" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">M.H</text>
+
+        <circle cx="100" cy="150" r="14" fill="#030712" stroke="#00ffd8" stroke-width="3" />
+        <text x="100" y="154" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle">S.T</text>
+      </svg>
+      <p style="font-size:0.9rem;">Real-time graph processing maps angular leverage margins, sparring volumes, and certified gym affiliations dynamically.</p>
+    </div>
+  </div>
+</body>
+</html>

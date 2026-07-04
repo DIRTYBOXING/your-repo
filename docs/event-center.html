@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Center | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #10b981; --ink: #f3f4f6; --muted: #9ca3af;
+    }
+    body {
+      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+    }
+    .wrapper { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
+    p { color: var(--muted); font-size: 1.1rem; }
+    .stream-box {
+      background: #000; border: 1px solid var(--line); border-radius: 12px; height: 380px; position: relative; overflow: hidden; margin-top: 30px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stream-placeholder { text-align: center; }
+    .btn-play { background: var(--accent); color: var(--bg); padding: 12px 24px; border-radius: 99px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; }
+    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
+    .back:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="index.html" class="back">← Back to Index</a>
+    <h1>Event & Live streaming Center</h1>
+    <p>Watch sanctioned matches, championship bouts, and underdog qualification brackets in ultra-low latency powered by the Mux Video pipeline.</p>
+
+    <div class="stream-box">
+      <div class="stream-placeholder">
+        <h3 style="margin:0 0 10px; color:#fff;">LIVE STREAM STANDBY SYNC</h3>
+        <p style="margin:0 0 20px; font-size:0.95rem;">Broadcasting signals will align dynamically once the event cycle switches to active.</p>
+        <a href="#" class="btn-play" onclick="alert('Starting live feed sync...'); return false;">⚡ Sync Stream Link</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

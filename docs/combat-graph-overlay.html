@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DFC Combat Graph Overlay — interactive mapping of fighters, gyms, promotions, and events in a unified geographic signal grid." />
+  <title>Combat Graph Overlay | Data Fight Central</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f; --yellow:#ffd700;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #1a1b3a 0%, var(--bg) 60%);
+      line-height:1.55;
+    }
+    .wrap{max-width:1140px;margin:0 auto;padding:28px 18px 42px}
+    h1,h2,h3{line-height:1.2;margin:0 0 10px}
+    p{margin:0 0 12px;color:var(--muted)}
+    .hero{
+      border:1px solid var(--line);background:linear-gradient(180deg,#0a1128,#050a18);
+      border-radius:16px;padding:24px;box-shadow:0 0 0 1px rgba(58,160,255,.14),0 20px 40px rgba(0,0,0,.35);
+    }
+    .kicker{color:var(--neon2);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 10px;border-radius:999px;border:1px solid #274d86;background:#0f2144;color:#d9ecff;font-size:.78rem;font-weight:700}
+    .chip.ok{border-color:#1c6b53;background:#103529;color:#bff6df}
+    .grid{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(12,minmax(0,1fr))}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+
+    /* Interactive Graph Canvas Area */
+    .graph-container {
+      position: relative;
+      height: 440px;
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 35px rgba(58,160,255,0.06);
+    }
+    .graph-canvas {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 2;
+    }
+    .graph-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 3;
+      display: flex;
+      gap: 8px;
+    }
+    .control-btn {
+      background: rgba(11, 16, 32, 0.85);
+      border: 1px solid var(--line);
+      color: var(--neon);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+    .control-btn:hover {
+      border-color: var(--neon2);
+      color: #fff;
+    }
+
+    .list{margin:8px 0 0 18px;padding:0}
+    .list li{margin:6px 0;color:#c6d8f4}
+
+    .node-legend {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      background: rgba(11, 16, 32, 0.9);
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0;
+    }
+    .node-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .node-dot.fighter { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+    .node-dot.gym { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+    .node-dot.promotion { background: var(--magenta); box-shadow: 0 0 8px var(--magenta); }
+    .node-dot.event { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .stat-metric {
+      background: #0a1122;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-metric .lbl { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; }
+    .stat-metric .val { font-size: 1.3rem; font-weight: 900; color: var(--neon2); margin-top: 4px; }
+
+    @media(max-width: 768px) {
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media(min-width:900px){
+      .span-8{grid-column:span 8}
+      .span-4{grid-column:span 4}
+      .span-12{grid-column:span 12}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central</div>
+      <h1>Combat Graph Overlay (Module 19)</h1>
+      <p>Interactive network mapping connecting Fighters, Training Gyms, Promotions, and Events into a unified geographic signal grid.</p>
+      <div class="chips">
+        <span class="chip ok">Module 19 Active</span>
+        <span class="chip">Graph Engine V1</span>
+        <span class="chip">Interactive Node Grid</span>
+      </div>
+    </section>
+
+    <!-- Geographic Graph Mapping Canvas -->
+    <section class="grid">
+      <article class="card span-12">
+        <h2>Interactive System Connections</h2>
+        <div class="graph-container">
+          <svg class="graph-canvas" viewBox="0 0 1000 440">
+            <!-- Grid Lines and Crosshairs -->
+            <line x1="500" y1="0" x2="500" y2="440" stroke="rgba(28, 42, 74, 0.2)" stroke-dasharray="4,4" />
+            <line x1="0" y1="220" x2="1000" y2="220" stroke="rgba(28, 42, 74, 0.2)" stroke-dasharray="4,4" />
+
+            <!-- Edge Lines (Relationships) -->
+            <line x1="450" y1="120" x2="450" y2="280" stroke="rgba(0, 234, 255, 0.35)" stroke-width="1.5" />
+            <line x1="450" y1="280" x2="550" y2="220" stroke="rgba(42, 211, 155, 0.35)" stroke-width="1.5" />
+            <line x1="550" y1="220" x2="580" y2="340" stroke="rgba(255, 0, 127, 0.35)" stroke-width="1.5" />
+            <line x1="450" y1="120" x2="330" y2="200" stroke="rgba(255, 215, 0, 0.35)" stroke-width="1.5" />
+            <line x1="330" y1="200" x2="450" y2="280" stroke="rgba(94, 163, 255, 0.25)" stroke-width="1.2" stroke-dasharray="3,3" />
+
+            <!-- Fighter Node: Ariana Cruz -->
+            <circle cx="450" cy="120" r="16" fill="rgba(0, 234, 255, 0.25)" stroke="var(--neon)" stroke-width="2" />
+            <circle cx="450" cy="120" r="5" fill="var(--neon)" />
+            <text x="474" y="125" fill="var(--ink)" font-size="12" font-weight="bold">Ariana Cruz (Fighter)</text>
+
+            <!-- Gym Node: Iron Forge MMA -->
+            <circle cx="450" cy="280" r="16" fill="rgba(42, 211, 155, 0.25)" stroke="var(--ok)" stroke-width="2" />
+            <circle cx="450" cy="280" r="5" fill="var(--ok)" />
+            <text x="474" y="285" fill="var(--ink)" font-size="12" font-weight="bold">Iron Forge (Gym)</text>
+
+            <!-- Event Node: Queensland Fight Night 22 -->
+            <circle cx="330" cy="200" r="14" fill="rgba(255, 215, 0, 0.25)" stroke="var(--yellow)" stroke-width="2" />
+            <circle cx="330" cy="200" r="4" fill="var(--yellow)" />
+            <text x="220" y="224" fill="var(--muted)" font-size="11">QFN 22 (Event)</text>
+
+            <!-- Promotion Node: Coastal Combat -->
+            <circle cx="550" cy="220" r="16" fill="rgba(255, 0, 127, 0.25)" stroke="var(--magenta)" stroke-width="2" />
+            <circle cx="550" cy="220" r="5" fill="var(--magenta)" />
+            <text x="574" y="225" fill="var(--ink)" font-size="12" font-weight="bold">Coastal Combat (Promo)</text>
+
+            <!-- Venue Node: Sunshine Coast LC -->
+            <circle cx="580" cy="340" r="14" fill="rgba(107, 230, 255, 0.25)" stroke="var(--neon2)" stroke-width="2" />
+            <circle cx="580" cy="340" r="4" fill="var(--neon2)" />
+            <text x="600" y="345" fill="var(--muted)" font-size="11">Sunshine Coast (Venue)</text>
+          </svg>
+
+          <div class="node-legend">
+            <div class="legend-item"><span class="node-dot fighter"></span> Fighter Node</div>
+            <div class="legend-item"><span class="node-dot gym"></span> Gym Node</div>
+            <div class="legend-item"><span class="node-dot promotion"></span> Promoter Node</div>
+            <div class="legend-item"><span class="node-dot event"></span> Event Node</div>
+          </div>
+
+          <div class="graph-controls">
+            <button class="control-btn" onclick="alert('Isolating Fighter connections...')">🥊 Focus Athletes</button>
+            <button class="control-btn" onclick="alert('Isolating Gym coordinates...')">🏢 Focus Gyms</button>
+            <button class="control-btn" onclick="alert('Regenerating full Combat Graph Mesh...')">🔄 Regen Mesh</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Connection Ledgers -->
+      <article class="card span-12">
+        <h2 style="color: var(--neon2);">Active Mesh Metrics</h2>
+        <div class="stat-row">
+          <div class="stat-metric">
+            <div class="lbl">Fighter Nodes</div>
+            <div class="val">812 Active</div>
+          </div>
+          <div class="stat-metric">
+            <div class="lbl">Gym Nodes</div>
+            <div class="val">311 Mapped</div>
+          </div>
+          <div class="stat-metric">
+            <div class="lbl">Promoter Nodes</div>
+            <div class="val">42 Connected</div>
+          </div>
+          <div class="stat-metric">
+            <div class="lbl">Total Signal Edges</div>
+            <div class="val">2,410 Links</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Technical Integration Logic -->
+      <article class="card span-12">
+        <h3>Graph Mesh Federation Surface</h3>
+        <p>This overlay acts as the ultimate visualization broker for your unified database schema:</p>
+        <ul class="list">
+          <li><strong>Relational mapping:</strong> Maps direct and secondary edges (`fought`, `trains_at`, `hosts`, `style_of`) on a global visual scale using coordinate anchors.</li>
+          <li><strong>Ecosystem Signal Extraction:</strong> Feeds into our automated ranking algorithms by analyzing opponent connectivity depth and win coefficients.</li>
+          <li><strong>Geocentric Routing:</strong> Determines closest matched gyms, promotions, and fighter networks for optimized physical and digital routing.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      Data Fight Central • Module 19 Combat Graph Overlay Grid • 2026
+    </footer>
+  </main>
+</body>
+</html>

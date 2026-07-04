@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DFC Approval Room | Review The Platform</title>
+  <meta name="description" content="A live approval room for reviewing DFC slideshow, cinema poster studio, fighter profiles, PPV store, payments, maps, and social platform flows." />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #020408;
+      --panel: #090d1a;
+      --panel-soft: rgba(9, 13, 26, 0.82);
+      --line: rgba(0, 255, 216, 0.22);
+      --cyan: #00ffd8;
+      --blue: #3aa0ff;
+      --pink: #ff007f;
+      --gold: #ffd166;
+      --green: #10b981;
+      --ink: #f8fbff;
+      --muted: #a8b5c7;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 16% 8%, rgba(255, 0, 127, 0.18), transparent 28%),
+        radial-gradient(circle at 84% 4%, rgba(0, 255, 216, 0.16), transparent 30%),
+        linear-gradient(145deg, #010204 0%, #07101f 48%, #020408 100%);
+      line-height: 1.55;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: 0.42;
+      mask-image: radial-gradient(circle at 50% 20%, #000 0%, transparent 76%);
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(1500px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 72px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .back {
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .back:hover,
+    .back:focus-visible { color: var(--cyan); }
+
+    .review-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: var(--cyan);
+      background: rgba(0, 255, 216, 0.08);
+      font-size: 0.76rem;
+      font-weight: 950;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: clamp(26px, 4vw, 56px);
+      background: linear-gradient(145deg, rgba(9, 13, 26, 0.94), rgba(2, 4, 8, 0.92));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 22px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -130px;
+      bottom: -190px;
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(0, 255, 216, 0.25);
+      border-radius: 999px;
+      box-shadow: inset 0 0 70px rgba(0, 255, 216, 0.1), 0 0 110px rgba(255, 0, 127, 0.12);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.78rem;
+      font-weight: 950;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--pink));
+      box-shadow: 0 0 18px var(--cyan);
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: 1020px;
+      font-size: clamp(3rem, 8vw, 8rem);
+      line-height: 0.86;
+      letter-spacing: -0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.78);
+      text-shadow: 0 0 34px rgba(0, 255, 216, 0.24);
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 850px;
+      color: #d7e2ef;
+      margin: 22px 0 0;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button,
+    button.button {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 12px 17px;
+      border-radius: 999px;
+      color: #020408;
+      background: linear-gradient(135deg, var(--cyan), var(--gold));
+      font: inherit;
+      font-weight: 950;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+
+    .button.secondary {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .button.pink { background: linear-gradient(135deg, var(--pink), var(--gold)); }
+
+    .approval-board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .review-card {
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(9, 13, 26, 0.94), rgba(2, 4, 8, 0.92));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-shell {
+      position: relative;
+      min-height: 270px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: #010204;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 140%;
+      height: 560px;
+      border: 0;
+      transform: scale(0.72);
+      transform-origin: 0 0;
+      pointer-events: none;
+      filter: saturate(1.08) contrast(1.05);
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(0deg, rgba(2,4,8,0.82), transparent 42%);
+    }
+
+    .card-body {
+      padding: 18px;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-body h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+
+    .card-body p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.94rem;
+    }
+
+    .review-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .meta-pill {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 9px 10px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .meta-pill strong {
+      display: block;
+      color: var(--cyan);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .meta-pill span { color: var(--ink); font-weight: 850; }
+
+    .approval-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 4px;
+    }
+
+    .approval-button {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      min-height: 42px;
+      border-radius: 14px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.055);
+      font: inherit;
+      font-weight: 900;
+    }
+
+    .approval-button.approve[aria-pressed="true"] {
+      color: #020408;
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .approval-button.change[aria-pressed="true"] {
+      color: #020408;
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .approval-summary {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(2, 6, 23, 0.76);
+      padding: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-tile {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .summary-tile b {
+      display: block;
+      color: var(--cyan);
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .summary-tile span {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 1180px) {
+      .approval-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .approval-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 20px, 1500px); padding-top: 18px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .approval-board, .approval-summary { grid-template-columns: 1fr; }
+      iframe { width: 170%; transform: scale(0.6); }
+      .preview-shell { min-height: 230px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="topbar">
+      <a class="back" href="index.html">← Back to DFC Index</a>
+      <div class="review-status" id="reviewStatus">0 of 6 approved</div>
+    </div>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="eyebrow">approval screening room</div>
+      <h1 id="page-title">Review every <span>hero surface</span></h1>
+      <p class="lead">
+        This room lets you approve the core showcase pages in one place: the slideshow, cinema poster/social studio,
+        fighter profiles, PPV exchange, payment terminal, and dark neon map. Open any page full-screen, then mark it approved or needing changes.
+      </p>
+      <div class="hero-actions">
+        <a class="button" href="slideshow.html">Start Slideshow</a>
+        <a class="button secondary" href="media-hub.html">Open Poster Studio</a>
+        <button class="button pink" type="button" id="resetReview">Reset Approval Marks</button>
+      </div>
+    </section>
+
+    <section class="approval-board" aria-label="Approval preview cards">
+      <article class="review-card" data-review-card="slideshow">
+        <div class="preview-shell">
+          <iframe title="Slideshow preview" src="slideshow.html"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-body">
+          <h2>Platform Slideshow</h2>
+          <p>Seven-slide pitch flow covering mission, predictor, maps, poster studio, PPV, payments, and operational close.</p>
+          <div class="review-meta"><div class="meta-pill"><strong>Mode</strong><span>Deck</span></div><div class="meta-pill"><strong>Status</strong><span>Live</span></div></div>
+          <a class="button" href="slideshow.html">Open full page</a>
+          <div class="approval-actions"><button class="approval-button approve" type="button" data-action="approve">Approve</button><button class="approval-button change" type="button" data-action="changes">Needs changes</button></div>
+        </div>
+      </article>
+
+      <article class="review-card" data-review-card="media">
+        <div class="preview-shell">
+          <iframe title="Cinema poster and social studio preview" src="media-hub.html"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-body">
+          <h2>Cinema Poster + Social Studio</h2>
+          <p>Poster generator, fighter story kit, promoter posts, sponsor-safe captions, PPV cards, and social export presets.</p>
+          <div class="review-meta"><div class="meta-pill"><strong>Mode</strong><span>Campaign</span></div><div class="meta-pill"><strong>Status</strong><span>Live</span></div></div>
+          <a class="button" href="media-hub.html">Open full page</a>
+          <div class="approval-actions"><button class="approval-button approve" type="button" data-action="approve">Approve</button><button class="approval-button change" type="button" data-action="changes">Needs changes</button></div>
+        </div>
+      </article>
+
+      <article class="review-card" data-review-card="fighters">
+        <div class="preview-shell">
+          <iframe title="Fighter profiles preview" src="fighter-profiles.html"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-body">
+          <h2>Fighter Profiles</h2>
+          <p>Interactive athlete cards, biometrics simulator, stance filters, trust markers, and weigh-in safety calibrator.</p>
+          <div class="review-meta"><div class="meta-pill"><strong>Mode</strong><span>Profiles</span></div><div class="meta-pill"><strong>Status</strong><span>Review</span></div></div>
+          <a class="button" href="fighter-profiles.html">Open full page</a>
+          <div class="approval-actions"><button class="approval-button approve" type="button" data-action="approve">Approve</button><button class="approval-button change" type="button" data-action="changes">Needs changes</button></div>
+        </div>
+      </article>
+
+      <article class="review-card" data-review-card="ppv">
+        <div class="preview-shell">
+          <iframe title="PPV store and lay exchange preview" src="ppv-store-lay.html"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-body">
+          <h2>PPV Store + Lay Exchange</h2>
+          <p>Storefront-style PPV contract market with back/lay interaction, orderbook feel, and active commercial product flow.</p>
+          <div class="review-meta"><div class="meta-pill"><strong>Mode</strong><span>Commerce</span></div><div class="meta-pill"><strong>Status</strong><span>Live</span></div></div>
+          <a class="button" href="ppv-store-lay.html">Open full page</a>
+          <div class="approval-actions"><button class="approval-button approve" type="button" data-action="approve">Approve</button><button class="approval-button change" type="button" data-action="changes">Needs changes</button></div>
+        </div>
+      </article>
+
+      <article class="review-card" data-review-card="payments">
+        <div class="preview-shell">
+          <iframe title="PayPal and micropayments terminal preview" src="ppv-paypal-micropayments.html"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-body">
+          <h2>Payment Terminal</h2>
+          <p>PayPal and micropayment checkout simulation with product selection, split-ledger math, and live ingest ledger.</p>
+          <div class="review-meta"><div class="meta-pill"><strong>Mode</strong><span>Checkout</span></div><div class="meta-pill"><strong>Status</strong><span>Demo</span></div></div>
+          <a class="button" href="ppv-paypal-micropayments.html">Open full page</a>
+          <div class="approval-actions"><button class="approval-button approve" type="button" data-action="approve">Approve</button><button class="approval-button change" type="button" data-action="changes">Needs changes</button></div>
+        </div>
+      </article>
+
+      <article class="review-card" data-review-card="map">
+        <div class="preview-shell">
+          <iframe title="Global fighter map preview" src="global-fighter-map.html"></iframe>
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="card-body">
+          <h2>Dark Neon Gym + Event Map</h2>
+          <p>Earth-style live GIS board for gyms, venues, activity signals, map pins, and combat community geography.</p>
+          <div class="review-meta"><div class="meta-pill"><strong>Mode</strong><span>Map</span></div><div class="meta-pill"><strong>Status</strong><span>Live</span></div></div>
+          <a class="button" href="global-fighter-map.html">Open full page</a>
+          <div class="approval-actions"><button class="approval-button approve" type="button" data-action="approve">Approve</button><button class="approval-button change" type="button" data-action="changes">Needs changes</button></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="approval-summary" aria-label="Approval summary">
+      <div class="summary-tile"><b id="approvedCount">0</b><span>Approved</span></div>
+      <div class="summary-tile"><b id="changeCount">0</b><span>Need changes</span></div>
+      <div class="summary-tile"><b id="pendingCount">6</b><span>Pending</span></div>
+      <div class="summary-tile"><b>6</b><span>Review pages</span></div>
+    </section>
+  </main>
+
+  <script>
+    const reviewState = new Map();
+    const cards = Array.from(document.querySelectorAll('[data-review-card]'));
+    const statusLabel = document.getElementById('reviewStatus');
+    const approvedCount = document.getElementById('approvedCount');
+    const changeCount = document.getElementById('changeCount');
+    const pendingCount = document.getElementById('pendingCount');
+
+    function updateSummary() {
+      const approved = Array.from(reviewState.values()).filter((value) => value === 'approve').length;
+      const changes = Array.from(reviewState.values()).filter((value) => value === 'changes').length;
+      const pending = cards.length - approved - changes;
+      approvedCount.textContent = String(approved);
+      changeCount.textContent = String(changes);
+      pendingCount.textContent = String(pending);
+      statusLabel.textContent = `${approved} of ${cards.length} approved`;
+    }
+
+    cards.forEach((card) => {
+      const key = card.dataset.reviewCard;
+      card.querySelectorAll('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const action = button.dataset.action;
+          reviewState.set(key, action);
+          card.querySelectorAll('[data-action]').forEach((candidate) => {
+            candidate.setAttribute('aria-pressed', String(candidate === button));
+          });
+          updateSummary();
+        });
+      });
+    });
+
+    document.getElementById('resetReview').addEventListener('click', () => {
+      reviewState.clear();
+      document.querySelectorAll('[data-action]').forEach((button) => button.setAttribute('aria-pressed', 'false'));
+      updateSummary();
+    });
+
+    updateSummary();
+  </script>
+</body>
+</html>

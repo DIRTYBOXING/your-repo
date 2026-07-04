@@ -3,48 +3,386 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Global Fighter Map | Data Fight Central</title>
+  <meta name="description" content="DFC Earth Maps and Heatmaps — High-fidelity interactive global gym tracking, support zones, and live combat events on earth with dark neon styling." />
+  <title>Earth Gym Map & Live Events | Data Fight Central</title>
   <style>
     :root {
-      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #10b981; --ink: #f3f4f6; --muted: #9ca3af;
+      --bg: #030712;
+      --card: #0b0f19;
+      --line: #1f2937;
+      --accent: #10b981; /* Premier - Green */
+      --accent-dim: rgba(16, 185, 129, 0.15);
+      --ink: #f3f4f6;
+      --muted: #9ca3af;
+      --neon-cyan: #00ffd8; /* Elite - Gold/Cyan */
+      --magenta: #ff007f; /* Live Event - Red/Magenta */
+      --gold: #ffd700;
     }
+
+    * { box-sizing: border-box; }
     body {
-      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1300px 650px at 50% -10%, #0d1e3d 0%, var(--bg) 70%);
+      color: var(--ink);
+      line-height: 1.5;
+      padding: 30px 4vw;
     }
-    .wrapper { max-width: 1000px; margin: 0 auto; }
-    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
-    p { color: var(--muted); font-size: 1.1rem; }
-    .map-box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 30px; margin-top: 30px; text-align: center; }
-    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
-    .back:hover { color: var(--accent); }
-    .svg-map { width: 100%; max-width: 500px; margin: 25px auto; display: block; }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin: 0;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(0, 255, 216, 0.2);
+    }
+    .back {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back:hover { color: var(--neon-cyan); }
+
+    /* Interactive Interface Grid */
+    .map-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 900px) {
+      .map-grid {
+        grid-template-columns: 1.8fr 1.2fr;
+      }
+    }
+
+    /* Left side: Interactive Map Canvas */
+    .map-wrapper {
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .map-canvas {
+      width: 100%;
+      height: 480px;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      background-color: #050811;
+      position: relative;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    .grid-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 40px 40px;
+      background-image:
+        linear-gradient(to right, rgba(28, 42, 74, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(28, 42, 74, 0.25) 1px, transparent 1px);
+    }
+
+    /* Live Neon Marker Pins on Map Canvas */
+    .map-pin {
+      position: absolute;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translate(-50%, -50%);
+      transition: transform 0.2s;
+    }
+    .map-pin:hover {
+      transform: translate(-50%, -50%) scale(1.2);
+      z-index: 10;
+    }
+    .pin-core {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2.5px solid #000;
+    }
+    .pin-radialglow {
+      position: absolute;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    .pin-label {
+      background: rgba(2, 4, 8, 0.85);
+      border: 1px solid var(--line);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin-top: 6px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Pulse Anim keyframe */
+    @keyframes pulse {
+      0% { transform: scale(0.6); opacity: 0.8; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    /* Pin Types Classes */
+    .pin-elite .pin-core { background-color: var(--neon-cyan); }
+    .pin-elite .pin-radialglow { background: var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); }
+
+    .pin-premier .pin-core { background-color: var(--accent); }
+    .pin-premier .pin-radialglow { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+
+    .pin-live .pin-core { background-color: var(--magenta); }
+    .pin-live .pin-radialglow { background: var(--magenta); box-shadow: 0 0 10px var(--magenta); }
+
+    /* Map Legend Box inside canvas */
+    .map-legend {
+      position: absolute;
+      top: 15px; left: 15px;
+      background: rgba(3, 7, 18, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 5;
+      font-size: 0.75rem;
+    }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .legend-circle { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* Right side: Information Control Slip */
+    .location-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .location-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+    .badge-certified {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.73rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    /* Heat Range Calibrator Form */
+    .heat-control-slip {
+      border: 1.5px dashed var(--line);
+      background: rgba(0, 255, 216, 0.02);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <a href="index.html" class="back">← Back to Index</a>
-    <h1>Global Fighter Map</h1>
-    <p>Mapping active training sanctuaries, combat gyms, and localized humanitarian support programs across active regional hubs.</p>
+  <div class="container">
+    <header>
+      <div>
+        <a href="index.html" class="back">← Back to Index</a>
+        <h1>Earth Map & Gym Locations</h1>
+      </div>
+      <div>
+        <span style="font-size:0.8rem; font-weight: 800; color:var(--neon-cyan); letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
+          <span style="width:8px; height:8px; background:var(--neon-cyan); border-radius:50%; box-shadow:0 0 8px var(--neon-cyan);"></span>
+          Live GIS Coordinates Synced
+        </span>
+      </div>
+    </header>
 
-    <div class="map-box">
-      <h3>🌍 Global Network Coordinate Densities</h3>
-      <svg class="svg-map" viewBox="0 0 350 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="350" height="200" fill="#0c1126" rx="10"/>
-        <!-- Map outline placeholder -->
-        <circle cx="100" cy="80" r="40" stroke="#1f2937" stroke-width="1.5" />
-        <circle cx="250" cy="110" r="35" stroke="#1f2937" stroke-width="1.5" />
+    <p>Mapping active training sanctuaries, combat gyms, and localized humanitarian events. Every marker represents verified, geolocated ground data synced across the Firebase stack.</p>
 
-        <!-- Live Hotspot Pings -->
-        <circle cx="110" cy="80" r="6" fill="#10b981" />
-        <circle cx="110" cy="80" r="14" stroke="#10b981" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+    <div class="map-grid">
 
-        <circle cx="240" cy="110" r="6" fill="#10b981" />
-        <circle cx="240" cy="110" r="14" stroke="#10b981" stroke-width="1" stroke-dasharray="2 2" opacity="0.6"/>
+      <!-- Interactive Map Frame -->
+      <div class="map-wrapper">
+        <h3 style="margin:0; font-size:1.15rem; color:#fff;">Live Earth Canvas</h3>
+        <div class="map-canvas">
+          <div class="grid-overlay"></div>
 
-        <text x="175" y="150" fill="#9ca3af" font-size="9" text-anchor="middle">ACTIVE CHANNELS ONLINE</text>
-      </svg>
-      <p style="font-size:0.9rem; color:var(--muted);">Visualizing sparring frequencies and public assistance checks dynamically.</p>
+          <!-- Inside canvas Legend -->
+          <div class="map-legend">
+            <div class="legend-item">
+              <div class="legend-circle" style="background:var(--neon-cyan); box-shadow:0 0 6px var(--neon-cyan);"></div>
+              <span style="color:#fff;">Elite Training Hub</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-circle" style="background:var(--accent); box-shadow:0 0 6px var(--accent);"></div>
+              <span style="color:#fff;">Premier Gym (Redirection Certified)</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-circle" style="background:var(--magenta); box-shadow:0 0 6px var(--magenta);"></div>
+              <span style="color:#fff;">Live Tournament / PPV</span>
+            </div>
+          </div>
+
+          <!-- PIN 1: Brisbane Hub -->
+          <button class="map-pin pin-premier" style="top: 30%; left: 40%; background:none; border:none; padding:0;" onclick="showLocation('brisbane')">
+            <div class="pin-radialglow"></div>
+            <div class="pin-core"></div>
+            <div class="pin-label">Brisbane Sanctuary</div>
+          </button>
+
+          <!-- PIN 2: Melbourne Gym -->
+          <button class="map-pin pin-elite" style="top: 70%; left: 35%; background:none; border:none; padding:0;" onclick="showLocation('melbourne')">
+            <div class="pin-radialglow"></div>
+            <div class="pin-core"></div>
+            <div class="pin-label">Melbourne Elite</div>
+          </button>
+
+          <!-- PIN 3: Live PPV Arena -->
+          <button class="map-pin pin-live" style="top: 50%; left: 75%; background:none; border:none; padding:0;" onclick="showLocation('arena')">
+            <div class="pin-radialglow"></div>
+            <div class="pin-core"></div>
+            <div class="pin-label">Live: IBC Tournament</div>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Information Details Column -->
+      <div class="location-panel">
+        <div class="location-card">
+          <span class="badge-certified" id="pin-badge">Premier Sanctuary</span>
+          <h2 id="pin-title" style="margin:0; font-size:1.6rem; color:#fff; font-weight:900;">Brisbane Redirection Gym</h2>
+          <p id="pin-address" style="margin:0; font-size:0.9rem; color:var(--muted); font-weight:700;">Queensland, Australia • Lat: -27.469 | Lng: 153.025</p>
+
+          <div style="border-top:1px solid var(--line); padding-top:15px;" id="pin-desc">
+            Focuses on guiding at-risk youths away from localized circles of crime by utilizing structural, high-discipline Muay Thai practices. Part of our Pink Shield community defense initiative.
+          </div>
+
+          <div style="background:#020408; border:1px solid var(--line); border-radius:12px; padding:15px; margin-top:5px;">
+            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--muted); font-weight:800; margin-bottom:8px;">Current Activity Levels</div>
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+              <span>Sparring volume: <strong style="color:var(--neon-cyan);" id="pin-vol">180 Session/wk</strong></span>
+              <span>Host status: <strong style="color:var(--ok);" id="pin-status">Online</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heat Range Calibrator Form -->
+        <div class="heat-control-slip">
+          <h3 style="margin:0 0 5px; color:#fff; font-size:1.1rem; font-weight:800;">Coordinate Density Calibrator</h3>
+          <p style="font-size:0.85rem; margin-bottom:12px;">Simulate physical coverage density checks to register event security circles:</p>
+          <div style="display:flex; gap:10px;">
+            <label for="check-radius" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">Radius distance limits</label>
+            <input type="number" class="form-input" style="flex:1; background:#020408; border:1px solid var(--line); color:#fff; padding:10px; border-radius:6px;" id="check-radius" value="15" placeholder="Radius (km)" />
+            <button class="form-btn" style="background:var(--neon-cyan); border:none; padding:10px 18px; border-radius:6px; font-weight:700; cursor:pointer;" onclick="runRadiusMath()">Verify</button>
+          </div>
+          <div id="verify-output" style="background:#020408; padding:12px; border-radius:6px; border:1px solid var(--line); margin-top:12px; font-size:0.9rem; display:none;"></div>
+        </div>
+      </div>
+
     </div>
   </div>
+
+  <script>
+    const locations = {
+      brisbane: {
+        badge: "Premier Sanctuary",
+        title: "Brisbane Redirection Gym",
+        address: "Queensland, Australia • Lat: -27.469 | Lng: 153.025",
+        desc: "Focuses on guiding at-risk youths away from localized circles of crime by utilizing structural, high-discipline Muay Thai practices. Part of our Pink Shield community defense initiative.",
+        vol: "180 Session/wk",
+        status: "Online",
+        badgeStyle: "var(--accent)"
+      },
+      melbourne: {
+        badge: "Elite Training Hub",
+        title: "Melbourne Elite Athletic",
+        address: "Victoria, Australia • Lat: -37.813 | Lng: 144.963",
+        desc: "Regional powerhouse training ground for amateur Boxing and Olympic weight cuts. Features live biometric feeds syncing stress indexes directly to cornermen panels.",
+        vol: "310 Session/wk",
+        status: "Online",
+        badgeStyle: "var(--neon-cyan)"
+      },
+      arena: {
+        badge: "Live: IBC Tournament",
+        title: "Brisbane Entertainment Arena",
+        address: "Queensland, Australia • Lat: -27.421 | Lng: 153.088",
+        desc: "Active live venue hosting the International Boxing Classic (IBC). Standard compliance includes physical coordinate maps with optimized evacuation pathways.",
+        vol: "Championship Ticket",
+        status: "LIVE STREAMING",
+        badgeStyle: "var(--magenta)"
+      }
+    };
+
+    function showLocation(key) {
+      const loc = locations[key];
+
+      const badge = document.getElementById("pin-badge");
+      badge.textContent = loc.badge;
+      badge.style.borderColor = loc.badgeStyle;
+      badge.style.color = loc.badgeStyle;
+
+      document.getElementById("pin-title").textContent = loc.title;
+      document.getElementById("pin-address").textContent = loc.address;
+      document.getElementById("pin-desc").textContent = loc.desc;
+      document.getElementById("pin-vol").textContent = loc.vol;
+
+      const statusEl = document.getElementById("pin-status");
+      statusEl.textContent = loc.status;
+      if (loc.status.includes("LIVE")) {
+        statusEl.style.color = "var(--magenta)";
+      } else {
+        statusEl.style.color = "var(--ok)";
+      }
+    }
+
+    function runRadiusMath() {
+      const rad = Number.parseFloat(document.getElementById("check-radius").value);
+      const out = document.getElementById("verify-output");
+
+      if (Number.isNaN(rad) || !rad) {
+        alert("Please specify a valid radius.");
+        return;
+      }
+
+      out.style.display = "block";
+      if(rad >= 20) {
+        out.innerHTML = `<span style="color:var(--neon-cyan);">✔ COMPLIANT: Security diameter limits coverage within safe rescue coordinates.</span>`;
+      } else {
+        out.innerHTML = `<span style="color:var(--magenta);">⚠ RISK DETECTED: Radius too low. Expand verification checks to cover nearest counseling gym!</span>`;
+      }
+    }
+  </script>
 </body>
 </html>

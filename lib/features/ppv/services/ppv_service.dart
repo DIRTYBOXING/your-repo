@@ -43,4 +43,33 @@ class PpvService {
     final result = await callable.call({'eventId': eventId});
     return Map<String, dynamic>.from(result.data);
   }
+
+  // ── Promoter-specific streams ──────────────────────────────────────────────
+  Stream<List<Map<String, dynamic>>> getPromoterEvents(String promoterId) {
+    return _db
+        .collection('ppv_events')
+        .where('promoterId', isEqualTo: promoterId)
+        .orderBy('eventDate', descending: true)
+        .snapshots()
+        .map(
+          (snap) => snap.docs.map((d) => {'id': d.id, ...d.data()}).toList(),
+        );
+  }
+
+  Stream<double> getPromoterTotalRevenue(String promoterId) {
+    return _db
+        .collection('revenue_events')
+        .where('promoterId', isEqualTo: promoterId)
+        .snapshots()
+        .map(
+          (snap) => snap.docs.fold<double>(
+            0,
+            (sum, d) => sum + ((d.data()['amount'] ?? 0) as num).toDouble(),
+          ),
+        );
+  }
+
+  Future<void> updateEventStatus(String eventId, String status) async {
+    await _db.collection('ppv_events').doc(eventId).update({'status': status});
+  }
 }

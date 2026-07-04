@@ -12,6 +12,41 @@ class EconomyService extends ChangeNotifier {
   final _fs = FirebaseFirestore.instance;
 
   // ── Promoter ──────────────────────────────────────────────────────────────
+  Future<double> getPayoutBalance(String id) async {
+    try {
+      final doc = await _fs.collection('payout_balances').doc(id).get();
+      return (doc.data()?['balance'] ?? 0).toDouble();
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getPayoutStatements(String id) async {
+    try {
+      final snap = await _fs
+          .collection('payout_statements')
+          .where('ownerId', isEqualTo: id)
+          .limit(50)
+          .get();
+      return snap.docs.map((d) => {'id': d.id, ...d.data()}).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getRevenueEventsForOwner(String id) async {
+    try {
+      final snap = await _fs
+          .collection('revenue_events')
+          .where('ownerId', isEqualTo: id)
+          .limit(50)
+          .get();
+      return snap.docs.map((d) => {'id': d.id, ...d.data()}).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
   Future<Map<String, dynamic>> getPromoterEconomy(String promoterId) async {
     try {
       final doc = await _fs

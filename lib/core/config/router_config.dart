@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'router_constants.dart';
+export 'router_constants.dart';
 
 // ── Screens that exist at confirmed paths ─────────────────────────────────────
 import '../../features/home/screens/home_screen.dart';

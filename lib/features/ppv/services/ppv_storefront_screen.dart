@@ -40,9 +40,7 @@ class PpvStorefrontScreen extends StatelessWidget {
           const SizedBox(height: 24),
 
           // 2. Continue Watching
-          const PpvContinueWatchingRow(
-            userId: 'CURRENT_USER_ID',
-          ), // To be wired via Provider
+          const PpvContinueWatchingRow(), // wired via Provider
           const SizedBox(height: 24),
         ],
       ),

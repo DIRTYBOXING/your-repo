@@ -42,7 +42,7 @@ class _PPVPaymentSheetState extends State<PPVPaymentSheet>
   bool _isProcessing = false;
   PaymentMethod _selectedMethod = PaymentMethod.stripe;
   PurchaseTier _selectedTier = PurchaseTier.fullShow;
-  final PPVPaymentService _ppvPaymentService = PPVPaymentService();
+  final PpvPaymentService _PpvPaymentService = PpvPaymentService();
   late AnimationController _glowController;
 
   @override
@@ -543,7 +543,7 @@ class _PPVPaymentSheetState extends State<PPVPaymentSheet>
       final externalReference =
           'ppv_${widget.event.id}_${_selectedTier.key}_${_selectedMethod.key}_${DateTime.now().millisecondsSinceEpoch}';
 
-      final opened = await _ppvPaymentService.openStripeCheckout(
+      final opened = await _PpvPaymentService.openStripeCheckout(
         userId: userId,
         ppvId: widget.event.id,
         ppvTitle: widget.event.title,
@@ -552,7 +552,7 @@ class _PPVPaymentSheetState extends State<PPVPaymentSheet>
 
       if (!opened) {
         throw Exception(
-          _ppvPaymentService.error ?? 'Could not open hosted checkout',
+          _PpvPaymentService.error ?? 'Could not open hosted checkout',
         );
       }
 

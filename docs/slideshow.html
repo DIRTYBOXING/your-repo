@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Data Fight Central Interactive Slide Presentation — High-fidelity walkthrough of the Combat OS active modules, design tokens, and technical integrations." />
-  <title>DFC Platform Presentation | Interactive Slide Deck</title>
+  <meta name="description" content="Data Fight Central interactive pitch slideshow covering Combat OS, AI predictor, social media studio, PPV store, maps, payments, and safety infrastructure." />
+  <title>DFC Cinema Platform Slideshow | Interactive Deck</title>
   <style>
     :root {
       --bg: #020408;
@@ -131,6 +131,66 @@
       margin: 0 0 15px;
     }
 
+    .slide-link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .slide-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--neon), var(--yellow));
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .slide-link.secondary {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--line);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      min-height: 104px;
+      background: linear-gradient(145deg, rgba(0,255,216,0.08), rgba(255,0,127,0.06));
+    }
+
+    .mini-card strong {
+      display: block;
+      color: var(--neon);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .mini-card span {
+      color: var(--ink);
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
     .kicker {
       text-transform: uppercase;
       font-size: 0.8rem;
@@ -216,11 +276,19 @@
       color: var(--muted);
       font-weight: 700;
     }
+
+    @media (max-width: 768px) {
+      body { overflow: auto; min-height: 100vh; }
+      .deck-viewport { min-height: 900px; }
+      .slide { width: 94%; padding: 24px; }
+      .mini-grid { grid-template-columns: 1fr; }
+      .deck-controls { position: sticky; bottom: 0; }
+    }
   </style>
 </head>
 <body>
   <header>
-    <div class="brand">DFC Platform Slide Deck</div>
+    <div class="brand">DFC Cinema Platform Slide Deck</div>
     <a href="index.html" class="btn-exit">Exit Deck</a>
   </header>
 
@@ -235,6 +303,10 @@
           <p>Data Fight Central is a mission-driven Combat OS running standard-compliant, local systems that guide at-risk youth away from street circles and integrate deep public-benefit safe zones directly into combat communities.</p>
           <div style="background: rgba(16,185,129,0.15); border:1px solid var(--ok); padding:15px; border-radius:8px; font-size:0.9rem; color:var(--ok);">
             <strong>Dynamic Signal Loop Status:</strong> Seeders, Feeders, and program layouts are fully populated and live across the production repository tracking.
+          </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="index.html">Open index</a>
+            <a class="slide-link secondary" href="magazine.html">Magazine view</a>
           </div>
         </div>
         <div class="slide-graphic">
@@ -259,6 +331,9 @@
           <div style="font-size:0.92rem; color:var(--muted); border-left:3px solid var(--neon-cyan); padding-left:15px;">
             Adjusting conditioning parameters dynamically recalculates win weights and shifts focus across combat dimensions in real-time.
           </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="ai-fight-predictor.html">Open predictor</a>
+          </div>
         </div>
         <div class="slide-graphic">
           <svg class="svg-diagram" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -282,6 +357,10 @@
           <div style="background: rgba(255,215,0,0.1); border: 1px solid var(--yellow); padding: 12px; border-radius: 8px; font-size: 0.88rem; color: var(--yellow);">
             🔍 Unified mapping links physical gyms, training histories, and safety alerts into a safe ecosystem.
           </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="global-fighter-map.html">Open fight map</a>
+            <a class="slide-link secondary" href="fighter-profiles.html">Open profiles</a>
+          </div>
         </div>
         <div class="slide-graphic">
           <svg class="svg-diagram" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -304,15 +383,100 @@
       </div>
     </section>
 
-    <!-- SLIDE 4: THE HEARTBEAT -->
+    <!-- SLIDE 4: MEDIA STUDIO -->
     <section class="slide" id="slide-4">
       <div class="slide-grid">
         <div>
-          <span class="kicker">Slide 4 / Closing</span>
+          <span class="kicker">Slide 4 / Poster + Social Studio</span>
+          <h2>Cinema-Grade Fight Assets For Fighters And Promoters</h2>
+          <p>The upgraded Media Hub is now a real campaign floor: poster presets, fighter stories, promoter posts, sponsor-safe captions, PPV store cards, and social export packages built from the same event data.</p>
+          <div style="background: rgba(0,255,216,0.1); border: 1px solid var(--neon); padding: 12px; border-radius: 8px; font-size: 0.88rem; color: var(--neon);">
+            🎬 No generic thumbnails: the page shows campaign states, poster art, story frames, QR-style product cards, and native social copy flows.
+          </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="media-hub.html">Open media studio</a>
+          </div>
+        </div>
+        <div class="slide-graphic">
+          <div class="mini-grid" aria-label="Media studio feature tiles">
+            <div class="mini-card"><strong>Poster</strong><span>4:5 cinema key art</span></div>
+            <div class="mini-card"><strong>Story</strong><span>9:16 fighter drop</span></div>
+            <div class="mini-card"><strong>Store</strong><span>PPV + merch cards</span></div>
+            <div class="mini-card"><strong>Social</strong><span>Captions + exports</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: PPV STORE -->
+    <section class="slide" id="slide-5">
+      <div class="slide-grid">
+        <div>
+          <span class="kicker">Slide 5 / PPV Store + Lay Exchange</span>
+          <h2>The Event Becomes A Sellable Market</h2>
+          <p>DFC now demonstrates a PPV contract store, back/lay trading surface, product cards, active slips, and a commercial path for promoters to sell the bout with visual proof.</p>
+          <div style="background: #000000; border: 1px solid #ffffff; padding: 12px; border-radius: 8px; font-size: 0.88rem; color: #ffffff;">
+            🎫 Built for tickets, PPV, campaign inventory, fighter stores, and sponsor surfaces — not just a static button.
+          </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="ppv-store-lay.html">Open PPV exchange</a>
+            <a class="slide-link secondary" href="fighter-wallet-storefront.html">Open wallet store</a>
+          </div>
+        </div>
+        <div class="slide-graphic">
+          <svg class="svg-diagram" viewBox="0 0 350 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="350" height="250" fill="#050816" rx="10"/>
+            <rect x="35" y="42" width="120" height="166" rx="14" fill="rgba(0,255,216,0.09)" stroke="var(--neon)"/>
+            <rect x="195" y="42" width="120" height="166" rx="14" fill="rgba(255,0,127,0.09)" stroke="var(--magenta)"/>
+            <text x="95" y="82" fill="var(--neon)" font-size="12" font-weight="900" text-anchor="middle">BACK</text>
+            <text x="255" y="82" fill="var(--magenta)" font-size="12" font-weight="900" text-anchor="middle">LAY</text>
+            <text x="95" y="130" fill="#fff" font-size="34" font-weight="900" text-anchor="middle">1.88</text>
+            <text x="255" y="130" fill="#fff" font-size="34" font-weight="900" text-anchor="middle">2.10</text>
+            <path d="M160 125 L190 125" stroke="var(--yellow)" stroke-width="3" stroke-linecap="round"/>
+            <text x="175" y="232" fill="var(--muted)" font-size="9" text-anchor="middle">PPV CONTRACT STORE · ACTIVE SLIP · FAN MARKET</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: PAYMENTS -->
+    <section class="slide" id="slide-6">
+      <div class="slide-grid">
+        <div>
+          <span class="kicker">Slide 6 / Payments + Microcommerce</span>
+          <h2>Checkout Rails For Events, Fans, Fighters And Promoters</h2>
+          <p>The payment terminal demonstrates PayPal, micropayments, split-ledger math, product selection, and store ingest logic so revenue can route back to the event ecosystem.</p>
+          <div style="background: rgba(0,229,255,0.1); border: 1px solid var(--neon-cyan); padding: 12px; border-radius: 8px; font-size: 0.88rem; color: var(--neon-cyan);">
+            💳 Next production step: add real PSP credentials/server endpoints before claiming live payment processing.
+          </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="ppv-paypal-micropayments.html">Open payment terminal</a>
+            <a class="slide-link secondary" href="digital-box-office.html">Open box office</a>
+          </div>
+        </div>
+        <div class="slide-graphic">
+          <div class="mini-grid" aria-label="Payment feature tiles">
+            <div class="mini-card"><strong>PayPal</strong><span>Fan checkout</span></div>
+            <div class="mini-card"><strong>Micro</strong><span>Small event buys</span></div>
+            <div class="mini-card"><strong>Split</strong><span>Fighter + platform</span></div>
+            <div class="mini-card"><strong>Ledger</strong><span>Store ingest proof</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: THE HEARTBEAT -->
+    <section class="slide" id="slide-7">
+      <div class="slide-grid">
+        <div>
+          <span class="kicker">Slide 7 / Closing</span>
           <h2>The DFC Operational Loop</h2>
           <p>We close the night with every single link online, fully styled, and securely wired. Data Fight Central has matured into a complete, navigable operating system with no details left abstract.</p>
           <div style="background: rgba(0, 229, 255, 0.1); border: 1px solid var(--neon-cyan); padding:15px; border-radius:8px; font-size:0.9rem; color:var(--neon-cyan);">
             🎓 Ready to resume with local wearable simulators, automated ranking adjustments, or cross-module telemetry logging.
+          </div>
+          <div class="slide-link-row">
+            <a class="slide-link" href="index.html">Return to control panel</a>
           </div>
         </div>
         <div class="slide-graphic">
@@ -328,13 +492,8 @@
   </main>
 
   <footer class="deck-controls">
-    <div class="deck-index" id="slide-index">Slide 1 of 4</div>
-    <div class="slide-indicators">
-      <div class="indicator-node active"></div>
-      <div class="indicator-node"></div>
-      <div class="indicator-node"></div>
-      <div class="indicator-node"></div>
-    </div>
+    <div class="deck-index" id="slide-index">Slide 1</div>
+    <div class="slide-indicators" id="slide-indicators" aria-label="Slide progress"></div>
     <div class="control-actions">
       <button class="control-btn" id="prev-btn" aria-label="Previous Slide">‹</button>
       <button class="control-btn" id="next-btn" aria-label="Next Slide">›</button>
@@ -343,9 +502,17 @@
 
   <script>
     const slides = document.querySelectorAll(".slide");
-    const indicators = document.querySelectorAll(".indicator-node");
+    const indicatorWrap = document.getElementById("slide-indicators");
     const indexEl = document.getElementById("slide-index");
     let currentSlide = 0;
+
+    slides.forEach((_, index) => {
+      const node = document.createElement("div");
+      node.className = `indicator-node${index === 0 ? " active" : ""}`;
+      indicatorWrap.appendChild(node);
+    });
+
+    const indicators = document.querySelectorAll(".indicator-node");
 
     function showSlide(index) {
       slides[currentSlide].classList.remove("active");
@@ -358,6 +525,8 @@
 
       indexEl.textContent = `Slide ${currentSlide + 1} of ${slides.length}`;
     }
+
+    indexEl.textContent = `Slide 1 of ${slides.length}`;
 
     document.getElementById("next-btn").addEventListener("click", () => {
       showSlide(currentSlide + 1);

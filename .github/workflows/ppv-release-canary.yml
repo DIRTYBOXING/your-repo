@@ -77,7 +77,7 @@ jobs:
         run: |
           node --check drm/token_issuance.js
           node --check drm/signed_urls.js
-          node -e "require('./index')"
+          node --check index.js
 
   deploy-canary:
     name: Deploy PPV canary functions

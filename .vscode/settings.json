@@ -35,7 +35,7 @@
       ]
     }
   },
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.defaultFormatter": "Dart-Code.dart-code",
   "editor.formatOnPaste": false,
   "editor.codeActionsOnSave": {
@@ -234,7 +234,7 @@
       "matchCommandLine": true
     }
   },
-  "files.autoSave": "afterDelay",
+  "files.autoSave": "off",
   "editor.wordWrap": "on",
   "workbench.colorTheme": "Default High Contrast",
   "editor.mouseWheelZoom": true,
@@ -246,7 +246,12 @@
   "workbench.editor.autoLockGroups": {
     "default": true
   },
-  "github.copilot.chat.agent.autoFix": true,
+  "github.copilot.chat.agent.autoFix": false,
+  "github.copilot.chat.agent.backgroundTodoAgent.enabled": false,
+  "github.copilot.chat.executionSubagent.enabled": false,
+  "github.copilot.chat.inlineEdits.chatSessionContextProvider.enabled": false,
+  "github.copilot.chat.switchAgent.enabled": false,
+  "github.copilot.completions.chat.enabled": false,
   "github.copilot.chat.githubMcpServer.enabled": true,
   "flutterTools.displaySignalsContextMenu": false,
   "editor.codeActions.triggerOnFocusChange": false,
@@ -277,6 +282,15 @@
   "workbench.editor.enablePreview": false,
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "settingsSync.ignoredExtensions": [],
+  "sonarlint.automaticAnalysis": false,
+  "eslint.enable": false,
+  "editor.formatOnType": false,
+  "editor.inlineSuggest.enabled": false,
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
+  },
   "sonarlint.connectedMode.project": {
     "connectionId": "dirtyboxing",
     "projectKey": "DIRTYBOXING_Data-Fight-Central"

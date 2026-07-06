@@ -50,6 +50,11 @@ Roo-Code/
 # Temp files
 body.tmp
 
+# Generated local hook artifacts
+Data-Fight-Central-safe.cortex.hooks/
+*.cortex.hooks/
+stop_*.json
+
 # Flutter repo-specific
 /bin/cache/
 /bin/internal/bootstrap.bat

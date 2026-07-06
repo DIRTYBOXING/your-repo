@@ -11,9 +11,7 @@ void main() {
     SocialService.enableDemoModeForTests();
   });
 
-  testWidgets('DFCFeedScreen displays current feed chrome', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('DFCFeedScreen displays current feed chrome', (WidgetTester tester) async {
     await tester.pumpWidget(
       MultiProvider(
         providers: [

@@ -1,32 +1,74 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 // ── Core Modules ──
 import 'directory_screen.dart';
-import 'feed_screen.dart';
-import 'social_graph_screen.dart';
-import 'fighter_profile_screen.dart';
-import 'gym_profile_screen.dart';
-import 'event_profile_screen.dart';
-import 'chat_room_screen.dart';
-import 'dm_screen.dart';
+import 'features/feed/screens/feed_screen.dart';
+import 'features/social/screens/social_feed_screen.dart';
+import 'features/events/screens/events_screen.dart';
+import 'features/messaging/screens/inbox_screen.dart';
 
-// Temporary placeholders for tabs not yet fully built out as root screens
-class EventsScreen extends StatelessWidget {
-  const EventsScreen({super.key});
+// Temporary placeholders for profile screens
+class FighterProfileScreen extends StatelessWidget {
+  final String fighterId;
+  const FighterProfileScreen({super.key, required this.fighterId});
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text('Events Tab', style: TextStyle(color: Colors.white)),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('Fighter $fighterId')),
+    body: const Center(
+      child: Text('Fighter Profile', style: TextStyle(color: Colors.white)),
+    ),
   );
 }
 
-class MessagesScreen extends StatelessWidget {
-  const MessagesScreen({super.key});
+class GymProfileScreen extends StatelessWidget {
+  final String gymId;
+  const GymProfileScreen({super.key, required this.gymId});
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text('Messages Tab', style: TextStyle(color: Colors.white)),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('Gym $gymId')),
+    body: const Center(
+      child: Text('Gym Profile', style: TextStyle(color: Colors.white)),
+    ),
+  );
+}
+
+class EventProfileScreen extends StatelessWidget {
+  final String eventId;
+  const EventProfileScreen({super.key, required this.eventId});
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('Event $eventId')),
+    body: const Center(
+      child: Text('Event Profile', style: TextStyle(color: Colors.white)),
+    ),
+  );
+}
+
+class ChatRoomScreen extends StatelessWidget {
+  final String roomId;
+  final String userId;
+  const ChatRoomScreen({super.key, required this.roomId, required this.userId});
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('Chat $roomId')),
+    body: const Center(
+      child: Text('Chat Room', style: TextStyle(color: Colors.white)),
+    ),
+  );
+}
+
+class DmScreen extends StatelessWidget {
+  final String roomId;
+  final String userId;
+  const DmScreen({super.key, required this.roomId, required this.userId});
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text('DM $roomId')),
+    body: const Center(
+      child: Text('Direct Message', style: TextStyle(color: Colors.white)),
+    ),
   );
 }
 
@@ -70,15 +112,15 @@ final dfcRouter = GoRouter(
   ],
 );
 
-class MainShell extends ConsumerStatefulWidget {
+class MainShell extends StatefulWidget {
   final String currentUserId;
   const MainShell({super.key, required this.currentUserId});
 
   @override
-  ConsumerState<MainShell> createState() => _MainShellState();
+  State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends ConsumerState<MainShell> {
+class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
 
   late final List<Widget> _screens;
@@ -88,16 +130,16 @@ class _MainShellState extends ConsumerState<MainShell> {
     super.initState();
     // Mount all core modules into the shell
     _screens = [
-      // TAB 0: FEED (Placeholder until FeedEngine is dropped)
-      const AiFeedScreen(),
-      // TAB 1: DIRECTORY & MAPS (Module 7)
+      // TAB 0: FEED
+      const FeedScreen(),
+      // TAB 1: DIRECTORY & MAPS
       const DirectoryScreen(),
-      // TAB 2: EVENTS + PPV (Module 5)
+      // TAB 2: EVENTS + PPV
       const EventsScreen(),
-      // TAB 3: MESSAGING (Module 6)
-      const MessagesScreen(),
-      // TAB 4: SOCIAL GRAPH / PROFILE (Module 8)
-      SocialGraphScreen(currentUserId: widget.currentUserId),
+      // TAB 3: MESSAGING
+      const InboxScreen(),
+      // TAB 4: SOCIAL FEED
+      const SocialFeedScreen(),
     ];
   }
 
@@ -182,10 +224,14 @@ class _MainShellState extends ConsumerState<MainShell> {
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? accentColor.withValues(alpha: 0.15) : Colors.transparent,
+          color: isActive
+              ? accentColor.withValues(alpha: 0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? accentColor.withValues(alpha: 0.5) : Colors.transparent,
+            color: isActive
+                ? accentColor.withValues(alpha: 0.5)
+                : Colors.transparent,
           ),
         ),
         child: Column(

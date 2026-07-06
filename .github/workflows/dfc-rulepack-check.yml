@@ -35,7 +35,7 @@ jobs:
       - name: Enforce migration TODO markers for legacy aliases
         run: |
           set -e
-          FOUND=$(rg -n "TODO remove after migration" lib/core/config/router_constants.dart || true)
+          FOUND=$(grep -n "TODO remove after migration" lib/core/config/router_constants.dart || true)
           if [ -z "$FOUND" ]; then
             echo "Expected migration TODO markers missing in router constants."
             exit 1
@@ -44,4 +44,4 @@ jobs:
       - name: Validate PR template includes routing delta checklist
         run: |
           set -e
-          rg -n "Routing Delta|Analyzer Proof|Module Scope" .github/pull_request_template.md
+          grep -En "Routing Delta|Analyzer Proof|Module Scope" .github/pull_request_template.md

@@ -29,22 +29,31 @@ jobs:
           fetch-depth: 0
 
       - name: Verify Sonar token exists
+        id: sonar_token_check
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           if [ -z "$SONAR_TOKEN" ]; then
-            echo "SONAR_TOKEN is missing. Configure repository secret SONAR_TOKEN."
-            exit 1
+            echo "SONAR_TOKEN is missing. Skipping Sonar scan for this run."
+            echo "has_token=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_token=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: SonarQube scan
+        if: steps.sonar_token_check.outputs.has_token == 'true'
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: SonarQube quality gate
+        if: steps.sonar_token_check.outputs.has_token == 'true'
         uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Sonar skipped notice
+        if: steps.sonar_token_check.outputs.has_token != 'true'
+        run: echo "Sonar check skipped because SONAR_TOKEN is not available in this workflow context."

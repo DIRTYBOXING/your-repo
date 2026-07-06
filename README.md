@@ -147,6 +147,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\.vscode\scripts\recreate-w
 - `docs/architecture/DFC_CANONICAL_INTEGRATION_STACK_2026.md`: Single canonical 2026 stack per integration with enforcement requirements.
 - `docs/api/dfc-events-api.contract.json`: Machine-readable contract for `GET /api/events/{id}` page truth endpoint.
 - `web/blueprint.html`: Visual promoter-first and community-first blueprint page for stakeholder briefings.
+- `docs/DFC_OPERATOR_QUICK_CARD.md`: One-page day-to-day operator checklist for quality gates and incident triage.
+- `docs/QUALITY_GATE_SETUP.md`: Exact branch-protection and required-check wiring guide.
+- `docs/CLINE_USAGE_POLICY.md`: Governance boundary for local assistant usage (non-runtime, non-CI dependency).
+- `docs/CLINE_FREE_MODE_SETUP.md`: Free-model fallback and continuity runbook for local assistant resilience.
+- `docs/DFC_MCP_ARCHITECTURE_MAP.md`: Clear boundary map for Firebase backend vs MCP local tooling architecture.
+- `docs/DFC_PLATFORM_MASTER_MAP.md`: Unified architecture blueprint for Google, GitHub, NVIDIA, MCP, and DFC governance controls.
+- `docs/DFC_ENTERPRISE_ROADMAP.md`: Multi-phase (2026→2030) enterprise roadmap for platform, cloud, AI, and global scaling.
+- `docs/DFC_PLATFORM_GOVERNANCE.md`: Authoritative governance blueprint for controls, release policy, and enforcement hierarchy.
+- `docs/DFC_DEVELOPER_ONBOARDING.md`: Fast-start onboarding for modules, MCP/Cline usage, CI success, and routing/rule-pack discipline.
 
 ## Authentication Setup (Phase 1)
 

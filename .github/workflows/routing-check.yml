@@ -1,0 +1,41 @@
+name: DFC Routing Spine Check
+
+on:
+  pull_request:
+    branches: [master, main]
+    paths:
+      - "lib/**"
+      - "docs/DFC_SONAR_RULE_PACK.md"
+      - ".github/workflows/routing-check.yml"
+  push:
+    branches: [master, main]
+    paths:
+      - "lib/**"
+
+concurrency:
+  group: dfc-routing-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  route-literals:
+    name: forbid literal navigation routes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for literal routes in navigation calls
+        run: |
+          set -e
+          echo "Scanning for literal route usage in navigation calls..."
+          PATTERN="context\\.(go|push|pushReplacement)\\(\\s*['\"]/|Navigator\\.pushNamed\\(\\s*['\"]/"
+          MATCHES=$(rg -n --glob "lib/**/*.dart" "$PATTERN" || true)
+
+          if [ -n "$MATCHES" ]; then
+            echo "Found literal route usage. Use rc.RouteConstants.* instead:"
+            echo "$MATCHES"
+            exit 1
+          fi
+
+          echo "Routing spine check passed."

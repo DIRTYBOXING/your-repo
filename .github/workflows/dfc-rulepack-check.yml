@@ -3,11 +3,10 @@ name: DFC Rule Pack Check
 on:
   pull_request:
     branches: [master, main]
-    paths:
-      - "docs/DFC_SONAR_RULE_PACK.md"
-      - "lib/**"
-      - ".github/pull_request_template.md"
-      - ".github/workflows/dfc-rulepack-check.yml"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
   push:
     branches: [master, main]
     paths:

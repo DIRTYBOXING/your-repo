@@ -3,13 +3,10 @@ name: DFC Sonar Quality Gate
 on:
   pull_request:
     branches: [master, main]
-    paths:
-      - "lib/**"
-      - "services/**"
-      - "firestore.rules"
-      - "docs/DFC_SONAR_RULE_PACK.md"
-      - "sonar-project.properties"
-      - ".github/workflows/quality-gate.yml"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
   push:
     branches: [master, main]
 

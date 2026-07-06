@@ -3,14 +3,10 @@ name: dfc-pr-check
 on:
   pull_request:
     branches: [master]
-    paths:
-      - "poster-worker/**"
-      - "promotion-worker/**"
-      - "entitlements-service/**"
-      - "cloudbuild.yaml"
-      - "lib/**"
-      - "pubspec.yaml"
-      - "pubspec.lock"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
 
 concurrency:
   group: pr-check-${{ github.event.pull_request.number }}

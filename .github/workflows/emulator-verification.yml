@@ -3,18 +3,10 @@ name: Emulator Verification
 on:
   pull_request:
     branches: [master]
-    paths:
-      - "lib/**"
-      - "test/**"
-      - "scripts/**"
-      - "docs/postman/**"
-      - "functions/**"
-      - "firebase.json"
-      - "firestore.rules"
-      - "firestore.indexes.json"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/emulator-verification.yml"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
   workflow_dispatch:
 
 jobs:

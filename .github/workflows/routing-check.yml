@@ -3,10 +3,10 @@ name: DFC Routing Spine Check
 on:
   pull_request:
     branches: [master, main]
-    paths:
-      - "lib/**"
-      - "docs/DFC_SONAR_RULE_PACK.md"
-      - ".github/workflows/routing-check.yml"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
   push:
     branches: [master, main]
     paths:

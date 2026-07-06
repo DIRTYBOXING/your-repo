@@ -3,12 +3,10 @@ name: DFC Firebase Security Check
 on:
   pull_request:
     branches: [master, main]
-    paths:
-      - "firestore.rules"
-      - "storage.rules"
-      - "firebase.json"
-      - "lib/**"
-      - ".github/workflows/firebase-security-check.yml"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
   push:
     branches: [master, main]
     paths:

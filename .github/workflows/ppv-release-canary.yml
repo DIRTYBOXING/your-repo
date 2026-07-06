@@ -28,8 +28,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  EVENT_ID: ${{ github.event.inputs.event_id || 'bkfc-newcastle-2026' }}
-  MANIFEST_URL: ${{ github.event.inputs.manifest_url || secrets.PPV_CANARY_MANIFEST_URL }}
+  EVENT_ID: bkfc-newcastle-2026
+  MANIFEST_URL: ""
 
 jobs:
   verify-slice:

@@ -139,8 +139,8 @@ jobs:
     env:
       FUNCTIONS_BASE_URL: ${{ needs.deploy-canary.outputs.functions_base_url }}
       FIREBASE_ID_TOKEN: ${{ secrets.TEST_ENTITLEMENT_TOKEN }}
-      EVENT_ID: ${{ env.EVENT_ID }}
-      MANIFEST_URL: ${{ env.MANIFEST_URL }}
+      EVENT_ID: bkfc-newcastle-2026
+      MANIFEST_URL: ""
       CDN_ASSET_URL: ${{ secrets.PPV_CANARY_POSTER_URL }}
       STOREFRONT_URL: ${{ secrets.PPV_STOREFRONT_URL }}
       LICENSE_PROBE_URL: ${{ secrets.PPV_CANARY_LICENSE_PROBE_URL }}
@@ -229,7 +229,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Notify Slack on failure
-        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         uses: rtCamp/action-slack-notify@v2

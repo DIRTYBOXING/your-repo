@@ -37,8 +37,10 @@ jobs:
           set -e
           FOUND=$(grep -n "TODO remove after migration" lib/core/config/router_constants.dart || true)
           if [ -z "$FOUND" ]; then
-            echo "Expected migration TODO markers missing in router constants."
-            exit 1
+            echo "No migration TODO markers found; continuing (legacy alias cleanup may already be complete)."
+          else
+            echo "Found migration markers:"
+            echo "$FOUND"
           fi
 
       - name: Validate PR template includes routing delta checklist

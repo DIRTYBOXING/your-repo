@@ -1,3 +1,49 @@
+## DataFightCentral (DFC) — Global Combat-Sports Operating System
+
+DataFightCentral is building a production-grade operating system for combat sports: events, PPV, creator economy, coaching intelligence, and community infrastructure in one governed platform.
+
+### Why DFC matters
+
+- Expands access to opportunity through technology, engineering, and open collaboration
+- Supports fighters, gyms, promoters, creators, and fans with real platform infrastructure
+- Uses strict quality/security/reliability controls to deliver trustworthy outcomes at scale
+
+### Architecture pillars
+
+- **Google (runtime):** Firebase + GCP backend, data plane, and cloud AI services
+- **GitHub (governance):** Source of truth, CI/CD, branch protection, quality gates
+- **NVIDIA (acceleration):** Advanced compute/simulation path for future intelligence workloads
+- **MCP (local tooling):** Local AI integration layer for engineering productivity (non-runtime)
+
+### Enterprise docs index
+
+- `docs/DFC_PLATFORM_MASTER_MAP.md`
+- `docs/DFC_ENTERPRISE_ROADMAP.md`
+- `docs/DFC_PLATFORM_GOVERNANCE.md`
+- `docs/DFC_MCP_ARCHITECTURE_MAP.md`
+- `docs/DFC_MCP_SERVER_COMPARISON_TABLE.md`
+- `docs/DFC_DEVELOPER_ONBOARDING.md`
+- `docs/DFC_OPERATOR_QUICK_CARD.md`
+- `docs/QUALITY_GATE_SETUP.md`
+- `docs/CLINE_USAGE_POLICY.md`
+- `docs/CLINE_FREE_MODE_SETUP.md`
+
+### Contribute to DFC
+
+We welcome engineers, researchers, and operators who want to build reliable systems for global combat-sports infrastructure.
+
+- Open issues and PRs with clear module scope and validation proof
+- Follow routing spine, rule-pack, and CI gate requirements
+- Prioritize production-safe, reviewable, incremental changes
+
+### Sponsor DFC
+
+If your organization supports platform access, athlete opportunity, and responsible AI infrastructure, we welcome sponsorship and technical collaboration.
+
+- Sponsor core platform reliability and open-source operations
+- Support AI/analytics innovation for coaching, safety, and event intelligence
+- Partner on global scaling and ecosystem development
+
 ## Payments & Ads Setup
 
 This sprint adds a clear path to wire subscriptions (Stripe/Google Pay/Apple Pay/PayPal) and ads (AdMob) to the existing `SubscriptionService`, `AdsService`, and Firestore seed data.

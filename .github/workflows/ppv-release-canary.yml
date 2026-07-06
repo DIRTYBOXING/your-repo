@@ -229,7 +229,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Notify Slack on failure
-        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         uses: rtCamp/action-slack-notify@v2

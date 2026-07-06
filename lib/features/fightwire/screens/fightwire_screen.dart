@@ -2544,7 +2544,7 @@ class _FightWireScreenState extends State<FightWireScreen>
     );
 
     final uri = Uri(
-      path: rc.RouterConfig.inboxPath,
+      path: rc.RouteConstants.inboxPath,
       queryParameters: {
         'action': isDealSignal ? 'deal-close' : 'launch',
         'signal': signal,

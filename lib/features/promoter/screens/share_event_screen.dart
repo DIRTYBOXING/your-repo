@@ -105,7 +105,7 @@ class _ShareEventScreenState extends State<ShareEventScreen> {
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
     );
-    final eventId = await eventService.createEvent(event);
+    final eventId = await eventService.createEventDoc(event);
     if (!mounted) return;
     setState(() => _isUploading = false);
     if (eventId != null) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/services/auth_service.dart';
 
@@ -100,7 +102,7 @@ class _AgeVerificationRequired extends StatelessWidget {
                 width: 220,
                 child: ElevatedButton.icon(
                   onPressed: () =>
-                      Navigator.of(context).pushNamed('/profile/edit'),
+                      context.push(rc.RouteConstants.profileEditPath),
                   icon: const Icon(Icons.person, size: 18),
                   label: const Text('Update Profile'),
                   style: ElevatedButton.styleFrom(

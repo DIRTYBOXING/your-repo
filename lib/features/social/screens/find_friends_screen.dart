@@ -404,9 +404,7 @@ class _NearbyFighterCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.cardBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppTheme.neonCyan.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: AppTheme.neonCyan.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -414,11 +412,7 @@ class _NearbyFighterCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: user.photoUrl != null
-                ? DfcNetworkImage(
-                    url: user.photoUrl!,
-                    width: 60,
-                    height: 60,
-                  )
+                ? DfcNetworkImage(url: user.photoUrl!, width: 60, height: 60)
                 : _buildDefaultAvatar(),
           ),
           const SizedBox(width: 12),
@@ -620,9 +614,7 @@ class _FindFriendsScreenState extends State<FindFriendsScreen>
     if (!mounted) return;
     setState(() => _isLoadingSuggestions = true);
     try {
-      final suggestions = await _friendService.getFriendSuggestionsWithScores(
-        
-      );
+      final suggestions = await _friendService.getFriendSuggestionsWithScores();
       AppLogger.debug(
         'loadSuggestions:results=${suggestions.length}',
         tag: _logTag,
@@ -1028,22 +1020,22 @@ class _FindFriendsScreenState extends State<FindFriendsScreen>
               _quickActionChip(
                 'FightWire',
                 Icons.bolt,
-                () => context.push(rc.RouterConfig.fightWirePath),
+                () => context.push(rc.RouteConstants.fightWirePath),
               ),
               _quickActionChip(
                 'Social Queue',
                 Icons.campaign,
-                () => context.push(rc.RouterConfig.socialQueuePath),
+                () => context.push(rc.RouteConstants.socialQueuePath),
               ),
               _quickActionChip(
                 'Promo Tools',
                 Icons.rocket_launch,
-                () => context.push(rc.RouterConfig.eventPromotionPath),
+                () => context.push(rc.RouteConstants.eventPromotionPath),
               ),
               _quickActionChip(
                 'Toolkit',
                 Icons.auto_awesome,
-                () => context.push(rc.RouterConfig.socialMediaToolkitPath),
+                () => context.push(rc.RouteConstants.socialMediaToolkitPath),
               ),
               _quickActionChip(
                 'Genius',

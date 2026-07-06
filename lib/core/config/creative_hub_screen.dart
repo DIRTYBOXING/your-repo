@@ -217,6 +217,30 @@ class _CreativeHubScreenState extends State<CreativeHubScreen> {
               ),
             ),
           ),
+          if (_finalVideoUrl != null) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.panel,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.neonGreen),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: AppColors.neonGreen),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Render ready: $_finalVideoUrl',
+                      style: const TextStyle(color: Colors.white70),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -71,16 +71,14 @@ class _CommentThreadScreenState extends State<CommentThreadScreen> {
     final auth = context.read<AuthService>();
     final social = context.read<SocialService>();
     final user = auth.currentUser;
-    final userId =
-        user?.uid ?? (auth.isDemoUser ? AuthService.demoUserId : 'anon');
+    final userId = user?.uid ?? 'anon';
 
     try {
       await social.addComment(
         widget.post.id,
         userId,
         text,
-        displayName:
-            user?.displayName ?? (auth.isDemoUser ? 'Demo User' : 'Anonymous'),
+        displayName: user?.displayName ?? 'Anonymous',
         role: 'fighter',
         avatarUrl: user?.photoURL,
         parentCommentId: _replyToCommentId,

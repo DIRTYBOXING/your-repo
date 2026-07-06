@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
@@ -142,7 +143,9 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
         if (widget.onTap != null) {
           widget.onTap!();
         } else {
-          context.push('/ppv/event/${event.id}');
+          context.push(
+            rc.RouteConstants.ppvEventById.replaceFirst(':id', event.id),
+          );
         }
       },
       child: Container(
@@ -270,7 +273,9 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
         if (widget.onTap != null) {
           widget.onTap!();
         } else {
-          context.push('/ppv/event/${event.id}');
+          context.push(
+            rc.RouteConstants.ppvEventById.replaceFirst(':id', event.id),
+          );
         }
       },
       child: Container(

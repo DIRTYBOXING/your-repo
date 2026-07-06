@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/foundation.dart';
 import '../../../shared/models/ppv_model.dart';
+
+/// Compatibility alias — several screens reference `PPVService`.
+typedef PPVService = PpvService;
 
 /// Handles PPV Event feeds, watch history, and access validation.
 class PpvService {
@@ -54,11 +56,114 @@ class PpvService {
         .snapshots();
   }
 
+  /// Live PPV events currently streaming.
+  Stream<List<PPVEvent>> getLivePPVEvents({int limit = 10}) {
+    return _db
+        .collection('ppv_events')
+        .where('status', isEqualTo: 'live')
+        .orderBy('eventDate')
+        .limit(limit)
+        .snapshots()
+        .map(
+          (snap) => snap.docs.map((d) => PPVEvent.fromFirestore(d)).toList(),
+        );
+  }
+
+  /// PPV events available to browse/purchase.
+  Stream<List<PPVEvent>> getAvailablePPVEvents({int limit = 20}) {
+    return _db
+        .collection('ppv_events')
+        .where(
+          'status',
+          whereIn: ['upcoming', 'presale', 'onSale', 'announced', 'live'],
+        )
+        .orderBy('eventDate')
+        .limit(limit)
+        .snapshots()
+        .map(
+          (snap) => snap.docs.map((d) => PPVEvent.fromFirestore(d)).toList(),
+        );
+  }
+
+  /// Whether [userId] has purchased access to [eventId].
+  Future<bool> hasAccess(String userId, String eventId) async {
+    try {
+      final snap = await _db
+          .collection('ppv_purchases')
+          .where('userId', isEqualTo: userId)
+          .where('eventId', isEqualTo: eventId)
+          .limit(1)
+          .get();
+      return snap.docs.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Calls the secure Cloud Function to validate if the user can watch the stream
   Future<Map<String, dynamic>> checkPpvAndEnter(String eventId) async {
     final callable = _functions.httpsCallable('validatePpvAccess');
     final result = await callable.call({'eventId': eventId});
     return Map<String, dynamic>.from(result.data);
+  }
+
+  /// Fetch a single PPV event document by its own ID.
+  Future<PPVEvent?> getPPVEvent(String ppvEventId) async {
+    final doc = await _db.collection('ppv_events').doc(ppvEventId).get();
+    if (!doc.exists) return null;
+    return PPVEvent.fromFirestore(doc);
+  }
+
+  /// Fetch the PPV event linked to a given [EventModel] id, if one exists.
+  /// If [promoterId] is provided, the result is only returned when it
+  /// belongs to that promoter.
+  Future<PPVEvent?> getPPVEventForEventId(
+    String eventId, {
+    String? promoterId,
+  }) async {
+    final snap = await _db
+        .collection('ppv_events')
+        .where('eventId', isEqualTo: eventId)
+        .limit(1)
+        .get();
+    if (snap.docs.isEmpty) return null;
+    final ppvEvent = PPVEvent.fromFirestore(snap.docs.first);
+    if (promoterId != null && ppvEvent.promoterId != promoterId) return null;
+    return ppvEvent;
+  }
+
+  /// Create a new PPV event document and return its generated ID.
+  Future<String> createPPVEvent({
+    required String eventId,
+    required String promoterId,
+    required String title,
+    String? description,
+    required DateTime eventDate,
+    required int standardPriceCents,
+    String? posterUrl,
+    String? sport,
+    String? promotion,
+    String? streamUrl,
+    String? trailerUrl,
+    double? platformFeePct,
+  }) async {
+    final docRef = await _db.collection('ppv_events').add({
+      'eventId': eventId,
+      'promoterId': promoterId,
+      'title': title,
+      'description': description,
+      'eventDate': Timestamp.fromDate(eventDate),
+      'standardPriceCents': standardPriceCents,
+      'posterUrl': posterUrl,
+      'sport': sport,
+      'promotion': promotion,
+      if (streamUrl != null) 'streamUrl': streamUrl,
+      if (trailerUrl != null) 'trailerUrl': trailerUrl,
+      if (platformFeePct != null) 'platformFeePct': platformFeePct,
+      'status': 'announced',
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    return docRef.id;
   }
 
   // ── Promoter-specific streams ──────────────────────────────────────────────

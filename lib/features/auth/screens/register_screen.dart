@@ -164,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     _triggerDetonation(() async {
       final authService = context.read<AuthService>();
       try {
-        final result = await authService.registerWithEmail(
+        final result = await authService.registerWithProfile(
           email: _emailController.text.trim(),
           password: _passwordController.text,
           displayName: _nameController.text.trim(),

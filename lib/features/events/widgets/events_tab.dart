@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/neon_card.dart';
@@ -179,7 +180,9 @@ class EventsTab extends StatelessWidget {
               Expanded(
                 child: OutlinedButton(
                   onPressed: () {
-                    context.push('/event/$eventId');
+                    context.push(
+                      '${app_router.RouteConstants.eventDetailsBasePath}/$eventId',
+                    );
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: c,
@@ -199,7 +202,9 @@ class EventsTab extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    context.push('/event/$eventId');
+                    context.push(
+                      '${app_router.RouteConstants.eventDetailsBasePath}/$eventId',
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: c,

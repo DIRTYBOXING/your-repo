@@ -166,7 +166,10 @@ class _AdminModerationScreenState extends State<AdminModerationScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
         boxShadow: [
-          BoxShadow(color: Colors.redAccent.withValues(alpha: 0.05), blurRadius: 10),
+          BoxShadow(
+            color: Colors.redAccent.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
         ],
       ),
       child: Column(
@@ -180,7 +183,7 @@ class _AdminModerationScreenState extends State<AdminModerationScreen> {
                 style: const TextStyle(
                   color: Colors.purpleAccent,
                   fontSize: 10,
-                  fontWeight: 1000,
+                  fontWeight: FontWeight.w900,
                   letterSpacing: 1.5,
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/design_tokens.dart';
 
 /// Admin Event Manager — Create, manage, and promote events.
@@ -400,7 +401,7 @@ class _AdminEventManagerScreenState extends State<AdminEventManagerScreen>
                   DesignTokens.neonMagenta,
                   Icons.view_list,
                   onTap: () {
-                    context.push('/promoter/event-manager');
+                    context.push(rc.RouteConstants.eventManagerPath);
                   },
                 ),
               ],

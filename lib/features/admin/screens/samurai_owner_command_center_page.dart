@@ -475,9 +475,8 @@ class _SamuraiOwnerCommandCenterPageState
                                       createdAt: now,
                                       updatedAt: now,
                                     );
-                                    final id = await eventService.createEvent(
-                                      newEvent,
-                                    );
+                                    final id = await eventService
+                                        .createEventDoc(newEvent);
                                     if (id == null) {
                                       throw Exception('Event create failed');
                                     }
@@ -691,9 +690,7 @@ class _SamuraiOwnerCommandCenterPageState
                               alpha: 0.15,
                             ),
                             foregroundColor: Colors.cyanAccent,
-                            side: const BorderSide(
-                              color: Colors.cyanAccent,
-                            ),
+                            side: const BorderSide(color: Colors.cyanAccent),
                           ),
                           icon: const Icon(Icons.security, size: 15),
                           label: const Text(
@@ -716,9 +713,7 @@ class _SamuraiOwnerCommandCenterPageState
                               0xFF00E676,
                             ).withValues(alpha: 0.12),
                             foregroundColor: const Color(0xFF00E676),
-                            side: const BorderSide(
-                              color: Color(0xFF00E676),
-                            ),
+                            side: const BorderSide(color: Color(0xFF00E676)),
                           ),
                           icon: const Icon(Icons.shield_outlined, size: 15),
                           label: const Text(

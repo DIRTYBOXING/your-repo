@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/event_model.dart';
@@ -487,6 +488,7 @@ class _PromoterControlRoomScreenState extends State<PromoterControlRoomScreen>
       if (ppvEvent == null) {
         final ppvEventId = await _ppvService.createPPVEvent(
           eventId: selectedEvent.event!.id,
+          promoterId: selectedEvent.event!.promoterId,
           title: selectedEvent.event!.name,
           description:
               selectedEvent.event!.description ??
@@ -1759,7 +1761,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                     _AuditType.info,
                   );
                   context.push(
-                    '/promoter/poster-generator'
+                    '${rc.RouteConstants.promoterPosterGeneratorPath}'
                     '?event=${Uri.encodeComponent(ev.name)}'
                     '&date=${Uri.encodeComponent(ev.date)}'
                     '&sport=${Uri.encodeComponent(ev.sport)}',
@@ -1775,7 +1777,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                     'Outreach HQ opened for ${ev.name}',
                     _AuditType.info,
                   );
-                  context.push('/promoter-outreach-hq');
+                  context.push(rc.RouteConstants.promoterOutreachHqPath);
                 },
               ),
               _actionButton(
@@ -1788,7 +1790,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                     _AuditType.info,
                   );
                   context.push(
-                    '/facebook-post-preview'
+                    '${rc.RouteConstants.facebookPostPreviewPath}'
                     '?event=${Uri.encodeComponent(ev.name)}'
                     '&date=${Uri.encodeComponent(ev.date)}',
                   );
@@ -1803,7 +1805,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                     'UTM builder opened for ${ev.name}',
                     _AuditType.info,
                   );
-                  context.push('/utm-link-builder');
+                  context.push(rc.RouteConstants.utmLinkBuilderPath);
                 },
               ),
               _actionButton(
@@ -1815,7 +1817,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                     'Cost estimator opened for ${ev.name}',
                     _AuditType.info,
                   );
-                  context.push('/marketing-cost-estimator');
+                  context.push(rc.RouteConstants.marketingCostEstimator);
                 },
               ),
               _actionButton(
@@ -1827,7 +1829,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                     'Contract calculator opened for ${ev.name}',
                     _AuditType.info,
                   );
-                  context.push('/sliding-contract-calculator');
+                  context.push(rc.RouteConstants.slidingContractCalculatorPath);
                 },
               ),
               _actionButton(
@@ -1836,7 +1838,7 @@ ${blockers.map((blocker) => '- $blocker').join('\n')}
                 color: DesignTokens.neonMagenta,
                 onTap: () {
                   _addAudit('Deal pipeline opened', _AuditType.info);
-                  context.push('/deal-pipeline');
+                  context.push(rc.RouteConstants.dealPipelinePath);
                 },
               ),
               _actionButton(

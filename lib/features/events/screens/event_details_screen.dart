@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 // import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/image_url_sanitizer.dart';
@@ -48,9 +49,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       streamUrl: _event?.streamUrl,
       ticketUrl: _event?.ticketUrl,
     );
-    final sanitized = ImageUrlSanitizer.sanitize(
-      raw,
-    );
+    final sanitized = ImageUrlSanitizer.sanitize(raw);
     if (ImageAssets.isGenericPosterAsset(sanitized)) {
       return mappedPoster ?? ImageAssets.dfcBrandedPlaceholder;
     }
@@ -1910,10 +1909,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
               ),
             ),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: _shareEvent,
-              ),
+              IconButton(icon: const Icon(Icons.share), onPressed: _shareEvent),
               IconButton(
                 icon: const Icon(Icons.notifications_outlined),
                 onPressed: _setReminder,
@@ -1986,8 +1982,9 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () =>
-                          context.push('/ticket-purchase/${widget.eventId}'),
+                      onPressed: () => context.push(
+                        '${app_router.RouteConstants.ticketPurchaseBasePath}/${widget.eventId}',
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _event!.isLive
                             ? Colors.red

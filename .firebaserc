@@ -1,5 +1,16 @@
 {
   "projects": {
     "default": "datafightcentral"
+  },
+  "targets": {},
+  "etags": {
+    "datafightcentral": {
+      "extensionInstances": {
+        "image-processing-api": "85b09aa1e39362679d9400a83a7e2d00ed4326b5ce026e613f4e5b261ccbcd8c",
+        "image-processing-api-dx4b": "afc2e10d9d0f6f9904afc7c6fcdfa6b33aafc0e9ede93ae3188c4a78e434d0d9",
+        "storage-resize-images": "3e36c71d78e34e64fcbf47786fb7d2d8a76934eb164c9fa33427c28287af18ed",
+        "storage-resize-images-xo8f": "4ac57d6ce3810afcd51e5c6cf382a53b7a4879bac9f6a62fa88c45674cc42923"
+      }
+    }
   }
 }

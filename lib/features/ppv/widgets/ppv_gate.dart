@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../services/ppv_access_service.dart';
@@ -265,7 +266,7 @@ class _PpvPaywall extends StatelessWidget {
                   if (context.canPop()) {
                     context.pop();
                   } else {
-                    context.go('/home');
+                    context.go(rc.RouteConstants.home);
                   }
                 },
                 child: Text(
@@ -293,7 +294,7 @@ class _PpvPaywall extends StatelessWidget {
           action: SnackBarAction(
             label: 'SIGN IN',
             textColor: Colors.white,
-            onPressed: () => context.push('/login'),
+            onPressed: () => context.push(rc.RouteConstants.login),
           ),
         ),
       );
@@ -312,7 +313,7 @@ class _PpvPaywall extends StatelessWidget {
       });
     } else {
       // Fallback: navigate to PPV detail for full tier selection
-      context.push('/ppv/$ppvId');
+      context.push(rc.RouteConstants.ppvById.replaceFirst(':id', ppvId));
     }
   }
 }

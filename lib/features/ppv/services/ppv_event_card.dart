@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
@@ -18,7 +19,9 @@ class PpvEventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.push('/ppv-detail/$eventId'),
+      onTap: () => context.push(
+        rc.RouteConstants.ppvDetailByEventId.replaceFirst(':eventId', eventId),
+      ),
       child: Container(
         width: 140,
         margin: const EdgeInsets.only(right: 12),

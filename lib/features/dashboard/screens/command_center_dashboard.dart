@@ -433,37 +433,38 @@ class _CommandCenterDashboardState extends State<CommandCenterDashboard>
                 label: 'Combat\nAnalytics',
                 icon: Icons.analytics,
                 accentColor: DesignTokens.neonCyan,
-                onTap: () => context.push(rc.RouterConfig.combatAnalyticsPath),
+                onTap: () =>
+                    context.push(rc.RouteConstants.combatAnalyticsPath),
               ),
               EcosystemHubNode(
                 label: 'FightWire',
                 icon: Icons.bolt,
                 accentColor: DesignTokens.neonAmber,
-                onTap: () => context.push(rc.RouterConfig.fightWirePath),
+                onTap: () => context.push(rc.RouteConstants.fightWirePath),
               ),
               EcosystemHubNode(
                 label: 'AI Brain',
                 icon: Icons.psychology_alt,
                 accentColor: DesignTokens.neonMagenta,
-                onTap: () => context.push(rc.RouterConfig.aiBrainPath),
+                onTap: () => context.push(rc.RouteConstants.aiBrainPath),
               ),
               EcosystemHubNode(
                 label: 'Neural\nCoach',
                 icon: Icons.psychology,
                 accentColor: DesignTokens.neonGreen,
-                onTap: () => context.push(rc.RouterConfig.neuralCoachPath),
+                onTap: () => context.push(rc.RouteConstants.neuralCoachPath),
               ),
               EcosystemHubNode(
                 label: 'Body\nMonitor',
                 icon: Icons.monitor_heart,
                 accentColor: DesignTokens.neonCyan,
-                onTap: () => context.push(rc.RouterConfig.bodyMonitorPath),
+                onTap: () => context.push(rc.RouteConstants.bodyMonitorPath),
               ),
               EcosystemHubNode(
                 label: 'FightLab',
                 icon: Icons.science,
                 accentColor: DesignTokens.neonMagenta,
-                onTap: () => context.push(rc.RouterConfig.fightLabPath),
+                onTap: () => context.push(rc.RouteConstants.fightLabPath),
               ),
             ],
           ),
@@ -895,7 +896,10 @@ class _CommandCenterDashboardState extends State<CommandCenterDashboard>
             const SizedBox(height: 2),
             Text(
               subtitle,
-              style: const TextStyle(color: DesignTokens.textMuted, fontSize: 13),
+              style: const TextStyle(
+                color: DesignTokens.textMuted,
+                fontSize: 13,
+              ),
             ),
           ],
         ),
@@ -1762,7 +1766,10 @@ class _CommandCenterDashboardState extends State<CommandCenterDashboard>
               ),
               Text(
                 detail,
-                style: const TextStyle(color: DesignTokens.textMuted, fontSize: 12),
+                style: const TextStyle(
+                  color: DesignTokens.textMuted,
+                  fontSize: 12,
+                ),
               ),
             ],
           ),

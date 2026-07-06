@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../../../shared/services/ppv_service.dart';
@@ -128,7 +129,7 @@ class _PPVLibraryScreenState extends State<PPVLibraryScreen> {
           if (context.canPop()) {
             context.pop();
           } else {
-            context.go('/home');
+            context.go(rc.RouteConstants.home);
           }
         },
         icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
@@ -143,7 +144,7 @@ class _PPVLibraryScreenState extends State<PPVLibraryScreen> {
       ),
       actions: [
         IconButton(
-          onPressed: () => context.push('/ppv'),
+          onPressed: () => context.push(rc.RouteConstants.ppvHub),
           icon: const Icon(
             Icons.add_circle_outline,
             color: DesignTokens.neonCyan,
@@ -211,9 +212,13 @@ class _PPVLibraryScreenState extends State<PPVLibraryScreen> {
       onTap: () {
         HapticFeedback.lightImpact();
         if (isLive) {
-          context.push('/ppv/${event.id}/watch');
+          context.push(
+            rc.RouteConstants.ppvWatchById.replaceFirst(':id', event.id),
+          );
         } else if (!isExpired) {
-          context.push('/ppv/event/${event.id}');
+          context.push(
+            rc.RouteConstants.ppvEventById.replaceFirst(':id', event.id),
+          );
         }
       },
       child: Opacity(
@@ -256,10 +261,7 @@ class _PPVLibraryScreenState extends State<PPVLibraryScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF1A0A2E),
-                              DesignTokens.bgPrimary,
-                            ],
+                            colors: [Color(0xFF1A0A2E), DesignTokens.bgPrimary],
                           ),
                         ),
                         child: Center(
@@ -462,7 +464,7 @@ class _PPVLibraryScreenState extends State<PPVLibraryScreen> {
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
-              onPressed: () => context.push('/ppv'),
+              onPressed: () => context.push(rc.RouteConstants.ppvHub),
               icon: const Icon(Icons.sports_mma, size: 18),
               label: const Text('Browse PPV Events'),
               style: ElevatedButton.styleFrom(

@@ -536,7 +536,11 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
                   child: GestureDetector(
                     onTap: () {
                       final uid = FirebaseAuth.instance.currentUser?.uid;
-                      if (uid != null) context.push('/finance/promoter/$uid');
+                      if (uid != null) {
+                        context.push(
+                          '${rc.RouteConstants.financePromoterById.replaceFirst(':id', uid)}',
+                        );
+                      }
                     },
                     child: _MiniStat(
                       label: 'REVENUE',
@@ -569,34 +573,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
                 ),
               ],
             ),
-                  if (f.isSuspended)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.7),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  if (f.isSuspended)
-                    Positioned(
-                      top: 6,
-                      right: 6,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: _kRed,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'SUSPENDED',
-                          style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            );
+          );
         },
       ),
     );
@@ -658,7 +635,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
               label: 'Event\nManager',
               icon: Icons.view_kanban,
               accentColor: _kCyan,
-              onTap: () => context.push(rc.RouterConfig.eventManagerPath),
+              onTap: () => context.push(rc.RouteConstants.eventManagerPath),
             ),
             EcosystemHubNode(
               label: 'PosterBoy',
@@ -670,25 +647,25 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
               label: 'Events',
               icon: Icons.event,
               accentColor: _kGreen,
-              onTap: () => context.push(rc.RouterConfig.eventsPath),
+              onTap: () => context.push(rc.RouteConstants.eventsPath),
             ),
             EcosystemHubNode(
               label: 'Marketing',
               icon: Icons.campaign,
               accentColor: _kOrange,
-              onTap: () => context.push(rc.RouterConfig.marketingHQPath),
+              onTap: () => context.push(rc.RouteConstants.marketingHQPath),
             ),
             EcosystemHubNode(
               label: 'Social\nLinks',
               icon: Icons.share,
               accentColor: _kCyan,
-              onTap: () => context.push(rc.RouterConfig.socialConnectorsPath),
+              onTap: () => context.push(rc.RouteConstants.socialConnectorsPath),
             ),
             EcosystemHubNode(
               label: 'Ads\nSpotlight',
               icon: Icons.trending_up,
               accentColor: _kMagenta,
-              onTap: () => context.push(rc.RouterConfig.adsSpotlightPath),
+              onTap: () => context.push(rc.RouteConstants.adsSpotlightPath),
             ),
           ],
         ),
@@ -867,7 +844,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
         'Create Event',
         Icons.add_circle,
         _kGreen,
-        () => context.push(rc.RouterConfig.eventManagerPath),
+        () => context.push(rc.RouteConstants.eventManagerPath),
       ),
       _QuickTool(
         'PosterBoy',
@@ -888,7 +865,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
         'Fighter DB',
         Icons.people,
         _kCyan,
-        () => context.push(rc.RouterConfig.fighterDatabankPath),
+        () => context.push(rc.RouteConstants.fighterDatabankPath),
       ),
       _QuickTool('Sponsors', Icons.handshake, _kGreen, () {}),
     ];
@@ -1101,14 +1078,20 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
                 if (f.isSuspended) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${f.name} is medically suspended: ${f.suspensionReason}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      content: Text(
+                        '${f.name} is medically suspended: ${f.suspensionReason}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       backgroundColor: _kRed,
                       duration: const Duration(seconds: 3),
                     ),
                   );
                   return;
                 }
-                
+
                 setState(() {
                   if (_selectedFighterA == i) {
                     _selectedFighterA = null;
@@ -1130,71 +1113,106 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
               },
               child: Stack(
                 children: [
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: selected
-                      ? (isA ? _kCyan : _kMagenta).withValues(alpha: 0.12)
-                      : _kPanel,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: selected
-                        ? (isA ? _kCyan : _kMagenta).withValues(alpha: 0.5)
-                        : _kBorder,
-                    width: selected ? 2 : 1,
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: selected
+                          ? (isA ? _kCyan : _kMagenta).withValues(alpha: 0.12)
+                          : _kPanel,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selected
+                            ? (isA ? _kCyan : _kMagenta).withValues(alpha: 0.5)
+                            : _kBorder,
+                        width: selected ? 2 : 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (selected)
-                          Container(
-                            width: 18,
-                            height: 18,
-                            margin: const EdgeInsets.only(right: 6),
-                            decoration: BoxDecoration(
-                              color: isA ? _kCyan : _kMagenta,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
+                        Row(
+                          children: [
+                            if (selected)
+                              Container(
+                                width: 18,
+                                height: 18,
+                                margin: const EdgeInsets.only(right: 6),
+                                decoration: BoxDecoration(
+                                  color: isA ? _kCyan : _kMagenta,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    isA ? 'A' : 'B',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            Expanded(
                               child: Text(
-                                isA ? 'A' : 'B',
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w900,
+                                f.name,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: selected
+                                      ? Colors.white
+                                      : Colors.white.withValues(alpha: 0.7),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
-                          ),
-                        Expanded(
-                          child: Text(
-                            f.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: selected
-                                  ? Colors.white
-                                  : Colors.white.withValues(alpha: 0.7),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${f.record}  •  ${f.weight}  •  ⭐${f.rating}',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.4),
+                            fontSize: 10,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '${f.record}  •  ${f.weight}  •  ⭐${f.rating}',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.4),
-                        fontSize: 10,
+                  ),
+                  if (f.isSuspended)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.7),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  if (f.isSuspended)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _kRed,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'SUSPENDED',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             );
           },

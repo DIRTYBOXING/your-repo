@@ -574,19 +574,8 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
         } else {
           // Deduplicate before adding
           for (final p in morePosts) {
-            final pId = p is Post
-                ? p.id
-                : (p is Map ? p['id']?.toString() : null);
-            if (pId != null &&
-                !_paginatedPosts.any(
-                  (existing) =>
-                      (existing is Post
-                          ? existing.id
-                          : (existing is Map
-                                ? existing['id']?.toString()
-                                : null)) ==
-                      pId,
-                )) {
+            final pId = p.id;
+            if (!_paginatedPosts.any((existing) => existing.id == pId)) {
               _paginatedPosts.add(p);
             }
           }
@@ -3944,10 +3933,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
           border: Border.all(color: color.withValues(alpha: 0.3), width: 1.5),
           boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.15),
-              blurRadius: 16,
-            ),
+            BoxShadow(color: color.withValues(alpha: 0.15), blurRadius: 16),
           ],
         ),
         child: Column(
@@ -3989,10 +3975,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
           borderRadius: BorderRadius.circular(DesignTokens.radiusMedium),
           border: Border.all(color: color.withValues(alpha: 0.3)),
           boxShadow: [
-            BoxShadow(
-              color: color.withValues(alpha: 0.1),
-              blurRadius: 12,
-            ),
+            BoxShadow(color: color.withValues(alpha: 0.1), blurRadius: 12),
           ],
         ),
         child: Stack(
@@ -4930,7 +4913,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
                                 userId,
                                 text,
                                 displayName: displayName,
-                                role: auth.userRole,
+                                role: auth.userModel?.role.name,
                               )
                               .then((_) {
                                 commentController.clear();
@@ -5183,9 +5166,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
 
   void _showMoreOptions(Post post) {
     final auth = Provider.of<AuthService>(context, listen: false);
-    final currentUserId =
-        auth.currentUser?.uid ??
-        (auth.isDemoUser ? AuthService.demoUserId : null);
+    final currentUserId = auth.currentUser?.uid;
     final isOwn = currentUserId != null && currentUserId == post.userId;
 
     HapticFeedback.mediumImpact();
@@ -7850,12 +7831,7 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
                         letterSpacing: -0.3,
-                        shadows: [
-                          Shadow(
-                            offset: Offset(0, 2),
-                            blurRadius: 8,
-                          ),
-                        ],
+                        shadows: [Shadow(offset: Offset(0, 2), blurRadius: 8)],
                       ),
                       maxLines: 2,
                     ),

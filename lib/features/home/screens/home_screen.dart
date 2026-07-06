@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: Icons.live_tv_rounded,
       tabIndex: 1,
       accent: DesignTokens.ppvAccent,
-      routePath: app_router.RouterConfig.ppvStorePath,
+      routePath: app_router.RouteConstants.ppvStorePath,
     ),
     _ShellQuickAction(
       label: 'Earth Network',
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
       icon: Icons.rocket_launch_rounded,
       tabIndex: 0,
       accent: DesignTokens.neonCyan,
-      routePath: app_router.RouterConfig.missionControlPath,
+      routePath: app_router.RouteConstants.missionControlPath,
     ),
   ];
 
@@ -334,8 +334,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildActionBar(BuildContext context) {
     return DFCHomeShellTopBar(
-      onOpenMessaging: () => context.push('/messaging'),
-      onOpenFriendRequests: () => context.push('/friend-requests'),
+      onOpenMessaging: () => context.push(app_router.RouteConstants.messaging),
+      onOpenFriendRequests: () =>
+          context.push(app_router.RouteConstants.friendRequests),
       onOpenDashboard: () => _scaffoldKey.currentState?.openEndDrawer(),
       onOpenAccountMenu: () => _showAccountMenu(context),
       inboxBadgeStream: () {
@@ -919,7 +920,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 dense: true,
                 onTap: () {
                   Navigator.pop(sheetCtx);
-                  ctx.push('/settings');
+                  ctx.push(app_router.RouteConstants.settings);
                 },
               ),
               ListTile(
@@ -934,7 +935,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 dense: true,
                 onTap: () {
                   Navigator.pop(sheetCtx);
-                  ctx.push('/notifications');
+                  ctx.push(app_router.RouteConstants.notifications);
                 },
               ),
               Divider(
@@ -1007,7 +1008,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.of(dlg).pop();
               ctx.read<AuthService>().signOut();
-              GoRouter.of(ctx).go('/login');
+              GoRouter.of(ctx).go(app_router.RouteConstants.login);
             },
             child: const Text('Log Out'),
           ),

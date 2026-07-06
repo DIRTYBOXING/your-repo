@@ -19,10 +19,11 @@ class DfcGlassPanel extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(12),
     this.borderRadius = 12,
-    this.glowColor,
+    Color? glowColor,
+    Color? accent,
     this.blurSigma = 8,
     this.onTap,
-  });
+  }) : glowColor = glowColor ?? accent;
 
   @override
   Widget build(BuildContext context) {

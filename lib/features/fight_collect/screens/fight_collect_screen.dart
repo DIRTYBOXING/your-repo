@@ -1,19 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/design_tokens.dart';
-import '../providers/fight_collect_provider.dart';
-import '../widgets/holographic_card.dart';
 
-class FightCollectScreen extends ConsumerStatefulWidget {
+class FightCollectScreen extends StatefulWidget {
   const FightCollectScreen({super.key});
 
   @override
-  ConsumerState<FightCollectScreen> createState() => _FightCollectScreenState();
+  State<FightCollectScreen> createState() => _FightCollectScreenState();
 }
 
-class _FightCollectScreenState extends ConsumerState<FightCollectScreen>
+class _FightCollectScreenState extends State<FightCollectScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabs;
+
+  // Available collectible pack drops (product catalog).
+  static const List<Map<String, dynamic>> _packDrops = [
+    {
+      "color": DesignTokens.neonGold,
+      "title": "Championship Legends Pack",
+      "remaining": 250,
+      "price": "\$9.99",
+    },
+    {
+      "color": DesignTokens.neonCyan,
+      "title": "Rising Prospects Pack",
+      "remaining": 500,
+      "price": "\$4.99",
+    },
+    {
+      "color": DesignTokens.neonMagenta,
+      "title": "Knockout Moments Pack",
+      "remaining": 100,
+      "price": "\$14.99",
+    },
+  ];
 
   @override
   void initState() {
@@ -84,47 +103,17 @@ class _FightCollectScreenState extends ConsumerState<FightCollectScreen>
   }
 
   Widget _buildVaultTab() {
-    final vaultAsync = ref.watch(myVaultProvider);
-
-    return vaultAsync.when(
-      loading: () => const Center(
-        child: CircularProgressIndicator(color: DesignTokens.neonGold),
+    // Owned-collectibles backend is not wired yet — show an honest empty state.
+    return const Center(
+      child: Text(
+        "Your vault is empty.",
+        style: TextStyle(color: DesignTokens.textMuted),
       ),
-      error: (e, _) => Center(
-        child: Text(
-          "Error: $e",
-          style: const TextStyle(color: DesignTokens.neonRed),
-        ),
-      ),
-      data: (items) {
-        if (items.isEmpty) {
-          return const Center(
-            child: Text(
-              "Your vault is empty.",
-              style: TextStyle(color: DesignTokens.textMuted),
-            ),
-          );
-        }
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          physics: const BouncingScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return HolographicCard(collectible: items[index]);
-          },
-        );
-      },
     );
   }
 
   Widget _buildPackDropsTab() {
-    final drops = ref.watch(activeDropsProvider);
+    final drops = _packDrops;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),

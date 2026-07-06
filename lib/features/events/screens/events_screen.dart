@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
@@ -869,7 +870,8 @@ class _EventsScreenState extends State<EventsScreen>
     return Scaffold(
       backgroundColor: DesignTokens.bgPrimary,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/events/create'),
+        onPressed: () =>
+            context.push(app_router.RouteConstants.eventsCreatePath),
         backgroundColor: DesignTokens.neonCyan,
         icon: const Icon(Icons.add, color: Colors.black),
         label: const Text(
@@ -1328,9 +1330,7 @@ class _EventsScreenState extends State<EventsScreen>
                                                     ),
                                                   ),
                                             )
-                                          : DfcNetworkImage(
-                                              url: replay.$4,
-                                            )
+                                          : DfcNetworkImage(url: replay.$4)
                                     else
                                       Container(
                                         decoration: BoxDecoration(
@@ -1516,7 +1516,9 @@ class _EventsScreenState extends State<EventsScreen>
   }
 
   void _openEvent(EventModel event) {
-    context.push('/event/${event.id}');
+    context.push(
+      '${app_router.RouteConstants.eventDetailsBasePath}/${event.id}',
+    );
   }
 
   void _openReplayEvent(String replayTitle) {

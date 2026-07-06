@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import 'fight_event_gym_finder.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
@@ -115,7 +116,7 @@ class _FightWorldMapScreenState extends State<FightWorldMapScreen> {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.go('/home');
+              context.go(app_router.RouteConstants.home);
             }
           },
         ),

@@ -196,7 +196,7 @@ class _PromoterPortalState extends State<PromoterPortal>
             ),
             tooltip: 'Post New Slot',
             onPressed: () => context.push(
-              '/open-slots',
+              rc.RouteConstants.openSlotsPath,
               extra: {'userId': widget.promoterId, 'userRole': 'promoter'},
             ),
           ),
@@ -222,7 +222,7 @@ class _PromoterPortalState extends State<PromoterPortal>
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push(
-          '/open-slots',
+          rc.RouteConstants.openSlotsPath,
           extra: {'userId': widget.promoterId, 'userRole': 'promoter'},
         ),
         backgroundColor: const Color(0xFFFF6B9D),
@@ -362,23 +362,24 @@ class _PromoterPortalState extends State<PromoterPortal>
                 children: [
                   OutlinedButton(
                     onPressed: () => context.push(
-                      '${rc.RouterConfig.promoterControlRoomPath}?promoterId=${Uri.encodeComponent(widget.promoterId)}&promoterName=${Uri.encodeComponent(widget.promoterName)}',
+                      '${rc.RouteConstants.promoterControlRoomPath}?promoterId=${Uri.encodeComponent(widget.promoterId)}&promoterName=${Uri.encodeComponent(widget.promoterName)}',
                     ),
                     child: const Text('Control Room'),
                   ),
                   OutlinedButton(
                     onPressed: () =>
-                        context.push(rc.RouterConfig.promoterOnboardingPath),
+                        context.push(rc.RouteConstants.promoterOnboardingPath),
                     child: const Text('Onboarding'),
                   ),
                   OutlinedButton(
-                    onPressed: () =>
-                        context.push(rc.RouterConfig.promoterRightsIntakePath),
+                    onPressed: () => context.push(
+                      rc.RouteConstants.promoterRightsIntakePath,
+                    ),
                     child: const Text('Rights Intake'),
                   ),
                   OutlinedButton(
                     onPressed: () => context.push(
-                      rc.RouterConfig.promoterReconciliationPath,
+                      rc.RouteConstants.promoterReconciliationPath,
                     ),
                     child: const Text('Settlement'),
                   ),
@@ -1014,15 +1015,9 @@ class _PromoterPortalState extends State<PromoterPortal>
                       ),
                       borderData: FlBorderData(show: false),
                       titlesData: FlTitlesData(
-                        leftTitles: const AxisTitles(
-                          
-                        ),
-                        rightTitles: const AxisTitles(
-                          
-                        ),
-                        topTitles: const AxisTitles(
-                          
-                        ),
+                        leftTitles: const AxisTitles(),
+                        rightTitles: const AxisTitles(),
+                        topTitles: const AxisTitles(),
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,

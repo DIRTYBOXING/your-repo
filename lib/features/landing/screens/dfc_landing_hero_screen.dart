@@ -51,15 +51,15 @@ class _DfcLandingHeroScreenState extends State<DfcLandingHeroScreen>
   }
 
   void _openPartnerFlow() {
-    context.goNamed(rc.RouterConfig.roleSelection);
+    context.goNamed(rc.RouteConstants.roleSelection);
   }
 
   void _openWatchFlow() {
     if (AppConstants.authEnabled) {
-      context.goNamed(rc.RouterConfig.login);
+      context.goNamed(rc.RouteConstants.login);
       return;
     }
-    context.goNamed(rc.RouterConfig.ppvHub);
+    context.goNamed(rc.RouteConstants.ppvHub);
   }
 
   void _openHowItWorks() {
@@ -946,7 +946,7 @@ class _DfcLandingHeroScreenState extends State<DfcLandingHeroScreen>
               _footerLink('HOW IT WORKS', _openHowItWorks),
               _footerLink(
                 'SIGN IN',
-                () => context.goNamed(rc.RouterConfig.login),
+                () => context.goNamed(rc.RouteConstants.login),
               ),
             ],
           ),

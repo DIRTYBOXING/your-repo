@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/constants/streaming_platforms.dart';
 import '../../../core/utils/web_route_test_hook.dart';
 import '../../../shared/models/ppv_model.dart';
@@ -192,7 +193,9 @@ class _PPVLiveWatchScreenState extends State<PPVLiveWatchScreen>
   }
 
   void _showJudgeLeaderboard() {
-    context.push('/ppv/judge-leaderboard?eventId=${widget.ppvId}');
+    context.push(
+      '${rc.RouteConstants.judgeLeaderboardPath}?eventId=${widget.ppvId}',
+    );
   }
 
   void _showAudioTrackSelector() {
@@ -472,7 +475,7 @@ class _PPVLiveWatchScreenState extends State<PPVLiveWatchScreen>
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => context.go('/ppv'),
+                onPressed: () => context.go(rc.RouteConstants.ppvHub),
                 child: const Text('Back to PPV Hub'),
               ),
             ],
@@ -1780,7 +1783,7 @@ class _PPVLiveWatchScreenState extends State<PPVLiveWatchScreen>
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () => context.go('/ppv'),
+              onPressed: () => context.go(rc.RouteConstants.ppvHub),
               icon: const Icon(Icons.arrow_back),
               label: const Text('Back to PPV Hub'),
               style: OutlinedButton.styleFrom(

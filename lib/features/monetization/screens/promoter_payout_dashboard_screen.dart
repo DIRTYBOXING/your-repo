@@ -860,7 +860,12 @@ class _PromoterPayoutDashboardScreenState
       actions: [
         _appBarAction('EXPORT CSV', Icons.download, _cyan, _exportLedgerCsv),
         const SizedBox(width: 8),
-        _appBarAction('INSTANT CASHOUT', Icons.flash_on, _amber, _showInstantCashoutDialog),
+        _appBarAction(
+          'INSTANT CASHOUT',
+          Icons.flash_on,
+          _amber,
+          _showInstantCashoutDialog,
+        ),
         const SizedBox(width: 12),
       ],
       bottom: TabBar(
@@ -1410,7 +1415,7 @@ class _PromoterPayoutDashboardScreenState
         key: ValueKey<String>('ledger-row-${e.eventId}'),
         borderRadius: BorderRadius.circular(8),
         onTap: () => context.pushNamed(
-          rc.RouterConfig.promoterReconciliation,
+          rc.RouteConstants.promoterReconciliation,
           extra: e.eventId,
         ),
         child: Container(
@@ -1536,11 +1541,7 @@ class _PromoterPayoutDashboardScreenState
               const Spacer(),
               _pillButton('REQUEST PAYOUT', _green, _requestPayout),
               const SizedBox(width: 8),
-              _pillButton(
-                'INSTANT CASHOUT',
-                _amber,
-                _showInstantCashoutDialog,
-              ),
+              _pillButton('INSTANT CASHOUT', _amber, _showInstantCashoutDialog),
             ],
           ),
           const SizedBox(height: 16),

@@ -8,132 +8,133 @@ class AnalyticsDashboardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF05060A),
       body: SafeArea(
-          child: ListView(
+        child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            children: [
-              const SizedBox(height: 32),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back, color: Colors.white),
+          children: [
+            const SizedBox(height: 32),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Text(
+                    'ANALYTICS & TELEMETRY',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.5,
+                    ),
                   ),
-                  const SizedBox(width: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // High-Level Telemetry
+            Row(
+              children: [
+                Expanded(
+                  child: _TelemetryCard(
+                    label: 'LIVE PPV REVENUE',
+                    value: '\$142.5K',
+                    trend: '+12.4%',
+                    color: Colors.greenAccent,
+                    icon: Icons.attach_money,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _TelemetryCard(
+                    label: 'ACTIVE GYMS',
+                    value: '840',
+                    trend: '+5',
+                    color: Colors.blueAccent,
+                    icon: Icons.fitness_center,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Tesla-style Neon Chart
+            const Text(
+              'EVENT PERFORMANCE (PPV BUYS)',
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _DfcCard(
+              height: 240,
+              glow: true,
+              glowColor: Colors.cyanAccent,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        'DFC 1',
+                        style: TextStyle(color: Colors.white38, fontSize: 12),
+                      ),
+                      Text(
+                        'CURRENT',
+                        style: TextStyle(
+                          color: Colors.cyanAccent,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                   const Expanded(
-                    child: Text(
-                      'ANALYTICS & TELEMETRY',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.5,
-                      ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      child: _NeonChartWidget(),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+            ),
+            const SizedBox(height: 24),
 
-              // High-Level Telemetry
-              Row(
+            // Matchmaking & Popularity Heatmap
+            const Text(
+              'FIGHTER POPULARITY HEATMAP',
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _DfcCard(
+              height: 200,
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _TelemetryCard(
-                      label: 'LIVE PPV REVENUE',
-                      value: '\$142.5K',
-                      trend: '+12.4%',
-                      color: Colors.greenAccent,
-                      icon: Icons.attach_money,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _TelemetryCard(
-                      label: 'ACTIVE GYMS',
-                      value: '840',
-                      trend: '+5',
-                      color: Colors.blueAccent,
-                      icon: Icons.fitness_center,
-                    ),
-                  ),
+                  _HeatmapRow('Heath Ewart', '98%', Colors.redAccent),
+                  const Divider(color: Colors.white10),
+                  _HeatmapRow('Kai Johnson', '85%', Colors.orangeAccent),
+                  const Divider(color: Colors.white10),
+                  _HeatmapRow('Mason Lee', '72%', Colors.yellowAccent),
+                  const Divider(color: Colors.white10),
+                  _HeatmapRow('Alex Torres', '64%', Colors.cyanAccent),
                 ],
               ),
-              const SizedBox(height: 24),
-
-              // Tesla-style Neon Chart
-              const Text(
-                'EVENT PERFORMANCE (PPV BUYS)',
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _DfcCard(
-                height: 240,
-                glow: true,
-                glowColor: Colors.cyanAccent,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'DFC 1',
-                          style: TextStyle(color: Colors.white38, fontSize: 12),
-                        ),
-                        Text(
-                          'CURRENT',
-                          style: TextStyle(
-                            color: Colors.cyanAccent,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        child: _NeonChartWidget(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Matchmaking & Popularity Heatmap
-              const Text(
-                'FIGHTER POPULARITY HEATMAP',
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _DfcCard(
-                height: 200,
-                child: Column(
-                  children: [
-                    _HeatmapRow('Heath Ewart', '98%', Colors.redAccent),
-                    const Divider(color: Colors.white10),
-                    _HeatmapRow('Kai Johnson', '85%', Colors.orangeAccent),
-                    const Divider(color: Colors.white10),
-                    _HeatmapRow('Mason Lee', '72%', Colors.yellowAccent),
-                    const Divider(color: Colors.white10),
-                    _HeatmapRow('Alex Torres', '64%', Colors.cyanAccent),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 48),
-            ],
-          ),
+            ),
+            const SizedBox(height: 48),
+          ],
+        ),
+      ),
     );
   }
 }

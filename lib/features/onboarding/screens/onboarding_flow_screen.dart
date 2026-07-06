@@ -602,7 +602,7 @@ class _OnboardingControls extends StatelessWidget {
                     final success = await controller.completeOnboarding();
                     if (context.mounted) {
                       if (success) {
-                        context.go(app_router.RouterConfig.homePath);
+                        context.go(app_router.RouteConstants.homePath);
                       } else {
                         // Show prominent error so user knows what happened
                         final errorMsg =
@@ -618,7 +618,9 @@ class _OnboardingControls extends StatelessWidget {
                               textColor: Colors.white,
                               onPressed: () {
                                 if (context.mounted) {
-                                  context.go(app_router.RouterConfig.homePath);
+                                  context.go(
+                                    app_router.RouteConstants.homePath,
+                                  );
                                 }
                               },
                             ),

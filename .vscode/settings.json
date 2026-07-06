@@ -37,8 +37,13 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "Dart-Code.dart-code",
+  "editor.formatOnPaste": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll": "never",
+    "source.fixAll.eslint": "never",
+    "source.fixAll.sonarlint": "never",
+    "source.fixAll.sonar": "never",
+    "source.organizeImports": "never"
   },
   "eslint.validate": [
     "javascript",
@@ -83,6 +88,11 @@
     "playwright-report",
     "test-results"
   ],
+  "dart.allowAnalytics": false,
+  "dart.lineLength": 120,
+  "dart.organizeImports": false,
+  "dart.showTodos": true,
+  "dart.completeFunctionCalls": true,
   "python.analysis.typeCheckingMode": "standard",
   "python.analysis.diagnosticSeverityOverrides": {},
   "chat.agent.maxRequests": 50,
@@ -93,6 +103,7 @@
   "flutterTools.displayModularContextMenu": false,
   "swift.path": "C:\\Users\\User\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.2.3+Asserts\\usr\\bin",
   "firebridge.oauthProjectId": "datafightcentral-7093119-eefca",
+  "firebridge.serviceAccountPath": ".secrets/gha-deployer-datafightcentral.json",
   "chat.tools.terminal.autoApprove": {
     "cd": true,
     "echo": true,
@@ -223,11 +234,10 @@
       "matchCommandLine": true
     }
   },
-  "files.autoSave": "off",
+  "files.autoSave": "afterDelay",
   "editor.wordWrap": "on",
   "workbench.colorTheme": "Default High Contrast",
   "editor.mouseWheelZoom": true,
-  "editor.formatOnPaste": true,
   "editor.minimap.enabled": false,
   "search.followSymlinks": false,
   "workbench.list.smoothScrolling": false,
@@ -239,7 +249,7 @@
   "github.copilot.chat.agent.autoFix": true,
   "github.copilot.chat.githubMcpServer.enabled": true,
   "flutterTools.displaySignalsContextMenu": false,
-  "editor.codeActions.triggerOnFocusChange": true,
+  "editor.codeActions.triggerOnFocusChange": false,
   "i18n-ally.localesPaths": [
     "locales"
   ],

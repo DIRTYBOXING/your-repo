@@ -77,7 +77,7 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
             icon: const Icon(Icons.admin_panel_settings),
             tooltip: 'Owner Command Center',
             onPressed: () =>
-                context.push(rc.RouterConfig.ownerCommandCenterPath),
+                context.push(rc.RouteConstants.ownerCommandCenterPath),
           ),
         ],
       ),
@@ -200,7 +200,7 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
             children: [
               Expanded(
                 child: _actionButton('PPV Hub', Icons.live_tv, () {
-                  context.push(rc.RouterConfig.ppvHubPath);
+                  context.push(rc.RouteConstants.ppvHubPath);
                 }),
               ),
               const SizedBox(width: 8),
@@ -209,7 +209,7 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
                   'Stream Control',
                   Icons.settings_input_antenna,
                   () {
-                    context.push(rc.RouterConfig.ownerCommandCenterPath);
+                    context.push(rc.RouteConstants.ownerCommandCenterPath);
                   },
                 ),
               ),
@@ -287,7 +287,7 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
           ..._regions.take(8).map(_regionRow),
           const SizedBox(height: 8),
           _actionButton('Full Globe View', Icons.map, () {
-            context.push(rc.RouterConfig.combatMapPath);
+            context.push(rc.RouteConstants.combatMapPath);
           }),
         ],
       ),
@@ -371,13 +371,13 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
             children: [
               Expanded(
                 child: _actionButton('PPV Analytics', Icons.analytics, () {
-                  context.push(rc.RouterConfig.ppvHubPath);
+                  context.push(rc.RouteConstants.ppvHubPath);
                 }),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _actionButton('Pricing Engine', Icons.price_change, () {
-                  context.push(rc.RouterConfig.promoterPricingPath);
+                  context.push(rc.RouteConstants.promoterPricingPath);
                 }),
               ),
             ],
@@ -445,13 +445,13 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
             children: [
               Expanded(
                 child: _actionButton('Promo Center', Icons.rocket_launch, () {
-                  context.push(rc.RouterConfig.promoCommandCenterPath);
+                  context.push(rc.RouteConstants.promoCommandCenterPath);
                 }),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: _actionButton('Marketing HQ', Icons.business, () {
-                  context.push(rc.RouterConfig.marketingHQPath);
+                  context.push(rc.RouteConstants.marketingHQPath);
                 }),
               ),
             ],
@@ -460,7 +460,7 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () => context.push(rc.RouterConfig.campaignOpsPath),
+              onPressed: () => context.push(rc.RouteConstants.campaignOpsPath),
               icon: const Icon(
                 Icons.warning_amber,
                 size: 16,
@@ -563,7 +563,6 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
           _seoRow('mma fight events australia', 2, '+3'),
           _seoRow('combat sports platform', 4, '+8'),
           _seoRow('ppv combat streaming', 5, '+12'),
-
         ],
       ),
     );
@@ -655,7 +654,7 @@ class _DfcCommandCenterScreenState extends State<DfcCommandCenterScreen> {
               ),
               const SizedBox(height: 8),
               _actionButton('Full Health Report', Icons.health_and_safety, () {
-                context.push(rc.RouterConfig.ownerCommandCenterPath);
+                context.push(rc.RouteConstants.ownerCommandCenterPath);
               }),
             ],
           );

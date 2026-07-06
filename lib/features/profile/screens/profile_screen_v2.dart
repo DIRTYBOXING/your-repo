@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/dfc_glass_panel.dart';
 import '../../../shared/services/auth_service.dart';
@@ -92,7 +93,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               style: TextStyle(color: Colors.white),
             ),
             trailing: const Icon(Icons.chevron_right, color: Colors.white54),
-            onTap: () => context.push('/devices'),
+            onTap: () => context.push(app_router.RouteConstants.deviceHubPath),
           ),
           const SizedBox(height: 8),
           ListTile(
@@ -107,7 +108,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             trailing: const Icon(Icons.chevron_right, color: Colors.white54),
             onTap: () {
               if (currentUid != null)
-                context.push('/finance/fighter/$currentUid');
+                context.push(
+                  app_router.RouteConstants.financeFighterById.replaceFirst(
+                    ':id',
+                    currentUid,
+                  ),
+                );
             },
           ),
         ],

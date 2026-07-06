@@ -182,7 +182,7 @@ class CommandCenterGlobalPanels extends StatelessWidget {
       subtitle: '${svc.allEntries.length} regions configured',
       icon: Icons.attach_money,
       accentColor: AppTheme.neonGreen,
-      onTap: () => context.push(rc.RouterConfig.globalPricingPath),
+      onTap: () => context.push(rc.RouteConstants.globalPricingPath),
       navLabel: 'MANAGE',
       rows: [
         ...entries.map(
@@ -213,7 +213,7 @@ class CommandCenterGlobalPanels extends StatelessWidget {
       subtitle: '${enabled.length} channels active, ${disabled.length} paused',
       icon: Icons.broadcast_on_personal,
       accentColor: AppTheme.neonCyan,
-      onTap: () => context.push(rc.RouterConfig.globalDistributionPath),
+      onTap: () => context.push(rc.RouteConstants.globalDistributionPath),
       navLabel: 'CHANNELS',
       rows: [
         ...configs.map(
@@ -248,7 +248,7 @@ class CommandCenterGlobalPanels extends StatelessWidget {
       subtitle: 'Hype + momentum scores, live leaderboard',
       icon: Icons.emoji_events,
       accentColor: AppTheme.neonMagenta,
-      onTap: () => context.push(rc.RouterConfig.globalRankingPath),
+      onTap: () => context.push(rc.RouteConstants.globalRankingPath),
       navLabel: 'LEADERBOARD',
       rows: top3.asMap().entries.map((e) {
         final rank = e.key + 1;
@@ -274,7 +274,7 @@ class CommandCenterGlobalPanels extends StatelessWidget {
           : 'Template mode — wire GEMINI_API_KEY for AI',
       icon: Icons.auto_awesome,
       accentColor: AppTheme.neonOrange,
-      onTap: () => context.push(rc.RouterConfig.autoCaptionPath),
+      onTap: () => context.push(rc.RouteConstants.autoCaptionPath),
       navLabel: 'GENERATE',
       rows: [
         _row(
@@ -306,7 +306,7 @@ class CommandCenterGlobalPanels extends StatelessWidget {
       subtitle: 'Auto-metadata for fighters, gyms, and events',
       icon: Icons.travel_explore,
       accentColor: const Color(0xFF7C4DFF),
-      onTap: () => context.push(rc.RouterConfig.globalSeoScreenPath),
+      onTap: () => context.push(rc.RouteConstants.globalSeoScreenPath),
       navLabel: 'SEO PANEL',
       rows: [
         _row('Fighters', 'Meta + OG tags ready', AppTheme.neonGreen),

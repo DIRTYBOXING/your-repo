@@ -2077,32 +2077,32 @@ class _CommandPanel extends StatelessWidget {
         _NavChip(
           'PPV Hub',
           Icons.live_tv,
-          () => context.push(rc.RouterConfig.ppvHubPath),
+          () => context.push(rc.RouteConstants.ppvHubPath),
         ),
         _NavChip(
           'War Room',
           Icons.military_tech,
-          () => context.push(rc.RouterConfig.warRoomPath),
+          () => context.push(rc.RouteConstants.warRoomPath),
         ),
         _NavChip(
           'Control Tower',
           Icons.cell_tower,
-          () => context.push(rc.RouterConfig.controlTowerPath),
+          () => context.push(rc.RouteConstants.controlTowerPath),
         ),
         _NavChip(
           'Swarm',
           Icons.smart_toy,
-          () => context.push(rc.RouterConfig.swarmDashboardPath),
+          () => context.push(rc.RouteConstants.swarmDashboardPath),
         ),
         _NavChip(
           'Content HQ',
           Icons.article,
-          () => context.push(rc.RouterConfig.contentCommandCenterPath),
+          () => context.push(rc.RouteConstants.contentCommandCenterPath),
         ),
         _NavChip(
           'Marketing HQ',
           Icons.campaign,
-          () => context.push(rc.RouterConfig.marketingHQPath),
+          () => context.push(rc.RouteConstants.marketingHQPath),
         ),
       ],
     );

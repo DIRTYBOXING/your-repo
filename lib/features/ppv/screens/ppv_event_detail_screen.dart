@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../core/constants/image_assets.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/utils/web_route_test_hook.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/ppv_model.dart';
@@ -763,7 +764,7 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
                 if (context.canPop()) {
                   context.pop();
                 } else {
-                  context.go('/home');
+                  context.go(rc.RouteConstants.home);
                 }
               },
               child: Container(
@@ -853,7 +854,7 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
           )
         : null;
     context.push(
-      '/promoter/poster-generator'
+      '${rc.RouteConstants.promoterPosterGeneratorPath}'
       '?event=${Uri.encodeComponent(e.title)}'
       '&f1=${Uri.encodeComponent(mainFight?.fighter1Name ?? '')}'
       '&f2=${Uri.encodeComponent(mainFight?.fighter2Name ?? '')}'
@@ -2755,7 +2756,7 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
           action: SnackBarAction(
             label: 'SIGN IN',
             textColor: Colors.white,
-            onPressed: () => context.push('/login'),
+            onPressed: () => context.push(rc.RouteConstants.login),
           ),
         ),
       );
@@ -2795,7 +2796,9 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
   }
 
   void _openWatchNow() {
-    context.push('/ppv/${widget.ppvId}/watch');
+    context.push(
+      rc.RouteConstants.ppvWatchById.replaceFirst(':id', widget.ppvId),
+    );
   }
 
   Widget _buildStickyPurchaseBar() {

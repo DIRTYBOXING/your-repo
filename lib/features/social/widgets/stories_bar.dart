@@ -198,10 +198,10 @@ class _StoriesBarState extends State<StoriesBar>
 
   void _handleStoryTap(BuildContext context, _StoryData story) {
     if (story.isAdd) {
-      context.push(routes.RouterConfig.createStoryPath);
+      context.push(routes.RouteConstants.createStoryPath);
     } else {
       context.push(
-        '${routes.RouterConfig.storyViewerPath}?category=${story.routeCategory ?? 'EVENTS'}',
+        '${routes.RouteConstants.storyViewerPath}?category=${story.routeCategory ?? 'EVENTS'}',
       );
     }
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/constants/image_assets.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/event_model.dart';
 import '../../../shared/services/event_service.dart';
@@ -30,7 +31,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       context.pop();
       return;
     }
-    context.go('/home');
+    context.go(app_router.RouteConstants.home);
   }
 
   // Form controllers
@@ -169,7 +170,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       isFeatured: _isFeatured,
     );
 
-    final docId = await _eventService.createEvent(event);
+    final docId = await _eventService.createEventDoc(event);
 
     if (!mounted) return;
 
@@ -182,7 +183,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         ),
       );
       // Navigate to the new event detail
-      context.push('/event/$docId');
+      context.push('${app_router.RouteConstants.eventDetailsBasePath}/$docId');
     } else {
       setState(() {
         _isSubmitting = false;

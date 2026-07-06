@@ -83,7 +83,7 @@ class _GroupListScreenState extends State<GroupListScreen>
             tooltip: 'Create Group',
             onPressed: () async {
               final created = await context.push<bool>(
-                RouterConfig.createGroupPath,
+                RouteConstants.createGroupPath,
               );
               if (created == true) _loadGroups();
             },
@@ -153,7 +153,7 @@ class _GroupListScreenState extends State<GroupListScreen>
               ),
               onPressed: () async {
                 final created = await context.push<bool>(
-                  RouterConfig.createGroupPath,
+                  RouteConstants.createGroupPath,
                 );
                 if (created == true) _loadGroups();
               },
@@ -174,7 +174,10 @@ class _GroupListScreenState extends State<GroupListScreen>
         itemBuilder: (_, i) => _GroupCard(
           group: groups[i],
           onTap: () => context.push(
-            RouterConfig.groupDetailPath.replaceFirst(':groupId', groups[i].id),
+            RouteConstants.groupDetailPath.replaceFirst(
+              ':groupId',
+              groups[i].id,
+            ),
           ),
         ),
       ),

@@ -4,19 +4,57 @@
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/"
     },
+    "firebase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@gannonh/firebase-mcp"
+      ],
+      "env": {
+        "SERVICE_ACCOUNT_KEY_PATH": "${input:firebase_service_account_key_path}",
+        "FIREBASE_STORAGE_BUCKET": "${input:firebase_storage_bucket}"
+      }
+    },
     "stripe": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@stripe/mcp", "--api-key=${input:stripe_secret_key}"]
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--api-key=${input:stripe_secret_key}"
+      ]
     },
     "com.figma.mcp/mcp": {
       "type": "http",
-      "url": "https://mcp.figma.com/mcp",
-      "gallery": "https://api.mcp.github.com",
-      "version": "1.0.3"
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "namecheap": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-namecheap"
+      ],
+      "env": {
+        "NAMECHEAP_API_KEY": "${input:namecheap_api_key}",
+        "NAMECHEAP_API_USER": "${input:namecheap_api_user}",
+        "NAMECHEAP_CLIENT_IP": "${input:namecheap_client_ip}",
+        "NAMECHEAP_USE_SANDBOX": "${input:namecheap_use_sandbox}"
+      }
     }
   },
   "inputs": [
+    {
+      "id": "firebase_service_account_key_path",
+      "type": "promptString",
+      "description": "Absolute path to the Firebase service account JSON file"
+    },
+    {
+      "id": "firebase_storage_bucket",
+      "type": "promptString",
+      "description": "Firebase Storage bucket name (for example, your-project-id.firebasestorage.app)"
+    },
     {
       "id": "github_token",
       "type": "promptString",
@@ -28,6 +66,28 @@
       "type": "promptString",
       "description": "Stripe Secret Key (sk_test_...)",
       "password": true
+    },
+    {
+      "id": "namecheap_api_key",
+      "type": "promptString",
+      "description": "Namecheap API Key (from https://ap.www.namecheap.com/settings/tools/apiaccess/)",
+      "password": true
+    },
+    {
+      "id": "namecheap_api_user",
+      "type": "promptString",
+      "description": "Namecheap API Username"
+    },
+    {
+      "id": "namecheap_client_ip",
+      "type": "promptString",
+      "description": "Your whitelisted public IP address for Namecheap API"
+    },
+    {
+      "id": "namecheap_use_sandbox",
+      "type": "promptString",
+      "description": "Use sandbox? (true for testing, false for production)",
+      "default": "true"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../services/ppv_service.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../services/sales_service.dart';
@@ -49,7 +50,7 @@ class _CreatePPVScreenState extends State<CreatePPVScreen> {
           backgroundColor: Colors.orange,
         ),
       );
-      context.pushReplacement('/onboarding/promoter');
+      context.pushReplacement(rc.RouteConstants.promoterOnboardingPath);
     }
   }
 
@@ -439,6 +440,7 @@ class _CreatePPVScreenState extends State<CreatePPVScreen> {
 
       final eventId = await _ppvService.createPPVEvent(
         eventId: widget.eventId ?? '',
+        promoterId: promoterId,
         title: _nameController.text.trim(),
         description: _descriptionController.text.trim(),
         eventDate: _selectedDate,

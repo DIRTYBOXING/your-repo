@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RouterConfig;
 import 'package:go_router/go_router.dart';
 import 'router_constants.dart';
 export 'router_constants.dart';
@@ -78,195 +78,202 @@ class _ComingSoon extends StatelessWidget {
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: RouteConstants.root,
     routes: [
       // ── Root ────────────────────────────────────────────────────────────────
       GoRoute(
-        path: '/',
+        path: RouteConstants.root,
         builder: (context, state) => const WebsiteHomeScreen(),
       ),
 
       // ── Auth ─────────────────────────────────────────────────────────────────
       GoRoute(
-        path: '/login',
+        path: RouteConstants.login,
         builder: (context, state) => const LoginOnboardingScreen(),
       ),
 
       // ── Home shell ───────────────────────────────────────────────────────────
-      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+      GoRoute(
+        path: RouteConstants.home,
+        builder: (context, state) => const HomeScreen(),
+      ),
 
       // ── Coach & Training ─────────────────────────────────────────────────────
       GoRoute(
-        path: '/neural-coach',
+        path: RouteConstants.neuralCoachPath,
         builder: (context, state) => const NeuralCoachScreen(),
       ),
       GoRoute(
-        path: '/corner-coach',
+        path: RouteConstants.cornerCoachPath,
         builder: (context, state) => const _ComingSoon('Corner Coach'),
       ),
       GoRoute(
-        path: '/training-session',
+        path: RouteConstants.trainingSessionPath,
         builder: (context, state) => const _ComingSoon('Training Session'),
       ),
       GoRoute(
-        path: '/fight-summary',
+        path: RouteConstants.fightSummaryPath,
         builder: (context, state) => const _ComingSoon('Fight Summary'),
       ),
 
       // ── Devices & Biometrics ─────────────────────────────────────────────────
       GoRoute(
-        path: '/devices',
+        path: RouteConstants.deviceHubPath,
         builder: (context, state) => const DeviceHubScreen(),
       ),
       GoRoute(
-        path: '/astrohealth',
+        path: RouteConstants.astroHealthPath,
         builder: (context, state) => const AstroHealthMonitorScreen(),
       ),
 
       // ── Analytics & History ──────────────────────────────────────────────────
       GoRoute(
-        path: '/performance-lab',
+        path: RouteConstants.performanceLabPath,
         builder: (context, state) => const _ComingSoon('Performance Lab'),
       ),
       GoRoute(
-        path: '/fight-history',
+        path: RouteConstants.fightHistoryPath,
         builder: (context, state) => const _ComingSoon('Fight History'),
       ),
 
       // ── Identity & Social ────────────────────────────────────────────────────
       GoRoute(
-        path: '/profile',
+        path: RouteConstants.profilePath,
         builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
-        path: '/public-profile',
+        path: RouteConstants.publicProfilePath,
         builder: (context, state) => const FighterPublicProfileScreen(),
       ),
-      GoRoute(path: '/feed', builder: (context, state) => const FeedScreen()),
+      GoRoute(
+        path: RouteConstants.feedPath,
+        builder: (context, state) => const FeedScreen(),
+      ),
 
       // ── Gyms & Teams ─────────────────────────────────────────────────────────
       GoRoute(
-        path: '/coach-hub',
+        path: RouteConstants.coachHubPath,
         builder: (context, state) => const _ComingSoon('Coach Hub'),
       ),
       GoRoute(
-        path: '/gym-hub',
+        path: RouteConstants.gymHubPath,
         builder: (context, state) => const GymTeamHubScreen(),
       ),
 
       // ── Events & Streaming ───────────────────────────────────────────────────
       GoRoute(
-        path: '/event-center',
+        path: RouteConstants.eventCenterPath,
         builder: (context, state) => const _ComingSoon('Event Center'),
       ),
       GoRoute(
-        path: '/streaming',
+        path: RouteConstants.streamingPath,
         builder: (context, state) => const _ComingSoon('Streaming Center'),
       ),
       GoRoute(
-        path: '/ppv',
+        path: RouteConstants.ppvHub,
         builder: (context, state) => const PpvStorefrontScreen(),
       ),
       GoRoute(
-        path: '/ppv-detail/:eventId',
+        path: RouteConstants.ppvDetailByEventId,
         builder: (context, state) =>
             PpvDetailScreen(eventId: state.pathParameters['eventId']!),
       ),
       GoRoute(
-        path: '/ppv-stream/:eventId',
+        path: RouteConstants.ppvStreamByEventId,
         builder: (context, state) =>
             PpvStreamingScreen(eventId: state.pathParameters['eventId']!),
       ),
       GoRoute(
-        path: '/replay',
+        path: RouteConstants.replayPath,
         builder: (context, state) => const _ComingSoon('Replay Center'),
       ),
       GoRoute(
-        path: '/broadcast',
-        builder: (context, state) => const BroadcastOverlayScreen(eventId: 'live'),
+        path: RouteConstants.broadcastPath,
+        builder: (context, state) =>
+            const BroadcastOverlayScreen(eventId: 'live'),
       ),
 
       // ── Promoter & Operations ────────────────────────────────────────────────
       GoRoute(
-        path: '/promoter',
+        path: RouteConstants.promoterPath,
         builder: (context, state) => const PromoterDashboardScreen(),
       ),
       GoRoute(
-        path: '/card-builder',
+        path: RouteConstants.cardBuilderPath,
         builder: (context, state) => const FightCardBuilderScreen(),
       ),
       GoRoute(
-        path: '/venue-ops',
+        path: RouteConstants.venueOpsPath,
         builder: (context, state) => const _ComingSoon('Venue Operations'),
       ),
 
       // ── Regulatory & Back Office ─────────────────────────────────────────────
       GoRoute(
-        path: '/officials',
+        path: RouteConstants.officialsPath,
         builder: (context, state) => const OfficialsTabletScreen(),
       ),
       GoRoute(
-        path: '/medical',
+        path: RouteConstants.medicalPath,
         builder: (context, state) => const MedicalSafetyScreen(),
       ),
       GoRoute(
-        path: '/legal',
+        path: RouteConstants.legalPath,
         builder: (context, state) => const _ComingSoon('Contracts & Legal'),
       ),
       GoRoute(
-        path: '/finance',
+        path: RouteConstants.financePath,
         builder: (context, state) => const _ComingSoon('Payouts & Finance'),
       ),
       GoRoute(
-        path: '/sponsors',
+        path: RouteConstants.sponsorsPath,
         builder: (context, state) => const _ComingSoon('Sponsorship'),
       ),
 
       // ── Admin ────────────────────────────────────────────────────────────────
       GoRoute(
-        path: '/google-hub',
+        path: RouteConstants.googleHubPath,
         builder: (context, state) => const GoogleEcosystemHubScreen(),
       ),
       GoRoute(
-        path: '/admin-console',
+        path: RouteConstants.adminConsolePath,
         builder: (context, state) => const AdminConsoleScreen(),
       ),
       GoRoute(
-        path: '/economy-control-room',
+        path: RouteConstants.economyControlPath,
         builder: (context, state) => const EconomyControlRoomScreen(),
       ),
       GoRoute(
-        path: '/finance/onboarding',
+        path: RouteConstants.financeOnboardingPath,
         builder: (context, state) =>
             const _ComingSoon('Stripe Connect Onboarding'),
       ),
 
       // ── Economy dashboards ───────────────────────────────────────────────────
       GoRoute(
-        path: '/finance/promoter/:id',
+        path: RouteConstants.financePromoterById,
         builder: (context, state) =>
             PromoterEconomyDashboard(promoterId: state.pathParameters['id']!),
       ),
       GoRoute(
-        path: '/finance/fighter/:id',
+        path: RouteConstants.financeFighterById,
         builder: (context, state) =>
             FighterEconomyDashboard(fighterId: state.pathParameters['id']!),
       ),
       GoRoute(
-        path: '/finance/gym/:id',
+        path: RouteConstants.financeGymById,
         builder: (context, state) =>
             GymEconomyDashboard(gymId: state.pathParameters['id']!),
       ),
 
       // ── Content & Marketing ──────────────────────────────────────────────────
       GoRoute(
-        path: '/creative-hub',
+        path: RouteConstants.creativeHub,
         builder: (context, state) => const CreativeHubScreen(),
       ),
 
       // ── TikeRocket ────────────────────────────────────────────────────────────
       GoRoute(
-        path: '/tikerocket',
+        path: RouteConstants.tikeRocket,
         builder: (context, state) => TikeRocketScreen(
           userId: state.uri.queryParameters['userId'] ?? 'guest',
           userName: state.uri.queryParameters['userName'] ?? 'Fighter Fan',
@@ -275,15 +282,15 @@ class AppRouter {
 
       // ── Partnership Landing Pages ─────────────────────────────────────────────
       GoRoute(
-        path: '/partners/google',
+        path: RouteConstants.googlePartnerPath,
         builder: (context, state) => const GooglePartnershipScreen(),
       ),
       GoRoute(
-        path: '/partners/nvidia',
+        path: RouteConstants.nvidiaPartnerPath,
         builder: (context, state) => const NvidiaPartnershipScreen(),
       ),
       GoRoute(
-        path: '/partners/github',
+        path: RouteConstants.githubPartnerPath,
         builder: (context, state) => const GithubPartnershipScreen(),
       ),
     ],

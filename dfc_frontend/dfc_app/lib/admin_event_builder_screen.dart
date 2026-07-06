@@ -20,7 +20,9 @@ class _AdminEventBuilderScreenState extends State<AdminEventBuilderScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = EventController(repository: EventRepository(apiService: ApiService()));
+    _controller = EventController(
+      repository: EventRepository(apiService: ApiService()),
+    );
     _controller.loadEvents();
   }
 
@@ -68,7 +70,9 @@ class _AdminEventBuilderScreenState extends State<AdminEventBuilderScreen> {
           final state = _controller.state;
 
           if (state is EventInitial || state is EventLoading) {
-            return const Center(child: CircularProgressIndicator(color: Colors.cyanAccent));
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.cyanAccent),
+            );
           }
 
           if (state is EventError) {
@@ -189,13 +193,15 @@ class _AdminEventBuilderScreenState extends State<AdminEventBuilderScreen> {
                           children: [
                             if (fight.isMainEvent)
                               Container(
-                                margin: const EdgeInsets.right(8),
+                                margin: const EdgeInsets.only(right: 8),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 6,
                                   vertical: 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.redAccent.withValues(alpha: 0.2),
+                                  color: Colors.redAccent.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   border: Border.all(color: Colors.redAccent),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
@@ -277,7 +283,11 @@ class _AdminEventBuilderScreenState extends State<AdminEventBuilderScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.cyanAccent),
             onPressed: () {
               if (existingEvent == null) {
-                _controller.createEvent(nameCtrl.text, dateCtrl.text, locCtrl.text);
+                _controller.createEvent(
+                  nameCtrl.text,
+                  dateCtrl.text,
+                  locCtrl.text,
+                );
               } else {
                 _controller.updateEvent(existingEvent.id, {
                   'name': nameCtrl.text,

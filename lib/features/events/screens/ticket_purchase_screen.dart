@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/theme/design_tokens.dart';
 import '../../../core/constants/stripe_config.dart';
 import '../../../shared/services/paypal_service.dart';
@@ -678,12 +679,7 @@ class _TicketPurchaseScreenState extends State<TicketPurchaseScreen>
     );
   }
 
-  Widget _paymentOption(
-    String id,
-    IconData icon,
-    String label,
-    Color color,
-  ) {
+  Widget _paymentOption(String id, IconData icon, String label, Color color) {
     final selected = _paymentMethod == id;
     return GestureDetector(
       onTap: () => setState(() => _paymentMethod = id),
@@ -698,12 +694,7 @@ class _TicketPurchaseScreenState extends State<TicketPurchaseScreen>
                 : Colors.white.withValues(alpha: 0.08),
           ),
           boxShadow: selected
-              ? [
-                  BoxShadow(
-                    color: color.withValues(alpha: 0.2),
-                    blurRadius: 10,
-                  ),
-                ]
+              ? [BoxShadow(color: color.withValues(alpha: 0.2), blurRadius: 10)]
               : null,
         ),
         child: Row(
@@ -934,7 +925,7 @@ class _TicketPurchaseScreenState extends State<TicketPurchaseScreen>
                 ),
                 const SizedBox(height: 32),
                 GestureDetector(
-                  onTap: () => context.go('/home'),
+                  onTap: () => context.go(app_router.RouteConstants.home),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -962,7 +953,9 @@ class _TicketPurchaseScreenState extends State<TicketPurchaseScreen>
                 ),
                 const SizedBox(height: 12),
                 TextButton(
-                  onPressed: () => context.push('/fight-pass/my-passes'),
+                  onPressed: () => context.push(
+                    app_router.RouteConstants.fightPassMyPassesPath,
+                  ),
                   child: const Text(
                     'View My Passes',
                     style: TextStyle(

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/smartcoach_provider.dart';
-import '../../../core/theme/design_tokens.dart';
+import '../../features/genie/genie_api_service.dart';
+import '../../core/theme/design_tokens.dart';
 
-class SmartCoachScreen extends ConsumerStatefulWidget {
+class SmartCoachScreen extends StatefulWidget {
   const SmartCoachScreen({super.key});
 
   @override
-  ConsumerState<SmartCoachScreen> createState() => _SmartCoachScreenState();
+  State<SmartCoachScreen> createState() => _SmartCoachScreenState();
 }
 
-class _SmartCoachScreenState extends ConsumerState<SmartCoachScreen> {
+class _SmartCoachScreenState extends State<SmartCoachScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<Map<String, String>> _messages = [
@@ -34,7 +33,7 @@ class _SmartCoachScreenState extends ConsumerState<SmartCoachScreen> {
     _controller.clear();
     _scrollToBottom();
 
-    final reply = await ref.read(smartCoachProvider(text).future);
+    final reply = await GenieApiService.askGenie(text);
 
     if (!mounted) return;
 

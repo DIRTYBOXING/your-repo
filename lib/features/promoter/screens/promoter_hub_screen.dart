@@ -403,7 +403,7 @@ class _PromoterHubScreenState extends State<PromoterHubScreen>
 
   void _openDM(HubCollaborator collab) {
     // Route to messaging inbox — user taps a thread from there
-    context.pushNamed(dfc_router.RouterConfig.inbox);
+    context.pushNamed(dfc_router.RouteConstants.inbox);
   }
 
   void _showAddMemberSheet() {
@@ -455,7 +455,7 @@ class _PromoterHubScreenState extends State<PromoterHubScreen>
               ),
               onPressed: () {
                 Navigator.pop(context);
-                context.pushNamed(dfc_router.RouterConfig.findFriends);
+                context.pushNamed(dfc_router.RouteConstants.findFriends);
               },
             ),
             const SizedBox(height: 8),
@@ -662,7 +662,11 @@ class _OverviewTab extends StatelessWidget {
           ),
           Text(
             label,
-            style: const TextStyle(color: _kMuted, fontSize: 10, letterSpacing: 0.8),
+            style: const TextStyle(
+              color: _kMuted,
+              fontSize: 10,
+              letterSpacing: 0.8,
+            ),
           ),
         ],
       ),

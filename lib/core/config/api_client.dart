@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import '../errors/failure.dart';
-import '../errors/result.dart';
+import '../logic/failure.dart';
+import '../logic/result.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// DFC BASE API CLIENT (BLUE TIER)
@@ -117,7 +117,7 @@ class ApiClient {
       final response = await call();
       return _handleResponse(response);
     } on SocketException catch (e) {
-      return Error(
+      return Err(
         Failure(
           'No internet connection. Please check your network.',
           code: 'network_error',
@@ -125,7 +125,7 @@ class ApiClient {
         ),
       );
     } on TimeoutException catch (e) {
-      return Error(
+      return Err(
         Failure(
           'The connection timed out. Please try again.',
           code: 'timeout',
@@ -133,7 +133,7 @@ class ApiClient {
         ),
       );
     } catch (e) {
-      return Error(
+      return Err(
         Failure(
           'An unexpected network error occurred.',
           code: 'unknown',
@@ -149,7 +149,7 @@ class ApiClient {
       try {
         return Success(jsonDecode(response.body));
       } catch (e) {
-        return Error(
+        return Err(
           Failure(
             'Failed to parse server response.',
             code: 'parse_error',
@@ -165,7 +165,7 @@ class ApiClient {
       } catch (_) {
         message = response.body.isNotEmpty ? response.body : message;
       }
-      return Error(
+      return Err(
         Failure(
           message,
           code: 'http_${response.statusCode}',

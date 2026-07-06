@@ -195,8 +195,8 @@ class _PpvHeroStorefrontScreenState extends State<PpvHeroStorefrontScreen> {
         ),
       );
 
-      // Navigate to payment flow or show payment dialog
-      // context.push('/ppv/checkout', extra: order);
+      // Checkout is currently handled by the storefront order service.
+      // Add a routed checkout screen only after registering a real route.
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(

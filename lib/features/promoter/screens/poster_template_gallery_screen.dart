@@ -58,7 +58,7 @@ class _PosterTemplateGalleryScreenState
               color: DesignTokens.neonCyan,
             ),
             onPressed: () =>
-                context.push(app_router.RouterConfig.posterGeneratorPath),
+                context.push(app_router.RouteConstants.posterGeneratorPath),
             tooltip: 'Create Poster',
           ),
         ],
@@ -410,7 +410,7 @@ class _PosterTemplateGalleryScreenState
   void _useTemplate(PosterTemplate template) {
     _service.recordUsage(template.id);
     context.push(
-      app_router.RouterConfig.posterGeneratorPath,
+      app_router.RouteConstants.posterGeneratorPath,
       extra: {
         'templateId': template.id,
         'style': template.style.name,

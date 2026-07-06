@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/image_assets.dart';
 import '../../../core/theme/design_tokens.dart';
@@ -48,8 +49,9 @@ class _PPVStoreScreenState extends State<PPVStoreScreen>
             color: DesignTokens.textPrimary,
             size: 18,
           ),
-          onPressed: () =>
-              context.canPop() ? context.pop() : context.go('/home'),
+          onPressed: () => context.canPop()
+              ? context.pop()
+              : context.go(rc.RouteConstants.home),
         ),
         title: Row(
           children: [
@@ -807,7 +809,8 @@ class _PPVDetailsSheetState extends State<PPVDetailsSheet> {
                       height: 56,
                       child: OutlinedButton.icon(
                         onPressed: () => context.push(
-                          '/ppv/notifications/${widget.event.id}',
+                          rc.RouteConstants.ppvNotificationsByEventId
+                              .replaceFirst(':id', widget.event.id),
                         ),
                         icon: const Icon(Icons.notifications),
                         label: const Text('🔔 Never Miss Action'),
@@ -876,7 +879,8 @@ class _PPVDetailsSheetState extends State<PPVDetailsSheet> {
                       height: 56,
                       child: OutlinedButton.icon(
                         onPressed: () => context.push(
-                          '/ppv/notifications/${widget.event.id}',
+                          rc.RouteConstants.ppvNotificationsByEventId
+                              .replaceFirst(':id', widget.event.id),
                         ),
                         icon: const Icon(Icons.notifications_active),
                         label: const Text('Alert Preferences'),

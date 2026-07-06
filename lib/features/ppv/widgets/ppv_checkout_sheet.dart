@@ -81,7 +81,8 @@ class _PPVCheckoutSheetState extends State<PPVCheckoutSheet> {
   String? _promoDiscount;
   String? _error;
 
-  Map<String, dynamic> get _tier => _paymentService.getTier(widget.tierId);
+  Map<String, dynamic> get _tier =>
+      _paymentService.getTier(widget.tierId.toString());
   double get _price => _tier['price'] as double;
   int get _requiredCredits => _tier['credits'] as int;
   bool get _hasEnoughCredits => _userCredits >= _requiredCredits;
@@ -718,7 +719,7 @@ class _PPVCheckoutSheetState extends State<PPVCheckoutSheet> {
           userId: widget.userId,
           ppvId: widget.event.id,
           ppvTitle: widget.event.title,
-          tierId: widget.tierId,
+          tierId: widget.tierId.toString(),
           promoCode: _promoController.text.isNotEmpty
               ? _promoController.text.trim()
               : null,

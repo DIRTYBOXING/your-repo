@@ -140,21 +140,39 @@ class _DeviceHubScreenState extends State<DeviceHubScreen>
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: const BoxDecoration(
         color: DesignTokens.bgSecondary,
-        border: Border(
-          top: BorderSide(color: DesignTokens.borderSubtle),
-        ),
+        border: Border(top: BorderSide(color: DesignTokens.borderSubtle)),
       ),
       child: SafeArea(
         top: false,
         child: Row(
           children: [
-            _devNavChip(Icons.fitness_center, 'Fight Camp', DesignTokens.neonAmber, rc.RouterConfig.fightCampToolsPath),
+            _devNavChip(
+              Icons.fitness_center,
+              'Fight Camp',
+              DesignTokens.neonAmber,
+              rc.RouteConstants.fightCampToolsPath,
+            ),
             const SizedBox(width: 8),
-            _devNavChip(Icons.psychology_alt, 'AI Coach', DesignTokens.neonCyan, rc.RouterConfig.neuralCoachPath),
+            _devNavChip(
+              Icons.psychology_alt,
+              'AI Coach',
+              DesignTokens.neonCyan,
+              rc.RouteConstants.neuralCoachPath,
+            ),
             const SizedBox(width: 8),
-            _devNavChip(Icons.monitor_heart, 'Health', DesignTokens.neonMagenta, rc.RouterConfig.healthDashboardPath),
+            _devNavChip(
+              Icons.monitor_heart,
+              'Health',
+              DesignTokens.neonMagenta,
+              rc.RouteConstants.healthDashboardPath,
+            ),
             const SizedBox(width: 8),
-            _devNavChip(Icons.scale, 'Body', DesignTokens.neonGreen, rc.RouterConfig.bodyMonitorPath),
+            _devNavChip(
+              Icons.scale,
+              'Body',
+              DesignTokens.neonGreen,
+              rc.RouteConstants.bodyMonitorPath,
+            ),
           ],
         ),
       ),
@@ -177,7 +195,14 @@ class _DeviceHubScreenState extends State<DeviceHubScreen>
             children: [
               Icon(icon, color: color, size: 16),
               const SizedBox(height: 4),
-              Text(label, style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.w600)),
+              Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         ),

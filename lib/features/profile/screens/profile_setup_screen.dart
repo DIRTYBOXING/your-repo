@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
+import '../../../core/config/router_config.dart' as app_router;
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/services/auth_service.dart';
 import '../../../shared/models/user_model.dart';
@@ -157,7 +158,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
         ),
       );
       if (widget.isFirstSetup) {
-        context.go('/home');
+        context.go(app_router.RouteConstants.home);
       } else {
         context.pop();
       }
@@ -511,9 +512,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
     setState(() => _isUploadingPhoto = true);
     final auth = context.read<AuthService>();
     try {
-      final url = await auth.pickAndUploadProfilePhoto(
-        source: source,
-      );
+      final url = await auth.pickAndUploadProfilePhoto(source: source);
       if (mounted) {
         setState(() => _isUploadingPhoto = false);
         if (url != null) {

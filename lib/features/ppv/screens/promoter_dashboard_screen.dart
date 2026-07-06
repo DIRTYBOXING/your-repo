@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../services/ppv_service.dart';
@@ -70,7 +71,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/ppv/create'),
+        onPressed: () => context.push(rc.RouteConstants.ppvCreatePath),
         backgroundColor: DesignTokens.neonCyan,
         foregroundColor: Colors.black,
         icon: const Icon(Icons.add, size: 20),
@@ -101,7 +102,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
           if (context.canPop()) {
             context.pop();
           } else {
-            context.go('/ppv');
+            context.go(rc.RouteConstants.ppvHub);
           }
         },
         icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
@@ -151,7 +152,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
       ),
       actions: [
         IconButton(
-          onPressed: () => context.push('/ppv/poster-store'),
+          onPressed: () => context.push(rc.RouteConstants.ppvPosterStorePath),
           icon: const Icon(
             Icons.store,
             color: DesignTokens.neonAmber,
@@ -291,7 +292,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
               'Create\nEvent',
               Icons.add_circle,
               DesignTokens.neonCyan,
-              () => context.push('/ppv/create'),
+              () => context.push(rc.RouteConstants.ppvCreatePath),
             ),
           ),
           const SizedBox(width: 10),
@@ -300,7 +301,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
               'Poster\nStore',
               Icons.palette,
               DesignTokens.neonMagenta,
-              () => context.push('/ppv/poster-store'),
+              () => context.push(rc.RouteConstants.ppvPosterStorePath),
             ),
           ),
           const SizedBox(width: 10),
@@ -318,7 +319,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
               'PPV\nStore',
               Icons.storefront,
               DesignTokens.neonAmber,
-              () => context.push('/ppv/store'),
+              () => context.push(rc.RouteConstants.ppvStoreInnerPath),
             ),
           ),
         ],
@@ -682,11 +683,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
             return _buildEmptyState();
           }
 
-          return Column(
-            children: snapshot.data!
-                .map(_buildEventCard)
-                .toList(),
-          );
+          return Column(children: snapshot.data!.map(_buildEventCard).toList());
         },
       ),
     );
@@ -736,7 +733,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: () => context.push('/ppv/create'),
+            onPressed: () => context.push(rc.RouteConstants.ppvCreatePath),
             icon: const Icon(Icons.add, size: 18),
             label: const Text('Create First Event'),
             style: ElevatedButton.styleFrom(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_config.dart' as app_router;
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// FIGHT EVENT & GYM FINDER — Self-Contained with Real Demo Data
@@ -28,7 +29,7 @@ class FightEventGymFinder extends StatelessWidget {
       context.pop();
       return;
     }
-    context.go('/home');
+    context.go(app_router.RouteConstants.home);
   }
 
   @override
@@ -67,7 +68,7 @@ class FightEventGymFinder extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.map, color: _cyan, size: 22),
-            onPressed: () => context.push('/map'),
+            onPressed: () => context.push(app_router.RouteConstants.mapPath),
             tooltip: 'Open Full Map',
           ),
         ],
@@ -88,7 +89,8 @@ class FightEventGymFinder extends StatelessWidget {
             const SizedBox(height: 24),
             // CTA — World Map
             GestureDetector(
-              onTap: () => context.push('/fight-world-map'),
+              onTap: () =>
+                  context.push(app_router.RouteConstants.fightWorldMapPath),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -256,7 +258,10 @@ class FightEventGymFinder extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.public, color: _cyan, size: 20),
-            onPressed: () => context.push('/fight-world-map', extra: e),
+            onPressed: () => context.push(
+              app_router.RouteConstants.fightWorldMapPath,
+              extra: e,
+            ),
             tooltip: 'View on World Map',
           ),
         ],
@@ -339,7 +344,7 @@ class FightEventGymFinder extends StatelessWidget {
           ],
           IconButton(
             icon: const Icon(Icons.map, color: _cyan, size: 20),
-            onPressed: () => context.push('/map'),
+            onPressed: () => context.push(app_router.RouteConstants.mapPath),
             tooltip: 'View on Map',
           ),
         ],

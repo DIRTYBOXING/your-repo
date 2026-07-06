@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
-import '../models/user_model.dart';
-import 'auth_service.dart';
+import '../../../shared/models/user_model.dart';
+import '../../../shared/services/auth_service.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// DFC GOVERNANCE ENGINE

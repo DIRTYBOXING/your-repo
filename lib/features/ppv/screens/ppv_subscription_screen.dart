@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/constants/stripe_config.dart';
 import '../../../core/theme/design_tokens.dart';
 
@@ -96,7 +97,7 @@ class _PPVSubscriptionScreenState extends State<PPVSubscriptionScreen>
           if (context.canPop()) {
             context.pop();
           } else {
-            context.go('/home');
+            context.go(rc.RouteConstants.home);
           }
         },
         icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
@@ -445,7 +446,7 @@ class _PPVSubscriptionScreenState extends State<PPVSubscriptionScreen>
                       HapticFeedback.mediumImpact();
                       if (index == 0) {
                         // Basic = free, just navigate home
-                        if (mounted) context.go('/');
+                        if (mounted) context.go(rc.RouteConstants.root);
                         return;
                       }
                       final tier = index == 2 ? 'promoter' : 'fighter pro';

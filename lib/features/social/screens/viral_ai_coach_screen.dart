@@ -668,7 +668,7 @@ class _ViralAiCoachScreenState extends State<ViralAiCoachScreen>
           child: ElevatedButton.icon(
             onPressed: () {
               context.push(
-                app_router.RouterConfig.crossPlatformPublishPath,
+                app_router.RouteConstants.crossPlatformPublishPath,
                 extra: {
                   'caption': _analysis?.videoTitle ?? '',
                   'hashtags':
@@ -699,7 +699,7 @@ class _ViralAiCoachScreenState extends State<ViralAiCoachScreen>
           child: OutlinedButton.icon(
             onPressed: () {
               context.push(
-                app_router.RouterConfig.crossPlatformPublishPath,
+                app_router.RouteConstants.crossPlatformPublishPath,
                 extra: {
                   'caption': _analysis?.videoTitle ?? '',
                   'hashtags':
@@ -922,9 +922,7 @@ class _PlatformToggleTileState extends State<_PlatformToggleTile> {
         ),
         child: SwitchListTile(
           dense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
           secondary: Icon(p.icon, color: p.color, size: 22),
           title: Text(
             p.name,

@@ -444,7 +444,7 @@ class _GymMapCommandScreenState extends State<GymMapCommandScreen>
                 size: 20,
               ),
               tooltip: 'Register Gym',
-              onPressed: () => context.push(rc.RouterConfig.registerGymPath),
+              onPressed: () => context.push(rc.RouteConstants.registerGymPath),
             ),
           ],
         ),
@@ -957,7 +957,7 @@ class _GymMapCommandScreenState extends State<GymMapCommandScreen>
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-        onTap: () => context.push(rc.RouterConfig.findAGymPath),
+        onTap: () => context.push(rc.RouteConstants.findAGymPath),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(
@@ -1162,7 +1162,7 @@ class _GymMapCommandScreenState extends State<GymMapCommandScreen>
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(DesignTokens.radiusSmall),
-        onTap: () => context.push(rc.RouterConfig.eventsPath),
+        onTap: () => context.push(rc.RouteConstants.eventsPath),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Column(

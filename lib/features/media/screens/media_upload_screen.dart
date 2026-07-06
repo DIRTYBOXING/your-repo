@@ -1,17 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/media_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../../shared/services/media_upload_service.dart';
 
-class MediaUploadScreen extends ConsumerStatefulWidget {
+class MediaUploadScreen extends StatefulWidget {
   const MediaUploadScreen({super.key});
 
   @override
-  ConsumerState<MediaUploadScreen> createState() => _MediaUploadScreenState();
+  State<MediaUploadScreen> createState() => _MediaUploadScreenState();
 }
 
-class _MediaUploadScreenState extends ConsumerState<MediaUploadScreen> {
+class _MediaUploadScreenState extends State<MediaUploadScreen> {
+  final MediaUploadService _mediaService = MediaUploadService();
   File? selectedFile;
   String? uploadedUrl;
 
@@ -27,8 +28,14 @@ class _MediaUploadScreenState extends ConsumerState<MediaUploadScreen> {
   Future<void> upload() async {
     if (selectedFile == null) return;
 
-    final result = await ref.read(mediaUploadProvider(selectedFile!).future);
-    setState(() => uploadedUrl = result);
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? 'anonymous';
+    final result = await _mediaService.uploadImageFile(
+      file: selectedFile!,
+      userId: userId,
+      type: MediaUploadType.post,
+    );
+    if (!mounted) return;
+    setState(() => uploadedUrl = result.success ? result.url : null);
   }
 
   @override

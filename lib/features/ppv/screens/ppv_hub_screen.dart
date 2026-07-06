@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/utils/web_route_test_hook.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/design_tokens.dart';
@@ -70,7 +71,7 @@ class _PPVHubScreenState extends State<PPVHubScreen>
       context.pop();
       return;
     }
-    context.go('/home');
+    context.go(rc.RouteConstants.home);
   }
 
   @override
@@ -516,7 +517,9 @@ class _PPVHubScreenState extends State<PPVHubScreen>
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: () => context.push('/subscription'),
+                            onTap: () => context.push(
+                              rc.RouteConstants.subscriptionPath,
+                            ),
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
@@ -1782,7 +1785,12 @@ class _PPVHubScreenState extends State<PPVHubScreen>
                 ),
               ),
               onTap: () {
-                context.push('/ppv/event/${purchase.ppvEventId}');
+                context.push(
+                  rc.RouteConstants.ppvEventById.replaceFirst(
+                    ':id',
+                    purchase.ppvEventId,
+                  ),
+                );
               },
             ),
           );
@@ -2263,7 +2271,10 @@ class _PPVHubScreenState extends State<PPVHubScreen>
 
   void _showPPVDetail(PPVEvent ppv) {
     // Navigate to full PPV Event Detail Screen with globe zoom animation
-    context.push('/ppv/event/${ppv.id}', extra: ppv);
+    context.push(
+      rc.RouteConstants.ppvEventById.replaceFirst(':id', ppv.id),
+      extra: ppv,
+    );
   }
 
   // Old bottom sheet version (backup)
@@ -2388,17 +2399,29 @@ class _PPVHubScreenState extends State<PPVHubScreen>
               runSpacing: 8,
               alignment: WrapAlignment.center,
               children: [
-                _footerLink('Privacy Policy', () => context.push('/privacy')),
-                _footerLink('Terms of Use', () => context.push('/legal')),
+                _footerLink(
+                  'Privacy Policy',
+                  () => context.push(rc.RouteConstants.privacyPath),
+                ),
+                _footerLink(
+                  'Terms of Use',
+                  () => context.push(rc.RouteConstants.legalPath),
+                ),
                 _footerLink(
                   'Community Guidelines',
-                  () => context.push('/community-standards'),
+                  () => context.push(rc.RouteConstants.communityStandardsPath),
                 ),
-                _footerLink('Help Centre', () => context.push('/help')),
-                _footerLink('Supported Devices', () => context.push('/help')),
+                _footerLink(
+                  'Help Centre',
+                  () => context.push(rc.RouteConstants.helpPath),
+                ),
+                _footerLink(
+                  'Supported Devices',
+                  () => context.push(rc.RouteConstants.helpPath),
+                ),
                 _footerLink(
                   'Compare Platforms',
-                  () => context.push('/streaming-comparison'),
+                  () => context.push(rc.RouteConstants.streamingComparisonPath),
                 ),
               ],
             ),
@@ -3290,7 +3313,7 @@ class _PPVHubScreenState extends State<PPVHubScreen>
             ),
           ),
           GestureDetector(
-            onTap: () => context.push('/google-earth'),
+            onTap: () => context.push(rc.RouteConstants.googleEarthPath),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
@@ -3928,7 +3951,9 @@ class _PPVDetailSheetState extends State<_PPVDetailSheet> {
                 onPressed: () {
                   Navigator.pop(context);
                   final nav = GoRouter.of(context);
-                  nav.go('/ppv/${ppv.id}/watch');
+                  nav.go(
+                    rc.RouteConstants.ppvWatchById.replaceFirst(':id', ppv.id),
+                  );
                 },
                 icon: const Icon(Icons.play_circle_fill, size: 20),
                 label: Text(

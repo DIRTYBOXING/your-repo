@@ -518,7 +518,7 @@ class _OnboardingBodyState extends State<_OnboardingBody> {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () => context.push(
-                  app_router.RouterConfig.promoterRightsIntakePath,
+                  app_router.RouteConstants.promoterRightsIntakePath,
                 ),
                 icon: const Icon(Icons.gavel),
                 label: const Text('OPEN RIGHTS INTAKE'),
@@ -542,7 +542,7 @@ class _OnboardingBodyState extends State<_OnboardingBody> {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () =>
-                    context.push(app_router.RouterConfig.howWeWorkPath),
+                    context.push(app_router.RouteConstants.howWeWorkPath),
                 icon: const Icon(Icons.info_outline),
                 label: const Text('HOW DFC WORKS'),
                 style: OutlinedButton.styleFrom(foregroundColor: _kGold),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as rc;
 import '../../../core/theme/app_colors.dart';
 import '../services/ppv_service.dart';
 
@@ -14,7 +15,12 @@ class PpvDetailScreen extends StatelessWidget {
 
     if (result['allowed'] == true && result['streamUrl'] != null) {
       if (context.mounted) {
-        context.push('/ppv-stream/$eventId');
+        context.push(
+          rc.RouteConstants.ppvStreamByEventId.replaceFirst(
+            ':eventId',
+            eventId,
+          ),
+        );
       }
     } else {
       if (context.mounted) {

@@ -32,6 +32,7 @@ class AppTheme {
   // Semantic Colors
   static const Color success = DesignTokens.neonGreen;
   static const Color error = DesignTokens.neonRed;
+  static const Color neonRed = DesignTokens.neonRed;
   static const Color warning = DesignTokens.neonAmber;
   static const Color info = DesignTokens.neonCyan;
 

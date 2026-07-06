@@ -280,19 +280,19 @@ class _GymToolsHubScreenState extends State<GymToolsHubScreen>
         'Partnerships',
         Icons.handshake,
         AppTheme.neonOrange,
-        () => context.push(rc.RouterConfig.partnershipHubPath),
+        () => context.push(rc.RouteConstants.partnershipHubPath),
       ),
       _ActionTile(
         'Analytics',
         Icons.analytics,
         AppTheme.neonCyan,
-        () => context.push(rc.RouterConfig.combatAnalyticsPath),
+        () => context.push(rc.RouteConstants.combatAnalyticsPath),
       ),
       _ActionTile(
         'Mentor Tools',
         Icons.school,
         AppTheme.neonGreen,
-        () => context.push(rc.RouterConfig.gymMentorPath),
+        () => context.push(rc.RouteConstants.gymMentorPath),
       ),
     ];
 
@@ -566,9 +566,7 @@ class _GymToolsHubScreenState extends State<GymToolsHubScreen>
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            border: Border.all(
-              color: AppTheme.neonCyan.withValues(alpha: 0.3),
-            ),
+            border: Border.all(color: AppTheme.neonCyan.withValues(alpha: 0.3)),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Row(
@@ -699,25 +697,25 @@ class _GymToolsHubScreenState extends State<GymToolsHubScreen>
               'Partnership Hub',
               Icons.handshake,
               AppTheme.neonOrange,
-              () => context.push(rc.RouterConfig.partnershipHubPath),
+              () => context.push(rc.RouteConstants.partnershipHubPath),
             ),
             _buildBusinessLink(
               'Sponsor Dashboard',
               Icons.diamond,
               AppTheme.neonCyan,
-              () => context.push(rc.RouterConfig.sponsorDashboardPath),
+              () => context.push(rc.RouteConstants.sponsorDashboardPath),
             ),
             _buildBusinessLink(
               'Register Gym on DFC',
               Icons.app_registration,
               AppTheme.neonGreen,
-              () => context.push(rc.RouterConfig.registerGymPath),
+              () => context.push(rc.RouteConstants.registerGymPath),
             ),
             _buildBusinessLink(
               'Mentor Tools',
               Icons.school,
               AppTheme.neonMagenta,
-              () => context.push(rc.RouterConfig.gymMentorPath),
+              () => context.push(rc.RouteConstants.gymMentorPath),
             ),
           ],
         ),

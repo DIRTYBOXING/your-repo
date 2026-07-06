@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RouterConfig;
 import 'package:go_router/go_router.dart';
+import '../../../core/config/router_constants.dart' as routes;
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/services/admin_service.dart';
 
@@ -71,7 +72,9 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
       backgroundColor: AppTheme.background,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: AppTheme.neonGreen))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppTheme.neonGreen),
+            )
           : RefreshIndicator(
               onRefresh: _loadDashboard,
               child: _buildDashboard(),
@@ -231,7 +234,10 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
                 ? Colors.red
                 : Colors.orange,
             onTap: () {
-              context.push('/admin/ninja-moderation', extra: widget.adminId);
+              context.push(
+                routes.RouteConstants.adminNinjaModerationPath,
+                extra: widget.adminId,
+              );
             },
           ),
         ],
@@ -266,7 +272,7 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
               color: AppTheme.neonGreen,
               onTap: () {
                 context.push(
-                  '/admin/user-management-screen',
+                  routes.RouteConstants.adminUserManagementScreenPath,
                   extra: widget.adminId,
                 );
               },
@@ -276,7 +282,10 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
               icon: Icons.shield,
               color: Colors.deepOrange,
               onTap: () {
-                context.push('/admin/ninja-moderation', extra: widget.adminId);
+                context.push(
+                  routes.RouteConstants.adminNinjaModerationPath,
+                  extra: widget.adminId,
+                );
               },
             ),
             _buildActionCard(
@@ -284,7 +293,10 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
               icon: Icons.campaign,
               color: AppTheme.accentPurple,
               onTap: () {
-                context.push('/admin/campaign-control', extra: widget.adminId);
+                context.push(
+                  routes.RouteConstants.adminCampaignControlPath,
+                  extra: widget.adminId,
+                );
               },
             ),
             _buildActionCard(
@@ -293,7 +305,7 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
               color: AppTheme.accentTeal,
               onTap: () {
                 context.push(
-                  '/admin/analytics-war-room',
+                  routes.RouteConstants.adminAnalyticsWarRoomPath,
                   extra: widget.adminId,
                 );
               },
@@ -355,7 +367,10 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
+              style: const TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 14,
+              ),
             ),
           ),
           Text(
@@ -393,7 +408,10 @@ class _SamuraiDashboardState extends State<SamuraiDashboard> {
             Expanded(
               child: Text(
                 label,
-                style: const TextStyle(color: AppTheme.textPrimary, fontSize: 14),
+                style: const TextStyle(
+                  color: AppTheme.textPrimary,
+                  fontSize: 14,
+                ),
               ),
             ),
             Text(

@@ -98,7 +98,7 @@ class _SplashIntroScreenState extends State<SplashIntroScreen>
   void _goHome() {
     if (_navigated || !mounted) return;
     _navigated = true;
-    context.go(rc.RouterConfig.landingPath);
+    context.go(rc.RouteConstants.landingPath);
   }
 
   @override

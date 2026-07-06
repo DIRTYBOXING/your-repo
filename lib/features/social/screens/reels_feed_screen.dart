@@ -60,7 +60,7 @@ class _ReelsFeedScreenState extends State<ReelsFeedScreen> {
           IconButton(
             icon: const Icon(Icons.videocam, color: DesignTokens.neonCyan),
             tooltip: 'Upload Reel',
-            onPressed: () => context.push(RouterConfig.uploadReelPath),
+            onPressed: () => context.push(RouteConstants.uploadReelPath),
           ),
         ],
       ),
@@ -118,7 +118,7 @@ class _ReelsFeedScreenState extends State<ReelsFeedScreen> {
               backgroundColor: DesignTokens.neonCyan,
               foregroundColor: DesignTokens.bgPrimary,
             ),
-            onPressed: () => context.push(RouterConfig.uploadReelPath),
+            onPressed: () => context.push(RouteConstants.uploadReelPath),
           ),
         ],
       ),

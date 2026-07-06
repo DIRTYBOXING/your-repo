@@ -10,6 +10,8 @@ analyzer:
     - macos/**
     - ios/**
     - android/**
+    - scripts/**
+    - dfc_frontend/**
   # Phase C ratchet: promote currently clean rules to enforced errors.
   errors:
     always_declare_return_types: error

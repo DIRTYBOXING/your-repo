@@ -7,7 +7,9 @@ import 'package:datafightcentral/shared/services/auth_service.dart';
 import 'package:datafightcentral/shared/services/social_service.dart';
 
 void main() {
-  setUpAll(SocialService.enableDemoModeForTests);
+  setUpAll(() {
+    SocialService.enableDemoModeForTests();
+  });
 
   testWidgets('DFCFeedScreen displays current feed chrome', (
     WidgetTester tester,

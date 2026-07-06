@@ -16,7 +16,7 @@ void main() {
         ),
         GoRoute(
           path: '/reconciliation',
-          name: rc.RouterConfig.promoterReconciliation,
+          name: rc.RouteConstants.promoterReconciliationPath,
           builder: (context, state) => Scaffold(
             body: Text('reconciliation:${state.extra as String? ?? 'none'}'),
           ),

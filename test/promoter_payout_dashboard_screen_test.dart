@@ -9,17 +9,11 @@ void main() {
     final router = GoRouter(
       initialLocation: '/',
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) =>
-              const PromoterPayoutDashboardScreen(enableLiveDataLoad: false),
-        ),
+        GoRoute(path: '/', builder: (context, state) => const PromoterPayoutDashboardScreen(enableLiveDataLoad: false)),
         GoRoute(
           path: '/reconciliation',
-          name: rc.RouterConfig.promoterReconciliation,
-          builder: (context, state) => Scaffold(
-            body: Text('reconciliation:${state.extra as String? ?? 'none'}'),
-          ),
+          name: rc.RouteConstants.promoterReconciliationPath,
+          builder: (context, state) => Scaffold(body: Text('reconciliation:${state.extra as String? ?? 'none'}')),
         ),
       ],
     );
@@ -32,9 +26,7 @@ void main() {
 
     expect(find.text('Logan Main Event'), findsOneWidget);
 
-    await tester.tap(
-      find.byKey(const ValueKey<String>('ledger-row-EVT-2026-001')),
-    );
+    await tester.tap(find.byKey(const ValueKey<String>('ledger-row-EVT-2026-001')));
     await tester.pumpAndSettle();
 
     expect(find.text('reconciliation:EVT-2026-001'), findsOneWidget);

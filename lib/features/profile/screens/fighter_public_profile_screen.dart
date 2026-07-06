@@ -55,7 +55,7 @@ class _FighterPublicProfileScreenState
         padding: const EdgeInsets.all(16.0),
         children: [
           DfcGlassPanel(
-            accent: AppColors.neonMagenta,
+            glowColor: AppColors.neonMagenta,
             child: Center(
               child: Text(
                 _fighterData?['displayName'] ?? 'Unknown Fighter',

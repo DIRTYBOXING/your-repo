@@ -30,7 +30,7 @@ class PromoterDashboardScreen extends StatefulWidget {
 
 class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
     with SingleTickerProviderStateMixin {
-  final PPVService _ppvService = PPVService();
+  final PpvService _PpvService = PpvService();
   final String _promoterId = FirebaseAuth.instance.currentUser?.uid ?? '';
   late TabController _tabCtrl;
 
@@ -41,7 +41,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
   void initState() {
     super.initState();
     _tabCtrl = TabController(length: 3, vsync: this);
-    _eventsSub = _ppvService.getPromoterEvents(_promoterId).listen((events) {
+    _eventsSub = _PpvService.getPromoterEvents(_promoterId).listen((events) {
       if (mounted) setState(() => _promoterEvents = events);
     });
   }
@@ -169,7 +169,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
   // ═══════════════════════════════════════════════════════════════════
   Widget _buildRevenueCard() {
     return StreamBuilder<double>(
-      stream: _ppvService.getPromoterTotalRevenue(_promoterId),
+      stream: _PpvService.getPromoterTotalRevenue(_promoterId),
       builder: (context, snapshot) {
         final totalRevenue = snapshot.data ?? 0.0;
 
@@ -667,7 +667,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
   SliverToBoxAdapter _buildEventsList() {
     return SliverToBoxAdapter(
       child: StreamBuilder<List<PPVEvent>>(
-        stream: _ppvService.getPromoterEvents(_promoterId),
+        stream: _PpvService.getPromoterEvents(_promoterId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Padding(
@@ -996,7 +996,7 @@ class _PromoterDashboardScreenState extends State<PromoterDashboardScreen>
                   ),
                   onTap: () async {
                     Navigator.pop(sheetCtx);
-                    await _ppvService.updateEventStatus(event.id, status);
+                    await _PpvService.updateEventStatus(event.id, status);
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

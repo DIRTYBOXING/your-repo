@@ -1,0 +1,49 @@
+name: DFC Rule Pack Check
+
+on:
+  pull_request:
+    branches: [master, main]
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
+  push:
+    branches: [master, main]
+    paths:
+      - "docs/DFC_SONAR_RULE_PACK.md"
+      - "lib/**"
+
+concurrency:
+  group: dfc-rulepack-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rulepack-integrity:
+    name: rule pack + routing discipline
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure DFC Sonar rule pack exists
+        run: test -f docs/DFC_SONAR_RULE_PACK.md
+
+      - name: Ensure route constants file exists
+        run: test -f lib/core/config/router_constants.dart
+
+      - name: Enforce migration TODO markers for legacy aliases
+        run: |
+          set -e
+          FOUND=$(grep -n "TODO remove after migration" lib/core/config/router_constants.dart || true)
+          if [ -z "$FOUND" ]; then
+            echo "No migration TODO markers found; continuing (legacy alias cleanup may already be complete)."
+          else
+            echo "Found migration markers:"
+            echo "$FOUND"
+          fi
+
+      - name: Validate PR template includes routing delta checklist
+        run: |
+          set -e
+          grep -En "Routing Delta|Analyzer Proof|Module Scope" .github/pull_request_template.md

@@ -17,6 +17,7 @@ Closes #
 - [ ] Code review completed for payments, webhooks, reconciliation, metrics, deploy manifests.
 - [ ] Changelog entry added for reconciliation and operational assets.
 - [ ] Release tag plan prepared (example: v1.12.0).
+- [ ] DFC Sonar rule pack checks pass (`docs/DFC_SONAR_RULE_PACK.md`).
 
 ---
 
@@ -58,6 +59,16 @@ flutter analyze --no-fatal-infos
 flutter test
 ```
 
+### DFC routing spine checks
+
+```bash
+# No literal routes in navigation calls
+rg -n "context\.(go|push|pushReplacement)\(\s*['\"]/|Navigator\.pushNamed\(\s*['\"]/" lib/**/*.dart
+
+# Route constants migration markers present
+rg -n "TODO remove after migration" lib/core/config/router_constants.dart
+```
+
 ---
 
 ## Affected services
@@ -80,6 +91,16 @@ flutter test
 - [ ] No new TODO / FIXME left without a tracking issue
 - [ ] `bash scripts/cleanup_scan.sh` ran locally — no new errors
 - [ ] Deleted/moved files approved below (or N/A)
+
+---
+
+## DFC routing / module quality (required for route-affecting PRs)
+
+- [ ] **Routing Delta** documented (constants added, literals removed, legacy aliases tagged).
+- [ ] **Analyzer Proof** attached for touched files.
+- [ ] **Module Scope** listed (PPV/Admin/Promoter/Creator/SmartCoach/Media/etc.).
+- [ ] Cross-module navigation calls use shared constants (`rc.RouteConstants.*`).
+- [ ] No fresh literal navigation routes were introduced.
 
 ---
 

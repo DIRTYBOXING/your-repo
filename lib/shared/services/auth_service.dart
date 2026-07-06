@@ -48,6 +48,7 @@ class AuthService extends ChangeNotifier {
   bool get isInitialized => _isInitialized;
   bool get isAuthenticated => _firebaseUser != null;
   User? get currentUser => _firebaseUser;
+  User? get firebaseUser => _firebaseUser;
   UserModel? get userModel => _userModel;
 
   // If the user document doesn't exist or is missing crucial setup info, they need onboarding
@@ -67,11 +68,11 @@ class AuthService extends ChangeNotifier {
         await _fetchUserModel(userCredential.user!.uid);
         return Success(userCredential.user!);
       }
-      return const Error(Failure('Login failed. No user returned.'));
+      return const Err(Failure('Login failed. No user returned.'));
     } on FirebaseAuthException catch (e) {
-      return Error(Failure(_mapAuthErrorCode(e.code), code: e.code));
+      return Err(Failure(_mapAuthErrorCode(e.code), code: e.code));
     } catch (e) {
-      return Error(Failure('An unexpected error occurred.', exception: e));
+      return Err(Failure('An unexpected error occurred.', exception: e));
     }
   }
 
@@ -95,11 +96,11 @@ class AuthService extends ChangeNotifier {
         await _fetchUserModel(userCredential.user!.uid);
         return Success(userCredential.user!);
       }
-      return const Error(Failure('Registration failed. No user returned.'));
+      return const Err(Failure('Registration failed. No user returned.'));
     } on FirebaseAuthException catch (e) {
-      return Error(Failure(_mapAuthErrorCode(e.code), code: e.code));
+      return Err(Failure(_mapAuthErrorCode(e.code), code: e.code));
     } catch (e) {
-      return Error(Failure('An unexpected error occurred.', exception: e));
+      return Err(Failure('An unexpected error occurred.', exception: e));
     }
   }
 
@@ -109,6 +110,9 @@ class AuthService extends ChangeNotifier {
     _userModel = null;
     notifyListeners();
   }
+
+  /// Alias for logout() for compatibility.
+  Future<void> signOut() => logout();
 
   // ─── INTERNAL DATA SYNC ───
   Future<void> _fetchUserModel(String uid) async {
@@ -127,6 +131,8 @@ class AuthService extends ChangeNotifier {
           email: data['email'] ?? '',
           displayName: data['displayName'] ?? 'Fighter',
           role: UserRole.fromString(data['role'] ?? 'fan'),
+          createdAt: (data['createdAt'] as dynamic)?.toDate() ?? DateTime.now(),
+          updatedAt: (data['updatedAt'] as dynamic)?.toDate() ?? DateTime.now(),
         );
       } else {
         _userModel = null; // Needs onboarding

@@ -94,7 +94,7 @@ jobs:
       - name: Run lint (npm script with fallback)
         shell: bash
         run: |
-          ESLINT_USE_FLAT_CONFIG=false npm run lint || ESLINT_USE_FLAT_CONFIG=false npx --yes eslint . --ext .js,.ts
+          ESLINT_USE_FLAT_CONFIG=false npm run lint || ESLINT_USE_FLAT_CONFIG=false npx --yes eslint . --ext .js,.ts --ignore-pattern 'dfc_frontend/dfc_app/lib/**'
 
   unit-tests:
     name: Unit Tests

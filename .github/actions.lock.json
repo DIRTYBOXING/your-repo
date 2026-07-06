@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated": "2026-05-12T00:00:00.000Z",
+  "generated": "2026-07-06T03:06:22.913Z",
   "actions": {
     "actions/checkout": [
       {
@@ -74,6 +74,12 @@
         "sha": "465a07811f14bebb1938fbed4728c6a1ff8901fc",
         "integrity": "sha256-f546c1d701dece0a69b2219679d336feec3973392f0757cd20e7e247f044f049",
         "dependencies": []
+      },
+      {
+        "version": "v3",
+        "sha": "c94ce9fb468520275223c153574b00df6fe4bcc9",
+        "integrity": "sha256-ca4cbcf8bd239374b67310b1483f4d6cf12b77841956f8d02d34d47444c88091",
+        "dependencies": []
       }
     ],
     "aws-actions/configure-aws-credentials": [
@@ -98,19 +104,11 @@
         "dependencies": []
       }
     ],
-    "dart-lang/setup-dart": [
-      {
-        "version": "v1",
-        "sha": "65eb853c7ba17dde3be364c3d2858773e7144260",
-        "integrity": "sha256-585acd736bfb12a251910d58568c10ab2400044a15f2a966be3d345eeed539fc",
-        "dependencies": []
-      }
-    ],
     "actions/cache": [
       {
         "version": "v5",
-        "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae",
-        "integrity": "sha256-9c70fbdb2e793d6632f3218c034517b65680390b080c08154fb867750dfcee17",
+        "sha": "caa296126883cff596d87d8935842f9db880ef25",
+        "integrity": "sha256-5a0107c944e797d641b9bee813f1a0ad7a4eb322e31be4e3db0ee9cec570aff0",
         "dependencies": []
       },
       {
@@ -128,13 +126,13 @@
         "dependencies": [
           {
             "ref": "actions/cache@v5",
-            "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae",
-            "integrity": "sha256-9c70fbdb2e793d6632f3218c034517b65680390b080c08154fb867750dfcee17"
+            "sha": "caa296126883cff596d87d8935842f9db880ef25",
+            "integrity": "sha256-5a0107c944e797d641b9bee813f1a0ad7a4eb322e31be4e3db0ee9cec570aff0"
           },
           {
             "ref": "actions/cache@v5",
-            "sha": "27d5ce7f107fe9357f9df03efb73ab90386fccae",
-            "integrity": "sha256-9c70fbdb2e793d6632f3218c034517b65680390b080c08154fb867750dfcee17"
+            "sha": "caa296126883cff596d87d8935842f9db880ef25",
+            "integrity": "sha256-5a0107c944e797d641b9bee813f1a0ad7a4eb322e31be4e3db0ee9cec570aff0"
           }
         ]
       }
@@ -153,13 +151,19 @@
         "sha": "e427ad8a34f8676edf47cf7d7925499adf3eb74f",
         "integrity": "sha256-4d61698e3914a65c6fc1407af3398535e000a3647945476e7d5a46f057d01df9",
         "dependencies": []
+      },
+      {
+        "version": "v1",
+        "sha": "e30db14379863a8c79331b04a9969f4c1e225e0b",
+        "integrity": "sha256-2a92d2fa31277406a9c6480a08c3558a568b7a4c895e3e053712ff484650b5c5",
+        "dependencies": []
       }
     ],
     "FirebaseExtended/action-hosting-deploy": [
       {
         "version": "v0",
-        "sha": "e2eda2e106cfa35cdbcf4ac9ddaf6c4756df2c8c",
-        "integrity": "sha256-147bcd5957cb2930600ae4253dec61fb1f192dc1acf818d01280e0dfc9a9bac7",
+        "sha": "500ac625ca2dd40cbd15f7659af953801858032a",
+        "integrity": "sha256-9acd31c1f9af6e2e10b7363c5347f8b452e44f30e410e4f51bf98e89f9b7ab24",
         "dependencies": []
       }
     ],
@@ -168,6 +172,54 @@
         "version": "v4",
         "sha": "c1e323688fd81a25caa38c78aa6df2d33d3e20d9",
         "integrity": "sha256-c061ceada9c27c0109ecfe14663dd3cdfd4bc3ae1194bdb201aeac8960f1e881",
+        "dependencies": []
+      }
+    ],
+    "docker/setup-qemu-action": [
+      {
+        "version": "v2",
+        "sha": "2b82ce82d56a2a04d2637cd93a637ae1b359c0a7",
+        "integrity": "sha256-35613a58e906447c431d0db4ea42ec640a9cc0d7c579d547e449121d59dfcab0",
+        "dependencies": []
+      }
+    ],
+    "docker/setup-buildx-action": [
+      {
+        "version": "v3",
+        "sha": "8d2750c68a42422c14e847fe6c8ac0403b4cbd6f",
+        "integrity": "sha256-b3d22600b25f4f634875ccf79fb73e3371a3fa0be6e83edee0b56a9733681c99",
+        "dependencies": []
+      }
+    ],
+    "dart-lang/setup-dart": [
+      {
+        "version": "v1",
+        "sha": "65eb853c7ba17dde3be364c3d2858773e7144260",
+        "integrity": "sha256-585acd736bfb12a251910d58568c10ab2400044a15f2a966be3d345eeed539fc",
+        "dependencies": []
+      }
+    ],
+    "docker/build-push-action": [
+      {
+        "version": "v5",
+        "sha": "ca052bb54ab0790a636c9b5f226502c73d547a25",
+        "integrity": "sha256-ae786f34d8d6f32d6816ac76ae7b1dd15cf50f01a406ab57a1b8dd92cf4adced",
+        "dependencies": []
+      }
+    ],
+    "github/super-linter": [
+      {
+        "version": "v5",
+        "sha": "45fc0d88288beee4701c62761281edfee85655d7",
+        "integrity": "sha256-93885729f4f2ed583d0753f99a2c19e49ceb7f150e5ef1e6aacbee6c774b7bea",
+        "dependencies": []
+      }
+    ],
+    "docker/metadata-action": [
+      {
+        "version": "v5",
+        "sha": "c299e40c65443455700f0fdfc63efafe5b349051",
+        "integrity": "sha256-a5798094637c3d29d3c7e35ddbd4da532047843ece9478509d0fbbc5337d9055",
         "dependencies": []
       }
     ],
@@ -198,8 +250,8 @@
     "rtCamp/action-slack-notify": [
       {
         "version": "v2",
-        "sha": "e31e87e03dd19038e411e38ae27cbad084a90661",
-        "integrity": "sha256-7853947ef58f8af37049061e31d1beb18bebeaaa2dca45771266984a89a719ab",
+        "sha": "33ca3be66c6f378fe1610fd1d5258632dbed5e58",
+        "integrity": "sha256-07a75499263ca53dfde1cca951a1c07b9d9efec0e7f67e2be743ac76aa3bcf06",
         "dependencies": [
           {
             "ref": "LoveToKnow/slackify-markdown-action@698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
@@ -222,22 +274,6 @@
             "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3"
           }
         ]
-      }
-    ],
-    "docker/setup-buildx-action": [
-      {
-        "version": "v3",
-        "sha": "8d2750c68a42422c14e847fe6c8ac0403b4cbd6f",
-        "integrity": "sha256-b3d22600b25f4f634875ccf79fb73e3371a3fa0be6e83edee0b56a9733681c99",
-        "dependencies": []
-      }
-    ],
-    "docker/build-push-action": [
-      {
-        "version": "v5",
-        "sha": "ca052bb54ab0790a636c9b5f226502c73d547a25",
-        "integrity": "sha256-ae786f34d8d6f32d6816ac76ae7b1dd15cf50f01a406ab57a1b8dd92cf4adced",
-        "dependencies": []
       }
     ],
     "SonarSource/sonarqube-scan-action": [
@@ -252,6 +288,22 @@
             "integrity": "sha256-38b1dddc9919f32b88160521ed3b6acaf47f1d68eec468dcfcb7147dff31d68f"
           }
         ]
+      }
+    ],
+    "SonarSource/sonarqube-quality-gate-action": [
+      {
+        "version": "v1.2.0",
+        "sha": "cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b",
+        "integrity": "sha256-f460a98538e732b861a83e03a15e005182dac2b311101b20d289aa46a38450cf",
+        "dependencies": []
+      }
+    ],
+    "gitleaks/gitleaks-action": [
+      {
+        "version": "v2",
+        "sha": "ff98106e4c7b2bc287b24eaf42907196329070c7",
+        "integrity": "sha256-7df084027eea8aa64e49b5e8121e0500d978c37aa5d41afad7c34eee78320c15",
+        "dependencies": []
       }
     ],
     "slackapi/slack-github-action": [

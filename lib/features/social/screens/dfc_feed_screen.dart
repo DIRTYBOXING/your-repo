@@ -220,7 +220,7 @@ class _DFCFeedScreenState extends State<DFCFeedScreen>
 
   void loadPPVEvents() {
     try {
-      PPVService()
+      PpvService()
           .getUpcomingPPVEvents()
           .take(1)
           .listen(

@@ -167,6 +167,19 @@ tasks.json
 # Temp batch scripts and local diagnostics
 batch*.cjs
 analyze-diagnostics.json
+analyze_*.txt
+build_output.txt
+build2.txt
+flutter_test_output.txt
+gym_analyze.txt
+samurai_analyze.txt
+stripe_analyze.txt
+check_suites.json
+forensic_summary.csv
+
+# Local agent/cortex hook artifacts
+Data-Fight-Central-safe.cortex.hooks/
+.cortex.hooks/
 
 # Secrets and Archives
 secrets/

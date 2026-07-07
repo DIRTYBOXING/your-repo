@@ -18,6 +18,11 @@ class AuthService extends ChangeNotifier {
   User? _firebaseUser;
   UserModel? _userModel;
   bool _isInitialized = false;
+  bool _isLoading = false;
+  String? _error;
+  bool _authDisabled = false;
+  String? _authDisabledMessage;
+  bool _emergencyLocalSession = false;
   StreamSubscription<User?>? _authStateSub;
 
   AuthService() {
@@ -25,7 +30,6 @@ class AuthService extends ChangeNotifier {
   }
 
   void _init() {
-    // Listen to Firebase Auth state changes automatically
     _authStateSub = _firebaseAuth.authStateChanges().listen((User? user) async {
       _firebaseUser = user;
       if (user != null) {
@@ -34,7 +38,7 @@ class AuthService extends ChangeNotifier {
         _userModel = null;
       }
       _isInitialized = true;
-      notifyListeners(); // This triggers GoRouter to re-evaluate redirects
+      notifyListeners();
     });
   }
 
@@ -44,37 +48,105 @@ class AuthService extends ChangeNotifier {
     super.dispose();
   }
 
-  // ─── STATE GETTERS ───
+  // ─── STATE GETTERS ──────────────────────────────────────────────────────────
   bool get isInitialized => _isInitialized;
   bool get isAuthenticated => _firebaseUser != null;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get isAuthTemporarilyDisabled => _authDisabled;
+  String? get authDisabledMessage => _authDisabledMessage;
+  bool get isEmergencyLocalSession =>
+      _emergencyLocalSession || AppConstants.guestMode;
   User? get currentUser => _firebaseUser;
   User? get firebaseUser => _firebaseUser;
   UserModel? get userModel => _userModel;
 
-  // If the user document doesn't exist or is missing crucial setup info, they need onboarding
-  bool get needsOnboarding => isAuthenticated && _userModel == null;
+  // ─── PLATFORM OWNER IDENTITY ────────────────────────────────────────────────
+  // The developer / platform owner always gets full access regardless of
+  // Firestore role. This is verified against the Firebase Auth email.
+  static const String _ownerEmail = 'ausstrainsnetwork@gmail.com';
 
-  bool get isEmergencyLocalSession => AppConstants.guestMode;
+  bool get _isOwnerEmail =>
+      _firebaseUser?.email?.toLowerCase() == _ownerEmail.toLowerCase();
 
-  // ─── LOGIN LOGIC ───
+  // ─── ROLE / PERMISSION GETTERS ──────────────────────────────────────────────
+  bool get needsOnboarding =>
+      isAuthenticated && _userModel == null && !_isOwnerEmail;
+
+  String get userRole {
+    if (_isOwnerEmail) return 'owner';
+    return _userModel?.role.name ?? 'fan';
+  }
+
+  bool get isAdmin {
+    if (_isOwnerEmail) return true;
+    final role = _userModel?.role.name ?? '';
+    return role == 'admin' || role == 'superadmin' || role == 'owner';
+  }
+
+  bool get isOwner {
+    if (_isOwnerEmail) return true;
+    return _userModel?.role.name == 'owner' ||
+        _userModel?.role.name == 'superadmin';
+  }
+
+  bool get isDeveloper => _isOwnerEmail;
+
+  bool get isDemoUser => AppConstants.guestMode || _emergencyLocalSession;
+
+  String get demoUserId => 'demo_user_${_firebaseUser?.uid ?? "guest"}';
+
+  // ─── AUTH STATE HELPERS ─────────────────────────────────────────────────────
+  void clearError() {
+    _error = null;
+    notifyListeners();
+  }
+
+  bool shouldUseEmergencyLocalSession() {
+    return _emergencyLocalSession;
+  }
+
+  void enableEmergencyLocalSession() {
+    _emergencyLocalSession = true;
+    notifyListeners();
+  }
+
+  // ─── LOGIN LOGIC ────────────────────────────────────────────────────────────
   Future<Result<User>> loginWithEmail(String email, String password) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
     try {
       final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
-
       if (userCredential.user != null) {
         await _fetchUserModel(userCredential.user!.uid);
+        _isLoading = false;
+        notifyListeners();
         return Success(userCredential.user!);
       }
+      _error = 'Login failed. No user returned.';
+      _isLoading = false;
+      notifyListeners();
       return const Err(Failure('Login failed. No user returned.'));
     } on FirebaseAuthException catch (e) {
+      _error = _mapAuthErrorCode(e.code);
+      _isLoading = false;
+      notifyListeners();
       return Err(Failure(_mapAuthErrorCode(e.code), code: e.code));
     } catch (e) {
+      _error = 'An unexpected error occurred.';
+      _isLoading = false;
+      notifyListeners();
       return Err(Failure('An unexpected error occurred.', exception: e));
     }
   }
+
+  /// Alias for loginWithEmail.
+  Future<Result<User>> signInWithEmail(String email, String password) =>
+      loginWithEmail(email, password);
 
   // ─── REGISTRATION LOGIC ───
   Future<Result<User>> registerWithEmail(String email, String password) async {
@@ -120,12 +192,32 @@ class AuthService extends ChangeNotifier {
       final doc = await _db.collection('users').doc(uid).get();
       final data = doc.data();
 
-      // Only populate _userModel if onboarding is complete, maintaining your router logic
-      if (doc.exists && data != null && data['onboardingCompleted'] == true) {
-        // Assuming UserModel has a fromMap or fromFirestore factory
-        // _userModel = UserModel.fromMap(data, doc.id);
+      // Platform owner always gets a synthetic owner model — no onboarding required.
+      if (_isOwnerEmail) {
+        final email = _firebaseUser?.email ?? _ownerEmail;
+        final existingName = data?['displayName'];
+        _userModel = UserModel(
+          id: uid,
+          email: email,
+          displayName: existingName ?? 'DFC Owner',
+          role: UserRole.admin,
+          createdAt: DateTime(2024),
+          updatedAt: DateTime.now(),
+        );
+        // Ensure Firestore reflects owner role
+        await _db.collection('users').doc(uid).set({
+          'email': email,
+          'role': 'owner',
+          'displayName': existingName ?? 'DFC Owner',
+          'onboardingCompleted': true,
+          'isPlatformOwner': true,
+          'isDeveloper': true,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+        return;
+      }
 
-        // Fallback stub until UserModel is finalized
+      if (doc.exists && data != null && data['onboardingCompleted'] == true) {
         _userModel = UserModel(
           id: doc.id,
           email: data['email'] ?? '',
@@ -135,11 +227,36 @@ class AuthService extends ChangeNotifier {
           updatedAt: (data['updatedAt'] as dynamic)?.toDate() ?? DateTime.now(),
         );
       } else {
-        _userModel = null; // Needs onboarding
+        _userModel = null;
       }
     } catch (e) {
       debugPrint('Failed to fetch user model: $e');
       _userModel = null;
+    }
+  }
+
+  // ─── PASSWORD RESET ──────────────────────────────────────────────────────────
+  Future<bool> sendPasswordResetEmail(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email.trim());
+      return true;
+    } on FirebaseAuthException catch (e) {
+      _error = _mapAuthErrorCode(e.code);
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _error = 'Failed to send reset email. Try again.';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // ─── REFRESH USER PROFILE ────────────────────────────────────────────────────
+  /// Re-fetches the user model from Firestore and notifies listeners.
+  Future<void> refreshUserProfile() async {
+    if (_firebaseUser != null) {
+      await _fetchUserModel(_firebaseUser!.uid);
+      notifyListeners();
     }
   }
 

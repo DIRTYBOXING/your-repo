@@ -181,6 +181,16 @@ forensic_summary.csv
 Data-Fight-Central-safe.cortex.hooks/
 .cortex.hooks/
 
+# Residual local artifacts / sandbox spillover
+promotion-worker/test_run_output.txt
+ops/backups/
+class RouteConstants {.cs
+dfc_frontend/df
+dfc_frontend/dfc_app/NUL
+dfc_frontend/dfc_app/lib/blue/
+dfc_frontend/dfc_app/models/
+dfc_frontend/dfc_app/services/
+
 # Secrets and Archives
 secrets/
 *.exe

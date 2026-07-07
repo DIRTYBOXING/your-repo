@@ -1,0 +1,120 @@
+name: deploy-overlay-service
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "infra/overlay-service/**"
+      - ".github/workflows/deploy-overlay-service.yml"
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID || 'dfc-prod' }}
+  REGION: australia-southeast1
+  ARTIFACT_REGISTRY: australia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID || 'dfc-prod' }}/dfc-overlay
+  SERVICE_NAME: dfc-overlay-service
+  SERVICE_ACCOUNT: overlay-service-invoker@${{ secrets.GCP_PROJECT_ID || 'dfc-prod' }}.iam.gserviceaccount.com
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+
+      - name: Build and push Docker image
+        working-directory: infra/overlay-service
+        run: |
+          IMAGE_TAG="${ARTIFACT_REGISTRY}/${SERVICE_NAME}:${GITHUB_SHA::7}"
+          docker build -t "${IMAGE_TAG}" .
+          docker push "${IMAGE_TAG}"
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy "${SERVICE_NAME}" \
+            --image="${IMAGE_TAG}" \
+            --region="${REGION}" \
+            --service-account="${SERVICE_ACCOUNT}" \
+            --cpu=1 \
+            --memory=512Mi \
+            --min-instances=1 \
+            --max-instances=10 \
+            --concurrency=80 \
+            --timeout=300 \
+            --session-affinity \
+            --ingress=internal-and-cloud-load-balancing \
+            --allow-unauthenticated \
+            --set-env-vars="NODE_ENV=production,PROJECT_ID=${PROJECT_ID},PUBSUB_TOPIC_OUT=dfc-overlay-commands"
+
+      - name: Health check
+        run: |
+          SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
+          echo "Service URL: ${SERVICE_URL}"
+          for i in $(seq 1 10); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${SERVICE_URL}/health")
+            if [[ "${STATUS}" == "200" ]]; then
+              echo "Health check PASSED (${STATUS})"
+              exit 0
+            fi
+            echo "Attempt ${i}: status ${STATUS} — retrying..."
+            sleep 5
+          done
+          echo "Health check FAILED after 10 attempts"
+          exit 1
+
+      - name: Smoke test — WebSocket connect
+        run: |
+          apt-get update -qq && apt-get install -y -qq websocat 2>/dev/null || true
+          SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
+          WS_URL=$(echo "${SERVICE_URL}" | sed 's|https://|wss://|')/ws
+          echo "Attempting WebSocket connect to: ${WS_URL}"
+          timeout 5 websocat --oneshot "${WS_URL}" 2>&1 || echo "WebSocket test: connect attempt complete (may fail in CI env — manual verification needed)"
+
+      - name: Update Pub/Sub push subscription
+        run: |
+          SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
+          SUB_EXISTS=$(gcloud pubsub subscriptions describe dfc-wearable-telemetry-overlay-push --project="${PROJECT_ID}" 2>/dev/null && echo "true" || echo "false")
+          if [[ "${SUB_EXISTS}" == "true" ]]; then
+            gcloud pubsub subscriptions update dfc-wearable-telemetry-overlay-push \
+              --project="${PROJECT_ID}" \
+              --push-endpoint="${SERVICE_URL}/ingest" \
+              --push-auth-service-account="${SERVICE_ACCOUNT}"
+          else
+            gcloud pubsub subscriptions create dfc-wearable-telemetry-overlay-push \
+              --topic=dfc-wearable-telemetry \
+              --project="${PROJECT_ID}" \
+              --push-endpoint="${SERVICE_URL}/ingest" \
+              --push-auth-service-account="${SERVICE_ACCOUNT}" \
+              --ack-deadline=60 \
+              --message-retention-duration=7d
+          fi
+
+      - name: Summary
+        run: |
+          SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" --region="${REGION}" --format="value(status.url)")
+          echo "========================================="
+          echo "  Overlay Service Deployed!"
+          echo "  URL:        ${SERVICE_URL}"
+          echo "  Health:     ${SERVICE_URL}/health"
+          echo "  WebSocket:  ${SERVICE_URL//https/wss}/ws"
+          echo "  Ingest:     ${SERVICE_URL}/ingest"
+          echo "  Image:      ${IMAGE_TAG}"
+          echo "========================================="

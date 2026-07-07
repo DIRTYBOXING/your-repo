@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/design_tokens.dart';
-import '../widgets/coach_telemetry_bar.dart';
-import '../widgets/coach_metric_ring.dart';
-import '../widgets/training_plan_card.dart';
-import '../widgets/coach_tip_card.dart';
+import 'coach_telemetry_bar.dart';
+import 'coach_metric_ring.dart';
+import 'training_plan_card.dart';
+import 'coach_tip_card.dart';
 
 class SmartCoachDashboardScreen extends StatelessWidget {
   const SmartCoachDashboardScreen({super.key});

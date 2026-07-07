@@ -337,7 +337,7 @@ class _AlertsPanel extends StatelessWidget {
     final missingOwners = (report?['missingOwners'] as List?)?.length ?? 0;
     final hasAlert = missingOwners > 0;
 
-    return const _PanelShell(
+    return _PanelShell(
       title: 'Alerts & Incidents',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

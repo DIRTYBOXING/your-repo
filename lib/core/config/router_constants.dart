@@ -59,7 +59,20 @@ class RouterConfig {
   static const String googleHubPath = '/google-hub';
   static const String adminConsolePath = '/admin-console';
   static const String economyControlPath = '/economy-control-room';
-
+  // ── Owner / Command Center paths ─────────────────────────────────────
+  static const String ownerCommandCenterPath = '/owner-command-center';
+  static const String promoCommandCenterPath = '/promo-command-center';
+  static const String contentCommandCenterPath = '/content-command-center';
+  static const String warRoomPath = '/war-room';
+  static const String controlTowerPath = '/control-tower';
+  static const String swarmDashboardPath = '/swarm-dashboard';
+  static const String ppvHubPath = '/ppv-hub';
+  static const String combatMapPath = '/combat-map';
+  static const String promoterPricingPath = '/promoter-pricing';
+  static const String marketingHQPath = '/marketing-hq';
+  static const String campaignOpsPath = '/campaign-ops';
+  static const String isAdminPath = '/admin';
+  static const String promoterReconciliationPath = '/reconciliation';
   // ── Content ──────────────────────────────────────────────────────────────
   static const String creativeHubPath = '/creative-hub';
 
@@ -69,7 +82,7 @@ class RouterConfig {
   static const String githubPartnerPath = '/partners/github';
 
   // ── TikeRocket ────────────────────────────────────────────────────────────
-  static const String tikeRocket        = '/tikerocket';
+  static const String tikeRocket = '/tikerocket';
 
   // ── Social content ───────────────────────────────────────────────────────
   static const String createStoryPath = '/stories/create';

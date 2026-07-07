@@ -87,7 +87,12 @@ class RouterConfig {
   // ── Social content ───────────────────────────────────────────────────────
   static const String createStoryPath = '/stories/create';
   static const String storyViewerPath = '/stories/view';
-
+  // ── Global / distribution paths ───────────────────────────────────────
+  static const String globalPricingPath = '/global-pricing';
+  static const String globalDistributionPath = '/global-distribution';
+  static const String globalRankingPath = '/global-ranking';
+  static const String autoCaptionPath = '/auto-caption';
+  static const String globalSeoScreenPath = '/global-seo';
   // ── Auth ─────────────────────────────────────────────────────────────────
   static const String roleSelection = '/role-selection';
   static const String ppvHub = '/ppv';

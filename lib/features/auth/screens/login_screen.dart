@@ -143,17 +143,15 @@ class _LoginScreenState extends State<LoginScreen>
     _triggerDetonation(() async {
       final authService = context.read<AuthService>();
       final result = await authService.signInWithEmail(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+        _emailController.text.trim(),
+        _passwordController.text,
       );
       if (result != null && mounted) {
         await _showPowerIntroIfFirstSignIn(authService);
         if (!mounted) return;
         context.go('/home');
       } else if (mounted && authService.shouldUseEmergencyLocalSession()) {
-        authService.enableEmergencyLocalSession(
-          emailHint: _emailController.text.trim(),
-        );
+        authService.enableEmergencyLocalSession();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
@@ -194,10 +192,7 @@ class _LoginScreenState extends State<LoginScreen>
     if (!mounted) return;
 
     try {
-      await DfcVideoIntroService.showVideoIntro(
-        context,
-        DfcVideoType.welcome,
-      );
+      await DfcVideoIntroService.showVideoIntro(context, DfcVideoType.welcome);
     } catch (_) {
       // Keep login flow resilient even if video intro fails.
     }
@@ -329,10 +324,7 @@ class _LoginScreenState extends State<LoginScreen>
                   ),
                 ],
               ),
-              child: const AnimatedDfcLogo(
-                size: 160,
-                rotate: true,
-              ),
+              child: const AnimatedDfcLogo(size: 160, rotate: true),
             ),
             const SizedBox(height: 24),
             // ── DATAFIGHT CENTRAL wordmark ──

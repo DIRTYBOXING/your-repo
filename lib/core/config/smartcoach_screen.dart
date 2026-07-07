@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/smartcoach_provider.dart';
+import 'smartcoach_provider.dart';
 import '../../../core/theme/design_tokens.dart';
 
 class SmartCoachScreen extends ConsumerStatefulWidget {

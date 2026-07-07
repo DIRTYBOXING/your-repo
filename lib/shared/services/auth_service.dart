@@ -54,7 +54,7 @@ class AuthService extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isAuthTemporarilyDisabled => _authDisabled;
-  String? get authDisabledMessage => _authDisabledMessage;
+  String get authDisabledMessage => _authDisabledMessage ?? '';
   bool get isEmergencyLocalSession =>
       _emergencyLocalSession || AppConstants.guestMode;
   User? get currentUser => _firebaseUser;
@@ -144,7 +144,6 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  /// Alias for loginWithEmail.
   Future<Result<User>> signInWithEmail(String email, String password) =>
       loginWithEmail(email, password);
 

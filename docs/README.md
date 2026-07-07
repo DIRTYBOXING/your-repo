@@ -80,6 +80,12 @@ https://github.com/sponsors/DIRTYBOXING
 - Grant evidence room: `docs/launch/evidence/README.md`
 - 90-day pilot template: `docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER.md`
 - Outreach tracker template: `docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv`
+- 20 sponsor email templates: `docs/launch/outreach/DFC_20_SPONSOR_EMAILS.md`
+- 10-slide sponsor outreach deck: `docs/launch/outreach/DFC_10_SLIDE_SPONSOR_OUTREACH_DECK.md`
+- Google grant draft: `docs/launch/grants/DFC_GOOGLE_CLOUD_GRANT_DRAFT.md`
+- NVIDIA grant draft: `docs/launch/grants/DFC_NVIDIA_INCEPTION_GRANT_DRAFT.md`
+- Microsoft grant draft: `docs/launch/grants/DFC_MICROSOFT_FOUNDERS_HUB_GRANT_DRAFT.md`
+- Good first issues list: `docs/community/DFC_GOOD_FIRST_ISSUES.md`
 
 Direct repository links:
 
@@ -96,6 +102,12 @@ Direct repository links:
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/evidence/README.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/outreach/DFC_20_SPONSOR_EMAILS.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/outreach/DFC_10_SLIDE_SPONSOR_OUTREACH_DECK.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/grants/DFC_GOOGLE_CLOUD_GRANT_DRAFT.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/grants/DFC_NVIDIA_INCEPTION_GRANT_DRAFT.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/grants/DFC_MICROSOFT_FOUNDERS_HUB_GRANT_DRAFT.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/community/DFC_GOOD_FIRST_ISSUES.md
 
 ---
 

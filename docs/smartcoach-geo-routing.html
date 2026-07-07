@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartCoach Geo-Routing & Training Cycles</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: radial-gradient(1200px 600px at 50% -10%, #15244d 0%, var(--bg) 60%);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      line-height: 1.55;
+    }
+    .wrap { max-width: 1140px; margin: 0 auto; padding: 28px 18px 42px; }
+    h1, h2, h3 { line-height: 1.2; margin: 0 0 10px; }
+    p { margin: 0 0 12px; color: var(--muted); }
+
+    .hero {
+      border: 1px solid var(--line); background: linear-gradient(180deg,#0a1128,#050a18);
+      border-radius: 16px; padding: 24px; box-shadow: 0 0 0 1px rgba(58,160,255,.14), 0 20px 40px rgba(0,0,0,.35);
+      margin-bottom: 20px;
+    }
+    .kicker { color: var(--neon2); font-size: .78rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .chip { padding: 5px 10px; border-radius: 999px; border: 1px solid #274d86; background: #0f2144; color: #d9ecff; font-size: .78rem; font-weight: 700; }
+    .chip.ok { border-color: #1c6b53; background: #103529; color: #bff6df; }
+
+    #layout {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 18px;
+    }
+    @media(min-width: 900px) {
+      #layout {
+        flex-direction: row;
+      }
+    }
+
+    #map {
+      flex: 2;
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      height: 480px;
+      box-shadow: inset 0 0 35px rgba(0,217,255,0.06);
+    }
+    #panel {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .route-dot {
+      fill: var(--magenta);
+      stroke: var(--ink);
+      stroke-width: 2.5;
+      cursor: pointer;
+      transition: r 0.2s ease, fill 0.2s ease;
+    }
+    .route-dot:hover {
+      r: 16;
+      fill: var(--neon2);
+    }
+    .route-line {
+      stroke: var(--neon);
+      stroke-width: 3;
+      stroke-dasharray: 6 4;
+    }
+    .metric {
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 8px;
+    }
+    .metric span {
+      font-weight: 700;
+      color: var(--neon2);
+      float: right;
+    }
+    .list { margin: 8px 0 0 18px; padding: 0; }
+    .list li { margin: 6px 0; color: #c6d8f4; }
+    footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: #7f96bb; font-size: 0.9rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central AI</div>
+      <h1>SmartCoach Geo-Routing & AI Training Cycles (Module 20)</h1>
+      <p>Wiring the AI brain directly into DFC's geospatial map grid to calculate optimal camp locations, sparring densities, and event preparation windows.</p>
+      <div class="chips">
+        <span class="chip ok">Module 20 Active</span>
+        <span class="chip">AI Engine Connected</span>
+        <span class="chip">Dynamic Geo-routing</span>
+      </div>
+    </section>
+
+    <div id="layout">
+      <div id="map">
+        <svg width="100%" height="100%" viewBox="0 0 2000 1000" style="position: absolute; top:0; left:0;">
+          <!-- Grid lines overlay -->
+          <line x1="1000" y1="0" x2="1000" y2="1000" stroke="rgba(28, 42, 74, 0.15)" stroke-dasharray="5,5" />
+          <line x1="0" y1="500" x2="2000" y2="500" stroke="rgba(28, 42, 74, 0.15)" stroke-dasharray="5,5" />
+
+          <!-- Route lines -->
+          <line x1="500" y1="600" x2="900" y2="520" class="route-line"></line>
+          <line x1="900" y1="520" x2="1300" y2="450" class="route-line"></line>
+
+          <!-- Fighter home base -->
+          <circle id="fighter-home" class="route-dot" cx="500" cy="600" r="12"></circle>
+          <text x="525" y="605" fill="var(--ink)" font-size="20" font-weight="bold">Base (Ariana Cruz)</text>
+
+          <!-- Recommended gym -->
+          <circle id="gym-node" class="route-dot" cx="900" cy="520" r="12"></circle>
+          <text x="925" y="525" fill="var(--ink)" font-size="20" font-weight="bold">Camp (Iron Forge MMA)</text>
+
+          <!-- Upcoming event venue -->
+          <circle id="event-node" class="route-dot" cx="1300" cy="450" r="12"></circle>
+          <text x="1325" y="455" fill="var(--ink)" font-size="20" font-weight="bold">Target (QFN 22 @ BCEC)</text>
+
+        </svg>
+      </div>
+
+      <div id="panel">
+        <h2>AI Training Camp</h2>
+        <div class="metric">Fighter: <span>Ariana Cruz</span></div>
+        <div class="metric">Home Base: <span>Brisbane, QLD</span></div>
+        <div class="metric">Recommended Camp: <span>Iron Forge MMA</span></div>
+        <div class="metric">Target Event: <span>Queensland Fight Night 22</span></div>
+        <div class="metric">Travel Radius: <span>450 km</span></div>
+        <div class="metric">Camp Duration: <span>6 weeks</span></div>
+        <div class="metric">Intensity Cycle: <span>3-1-1 (Peak-Taper-Fight)</span></div>
+        <p style="margin-top: 15px; font-size: 0.92rem; line-height: 1.5; color: var(--muted); border: 1px solid var(--line); padding: 12px; border-radius: 8px; background: rgba(5,7,13,0.5);">
+          Hover over a coordinates node on the spatial map to extract specific local metrics and telemetry optimization pathways.
+        </p>
+      </div>
+    </div>
+
+    <section class="card" style="margin-top:20px;">
+      <h3>Ecosystem Signal Fusion</h3>
+      <p>Module 20 unifies data across your geocentric map grid and AI intelligence surfaces:</p>
+      <ul class="list">
+        <li><strong>Fighter Profiles & Coordinates:</strong> Pulls baseline conditioning metrics from profiles to estimate early load-recovery windows.</li>
+        <li><strong>Gym Specialization Filters:</strong> Compares active styles from the Styles Matrix against gym rosters to match sparring partners.</li>
+        <li><strong>Fight Night Target Schedules:</strong> Integrates weight-cut tapered timelines securely with your Event Center match dates.</li>
+      </ul>
+    </section>
+
+    <footer>
+      Data Fight Central • SmartCoach AI Routing Engine • 2026
+    </footer>
+  </main>
+
+  <script>
+    const p = document.getElementById('panel').querySelector('p');
+
+    const nodes = {
+      "fighter-home": "Fighter Home Base Node: Located at Brisbane, QLD. Raw biometrics, resting HRV history, and baseline conditioning indicators registered successfully. Primary baseline setup.",
+      "gym-node": "Recommended Gym Node: Iron Forge MMA. Handpicked for camp preparation based on an active high-density roster of lightweight sparring partners and specialized boxing instructors.",
+      "event-node": "Upcoming Event Node: Queensland Fight Night 22 at Brisbane BCEC. Match schedules, promotional parameters, and structural weight cut timelines indexed perfectly."
+    };
+
+    document.querySelectorAll('.route-dot').forEach(dot => {
+      dot.addEventListener('mouseover', () => {
+        p.textContent = nodes[dot.id];
+        p.style.borderColor = "var(--neon2)";
+        p.style.color = "var(--ink)";
+      });
+      dot.addEventListener('mouseout', () => {
+        p.textContent = "Hover over a coordinates node on the spatial map to extract specific local metrics and telemetry optimization pathways.";
+        p.style.borderColor = "var(--line)";
+        p.style.color = "var(--muted)";
+      });
+    });
+  </script>
+</body>
+</html>

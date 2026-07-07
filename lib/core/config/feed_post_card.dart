@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/design_tokens.dart';
-import '../models/feed_post.dart';
-import '../../features/feed/widgets/safety_flag.dart';
-import '../../features/feed/widgets/reaction_bar.dart';
-import '../../features/feed/widgets/comments_drawer.dart';
+import 'feed_post.dart';
+import 'safety_flag.dart';
+import 'reaction_bar.dart';
+import 'comments_drawer.dart';
 
 class FeedPostCard extends StatelessWidget {
   final FeedPost post;

@@ -1,0 +1,18 @@
+{
+  "digital_ticket": {
+    "ticket_id": "string",
+    "buyer_name": "string",
+    "event_id": "string",
+    "ticket_class": "VIP Reserved | General Admission",
+    "cryptographic_signature": "string",
+    "checkout_time_utc": "string",
+    "status": "active | checked-in | canceled",
+    "scanned_gate_logs": [
+      {
+        "gate_id": "string",
+        "scanner_operator_uid": "string",
+        "scan_time_utc": "string"
+      }
+    ]
+  }
+}

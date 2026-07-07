@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -450,33 +451,16 @@ class _SamuraiOwnerCommandCenterPageState
                                       throw Exception('Event name is required');
                                     }
                                     final now = DateTime.now();
-                                    final newEvent = EventModel(
-                                      id: 'owner-${now.millisecondsSinceEpoch}',
+                                    final id = await eventService.createEvent(
                                       promoterId: user?.id ?? 'owner',
                                       name: eventName,
-                                      venue:
+                                      date: now.add(const Duration(days: 14)),
+                                      location:
                                           _eventVenueController.text
                                               .trim()
                                               .isEmpty
                                           ? 'TBA Venue'
                                           : _eventVenueController.text.trim(),
-                                      city:
-                                          _eventCityController.text
-                                              .trim()
-                                              .isEmpty
-                                          ? 'TBA City'
-                                          : _eventCityController.text.trim(),
-                                      country: 'Global',
-                                      eventDate: now.add(
-                                        const Duration(days: 14),
-                                      ),
-                                      description: 'Owner live-created event',
-                                      isFeatured: true,
-                                      createdAt: now,
-                                      updatedAt: now,
-                                    );
-                                    final id = await eventService.createEvent(
-                                      newEvent,
                                     );
                                     if (id == null) {
                                       throw Exception('Event create failed');
@@ -528,11 +512,12 @@ class _SamuraiOwnerCommandCenterPageState
                                     if (id.isEmpty) {
                                       throw Exception('Event ID required');
                                     }
-                                    final ok = await eventService
-                                        .updateEventStatus(
-                                          id,
-                                          EventStatus.live,
-                                        );
+                                    final ok = await FirebaseFirestore.instance
+                                        .collection('events')
+                                        .doc(id)
+                                        .update({'status': 'live'})
+                                        .then((_) => true)
+                                        .catchError((_) => false);
                                     if (!ok) {
                                       throw Exception('Status update failed');
                                     }
@@ -554,9 +539,13 @@ class _SamuraiOwnerCommandCenterPageState
                                       if (id.isEmpty) {
                                         throw Exception('Event ID required');
                                       }
-                                      final ok = await eventService.deleteEvent(
-                                        id,
-                                      );
+                                      final ok = await FirebaseFirestore
+                                          .instance
+                                          .collection('events')
+                                          .doc(id)
+                                          .delete()
+                                          .then((_) => true)
+                                          .catchError((_) => false);
                                       if (!ok) throw Exception('Delete failed');
                                     }),
                           icon: const Icon(Icons.delete_outline),
@@ -691,9 +680,7 @@ class _SamuraiOwnerCommandCenterPageState
                               alpha: 0.15,
                             ),
                             foregroundColor: Colors.cyanAccent,
-                            side: const BorderSide(
-                              color: Colors.cyanAccent,
-                            ),
+                            side: const BorderSide(color: Colors.cyanAccent),
                           ),
                           icon: const Icon(Icons.security, size: 15),
                           label: const Text(
@@ -716,9 +703,7 @@ class _SamuraiOwnerCommandCenterPageState
                               0xFF00E676,
                             ).withValues(alpha: 0.12),
                             foregroundColor: const Color(0xFF00E676),
-                            side: const BorderSide(
-                              color: Color(0xFF00E676),
-                            ),
+                            side: const BorderSide(color: Color(0xFF00E676)),
                           ),
                           icon: const Icon(Icons.shield_outlined, size: 15),
                           label: const Text(

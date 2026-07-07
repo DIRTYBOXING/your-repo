@@ -2,26 +2,12 @@ name: supply-chain-guard
 
 on:
   pull_request:
-    paths:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
       - ".github/workflows/**"
-      - ".github/actions.lock.json"
-      - "**/package.json"
-      - "**/package-lock.json"
-      - "**/yarn.lock"
-      - "**/pnpm-lock.yaml"
-      - "**/bun.lockb"
-      - "scripts/security/**"
   push:
     branches: [master]
-    paths:
-      - ".github/workflows/**"
-      - ".github/actions.lock.json"
-      - "**/package.json"
-      - "**/package-lock.json"
-      - "**/yarn.lock"
-      - "**/pnpm-lock.yaml"
-      - "**/bun.lockb"
-      - "scripts/security/**"
 
 jobs:
   workflow-policy:

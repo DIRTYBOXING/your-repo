@@ -1,0 +1,54 @@
+name: DFC Firebase Security Check
+
+on:
+  pull_request:
+    branches: [master, main]
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
+  push:
+    branches: [master, main]
+    paths:
+      - "firestore.rules"
+      - "storage.rules"
+      - "firebase.json"
+      - "lib/**"
+
+concurrency:
+  group: dfc-firebase-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  firebase-rules:
+    name: firestore/storage policy checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate required Firebase config files
+        run: |
+          test -f firestore.rules
+          test -f firebase.json
+
+      - name: Block dangerous allow-all Firestore rules
+        run: |
+          set -e
+          BAD=$(rg -n "allow\\s+read\\s*,\\s*write\\s*:\\s*if\\s+true\\s*;" firestore.rules || true)
+          if [ -n "$BAD" ]; then
+            echo "Dangerous Firestore rule detected:"
+            echo "$BAD"
+            exit 1
+          fi
+
+      - name: Block obvious secret material in repo
+        run: |
+          set -e
+          BAD=$(rg -n --glob '!**/*.md' "BEGIN PRIVATE KEY|private_key_id|AIza[0-9A-Za-z_-]{35}|-----BEGIN" . || true)
+          if [ -n "$BAD" ]; then
+            echo "Potential secret material detected:"
+            echo "$BAD"
+            exit 1
+          fi

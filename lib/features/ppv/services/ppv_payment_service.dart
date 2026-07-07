@@ -66,4 +66,29 @@ class PpvPaymentService {
       return false;
     }
   }
+
+  // ── Stripe hosted checkout ────────────────────────────────────────────────
+  String? _error;
+  String? get error => _error;
+
+  Future<bool> openStripeCheckout({
+    String? eventId,
+    String? ppvId,
+    required String userId,
+    String? ppvTitle,
+    String? tierId,
+    double amount = 49.99,
+    String currency = 'AUD',
+  }) async {
+    final resolvedId = eventId ?? ppvId ?? '';
+    try {
+      _error = null;
+      await purchasePpvAccess(userId, resolvedId, amount);
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      debugPrint('openStripeCheckout error: $_error');
+      return false;
+    }
+  }
 }

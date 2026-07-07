@@ -1,0 +1,1557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>DataFightCentral — Legal Center</title>
+    <meta
+      name="description"
+      content="DataFightCentral Legal Center: Terms of Service, Privacy Policy (including cookies), DMCA policy, and Payment/Funds handling."
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        /* Fight-night editorial: graphite + bone + red */
+        --bg: #0b0d10;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.045);
+        --stroke: rgba(255, 255, 255, 0.12);
+        --stroke2: rgba(255, 255, 255, 0.08);
+        --text: rgba(255, 255, 255, 0.9);
+        --muted: rgba(255, 255, 255, 0.68);
+        --faint: rgba(255, 255, 255, 0.54);
+        --brand: #ff2d2d;
+        --brand2: #ffb3b3;
+        --bone: #f2f0ea;
+        --warn: #ffcc66;
+        --ok: #6cf0a2;
+
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+        --shadow2: 0 14px 30px rgba(0, 0, 0, 0.45);
+
+        --r1: 18px;
+        --r2: 28px;
+
+        --max: 1180px;
+
+        --h1: clamp(2.8rem, 4.2vw, 4.3rem);
+        --h2: clamp(1.6rem, 2.2vw, 2.2rem);
+        --h3: clamp(1.1rem, 1.4vw, 1.25rem);
+        --body: clamp(1rem, 1.05vw, 1.05rem);
+
+        --lead: clamp(1.05rem, 1.2vw, 1.15rem);
+        --mono:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family:
+          "Space Grotesk",
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        font-size: var(--body);
+        color: var(--text);
+        background:
+          radial-gradient(
+            1200px 800px at 70% 10%,
+            rgba(255, 45, 45, 0.2),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 600px at 20% 30%,
+            rgba(255, 255, 255, 0.08),
+            transparent 60%
+          ),
+          linear-gradient(180deg, #07080a 0%, #0b0d10 40%, #0b0d10 100%);
+        overflow-x: hidden;
+      }
+
+      /* Subtle texture */
+      .grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.08;
+        mix-blend-mode: overlay;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="240" height="240" filter="url(%23n)" opacity=".55"/></svg>');
+        background-size: 240px 240px;
+        z-index: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+      .container {
+        width: min(var(--max), calc(100% - 2rem));
+        margin-inline: auto;
+        position: relative;
+        z-index: 1;
+      }
+      .sr-only {
+        position: absolute !important;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Top nav */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(12px);
+        background: linear-gradient(
+          180deg,
+          rgba(11, 13, 16, 0.85) 0%,
+          rgba(11, 13, 16, 0.55) 100%
+        );
+        border-bottom: 1px solid var(--stroke2);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.9rem 0;
+      }
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        text-decoration: none;
+      }
+      .brand .mark {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        background: conic-gradient(
+          from 210deg,
+          var(--brand),
+          rgba(255, 45, 45, 0.2),
+          var(--bone)
+        );
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.16),
+          0 10px 30px rgba(255, 45, 45, 0.22);
+        transform: translateY(-1px);
+      }
+      .brand .name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.7rem;
+        letter-spacing: 0.08em;
+        line-height: 1;
+      }
+      .brand .tag {
+        font-size: 0.9rem;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+
+      .navlinks {
+        display: flex;
+        gap: 0.25rem;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .pill {
+        appearance: none;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--muted);
+        padding: 0.55rem 0.75rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          background 0.18s ease,
+          color 0.18s ease;
+      }
+      .pill:hover {
+        transform: translateY(-1px);
+        border-color: var(--stroke);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+      }
+      .pill[aria-current="page"] {
+        border-color: rgba(255, 45, 45, 0.45);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 45, 45, 0.12),
+          rgba(255, 255, 255, 0.03)
+        );
+        color: var(--text);
+      }
+
+      .cta {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+      }
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.08),
+          rgba(255, 255, 255, 0.03)
+        );
+        color: var(--text);
+        padding: 0.7rem 0.9rem;
+        border-radius: 14px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        box-shadow: var(--shadow2);
+        cursor: pointer;
+        transition:
+          transform 0.16s ease,
+          box-shadow 0.16s ease,
+          border-color 0.16s ease,
+          background 0.16s ease;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 255, 255, 0.26);
+      }
+      .btn:active {
+        transform: translateY(0px) scale(0.99);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+      }
+      .btn.primary {
+        border-color: rgba(255, 45, 45, 0.55);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 45, 45, 0.36),
+          rgba(255, 45, 45, 0.12)
+        );
+        box-shadow:
+          0 20px 55px rgba(255, 45, 45, 0.14),
+          var(--shadow2);
+      }
+      .btn.primary:hover {
+        border-color: rgba(255, 45, 45, 0.8);
+      }
+
+      /* Hero */
+      .hero {
+        padding: clamp(1.7rem, 4vw, 3.2rem) 0 1rem;
+      }
+      .heroGrid {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: clamp(1rem, 2.5vw, 2rem);
+        align-items: stretch;
+      }
+      .headline {
+        border: 1px solid var(--stroke2);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.03)
+        );
+        border-radius: var(--r2);
+        padding: clamp(1.2rem, 2.5vw, 2rem);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+      .headline:before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        background:
+          radial-gradient(
+            900px 250px at 20% 0%,
+            rgba(255, 45, 45, 0.22),
+            transparent 55%
+          ),
+          radial-gradient(
+            800px 260px at 70% 10%,
+            rgba(255, 255, 255, 0.12),
+            transparent 60%
+          );
+        pointer-events: none;
+        opacity: 0.85;
+      }
+      .headline > * {
+        position: relative;
+        z-index: 1;
+      }
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: var(--h1);
+        margin: 0 0 0.4rem;
+        letter-spacing: 0.06em;
+        line-height: 0.95;
+        text-transform: uppercase;
+      }
+      .sub {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: var(--lead);
+        max-width: 62ch;
+      }
+      .metaRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        margin-top: 1rem;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid var(--stroke2);
+        background: rgba(0, 0, 0, 0.16);
+        color: var(--faint);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        font-size: 0.92rem;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--brand);
+        box-shadow: 0 0 0 3px rgba(255, 45, 45, 0.18);
+      }
+
+      .side {
+        border-radius: var(--r2);
+        border: 1px solid var(--stroke2);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.02)
+        );
+        padding: 1.1rem;
+        box-shadow: var(--shadow2);
+        position: relative;
+        overflow: hidden;
+      }
+      .side:after {
+        content: "";
+        position: absolute;
+        inset: -40px -80px auto auto;
+        width: 240px;
+        height: 240px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(255, 45, 45, 0.25),
+          transparent 60%
+        );
+        transform: rotate(10deg);
+        opacity: 0.85;
+        pointer-events: none;
+      }
+      .side h2 {
+        margin: 0.1rem 0 0.65rem;
+        font-size: var(--h3);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.84);
+      }
+      .kvs {
+        display: grid;
+        gap: 0.6rem;
+        margin-top: 0.7rem;
+      }
+      .kv {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        border: 1px solid var(--stroke2);
+        background: rgba(0, 0, 0, 0.16);
+        border-radius: 16px;
+        padding: 0.75rem 0.85rem;
+      }
+      .kv b {
+        letter-spacing: 0.01em;
+      }
+      .kv span {
+        color: var(--muted);
+        text-align: right;
+      }
+
+      /* Content layout */
+      .content {
+        padding: 1.2rem 0 4rem;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 0.42fr 0.58fr;
+        gap: clamp(1rem, 2.6vw, 2rem);
+        align-items: start;
+      }
+      aside {
+        position: sticky;
+        top: 84px;
+        align-self: start;
+      }
+      .toc {
+        border-radius: var(--r2);
+        border: 1px solid var(--stroke2);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.02)
+        );
+        padding: 1rem;
+        box-shadow: var(--shadow2);
+      }
+      .toc h2 {
+        font-size: 0.95rem;
+        margin: 0.2rem 0 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .toc a {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        text-decoration: none;
+        padding: 0.6rem 0.65rem;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 700;
+        transition:
+          background 0.18s ease,
+          border-color 0.18s ease,
+          transform 0.18s ease,
+          color 0.18s ease;
+      }
+      .toc a:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--stroke2);
+        transform: translateY(-1px);
+        color: rgba(255, 255, 255, 0.92);
+      }
+      .toc a.active {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 45, 45, 0.13),
+          rgba(255, 255, 255, 0.03)
+        );
+        border-color: rgba(255, 45, 45, 0.35);
+        color: rgba(255, 255, 255, 0.96);
+      }
+      .toc small {
+        font-family: var(--mono);
+        color: rgba(255, 255, 255, 0.55);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      main {
+        min-width: 0;
+      }
+
+      /* Sections (no card grids) */
+      section.doc {
+        border-radius: var(--r2);
+        border: 1px solid var(--stroke2);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.02)
+        );
+        padding: clamp(1.1rem, 2.2vw, 1.7rem);
+        box-shadow: var(--shadow2);
+        margin-bottom: clamp(0.9rem, 2vw, 1.3rem);
+        position: relative;
+        overflow: hidden;
+      }
+      section.doc:before {
+        content: "";
+        position: absolute;
+        inset: auto -40% -60% -40%;
+        height: 220px;
+        background: radial-gradient(
+          circle at 50% 40%,
+          rgba(255, 255, 255, 0.09),
+          transparent 62%
+        );
+        pointer-events: none;
+      }
+      section.doc > * {
+        position: relative;
+        z-index: 1;
+      }
+      .doc h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: var(--h2);
+        margin: 0 0 0.55rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .doc h3 {
+        margin: 1rem 0 0.4rem;
+        font-size: 1.02rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.86);
+      }
+      .doc p,
+      .doc li {
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.65;
+      }
+      .doc ul {
+        margin: 0.5rem 0 0 1.1rem;
+        padding: 0;
+      }
+      .doc li {
+        margin: 0.35rem 0;
+      }
+      .callout {
+        margin-top: 0.95rem;
+        padding: 0.85rem 0.95rem;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 204, 102, 0.28);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 204, 102, 0.12),
+          rgba(0, 0, 0, 0.14)
+        );
+        color: rgba(255, 255, 255, 0.86);
+      }
+      .callout b {
+        color: rgba(255, 255, 255, 0.95);
+      }
+      .legalMeta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin: 0.6rem 0 0.2rem;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.65rem;
+        border-radius: 999px;
+        border: 1px solid var(--stroke2);
+        background: rgba(0, 0, 0, 0.18);
+        color: rgba(255, 255, 255, 0.74);
+        font-weight: 800;
+        font-size: 0.88rem;
+        letter-spacing: 0.01em;
+      }
+      .badge i {
+        width: 10px;
+        height: 10px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.36);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        display: inline-block;
+      }
+      .badge.red i {
+        background: var(--brand);
+        box-shadow: 0 0 0 3px rgba(255, 45, 45, 0.16);
+      }
+      .badge.gold i {
+        background: var(--warn);
+        box-shadow: 0 0 0 3px rgba(255, 204, 102, 0.14);
+      }
+      .badge.green i {
+        background: var(--ok);
+        box-shadow: 0 0 0 3px rgba(108, 240, 162, 0.14);
+      }
+
+      .twoCol {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+        margin-top: 0.9rem;
+      }
+      .mini {
+        border-radius: 18px;
+        border: 1px solid var(--stroke2);
+        background: rgba(0, 0, 0, 0.16);
+        padding: 0.85rem 0.95rem;
+      }
+      .mini h4 {
+        margin: 0 0 0.3rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.86);
+      }
+      .mini p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      footer {
+        border-top: 1px solid var(--stroke2);
+        padding: 1.6rem 0 2.2rem;
+        color: var(--muted);
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0),
+          rgba(0, 0, 0, 0.22)
+        );
+      }
+      .foot {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .foot a {
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+      }
+      .foot a:hover {
+        border-bottom-color: rgba(255, 45, 45, 0.65);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      /* Cookie banner */
+      .cookie {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        max-width: 980px;
+        margin-inline: auto;
+        z-index: 80;
+        border-radius: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(9, 10, 12, 0.72);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+        display: none;
+      }
+      .cookie.show {
+        display: block;
+      }
+      .cookieGrid {
+        display: grid;
+        grid-template-columns: 1.4fr 0.6fr;
+        gap: 1rem;
+        align-items: center;
+      }
+      .cookie h3 {
+        margin: 0 0 0.25rem;
+        font-size: 1rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .cookie p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.5;
+        font-size: 0.98rem;
+      }
+      .cookieActions {
+        display: flex;
+        gap: 0.6rem;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+      .btn.ghost {
+        background: transparent;
+        box-shadow: none;
+      }
+      .btn.ghost:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      /* Animations */
+      .reveal {
+        opacity: 0;
+        transform: translateY(10px);
+        animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+      @keyframes rise {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 980px) {
+        .heroGrid {
+          grid-template-columns: 1fr;
+        }
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          position: relative;
+          top: auto;
+        }
+        .cookieGrid {
+          grid-template-columns: 1fr;
+        }
+        .cookieActions {
+          justify-content: flex-start;
+        }
+        .twoCol {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        .pill,
+        .btn,
+        .toc a {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header>
+      <div class="container">
+        <div class="nav">
+          <a
+            class="brand"
+            href="#top"
+            aria-label="DataFightCentral Legal Center"
+          >
+            <span class="mark" aria-hidden="true"></span>
+            <span class="name">DataFightCentral</span>
+            <span class="tag">Legal Center</span>
+          </a>
+
+          <nav class="navlinks" aria-label="Primary">
+            <a class="pill" href="#tos" id="nav-tos">Terms</a>
+            <a class="pill" href="#privacy" id="nav-privacy">Privacy</a>
+            <a class="pill" href="#cookies" id="nav-cookies">Cookies</a>
+            <a class="pill" href="#dmca" id="nav-dmca">DMCA</a>
+            <a class="pill" href="#payments" id="nav-payments">Payments</a>
+          </nav>
+
+          <div class="cta">
+            <button class="btn ghost" id="printBtn" type="button">
+              Print / Save PDF
+            </button>
+            <button
+              class="btn primary"
+              id="copyLinkBtn"
+              type="button"
+              title="Copy link to this page"
+            >
+              Copy Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <a id="top" class="sr-only" href="#top">Top</a>
+
+    <section class="hero">
+      <div class="container">
+        <div class="heroGrid">
+          <div class="headline reveal" style="animation-delay: 0.05s">
+            <h1>Rules. Rights. Respect.</h1>
+            <p class="sub">
+              This Legal Center explains how DataFightCentral works, what users
+              can expect, and how we handle privacy, cookies, and copyright
+              notices. It's written for clarity—but it's still a legal
+              agreement. Replace bracketed placeholders with your details.
+            </p>
+
+            <div class="metaRow">
+              <span class="chip"
+                ><span class="dot" aria-hidden="true"></span> Pay‑Per‑View +
+                Social Platform</span
+              >
+              <span class="chip"
+                >Last updated: <b id="lastUpdated">April 1, 2026</b></span
+              >
+              <span class="chip"
+                >Contact: <b>[support@datafightcentral.com]</b></span
+              >
+            </div>
+          </div>
+
+          <div class="side reveal" style="animation-delay: 0.12s">
+            <h2>Quick context</h2>
+            <div class="kvs" role="list">
+              <div class="kv" role="listitem">
+                <b>We are</b>
+                <span>a platform + community</span>
+              </div>
+              <div class="kv" role="listitem">
+                <b>We are not</b>
+                <span>a bank / escrow</span>
+              </div>
+              <div class="kv" role="listitem">
+                <b>Payments</b>
+                <span>processed by third parties</span>
+              </div>
+              <div class="kv" role="listitem">
+                <b>Copyright</b>
+                <span>DMCA process supported</span>
+              </div>
+            </div>
+
+            <div class="callout" style="margin-top: 0.9rem">
+              <b>Important:</b> This is a draft template for your product. Have
+              a qualified attorney review before publishing.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="container">
+        <div class="layout">
+          <aside aria-label="Table of contents">
+            <div class="toc reveal" style="animation-delay: 0.18s">
+              <h2>On this page</h2>
+              <a href="#tos" class="active" data-toc="tos">
+                <span>Terms of Service</span><small>01</small>
+              </a>
+              <a href="#payments" data-toc="payments">
+                <span>Payments & Funds</span><small>02</small>
+              </a>
+              <a href="#privacy" data-toc="privacy">
+                <span>Privacy Policy</span><small>03</small>
+              </a>
+              <a href="#cookies" data-toc="cookies">
+                <span>Cookies & Tracking</span><small>04</small>
+              </a>
+              <a href="#dmca" data-toc="dmca">
+                <span>DMCA Policy</span><small>05</small>
+              </a>
+              <a href="#contact" data-toc="contact">
+                <span>Contact</span><small>06</small>
+              </a>
+            </div>
+          </aside>
+
+          <main aria-label="Legal documents">
+            <!-- TERMS -->
+            <section id="tos" class="doc reveal" style="animation-delay: 0.12s">
+              <div class="legalMeta">
+                <span class="badge red"
+                  ><i aria-hidden="true"></i> Binding agreement</span
+                >
+                <span class="badge gold"
+                  ><i aria-hidden="true"></i> Replace placeholders</span
+                >
+                <span class="badge"
+                  ><i aria-hidden="true"></i> Draft template</span
+                >
+              </div>
+
+              <h2>01 — Terms of Service</h2>
+              <p>
+                <b>Effective date:</b>
+                <span id="effectiveDate">April 1, 2026</span>
+              </p>
+
+              <h3>1. Acceptance</h3>
+              <p>
+                By accessing or using DataFightCentral ("<b>Platform</b>," "we,"
+                "us," "our"), you agree to these Terms of Service
+                ("<b>Terms</b>"). If you do not agree, do not use the Platform.
+              </p>
+
+              <h3>2. Eligibility & Accounts</h3>
+              <ul>
+                <li>
+                  You must be at least <b>18 years old</b> (or the age of
+                  majority in your jurisdiction) to use the Platform.
+                </li>
+                <li>
+                  You are responsible for maintaining the confidentiality of
+                  your login credentials.
+                </li>
+                <li>
+                  You agree that the information you provide is accurate and up
+                  to date.
+                </li>
+              </ul>
+
+              <h3>3. Platform Use & Community Conduct</h3>
+              <ul>
+                <li>Do not harass, threaten, or impersonate others.</li>
+                <li>
+                  Do not post illegal content or content that infringes someone
+                  else's rights.
+                </li>
+                <li>
+                  Do not attempt to bypass access controls (including PPV access
+                  restrictions).
+                </li>
+              </ul>
+
+              <h3>4. User Content License</h3>
+              <p>
+                You retain ownership of the content you post ("<b
+                  >User Content</b
+                >"). By posting User Content, you grant DataFightCentral a
+                non-exclusive, worldwide, royalty-free license to host, store,
+                reproduce, display, and distribute your User Content for
+                operating and improving the Platform.
+              </p>
+
+              <h3>5. Termination</h3>
+              <p>
+                We may suspend or terminate access to the Platform if we believe
+                you violated these Terms, abused the Platform, or created legal
+                risk. Upon termination, your rights to use the Platform cease
+                immediately.
+              </p>
+
+              <h3>6. Disclaimers</h3>
+              <p>
+                The Platform is provided <b>"as is"</b> and
+                <b>"as available."</b> We do not guarantee uninterrupted
+                service, error-free operation, or that content will always be
+                available.
+              </p>
+
+              <h3>7. Limitation of Liability</h3>
+              <p>
+                To the maximum extent permitted by law, DataFightCentral will
+                not be liable for indirect, incidental, special, consequential,
+                or punitive damages, or any loss of profits or revenues.
+              </p>
+
+              <h3>8. Governing Law</h3>
+              <p>
+                These Terms are governed by the laws of
+                <b>[Your Jurisdiction]</b>. Any disputes will be handled in the
+                courts located in <b>[Your County/State/Region]</b>.
+              </p>
+
+              <h3>9. Changes</h3>
+              <p>
+                We may update these Terms from time to time. Continued use of
+                the Platform after changes become effective constitutes
+                acceptance of the updated Terms.
+              </p>
+            </section>
+
+            <!-- PAYMENTS / FUNDS -->
+            <section
+              id="payments"
+              class="doc reveal"
+              style="animation-delay: 0.16s"
+            >
+              <div class="legalMeta">
+                <span class="badge green"
+                  ><i aria-hidden="true"></i> No custody of funds</span
+                >
+                <span class="badge"
+                  ><i aria-hidden="true"></i> Third‑party processing</span
+                >
+              </div>
+
+              <h2>02 — Payments & Fund Handling (PPV)</h2>
+
+              <h3>1. Third‑Party Payment Processing</h3>
+              <p>
+                All payments for pay-per-view ("<b>PPV</b>") events and other
+                purchases made through DataFightCentral are processed
+                exclusively by authorized third-party payment providers (for
+                example: Stripe, PayPal) and/or designated event promoters (for
+                example: <b>[MonBet PPV]</b>, <b>[ETCB]</b>).
+                <b
+                  >DataFightCentral does not process, hold, or manage any
+                  funds</b
+                >
+                related to these transactions.
+              </p>
+
+              <h3>2. No Custody of Funds</h3>
+              <p>
+                DataFightCentral acts solely as a platform facilitating access
+                to PPV content and social features. We do not have custody,
+                control, or access to payment funds at any time. We do not
+                operate as a bank, money transmitter, escrow, or custodian.
+              </p>
+
+              <h3>3. Disputes, Refunds, Chargebacks</h3>
+              <p>
+                Any disputes, refunds, cancellations, or chargebacks related to
+                payments must be addressed directly with the payment provider or
+                event promoter responsible for the transaction. DataFightCentral
+                is not responsible for resolving payment issues, determining
+                refund eligibility, or issuing refunds unless explicitly stated
+                otherwise in writing.
+              </p>
+
+              <h3>4. Provider Terms Apply</h3>
+              <p>
+                You agree to comply with the terms and policies of the
+                third-party payment providers and/or promoters used for
+                transactions. Those providers may require additional information
+                and may have their own dispute and refund procedures.
+              </p>
+
+              <div class="twoCol" role="list">
+                <div class="mini" role="listitem">
+                  <h4>What we do</h4>
+                  <p>
+                    Provide access controls, tickets/entitlements, and a
+                    community experience.
+                  </p>
+                </div>
+                <div class="mini" role="listitem">
+                  <h4>What we don't do</h4>
+                  <p>
+                    Hold PPV money in a private bank account, act as escrow, or
+                    store card details.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- PRIVACY -->
+            <section
+              id="privacy"
+              class="doc reveal"
+              style="animation-delay: 0.2s"
+            >
+              <div class="legalMeta">
+                <span class="badge"
+                  ><i aria-hidden="true"></i> Data transparency</span
+                >
+                <span class="badge gold"
+                  ><i aria-hidden="true"></i> GDPR/CCPA where applicable</span
+                >
+              </div>
+
+              <h2>03 — Privacy Policy</h2>
+              <p>
+                This section describes how we collect, use, and share
+                information when you use the Platform. If you have questions,
+                contact us at <b>[privacy@datafightcentral.com]</b>.
+              </p>
+
+              <h3>1. Information We Collect</h3>
+              <ul>
+                <li>
+                  <b>Account & Profile:</b> email, username, profile details you
+                  provide.
+                </li>
+                <li>
+                  <b>Usage Data:</b> pages viewed, actions taken, device/browser
+                  information, IP address (where permitted).
+                </li>
+                <li>
+                  <b>Communications:</b> messages you send to support or through
+                  Platform features (where enabled).
+                </li>
+                <li>
+                  <b>Payments:</b> payment details are processed by third
+                  parties; we may receive limited metadata (e.g., purchase
+                  status, transaction identifiers) to provide access.
+                </li>
+              </ul>
+
+              <h3>2. How We Use Information</h3>
+              <ul>
+                <li>
+                  Operate the Platform, authenticate users, and deliver
+                  features.
+                </li>
+                <li>
+                  Provide PPV entitlements/access after purchase confirmation.
+                </li>
+                <li>Improve product quality, security, and performance.</li>
+                <li>
+                  Communicate service updates, policy changes, and support
+                  responses.
+                </li>
+              </ul>
+
+              <h3>3. Sharing</h3>
+              <p>
+                We share information with service providers that help us operate
+                the Platform (hosting, analytics, notifications, payments). We
+                do not sell personal information.
+              </p>
+
+              <h3>4. Your Rights</h3>
+              <p>
+                Depending on your location, you may have rights to access,
+                correct, delete, or restrict processing of your personal
+                information and to opt out of certain processing. Contact
+                <b>[privacy@datafightcentral.com]</b> to request assistance.
+              </p>
+
+              <h3>5. Data Retention & Security</h3>
+              <p>
+                We keep information as long as needed to provide the Platform
+                and comply with legal obligations. We implement reasonable
+                security measures, but no system is 100% secure.
+              </p>
+            </section>
+
+            <!-- COOKIES -->
+            <section
+              id="cookies"
+              class="doc reveal"
+              style="animation-delay: 0.24s"
+            >
+              <div class="legalMeta">
+                <span class="badge"
+                  ><i aria-hidden="true"></i> Consent controls</span
+                >
+                <span class="badge green"
+                  ><i aria-hidden="true"></i> Preference center</span
+                >
+              </div>
+
+              <h2>04 — Cookies & Tracking Technologies</h2>
+              <p>
+                We use cookies and similar technologies to keep the Platform
+                secure, remember preferences, measure performance, and (where
+                enabled) personalize content. You can manage your preferences
+                below.
+              </p>
+
+              <h3>Types of Cookies</h3>
+              <ul>
+                <li>
+                  <b>Essential:</b> required for login, security, and core
+                  functionality.
+                </li>
+                <li>
+                  <b>Performance/Analytics:</b> helps us understand usage
+                  patterns to improve the Platform.
+                </li>
+                <li>
+                  <b>Functional:</b> remembers settings like theme, language, or
+                  UI preferences.
+                </li>
+                <li>
+                  <b>Advertising/Targeting (optional):</b> used to deliver
+                  relevant ads and measure campaign effectiveness.
+                </li>
+              </ul>
+
+              <h3>Third‑Party Services</h3>
+              <p>
+                We may use third-party analytics and advertising services (for
+                example: Google Analytics, pixels) that collect information
+                about your use of the Platform and other websites. When
+                required, we will request consent before enabling non-essential
+                tracking.
+              </p>
+
+              <div class="twoCol">
+                <div class="mini">
+                  <h4>Manage preferences</h4>
+                  <p>
+                    Use the "Cookie Preferences" button in the footer to update
+                    consent at any time.
+                  </p>
+                </div>
+                <div class="mini">
+                  <h4>Browser controls</h4>
+                  <p>
+                    You can also block or delete cookies in your browser
+                    settings; some features may stop working.
+                  </p>
+                </div>
+              </div>
+
+              <div class="callout">
+                <b>Implementation note:</b> This demo page stores cookie consent
+                in <span style="font-family: var(--mono)">localStorage</span>.
+                In production, you may also set a consent cookie and integrate
+                with your analytics SDK consent mode.
+              </div>
+            </section>
+
+            <!-- DMCA -->
+            <section
+              id="dmca"
+              class="doc reveal"
+              style="animation-delay: 0.28s"
+            >
+              <div class="legalMeta">
+                <span class="badge red"
+                  ><i aria-hidden="true"></i> Copyright</span
+                >
+                <span class="badge"
+                  ><i aria-hidden="true"></i> Takedown process</span
+                >
+              </div>
+
+              <h2>05 — Copyright Infringement & DMCA Policy</h2>
+              <p>
+                DataFightCentral respects intellectual property rights and
+                expects users to do the same. If you believe content on the
+                Platform infringes your copyright, submit a DMCA notice to our
+                designated agent.
+              </p>
+
+              <h3>How to Submit a DMCA Notice</h3>
+              <p>Your notice should include:</p>
+              <ul>
+                <li>Your physical or electronic signature.</li>
+                <li>
+                  Identification of the copyrighted work claimed to be
+                  infringed.
+                </li>
+                <li>
+                  Identification of the infringing material and its location
+                  (URLs, screenshots, post IDs).
+                </li>
+                <li>
+                  Your contact information (address, phone number, email).
+                </li>
+                <li>
+                  A statement that you have a good-faith belief the use is
+                  unauthorized.
+                </li>
+                <li>
+                  A statement, under penalty of perjury, that the information is
+                  accurate and you are authorized to act.
+                </li>
+              </ul>
+
+              <h3>Repeat Infringers</h3>
+              <p>
+                We may terminate accounts of repeat infringers in appropriate
+                circumstances.
+              </p>
+
+              <h3>DMCA Agent</h3>
+              <p>
+                Send notices to: <br />
+                <b>[DMCA Agent Name]</b><br />
+                <b>[Company / DataFightCentral]</b><br />
+                <b>[Address]</b><br />
+                <b>[dmca@datafightcentral.com]</b>
+              </p>
+            </section>
+
+            <!-- CONTACT -->
+            <section
+              id="contact"
+              class="doc reveal"
+              style="animation-delay: 0.32s"
+            >
+              <h2>06 — Contact</h2>
+              <p>
+                For legal questions, contact: <b>[legal@datafightcentral.com]</b
+                ><br />
+                For privacy requests, contact:
+                <b>[privacy@datafightcentral.com]</b><br />
+                For DMCA, contact: <b>[dmca@datafightcentral.com]</b>
+              </p>
+              <div class="callout">
+                <b>Replace placeholders:</b> jurisdiction, company name,
+                addresses, and emails should match your registered business
+                details.
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="foot">
+          <div>
+            <b style="color: rgba(255, 255, 255, 0.86); letter-spacing: 0.02em"
+              >DataFightCentral</b
+            >
+            <span style="color: rgba(255, 255, 255, 0.55)">— Legal Center</span>
+          </div>
+          <div
+            style="
+              display: flex;
+              gap: 1rem;
+              flex-wrap: wrap;
+              align-items: center;
+            "
+          >
+            <button class="btn ghost" type="button" id="cookiePrefsBtn">
+              Cookie Preferences
+            </button>
+            <a href="#top">Back to top</a>
+          </div>
+        </div>
+        <p
+          style="
+            margin: 0.9rem 0 0;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.6;
+          "
+        >
+          © <span id="year"></span> DataFightCentral. This page is a template
+          and should be reviewed by counsel before use.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Cookie Banner -->
+    <div
+      class="cookie"
+      id="cookieBanner"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cookieTitle"
+      aria-describedby="cookieDesc"
+    >
+      <div class="cookieGrid">
+        <div>
+          <h3 id="cookieTitle">Cookies & tracking</h3>
+          <p id="cookieDesc">
+            We use essential cookies to run the platform. With your permission,
+            we also use analytics and advertising cookies to improve performance
+            and personalize experiences.
+          </p>
+        </div>
+        <div class="cookieActions">
+          <button class="btn ghost" type="button" id="rejectCookiesBtn">
+            Reject non‑essential
+          </button>
+          <button class="btn" type="button" id="acceptAnalyticsBtn">
+            Allow analytics
+          </button>
+          <button class="btn primary" type="button" id="acceptAllBtn">
+            Accept all
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== Utilities
+      const $ = (sel, root = document) => root.querySelector(sel);
+      const $$ = (sel, root = document) =>
+        Array.from(root.querySelectorAll(sel));
+
+      // ===== Footer year
+      $("#year").textContent = new Date().getFullYear();
+
+      // ===== Print / Copy link
+      $("#printBtn").addEventListener("click", () => window.print());
+      $("#copyLinkBtn").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          const btn = $("#copyLinkBtn");
+          const prev = btn.textContent;
+          btn.textContent = "Link copied";
+          setTimeout(() => (btn.textContent = prev), 1100);
+        } catch (e) {
+          alert(
+            "Could not copy link. You can manually copy the URL from your browser.",
+          );
+        }
+      });
+
+      // ===== Staggered reveal (already animated via CSS), plus scroll-trigger for sections
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const ent of entries) {
+            if (ent.isIntersecting) {
+              ent.target.style.animationPlayState = "running";
+              io.unobserve(ent.target);
+            }
+          }
+        },
+        { threshold: 0.12 },
+      );
+
+      $$(".reveal").forEach((el) => {
+        el.style.animationPlayState = "paused";
+        io.observe(el);
+      });
+
+      // ===== TOC active state (scroll spy)
+      const sections = [
+        "tos",
+        "payments",
+        "privacy",
+        "cookies",
+        "dmca",
+        "contact",
+      ].map((id) => document.getElementById(id));
+      const tocLinks = $$("[data-toc]");
+      const setActive = (id) => {
+        tocLinks.forEach((a) =>
+          a.classList.toggle("active", a.dataset.toc === id),
+        );
+        // also highlight top nav
+        ["tos", "payments", "privacy", "cookies", "dmca"].forEach((key) => {
+          const nav = document.getElementById("nav-" + key);
+          if (nav)
+            nav.setAttribute("aria-current", key === id ? "page" : "false");
+          if (nav && key !== id) nav.removeAttribute("aria-current");
+        });
+      };
+
+      const spy = new IntersectionObserver(
+        (entries) => {
+          // Pick the most visible intersecting section
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (visible) setActive(visible.target.id);
+        },
+        {
+          rootMargin: "-20% 0px -65% 0px",
+          threshold: [0.12, 0.2, 0.35, 0.5, 0.7],
+        },
+      );
+
+      sections.forEach((s) => s && spy.observe(s));
+
+      // ===== Cookie consent (simple, production-friendly pattern)
+      // Consent model: essential always on; analytics + ads optional.
+      const CONSENT_KEY = "dfc_cookie_consent_v1";
+      const defaultConsent = {
+        essential: true,
+        analytics: false,
+        ads: false,
+        ts: null,
+      };
+
+      function loadConsent() {
+        try {
+          const raw = localStorage.getItem(CONSENT_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+      function saveConsent(consent) {
+        localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
+      }
+      function applyConsent(consent) {
+        // Hook points for real integrations:
+        // - Google Analytics Consent Mode
+        // - Meta Pixel consent gating
+        // - Your own tracking toggles
+        document.documentElement.dataset.analytics = consent.analytics
+          ? "on"
+          : "off";
+        document.documentElement.dataset.ads = consent.ads ? "on" : "off";
+      }
+
+      const banner = $("#cookieBanner");
+      const openBanner = () => banner.classList.add("show");
+      const closeBanner = () => banner.classList.remove("show");
+
+      function ensureConsent() {
+        const consent = loadConsent();
+        if (!consent) {
+          openBanner();
+          applyConsent(defaultConsent);
+          return defaultConsent;
+        }
+        applyConsent(consent);
+        return consent;
+      }
+
+      let consentState = ensureConsent();
+
+      $("#acceptAllBtn").addEventListener("click", () => {
+        consentState = {
+          essential: true,
+          analytics: true,
+          ads: true,
+          ts: Date.now(),
+        };
+        saveConsent(consentState);
+        applyConsent(consentState);
+        closeBanner();
+      });
+
+      $("#acceptAnalyticsBtn").addEventListener("click", () => {
+        consentState = {
+          essential: true,
+          analytics: true,
+          ads: false,
+          ts: Date.now(),
+        };
+        saveConsent(consentState);
+        applyConsent(consentState);
+        closeBanner();
+      });
+
+      $("#rejectCookiesBtn").addEventListener("click", () => {
+        consentState = {
+          essential: true,
+          analytics: false,
+          ads: false,
+          ts: Date.now(),
+        };
+        saveConsent(consentState);
+        applyConsent(consentState);
+        closeBanner();
+      });
+
+      $("#cookiePrefsBtn").addEventListener("click", () => {
+        openBanner();
+        // focus first button for accessibility
+        $("#rejectCookiesBtn").focus();
+      });
+
+      // Close banner with Escape
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && banner.classList.contains("show"))
+          closeBanner();
+      });
+
+      // If user navigates directly to #cookies, offer prefs
+      window.addEventListener("hashchange", () => {
+        if (location.hash === "#cookies") {
+          // subtle: don't force open if already set, but allow easy access
+          // user can click Cookie Preferences button; we keep it non-intrusive
+        }
+      });
+    </script>
+  </body>
+</html>

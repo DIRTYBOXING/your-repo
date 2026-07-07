@@ -3,12 +3,10 @@ name: Visual Audit — PPV / Social / Maps
 on:
   pull_request:
     branches: [master, feat/**]
-    paths:
-      - "lib/**"
-      - "test/visual/**"
-      - "web/**"
-      - "pubspec.yaml"
-      - ".github/workflows/visual-audit.yml"
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/**"
   schedule:
     # Nightly at 02:00 UTC
     - cron: "0 2 * * *"

@@ -1,0 +1,27 @@
+{
+  "fighter_locator_heatmap": {
+    "module_id": "string",
+    "name": "string",
+    "regions": [
+      {
+        "region_id": "string",
+        "name": "string",
+        "density_level": "high | medium | low",
+        "coordinates": {
+          "latitude": 0.0,
+          "longitude": 0.0,
+          "radius_meters": 0.0
+        },
+        "promoter_ids": ["string"],
+        "active_gym_counts": 0,
+        "active_fighter_counts": 0,
+        "average_momentum": 0.0
+      }
+    ],
+    "integration_gates": {
+      "geofence_active": true,
+      "restricted_origins": ["string"],
+      "allow_all_vpn": false
+    }
+  }
+}

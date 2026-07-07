@@ -54,7 +54,8 @@
     "firestore:probe:strict": "node --experimental-modules scripts/firestore_schema_probe.mjs",
     "firestore:seed-sample:strict": "node --experimental-modules scripts/firestore_import_sample_docs.mjs",
     "firestore:migrate-dates:dry": "node scripts/firestore_migrate_dates_to_timestamps.mjs --dry-run",
-    "firestore:migrate-dates": "node scripts/firestore_migrate_dates_to_timestamps.mjs"
+    "firestore:migrate-dates": "node scripts/firestore_migrate_dates_to_timestamps.mjs",
+    "firebridge:doctor": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/firebridge_activation_check.ps1"
   },
   "dependencies": {
     "@paypal/checkout-server-sdk": "^1.0.3",

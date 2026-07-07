@@ -12,7 +12,7 @@ class AppRouter {
   /// GoRouter's own `refreshListenable` handles auth-state changes
   /// without needing a full router rebuild.
   static GoRouter getRouter(BuildContext context) {
-    _cachedRouter ??= legacy_router.RouterConfig.getRouter(context);
+    _cachedRouter ??= legacy_router.AppRouter.router;
     return _cachedRouter!;
   }
 

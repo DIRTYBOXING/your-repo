@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../services/system_health_service.dart';
+import 'system_health_service.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// DFC ADMIN CONSOLE

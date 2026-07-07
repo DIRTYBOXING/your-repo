@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DFC Promoter Territory Zones — dynamic visualization of regional combat dominance, event boundaries, and promoter influence maps." />
+  <title>Promoter Territory Zones | Data Fight Central</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f; --yellow:#ffd700;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #10214a 0%, var(--bg) 60%);
+      line-height:1.55;
+    }
+    .wrap{max-width:1140px;margin:0 auto;padding:28px 18px 42px}
+    h1,h2,h3{line-height:1.2;margin:0 0 10px}
+    p{margin:0 0 12px;color:var(--muted)}
+    .hero{
+      border:1px solid var(--line);background:linear-gradient(180deg,#0c1630,#0a1122);
+      border-radius:16px;padding:24px;box-shadow:0 0 0 1px rgba(58,160,255,.14),0 20px 40px rgba(0,0,0,.35);
+    }
+    .kicker{color:var(--neon2);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 10px;border-radius:999px;border:1px solid #274d86;background:#0f2144;color:#d9ecff;font-size:.78rem;font-weight:700}
+    .chip.ok{border-color:#1c6b53;background:#103529;color:#bff6df}
+    .grid{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(12,minmax(0,1fr))}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+
+    /* Map Container */
+    .map-container {
+      position: relative;
+      height: 400px;
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 35px rgba(0,217,255,0.06);
+    }
+    .gis-grid-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 25px 20px;
+      background-image:
+        linear-gradient(to right, rgba(28, 42, 74, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(28, 42, 74, 0.25) 1px, transparent 1px);
+    }
+    .gis-canvas {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 2;
+    }
+    .heatmap-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 3;
+      display: flex;
+      gap: 8px;
+    }
+    .control-btn {
+      background: rgba(11, 16, 32, 0.85);
+      border: 1px solid var(--line);
+      color: var(--neon);
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+    .control-btn:hover {
+      border-color: var(--neon2);
+      color: #fff;
+    }
+
+    .list{margin:8px 0 0 18px;padding:0}
+    .list li{margin:6px 0;color:#c6d8f4}
+
+    .key-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .metric {
+      background: #0a1122;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+    }
+    .metric .lbl { font-size: 0.76rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric .val { font-size: 1.4rem; font-weight: 900; color: var(--neon); margin-top: 4px; }
+
+    @media(min-width:900px){
+      .span-8{grid-column:span 8}
+      .span-4{grid-column:span 4}
+      .span-12{grid-column:span 12}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central</div>
+      <h1>Promoter Territory Zones (Module 18)</h1>
+      <p>Dynamic visualization of regional promotion hubs, territorial boundaries, and licensing jurisdictions.</p>
+      <div class="chips">
+        <span class="chip ok">Module 18 Active</span>
+        <span class="chip">Polygons Active</span>
+        <span class="chip">Regulated Boundaries</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <!-- Territory Zone Map Canvas -->
+      <article class="card span-12">
+        <h2>Regional Influence Boundaries</h2>
+        <div class="map-container">
+          <div class="gis-grid-bg"></div>
+          <svg class="gis-canvas" viewBox="0 0 1000 400">
+            <!-- Grid Lines and Map Regions -->
+            <line x1="500" y1="0" x2="500" y2="400" stroke="rgba(0, 217, 255, 0.1)" stroke-dasharray="5,5" />
+            <line x1="0" y1="200" x2="1000" y2="200" stroke="rgba(0, 217, 255, 0.1)" stroke-dasharray="5,5" />
+
+            <!-- Territory Polygon: Iron Forge Promotions (Brisbane / Sunshine Coast) -->
+            <polygon points="760,220 860,220 880,310 780,310" fill="rgba(0, 217, 255, 0.15)" stroke="var(--neon)" stroke-width="2" />
+            <text x="770" y="250" fill="var(--ink)" font-size="11" font-weight="bold">Iron Forge Promotions (QLD)</text>
+            <circle cx="820" cy="265" r="4" fill="var(--neon2)" />
+
+            <!-- Territory Polygon: ONE Championship (Southeast Asia) -->
+            <polygon points="620,110 740,110 720,180 580,180" fill="rgba(255, 0, 127, 0.15)" stroke="var(--magenta)" stroke-width="2" />
+            <text x="600" y="140" fill="var(--ink)" font-size="11" font-weight="bold">ONE Championship (SEA)</text>
+            <circle cx="660" cy="145" r="4" fill="var(--magenta)" />
+
+            <!-- Territory Polygon: United States West Grid (UFC/PFL) -->
+            <polygon points="260,110 390,110 360,200 230,200" fill="rgba(80, 255, 127, 0.15)" stroke="var(--ok)" stroke-width="2" />
+            <text x="250" y="140" fill="var(--ink)" font-size="11" font-weight="bold">UFC / PFL Western Hub</text>
+            <circle cx="310" cy="155" r="4" fill="var(--ok)" />
+          </svg>
+          <div class="heatmap-controls">
+            <button class="control-btn" onclick="alert('Polygons Toggled')">Toggle Boundaries</button>
+            <button class="control-btn" onclick="alert('Switching to Active Licensing Mode')">Licensing View</button>
+            <button class="control-btn" onclick="alert('Centering Zone: QLD')">Target Brisbane</button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Territory Data Registry -->
+      <article class="card span-12">
+        <h2 style="color: var(--neon2);">Active Jurisdictions Index</h2>
+        <div class="key-metrics">
+          <div class="metric">
+            <div class="lbl">Total Tracked Promoters</div>
+            <div class="val">42+ Active</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Global Polygons</div>
+            <div class="val">18 Territories</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Licensing Compliance</div>
+            <div class="val">100% OK</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Integration Logic -->
+      <article class="card span-12">
+        <h3>Freeway Integration Surface</h3>
+        <p>This module enables clear, boundary-aware data federation across our coordinate layers:</p>
+        <ul class="list">
+          <li><strong>Economic Compliance:</strong> Maps automatic payout rules dynamically based on local taxation bounding boxes.</li>
+          <li><strong>Licensing Bounds:</strong> Restricts stream overlays and fan-zone accesses strictly to verified distribution zones.</li>
+          <li><strong>Fighter Geofencing:</strong> Matches local athletic comissions' suspension statuses securely with active events.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      Data Fight Central • Promoter Territory Zones Integration • 2026
+    </footer>
+  </main>
+</body>
+</html>

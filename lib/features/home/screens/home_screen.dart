@@ -193,11 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppTheme.primaryBackground,
-      drawer: DFCNavDrawer(
-        onTabSelected: (index) {
-          setState(() => _selectedIndex = index.clamp(0, _tabCount - 1));
-        },
-      ),
+      drawer: const DFCNavDrawer(),
       endDrawer: const DFCDashboardDrawer(),
       body: Stack(
         fit: StackFit.expand,

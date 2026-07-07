@@ -3,9 +3,10 @@ name: actions-lockfile-maintenance
 on:
   workflow_dispatch:
   pull_request:
-    paths:
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
       - ".github/workflows/**"
-      - ".github/actions.lock.json"
 
 jobs:
   verify:

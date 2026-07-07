@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PPVPayPalMicropaySchema",
+  "description": "JSON Schema schema validating instant digital checkout tokens, itemized PayPal gateway codes, and merchant split payouts inside Data Fight Central.",
+  "type": "object",
+  "properties": {
+    "gatewayStatus": {
+      "type": "string",
+      "enum": ["authenticated", "processing", "offline"]
+    },
+    "selectedItem": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "priceUsd": { "type": "number" },
+        "splits": {
+          "type": "object",
+          "properties": {
+            "athletePercent": { "type": "number" },
+            "platformPercent": { "type": "number" }
+          },
+          "required": ["athletePercent", "platformPercent"]
+        }
+      },
+      "required": ["id", "name", "priceUsd", "splits"]
+    },
+    "settlementLedger": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "buyerHashId": { "type": "string" },
+          "itemDescription": { "type": "string" },
+          "paidSum": { "type": "number" },
+          "appliedGateway": {
+            "type": "string",
+            "enum": ["PayPal", "MicroPayment Engine"]
+          }
+        },
+        "required": ["buyerHashId", "itemDescription", "paidSum", "appliedGateway"]
+      }
+    }
+  },
+  "required": ["gatewayStatus", "selectedItem", "settlementLedger"]
+}

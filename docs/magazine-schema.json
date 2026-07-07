@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DFCMagazineSchema",
+  "description": "JSON Schema structure representing the editorial stories, cover features, and visual poster layout specifications for the DFC magazine interface.",
+  "type": "object",
+  "properties": {
+    "edition": {
+      "type": "object",
+      "properties": {
+        "volume": { "type": "string" },
+        "number": { "type": "string" },
+        "publishDate": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["draft", "published", "archived"] }
+      },
+      "required": ["volume", "number", "publishDate", "status"]
+    },
+    "coverStory": {
+      "type": "object",
+      "properties": {
+        "kicker": { "type": "string" },
+        "title": { "type": "string" },
+        "excerpt": { "type": "string" },
+        "author": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "role": { "type": "string" },
+            "avatarInitials": { "type": "string", "maxLength": 3 }
+          },
+          "required": ["name", "role"]
+        }
+      },
+      "required": ["kicker", "title", "excerpt", "author"]
+    },
+    "tableOfContents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "category": { "type": "string" },
+          "headline": { "type": "string" },
+          "anchorLink": { "type": "string" }
+        },
+        "required": ["id", "category", "headline", "anchorLink"]
+      }
+    },
+    "editorialStories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "type": "string" },
+          "title": { "type": "string" },
+          "excerpt": { "type": "string" },
+          "authorName": { "type": "string" },
+          "readTimeMinutes": { "type": "integer" },
+          "posterAssetSvg": {
+            "type": "object",
+            "properties": {
+              "theme": { "type": "string" },
+              "opacity": { "type": "number" },
+              "visualIndicatorText": { "type": "string" }
+            },
+            "required": ["theme", "opacity"]
+          }
+        },
+        "required": ["id", "category", "title", "excerpt", "authorName", "readTimeMinutes"]
+      }
+    }
+  },
+  "required": ["edition", "coverStory", "tableOfContents", "editorialStories"]
+}

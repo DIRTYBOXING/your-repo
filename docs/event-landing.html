@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFC Open Source Tech Summit 2026 | Data Fight Central</title>
+    <meta
+      name="description"
+      content="Data Fight Central Open Source Tech Summit landing page. Explore the intersection of real-time combat sports tech, fighter safety, and AI streaming architecture."
+    />
+    <meta
+      name="keywords"
+      content="Data Fight Central, Open Source, Tech Summit, Event, Conference, Brisbane, Combat Sports Architecture, AI, Fighter Safety"
+    />
+    <link
+      rel="canonical"
+      href="https://www.datafightcentral.com/event-landing.html"
+    />
+
+    <style>
+      :root {
+        --bg: #050a14;
+        --panel: #101a2e;
+        --panel-2: #142236;
+        --text: #ecf3ff;
+        --muted: #9fb0c7;
+        --cyan: #00d9ff;
+        --blue: #5ea3ff;
+        --green: #00ff88;
+        --magenta: #ff007f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: radial-gradient(
+          circle at 50% -10%,
+          #122844 0%,
+          var(--bg) 60%
+        );
+        color: var(--text);
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+      }
+
+      .header {
+        border-bottom: 1px solid rgba(0, 217, 255, 0.15);
+        background: rgba(5, 10, 20, 0.85);
+        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        width: 100%;
+      }
+
+      .nav-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo-text {
+        font-weight: 800;
+        font-size: 1.3rem;
+        letter-spacing: 0.05em;
+        background: linear-gradient(45deg, var(--cyan), var(--blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-decoration: none;
+      }
+
+      .logo-text span {
+        color: var(--magenta);
+        -webkit-text-fill-color: var(--magenta);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--cyan);
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+      }
+
+      .hero {
+        border: 1px solid rgba(0, 217, 255, 0.3);
+        background: linear-gradient(
+          165deg,
+          rgba(16, 26, 46, 0.95),
+          rgba(20, 34, 54, 0.95)
+        );
+        border-radius: 20px;
+        padding: 48px 32px;
+        box-shadow: 0 0 30px rgba(0, 217, 255, 0.12);
+        margin-bottom: 40px;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 30px;
+        align-items: center;
+      }
+
+      @media (max-width: 768px) {
+        .hero {
+          grid-template-columns: 1fr;
+          text-align: center;
+          padding: 30px 20px;
+        }
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: var(--cyan);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        line-height: 1.25;
+        font-weight: 900;
+      }
+
+      .lead {
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: 1.1rem;
+      }
+
+      .meta-info-grid {
+        border-left: 3px solid var(--magenta);
+        padding-left: 20px;
+        margin: 24px 0;
+      }
+
+      @media (max-width: 768px) {
+        .meta-info-grid {
+          border-left: none;
+          border-top: 3px solid var(--magenta);
+          padding-left: 0;
+          padding-top: 15px;
+          display: inline-block;
+          text-align: left;
+        }
+      }
+
+      .meta-item {
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+
+      .meta-item strong {
+        color: var(--text);
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .hero-actions {
+          justify-content: center;
+        }
+      }
+
+      .btn {
+        display: inline-block;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--cyan), var(--blue));
+        color: #00121f;
+        box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 25px rgba(0, 217, 255, 0.4);
+      }
+
+      .btn-secondary {
+        border: 1px solid rgba(0, 217, 255, 0.5);
+        color: var(--cyan);
+        background: rgba(0, 217, 255, 0.05);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(0, 217, 255, 0.15);
+      }
+
+      .countdown-container {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(5, 10, 20, 0.9);
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+
+      .countdown-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--magenta);
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
+      }
+
+      .countdown-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .countdown-box {
+        background: rgba(16, 26, 46, 0.8);
+        border: 1px solid rgba(94, 163, 255, 0.15);
+        border-radius: 10px;
+        padding: 12px 5px;
+      }
+
+      .countdown-num {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: var(--cyan);
+      }
+
+      .countdown-lbl {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+        margin-top: 4px;
+      }
+
+      .section-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+        margin-top: 40px;
+      }
+
+      @media (max-width: 900px) {
+        .section-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .agenda-box {
+        background: rgba(16, 26, 46, 0.6);
+        border: 1px solid rgba(94, 163, 255, 0.15);
+        border-radius: 16px;
+        padding: 24px;
+      }
+
+      .section-header {
+        margin: 0 0 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+      }
+
+      .section-header h2 {
+        font-size: 1.6rem;
+        color: var(--blue);
+        margin: 0;
+      }
+
+      .day-section {
+        margin-bottom: 30px;
+      }
+
+      .day-section h3 {
+        color: var(--magenta);
+        font-size: 1.25rem;
+        margin: 0 0 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .event-item {
+        border-left: 2px solid var(--cyan);
+        padding-left: 16px;
+        position: relative;
+      }
+
+      .event-item::before {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: var(--bg);
+        border: 2px solid var(--cyan);
+        border-radius: 50%;
+        left: -5px;
+        top: 6px;
+      }
+
+      .event-time {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--cyan);
+        text-transform: uppercase;
+      }
+
+      .event-title {
+        font-size: 1.05rem;
+        font-weight: 800;
+        margin: 2px 0 4px;
+        color: var(--text);
+      }
+
+      .event-desc {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 0;
+      }
+
+      .sidebar-box {
+        background: rgba(16, 26, 46, 0.9);
+        border: 1px solid rgba(94, 163, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(5, 10, 20, 0.4);
+        border-radius: 16px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        height: min-content;
+      }
+
+      .venue-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--text);
+        margin: 0 0 10px;
+      }
+
+      .venue-desc {
+        color: var(--muted);
+        font-size: 0.95rem;
+        margin: 0;
+      }
+
+      .map-placeholder {
+        background: #091322;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 0.85rem;
+        text-align: center;
+        padding: 0 10px;
+      }
+
+      .reg-form-container {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 24px;
+        margin-top: 10px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      input[type="text"],
+      input[type="email"],
+      select {
+        background: var(--bg);
+        border: 1px solid rgba(94, 163, 255, 0.25);
+        padding: 10px 14px;
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 0.92rem;
+        font-family: inherit;
+        transition: border-color 0.2s;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--cyan);
+        box-shadow: 0 0 8px rgba(0, 217, 255, 0.15);
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, var(--magenta), #ff0055);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        padding: 12px;
+        font-weight: 800;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.2s;
+        box-shadow: 0 0 15px rgba(255, 0, 127, 0.25);
+      }
+
+      .btn-submit:hover {
+        box-shadow: 0 0 25px rgba(255, 0, 127, 0.45);
+        transform: translateY(-1px);
+      }
+
+      .legal {
+        margin-top: 60px;
+        text-align: center;
+        color: #6a7c99;
+        font-size: 0.85rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="nav-wrap">
+        <a href="index.html" class="logo-text"
+          >DATA FIGHT <span>CENTRAL</span></a
+        >
+        <nav class="nav-links">
+          <a href="event-landing.html" class="active">Event details</a>
+          <a href="sponsorship.html">Sponsorship</a>
+          <a href="google-nvidia.html">Tech Partner</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Announcing the Annual Tech Summit</p>
+          <h1>DFC Open Source Tech Summit 2026</h1>
+          <p class="lead">
+            Join developers, sports scientists, and platform architects for two
+            intense days of high-performance streaming pipelines, AI-driven
+            biometrics, and ethical data safety protocols in combat sports.
+          </p>
+
+          <div class="meta-info-grid">
+            <div class="meta-item">
+              📅 <strong>Date:</strong> November 24-25, 2026
+            </div>
+            <div class="meta-item">
+              📍 <strong>Venue:</strong> Brisbane Convention & Exhibition Centre
+              / Hybrid
+            </div>
+            <div class="meta-item">
+              🌐 <strong>Attendance:</strong> Worldwide standard streaming
+              options available
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#register" class="btn btn-primary">Register For Summit</a>
+            <a href="sponsorship.html" class="btn btn-secondary"
+              >Conference Sponsorships</a
+            >
+          </div>
+        </div>
+
+        <div>
+          <div class="countdown-container">
+            <div class="countdown-title">Live event begins in</div>
+            <div class="countdown-grid">
+              <div class="countdown-box">
+                <div class="countdown-num">142</div>
+                <div class="countdown-lbl">Days</div>
+              </div>
+              <div class="countdown-box">
+                <div class="countdown-num">16</div>
+                <div class="countdown-lbl">Hrs</div>
+              </div>
+              <div class="countdown-box">
+                <div class="countdown-num">44</div>
+                <div class="countdown-lbl">Mins</div>
+              </div>
+              <div class="countdown-box">
+                <div class="countdown-num">12</div>
+                <div class="countdown-lbl">Secs</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-layout">
+        <!-- Agenda Section -->
+        <section class="agenda-box">
+          <div class="section-header">
+            <h2>Conference Agenda</h2>
+          </div>
+
+          <!-- Day 1 -->
+          <div class="day-section">
+            <h3>Day 1: Athlete Safety & Biometric Processing</h3>
+            <div class="timeline">
+              <div class="event-item">
+                <div class="event-time">09:00 - 10:00 AEST</div>
+                <h4 class="event-title">
+                  Opening Keynote: Re-imagining Safety via Data Integration
+                </h4>
+                <p class="event-desc">
+                  An overview of how Data Fight Central uses high-frequency
+                  hardware queues to support real-time wellness evaluation, and
+                  how open-source collaboration saves lives.
+                </p>
+              </div>
+              <div class="event-item">
+                <div class="event-time">10:30 - 12:00 AEST</div>
+                <h4 class="event-title">
+                  Workshop: Live Heart-Rate Strain Verification Loops
+                </h4>
+                <p class="event-desc">
+                  Hands-on trace showing sensor streams entering Firebase
+                  functions, processing, and triggering emergency protective
+                  indicators securely.
+                </p>
+              </div>
+              <div class="event-item">
+                <div class="event-time">13:30 - 15:00 AEST</div>
+                <h4 class="event-title">
+                  Panel: The Ethics of Athlete Performance Bio-Tracking
+                </h4>
+                <p class="event-desc">
+                  Privacy professionals and sports physicians clarify safe
+                  storage buffers and data-minimization practices for wearables.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Day 2 -->
+          <div class="day-section" style="margin-bottom: 0">
+            <h3>Day 2: AI & Streaming Engines at Scale</h3>
+            <div class="timeline">
+              <div class="event-item">
+                <div class="event-time">09:30 - 11:00 AEST</div>
+                <h4 class="event-title">
+                  Deploying Gen2 Webhooks with Real-Time Latency
+                </h4>
+                <p class="event-desc">
+                  An in-depth guide to modernizing backend webhooks. Deep dive
+                  into building region-optimized HTTP listeners capable of
+                  handling 50k requests/min.
+                </p>
+              </div>
+              <div class="event-item">
+                <div class="event-time">11:30 - 13:00 AEST</div>
+                <h4 class="event-title">
+                  NVIDIA & Google Ecosystem Integration
+                </h4>
+                <p class="event-desc">
+                  Leveraging the NVIDIA Inception toolkit with Cloud Run to
+                  generate sub-second fight prediction matrices and video
+                  indexing.
+                </p>
+              </div>
+              <div class="event-item">
+                <div class="event-time">14:30 - 16:00 AEST</div>
+                <h4 class="event-title">Open-Source Release and Q&A</h4>
+                <p class="event-desc">
+                  Showcasing DFC's upcoming open-source community utilities and
+                  outlining paths for external community developers to
+                  contribute.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sidebar (Venue & Registration) -->
+        <aside class="sidebar-box">
+          <div>
+            <h3 class="venue-title">Event Location</h3>
+            <p class="venue-desc" style="margin-bottom: 12px">
+              Brisbane Convention & Exhibition Centre<br />
+              Glenelg St, South Brisbane QLD 4101<br />
+              Australia
+            </p>
+            <div class="map-placeholder">
+              📍 Map Visualization Boundary<br />
+              Brisbane BCEC Arena (South Bank)
+            </div>
+          </div>
+
+          <div id="register" class="reg-form-container">
+            <h3 class="venue-title" style="margin-bottom: 4px">
+              Secure Your Space
+            </h3>
+            <p
+              class="venue-desc"
+              style="margin-bottom: 16px; font-size: 0.88rem"
+            >
+              Free registration for qualified open-source developers.
+            </p>
+
+            <form
+              onsubmit="
+                event.preventDefault();
+                alert(
+                  'Registration successful! Check your inbox for your summit ticket.',
+                );
+              "
+            >
+              <div class="form-group">
+                <label for="reg-name">Full Name</label>
+                <input
+                  type="text"
+                  id="reg-name"
+                  required
+                  placeholder="Tyson Fury"
+                />
+              </div>
+              <div class="form-group">
+                <label for="reg-email">Email Address</label>
+                <input
+                  type="email"
+                  id="reg-email"
+                  required
+                  placeholder="tyson@centralfight.com"
+                />
+              </div>
+              <div class="form-group">
+                <label for="ticket-type">Ticket Class</label>
+                <select id="ticket-type" required>
+                  <option value="digital">
+                    Online Live-Stream Pass (Free)
+                  </option>
+                  <option value="in-person">
+                    In-Person Developer Pass (Free)
+                  </option>
+                  <option value="vip">
+                    In-Person VIP Access Pass ($150 AUD)
+                  </option>
+                </select>
+              </div>
+              <button type="submit" class="btn-submit">
+                Complete Registration
+              </button>
+            </form>
+          </div>
+        </aside>
+      </div>
+
+      <footer class="legal">
+        <p>
+          &copy; 2026 DFC Pty Ltd. All Rights Reserved. Data Fight Central Tech
+          Summit.
+        </p>
+        <p>
+          Questions? Contact our events coordinators at
+          <a href="mailto:events@datafightcentral.com"
+            >events@datafightcentral.com</a
+          >
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

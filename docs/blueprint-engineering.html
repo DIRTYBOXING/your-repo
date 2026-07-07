@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFC Platform Blueprint Engineering Variant</title>
+    <meta
+      name="description"
+      content="Engineering variant of the DFC platform blueprint optimized for print/export and executive technical review."
+    />
+    <meta property="og:title" content="DFC Platform Blueprint Engineering Variant" />
+    <meta
+      property="og:description"
+      content="Print-ready engineering blueprint of promoter-first and community-first DFC architecture."
+    />
+    <link
+      rel="canonical"
+      href="https://www.datafightcentral.com/blueprint-engineering.html"
+    />
+    <style>
+      :root {
+        --bg: #021123;
+        --panel: #082742;
+        --line: #3ab7e7;
+        --line-soft: rgba(58, 183, 231, 0.5);
+        --text: #e9fbff;
+        --muted: #acdbe9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "Segoe UI", "Tahoma", Arial, sans-serif;
+        background:
+          linear-gradient(rgba(58, 183, 231, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(58, 183, 231, 0.08) 1px, transparent 1px),
+          radial-gradient(circle at top, rgba(70, 183, 236, 0.2), transparent 32%),
+          var(--bg);
+        background-size: 22px 22px, 22px 22px, auto, auto;
+      }
+
+      main {
+        width: min(1180px, 100% - 24px);
+        margin: 14px auto 24px;
+      }
+
+      .header {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        text-align: center;
+        padding: 14px;
+        background: rgba(5, 26, 45, 0.9);
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: clamp(1.1rem, 2.4vw, 2rem);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
+
+      .layout {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 1fr 1.25fr 1fr;
+        gap: 12px;
+      }
+
+      .col {
+        display: grid;
+        gap: 10px;
+      }
+
+      .panel {
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        padding: 12px;
+        background: rgba(8, 39, 66, 0.85);
+      }
+
+      .panel h2 {
+        margin: 0 0 8px;
+        font-size: 0.98rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .panel ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .core {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: rgba(6, 31, 51, 0.92);
+      }
+
+      .core h2 {
+        margin: 0;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+      }
+
+      .matrix {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .cell {
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        padding: 8px;
+        text-align: center;
+        color: var(--muted);
+        background: rgba(5, 25, 42, 0.9);
+      }
+
+      .strap {
+        margin-top: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .footer {
+        margin-top: 12px;
+        border: 1px solid var(--line-soft);
+        border-radius: 10px;
+        padding: 12px;
+        text-align: center;
+        background: rgba(4, 23, 40, 0.92);
+      }
+
+      .footer a {
+        display: inline-block;
+        margin: 8px 5px 0;
+        color: #001a2d;
+        background: var(--line);
+        text-decoration: none;
+        border-radius: 6px;
+        padding: 9px 12px;
+        font-weight: 700;
+      }
+
+      @media print {
+        body {
+          background: #001429;
+        }
+
+        .footer a {
+          border: 1px solid #001429;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="header" data-test="engineering-blueprint-hero">
+        <h1>DFC Platform Blueprint Engineering Variant</h1>
+        <p>
+          Print and export view for operator briefings, partner walkthroughs, and
+          executive review.
+        </p>
+      </section>
+
+      <section class="layout" data-test="engineering-blueprint-canvas">
+        <div class="col">
+          <article class="panel">
+            <h2>Promoter Inputs</h2>
+            <ul>
+              <li>Gym, fighter, and event pipelines</li>
+              <li>Poster, scheduling, and communication stack</li>
+              <li>Operator-led campaign controls</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h2>Campaign Operations</h2>
+            <ul>
+              <li>Coffee Not a Coffin activation paths</li>
+              <li>Pink Shield safety escalation support</li>
+              <li>Gold Coin and mentor program delivery</li>
+            </ul>
+          </article>
+        </div>
+
+        <div>
+          <section class="core">
+            <h2>DFC Platform Core</h2>
+            <div class="matrix">
+              <div class="cell">Streaming and PPV</div>
+              <div class="cell">Payments and Payouts</div>
+              <div class="cell">Social and Messaging</div>
+              <div class="cell">AI and Analytics</div>
+              <div class="cell">Event Operations</div>
+              <div class="cell">Trust and Safety</div>
+            </div>
+            <div class="strap">Promoter-owned distribution with community-first execution</div>
+          </section>
+          <section class="panel" style="margin-top: 10px;">
+            <h2>Mission Guarantee</h2>
+            <ul>
+              <li>Anti-violence and safety-zone pathways</li>
+              <li>Youth mentoring and leadership uplift</li>
+              <li>Operational control retained by promoters</li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="col">
+          <article class="panel">
+            <h2>Partner Outcomes</h2>
+            <ul>
+              <li>Sponsors: measurable community-aligned impact</li>
+              <li>Tourism: destination package conversion</li>
+              <li>Fans: global access and trusted event pathways</li>
+            </ul>
+          </article>
+          <article class="panel">
+            <h2>Community Outcomes</h2>
+            <ul>
+              <li>Safety network and rapid support connection</li>
+              <li>Pathways out of hardship through sport</li>
+              <li>Gyms as leadership and resilience hubs</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="footer" data-test="engineering-blueprint-cta">
+        <strong>DFC Communications Hand-off Pack</strong>
+        <div>
+          <a href="/blueprint.html">Visual Blueprint</a>
+          <a href="/promoters.html">Promoter Entry</a>
+          <a href="/">Main Site</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

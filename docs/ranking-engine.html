@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ranking Engine Analytics | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #10b981; --ink: #f3f4f6; --muted: #9ca3af;
+    }
+    body {
+      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+    }
+    .wrapper { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
+    p { color: var(--muted); font-size: 1.1rem; }
+    .table-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-top: 30px; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 14px; border-bottom: 1px solid var(--line); }
+    th { text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.1em; color: var(--accent); }
+    .tier-badge { background: rgba(16, 185, 129, 0.15); color: var(--accent); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
+    .back:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="index.html" class="back">← Back to Index</a>
+    <h1>Pound-for-Pound (P4P) Ranking Engine</h1>
+    <p>Our autonomous Elo-multiplier algorithm structures fighter ladders based on sparring depth, stance dominance variables, opponent resilience, and clean target connection velocities.</p>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Fighter Profile</th>
+            <th>Division</th>
+            <th>Record</th>
+            <th>Elo Score</th>
+            <th>Protection Trust</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🥇 1</td>
+            <td><strong>Ariana Cruz</strong></td>
+            <td>Lightweight</td>
+            <td>14-2-0</td>
+            <td>1985</td>
+            <td><span class="tier-badge">A+ Secure</span></td>
+          </tr>
+          <tr>
+            <td>🥈 2</td>
+            <td><strong>John Doe</strong></td>
+            <td>Lightweight</td>
+            <td>12-3-0</td>
+            <td>1812</td>
+            <td><span class="tier-badge">A Secure</span></td>
+          </tr>
+          <tr>
+            <td>🥉 3</td>
+            <td><strong>Sam Taylor</strong></td>
+            <td>Welterweight</td>
+            <td>11-1-0</td>
+            <td>1790</td>
+            <td><span class="tier-badge">A+ Secure</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

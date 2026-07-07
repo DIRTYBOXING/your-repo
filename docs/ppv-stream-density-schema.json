@@ -1,0 +1,22 @@
+{
+  "ppvDensity": [
+    {
+      "region": "North America",
+      "percentage": 42,
+      "coordinates": { "cx": 340, "cy": 140, "radius": 50 },
+      "color": "#ff0077"
+    },
+    {
+      "region": "Asia",
+      "percentage": 33,
+      "coordinates": { "cx": 750, "cy": 180, "radius": 40 },
+      "color": "#ffd700"
+    },
+    {
+      "region": "Oceania",
+      "percentage": 8,
+      "coordinates": { "cx": 830, "cy": 270, "radius": 30 },
+      "color": "#3aa0ff"
+    }
+  ]
+}

@@ -72,9 +72,7 @@ import '../shared/services/user_settings_service.dart';
 import '../shared/services/account_recovery_service.dart';
 import '../shared/services/login_history_service.dart';
 
-const bool _featureProTheme = bool.fromEnvironment(
-  'FEATURE_PRO_THEME',
-);
+const bool _featureProTheme = bool.fromEnvironment('FEATURE_PRO_THEME');
 
 class _RuntimeLaneBannerData {
   const _RuntimeLaneBannerData({
@@ -374,8 +372,8 @@ class _DataFightCentralAppState extends State<DataFightCentralApp> {
         ChangeNotifierProvider(create: (_) => GymFinderService()),
 
         // ── PPV & Fight Commerce ──────────────────────────────
-        Provider(create: (_) => PPVService()),
-        ChangeNotifierProvider(create: (_) => PPVPaymentService()),
+        Provider(create: (_) => PpvService()),
+        Provider(create: (_) => PpvPaymentService()),
         Provider(create: (_) => PPVAccessService()),
         Provider(
           create: (_) {

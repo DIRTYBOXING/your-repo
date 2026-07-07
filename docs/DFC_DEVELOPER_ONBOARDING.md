@@ -1,21 +1,116 @@
 # DFC Developer Onboarding
 
-Purpose: get a new developer productive in the DFC workspace without rediscovering the PPV runtime lane, local verification expectations, or the repo's split between Flutter, Functions, and the standalone entitlement proxy.
+This guide gets engineers shipping quickly across all DFC modules while staying compliant with routing, CI, Sonar, Firebase, and rule-pack governance.
 
-## First-day setup
+## 1) Platform mental model (read first)
 
-1. Install the core tooling:
+DFC is a platform, not a single app.
+
+- Frontend: Flutter multi-module surfaces (`PPV`, `Admin`, `Promoter`, `Creator`, `SmartCoach`, `Media`, etc.)
+- Backend: Firebase + selected GCP services
+- Governance: GitHub Actions + branch protection + Sonar + rule-pack + routing checks
+- Local AI tooling: Cline + MCP (assistive only, never runtime authority)
+
+Start with these canonical docs:
+
+- `docs/DFC_PLATFORM_MASTER_MAP.md`
+- `docs/DFC_PLATFORM_GOVERNANCE.md`
+- `docs/DFC_ENTERPRISE_ROADMAP.md`
+- `docs/DFC_MCP_ARCHITECTURE_MAP.md`
+
+## 2) First-day setup
+
+1. Install core tooling:
    - VS Code
-   - Flutter and Dart SDKs
+   - Flutter/Dart SDKs
    - Node.js
    - Firebase CLI
-2. Open the repo root in VS Code.
-3. Copy `.env.example` into a local `.env` and populate only the values you actually need for the lane you are working on.
-4. Use the existing multi-surface workspace setup rather than opening subfolders in isolation.
+2. Open **repo root** in VS Code (do not work from isolated subfolders).
+3. If needed for your lane, create local environment config from project examples and fill only required values.
+4. Run dependency install:
 
-## Priority 1 local PPV lane
+```powershell
+flutter pub get
+```
 
-Before changing entitlement, playback, settlement, or monetization code, run the local PPV verification lane.
+## 3) Fast daily dev loop (recommended)
+
+1. Implement scoped changes in one module/lane.
+2. Run local validation:
+
+```powershell
+flutter analyze --no-fatal-infos
+flutter test
+```
+
+3. Ensure routing and rule-pack constraints are still clean.
+4. Open PR with module scope + proof.
+5. Merge only when required checks are green.
+
+## 4) Required CI gates (merge-blocking)
+
+These checks are authoritative:
+
+- `DFC CI / analyze + tests`
+- `DFC Sonar Quality Gate / sonar scan + quality gate`
+- `DFC Routing Spine Check / forbid literal navigation routes`
+- `DFC Firebase Security Check / firestore/storage policy checks`
+- `DFC Rule Pack Check / rule pack + routing discipline`
+
+Reference: `docs/QUALITY_GATE_SETUP.md`
+
+## 5) Routing spine discipline (critical)
+
+Use shared route constants and centralized routing ownership.
+
+Do not introduce literal navigation routes like:
+
+- `context.go('/...')`
+- `context.push('/...')`
+- `Navigator.pushNamed('/...')`
+
+Why: prevents cross-module drift and route breakage.
+
+## 6) Rule-pack and sweep discipline
+
+Follow these docs in every feature lane:
+
+- `docs/DFC_SONAR_RULE_PACK.md`
+- `docs/DFC_MODULE_SWEEP_CHECKLIST.md`
+- `.github/pull_request_template.md`
+
+PR expectations:
+
+- scope declared
+- analyzer/test proof included
+- routing delta explained when relevant
+- no unresolved critical quality/security regressions
+
+## 7) MCP + Cline usage (correct boundaries)
+
+MCP/Cline are local accelerators.
+
+Allowed:
+
+- repo inspection/patching
+- local validation automation
+- controlled Firebase admin diagnostics
+
+Not allowed:
+
+- treating MCP/Cline as backend/runtime
+- bypassing CI/security/routing/rule-pack enforcement
+
+References:
+
+- `docs/CLINE_USAGE_POLICY.md`
+- `docs/CLINE_FREE_MODE_SETUP.md`
+- `docs/DFC_MCP_SERVER_COMPARISON_TABLE.md`
+- `docs/DFC_OPERATOR_QUICK_CARD.md`
+
+## 8) Priority 1 PPV verification lane
+
+Before changing entitlement, playback, settlement, or monetization paths, run the PPV lane.
 
 ### Commands
 
@@ -27,41 +122,33 @@ npm --prefix entitlements-service run test:smoke
 
 ### VS Code tasks
 
-Run these from the task picker:
-
 - `PPV: Start Entitlement Proxy`
 - `PPV: Runtime Readiness Check`
 - `PPV: Runtime Readiness Success Harness`
 - `PPV: Smoke Entitlement Proxy`
 - `PPV: Priority 1 Verification Lane`
 
-## What the readiness check protects
+### What the readiness check protects
 
-The readiness script is intentionally strict about local transport configuration.
+It fails if:
 
-It fails when:
+- entitlement env is incomplete
+- entitlement proxy is unreachable
+- transport would silently fall through to deployed production URL
 
-- the local entitlement env is incomplete
-- the entitlement proxy is not reachable
-- the Functions transport would fall through to the deployed production base URL by default
+This prevents accidental production-side behavior during local verification.
 
-That guard exists so local PPV verification never silently mutates or depends on deployed infrastructure.
+### Redis note
 
-## Redis and local verification
+Smoke verification does not require a live Redis instance. Prefer existing smoke seams unless explicitly working on Redis-backed JTI paths.
 
-The standalone entitlement service may expect installed runtime dependencies such as `ioredis` when started directly.
-
-The smoke lane itself does not require a live Redis service. Use the existing smoke test and app-factory test doubles for verification instead of widening the local dependency footprint unless you are explicitly working on the Redis-backed JTI path.
-
-If you need to prove the success path locally without the full CLI boot path, run:
+Optional success harness:
 
 ```powershell
 node scripts/ppv_runtime_readiness_success_harness.mjs
 ```
 
-That harness keeps startup, `/ready`, and shutdown in one event loop and avoids the Redis boundary by using the existing app-factory test seam.
-
-## Files that matter most for Priority 1
+### PPV-critical files
 
 - `entitlements-service/server.js`
 - `entitlements-service/tests/smokeCompatProxy.js`
@@ -70,20 +157,9 @@ That harness keeps startup, `/ready`, and shutdown in one event loop and avoids 
 - `docs/DFC_PPV_PUBLIC_READINESS_PLAN.md`
 - `docs/DFCalive_OPS_RUNBOOK.md`
 
-## Daily baseline
+## 9) Mission Control and storefront runtime wiring
 
-If you are not changing the backend runtime, the fastest daily loop remains:
-
-1. run the app in demo mode
-2. keep touched Flutter files analyzer-clean
-3. use the PPV verification lane before claiming any monetization or entitlement change is ready
-
-## Mission Control and storefront runtime wiring
-
-The new flagship Mission Control and PPV storefront surfaces are only fully live
-when their Flutter runtime variables are present.
-
-What the app expects:
+Runtime defines expected by operator/storefront surfaces:
 
 - `DFC_OPERATOR_FUNCTION_URL`
 - `DFC_OPERATOR_ID`
@@ -91,12 +167,12 @@ What the app expects:
 - `DFC_PPV_STOREFRONT_BASE`
 - `DFC_PPV_AUTO_CONFIRM_SANDBOX`
 
-Important safety rule:
+Safety rule:
 
-- `DFC_OPERATOR_SECRET` is for trusted internal operator builds only
-- do not ship that value in a public consumer web build
+- `DFC_OPERATOR_SECRET` is internal-operator only
+- never ship it in public consumer builds
 
-Recommended local operator run command:
+Example internal operator run:
 
 ```powershell
 flutter run -d windows `
@@ -107,7 +183,7 @@ flutter run -d windows `
    --dart-define=DFC_PPV_AUTO_CONFIRM_SANDBOX=true
 ```
 
-Recommended public storefront web run/build shape:
+Example public storefront run:
 
 ```powershell
 flutter run -d chrome `
@@ -115,8 +191,39 @@ flutter run -d chrome `
    --dart-define=DFC_PPV_AUTO_CONFIRM_SANDBOX=false
 ```
 
-Why this matters:
+## 10) Security baseline for every engineer
 
-- the app checks compile-time defines first
-- local `assets/.env` is only a fallback path and may be skipped on web/release
-- if the base URLs are missing, Mission Control falls back to demo behavior and the storefront cannot hit the live payment endpoints
+- Never commit secrets
+- Respect Firebase rules and policy checks
+- Keep least-privilege assumptions in service/workflow changes
+- Treat failing security checks as release blockers
+
+## 11) New engineer PR checklist
+
+- [ ] Scoped changes (module + files clearly listed)
+- [ ] `flutter analyze --no-fatal-infos` passes
+- [ ] `flutter test` passes
+- [ ] No new literal routes
+- [ ] Rule-pack constraints satisfied
+- [ ] PR template completed
+- [ ] Required checks green before merge
+
+## 12) Escalation pattern when blocked
+
+When asking for help, include:
+
+- failing check name
+- exact file list touched
+- module impacted
+- local analyze/test output
+- whether issue is routing, Firebase security, Sonar, or PPV runtime lane
+
+This keeps triage fast and accurate.
+
+## 13) First-week success target
+
+- Day 1: local setup + run + pass analyze/tests
+- Day 2: one small merge through full gates
+- Day 3+: module-level ownership with governance compliance
+
+Success definition: fast delivery with zero governance bypass and zero platform drift.

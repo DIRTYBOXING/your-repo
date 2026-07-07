@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(16.0),
         children: [
           DfcGlassPanel(
-            accent: AppColors.neonCyan,
+            glowColor: AppColors.neonCyan,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

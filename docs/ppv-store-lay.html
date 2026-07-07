@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="DFC PPV Store and Lay Exchange. Premium interactive sports trading board enabling fans to either Buy (Store) or Sell (Lay) combat stock, event keys, and fight contracts." />
+  <title>PPV Trade Exchange & Store | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #020408;
+      --card: #090d1a;
+      --line: #162447;
+      --accent: #00e5ff; /* Back Blue */
+      --accent-dim: rgba(0, 229, 255, 0.12);
+      --lay: #ff007f; /* Lay Pink */
+      --lay-dim: rgba(255, 0, 127, 0.12);
+      --ink: #eaf2ff;
+      --muted: #8fa3c2;
+      --ok: #00ff88;
+      --gold: #ffd700;
+      --dark-blue: #0b0f19;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(1300px 650px at 50% -10%, #0d1e3d 0%, var(--bg) 70%);
+      color: var(--ink);
+      line-height: 1.5;
+      padding: 30px 4vw;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin: 0;
+      color: #fff;
+      letter-spacing: -0.01em;
+      text-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+    }
+    .back {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .back:hover { color: var(--accent); }
+
+    /* Layout Columns */
+    .exchange-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 900px) {
+      .exchange-grid {
+        grid-template-columns: 1.8fr 1.2fr;
+      }
+    }
+
+    /* Left Panel: Store Offers & Market Depth */
+    .market-view {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .view-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    .view-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: linear-gradient(180deg, var(--accent), var(--lay));
+    }
+
+    /* Product Poster Visual Container */
+    .ppv-poster-box {
+      width: 100%;
+      height: 240px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 15px 0;
+      position: relative;
+      background: linear-gradient(135deg, #0f1c3f, #050a14);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+    }
+    .ppv-glow-poster {
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+      background: linear-gradient(0deg, rgba(2,4,8,1) 0%, rgba(2,4,8,0.5) 60%, transparent 100%);
+      position: absolute;
+      z-index: 2;
+    }
+    .poster-graphics {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1;
+      opacity: 0.25;
+    }
+
+    .market-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    /* Store and Lay Price Grid */
+    .orderbook-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    .orderbook-table th, .orderbook-table td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .orderbook-table th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    .btn-market-trade {
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: transform 0.1s;
+      width: 100%;
+      max-width: 90px;
+    }
+    .btn-market-trade:active { transform: scale(0.96); }
+
+    /* Betfair Blue - Store (Back) Button */
+    .store-action {
+      background-color: var(--accent-dim);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+    .store-action:hover {
+      background-color: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Betfair Pink - Lay (Sell) Button */
+    .lay-action {
+      background-color: var(--lay-dim);
+      border: 1px solid var(--lay);
+      color: var(--lay);
+    }
+    .lay-action:hover {
+      background-color: var(--lay);
+      color: #fff;
+    }
+
+    /* Right Panel: Transaction Execution Slip */
+    .slip-panel {
+      position: sticky;
+      top: 30px;
+    }
+    .slip-card {
+      background: rgba(9, 13, 26, 0.85);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Tab switcher for Slip */
+    .slip-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 20px;
+    }
+    .slip-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .slip-tab.store-active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .slip-tab.lay-active {
+      color: var(--lay);
+      border-bottom-color: var(--lay);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: block;
+      font-weight: 600;
+    }
+    .form-input {
+      background: #020408;
+      border: 1px solid var(--line);
+      padding: 12px 16px;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      width: 100%;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Return Summary metrics */
+    .slip-summary {
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .summary-row:last-child { margin-bottom: 0; }
+
+    .btn-submit-contract {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+    .btn-submit-contract.store-btn {
+      background: var(--accent);
+      color: var(--bg);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+    }
+    .btn-submit-contract.lay-btn {
+      background: var(--lay);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+    }
+
+    /* Active holdings portfolio list */
+    .holdings-box {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.01);
+      border-radius: 12px;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <a href="index.html" class="back">← Exit Exchange</a>
+        <h1>PPV Contract Store & Lay trading</h1>
+      </div>
+      <div>
+        <span style="font-size:0.8rem; font-weight: 800; color:var(--ok); letter-spacing:0.1em; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
+          <span style="width:8px; height:8px; background:var(--ok); border-radius:50%; box-shadow:0 0 8px var(--ok);"></span>
+          SaaS Orderbook Live
+        </span>
+      </div>
+    </header>
+
+    <p>A double-sided event exchange where you can either **Store / Back** (buy contracts expecting an outcome) or **Lay / Sell** (sell risk liabilities onto the peer-to-peer network acting as the market maker).</p>
+
+    <div class="exchange-grid">
+
+      <!-- Left Panel: Live Card Store -->
+      <div class="market-view">
+        <div class="view-card">
+          <div class="market-header-row">
+            <div>
+              <span style="text-transform:uppercase; font-size:0.75rem; letter-spacing:0.1em; color:var(--gold); font-weight:700;">DECEMBER CHAMPIONSHIP CLASSIC</span>
+              <h2 style="margin:5px 0 0; font-size:1.6rem; color:#fff;">John Doe vs. Ariana Cruz</h2>
+            </div>
+          </div>
+
+          <!-- Product Poster Visual Canvas -->
+          <div class="ppv-poster-box">
+            <div class="ppv-glow-poster">
+              <span style="background:var(--lay-dim); color:var(--lay); border:1px solid var(--lay); padding:2px 8px; border-radius:4px; font-size:0.68rem; font-weight:800; uppercase; display:inline-block; margin-bottom:10px; width:fit-content;">IBC CO-MAIN EVENT</span>
+              <h3 style="margin:0 0 5px; font-size:1.4rem; font-weight:900; color:#fff; text-shadow:0 0 10px rgba(0,0,0,0.5);">CHAMPIONSHIP LIGHTWEIGHT EDGE</h3>
+              <p style="margin:0; font-size:0.85rem; color:var(--muted);">Live low-latency streaming ticket paired with trade equity capabilities.</p>
+            </div>
+
+            <!-- Graphic background representing elements of the ring -->
+            <svg class="poster-graphics" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100%" height="100%" fill="#0a122c"/>
+              <line x1="0" y1="120" x2="400" y2="120" stroke="var(--accent)" opacity="0.3" />
+              <circle cx="200" cy="120" r="80" stroke="var(--lay)" stroke-width="1.5" stroke-dasharray="4 4" />
+            </svg>
+          </div>
+
+          <!-- P2P Orderbook Ladders -->
+          <h3 style="margin:25px 0 10px; font-size:1.15rem; color:#fff;">Interactive Matchup Orderbook</h3>
+          <table class="orderbook-table">
+            <thead>
+              <tr>
+                <th>Outcome Runner</th>
+                <th>Store (Back odds) [Blue]</th>
+                <th>Lay (Sell contract) [Pink]</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ariana Cruz</strong></td>
+                <td>
+                  <button class="btn-market-trade store-action" onclick="selectContract('Cruz', 'store', 1.72)">1.72</button>
+                  <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Vol: $1,450</div>
+                </td>
+                <td>
+                  <button class="btn-market-trade lay-action" onclick="selectContract('Cruz', 'lay', 1.76)">1.76</button>
+                  <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Vol: $2,180</div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>John Doe</strong></td>
+                <td>
+                  <button class="btn-market-trade store-action" onclick="selectContract('Doe', 'store', 2.15)">2.15</button>
+                  <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Vol: $840</div>
+                </td>
+                <td>
+                  <button class="btn-market-trade lay-action" onclick="selectContract('Doe', 'lay', 2.22)">2.22</button>
+                  <div style="font-size:0.7rem; color:var(--muted); margin-top:3px;">Vol: $1,250</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Panel: Transaction Execution Slip -->
+      <div class="slip-panel">
+        <div class="slip-card">
+          <div class="slip-tabs">
+            <button class="slip-tab store-active" id="tab-store" onclick="setMode('store')">BUY (Store Contract)</button>
+            <button class="slip-tab" id="tab-lay" onclick="setMode('lay')">SELL (Lay Venture)</button>
+          </div>
+
+          <h3 id="slip-title" style="margin:0 0 15px; color:#fff; font-size:1.2rem;">Back: Ariana Cruz</h3>
+
+          <div class="form-group">
+            <label class="form-label" id="label-odds">Contract Multiplier (Odds)</label>
+            <input type="number" step="0.01" class="form-input" id="input-odds" value="1.72" oninput="calculateReturn()" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Stake Amount (USD)</label>
+            <input type="number" class="form-input" id="input-stake" value="100" oninput="calculateReturn()" />
+          </div>
+
+          <div class="slip-summary">
+            <div class="summary-row">
+              <span id="summary-profit-label" style="color:var(--muted);">Estimated return on Win</span>
+              <strong id="summary-profit" style="color:var(--ok);">$172.00</strong>
+            </div>
+            <div class="summary-row" id="liability-row" style="display:none;">
+              <span style="color:var(--muted);">Your Liability Risk</span>
+              <strong style="color:var(--lay);" id="summary-liability">$76.00</strong>
+            </div>
+          </div>
+
+          <button class="btn-submit-contract store-btn" id="btn-submit" onclick="executeHold()">Place Store Order</button>
+
+          <!-- Active holdings panel -->
+          <div class="holdings-box">
+            <h4 style="margin:0 0 10px; text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em; color:var(--muted);">Current Active Trades</h4>
+            <div id="active-positions" style="font-size:0.85rem; color:var(--muted);">
+              No active positions in current exchange epoch. Click odds cards on the left to set up contract terms.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let currentRunner = 'Cruz';
+    let currentMode = 'store';
+    let currentOdds = 1.72;
+
+    function selectContract(runner, mode, odds) {
+      currentRunner = runner;
+      currentMode = mode;
+      currentOdds = odds;
+
+      document.getElementById("input-odds").value = odds;
+      setMode(mode);
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+
+      const tabStore = document.getElementById("tab-store");
+      const tabLay = document.getElementById("tab-lay");
+      const btnSubmit = document.getElementById("btn-submit");
+      const slipTitle = document.getElementById("slip-title");
+      const liabilityRow = document.getElementById("liability-row");
+
+      if (mode === 'store') {
+        tabStore.className = "slip-tab store-active";
+        tabLay.className = "slip-tab";
+
+        btnSubmit.className = "btn-submit-contract store-btn";
+        btnSubmit.textContent = "Place Store Order";
+
+        slipTitle.textContent = `Back: ${currentRunner}`;
+        slipTitle.style.color = "var(--accent)";
+
+        document.getElementById("label-odds").textContent = "Contract Multiplier (Back Odds)";
+        document.getElementById("summary-profit-label").textContent = "Estimated Return on Win";
+        liabilityRow.style.display = "none";
+      } else {
+        tabStore.className = "slip-tab";
+        tabLay.className = "slip-tab lay-active";
+
+        btnSubmit.className = "btn-submit-contract lay-btn";
+        btnSubmit.textContent = "Deploy Lay Contract";
+
+        slipTitle.textContent = `Lay: ${currentRunner}`;
+        slipTitle.style.color = "var(--lay)";
+
+        document.getElementById("label-odds").textContent = "Contract Multiplier (Lay Odds)";
+        document.getElementById("summary-profit-label").textContent = "Bettor's Stake (Your Reward)";
+        liabilityRow.style.display = "flex";
+      }
+
+      calculateReturn();
+    }
+
+    function calculateReturn() {
+      const odds = parseFloat(document.getElementById("input-odds").value || 0);
+      const stake = parseFloat(document.getElementById("input-stake").value || 0);
+
+      const profitEl = document.getElementById("summary-profit");
+      const liabilityEl = document.getElementById("summary-liability");
+
+      if(currentMode === 'store') {
+        const potentialReturn = odds * stake;
+        profitEl.textContent = `$${potentialReturn.toFixed(2)}`;
+        profitEl.style.color = "var(--ok)";
+      } else {
+        // Laying: We keep the bettor's stake as profit. But if runner wins, we pay (odds - 1) * stake
+        // Liability = state * (odds - 1)
+        const liability = stake * (odds - 1);
+        profitEl.textContent = `$${stake.toFixed(2)}`;
+        profitEl.style.color = "white";
+        liabilityEl.textContent = `$${liability.toFixed(2)}`;
+      }
+    }
+
+    function executeHold() {
+      const odds = parseFloat(document.getElementById("input-odds").value);
+      const stake = parseFloat(document.getElementById("input-stake").value);
+      const holdings = document.getElementById("active-positions");
+
+      if(!odds || !stake) return;
+
+      if(currentMode === 'store') {
+        holdings.innerHTML = `
+          <div style="background: rgba(0, 229, 255, 0.05); padding:10px; border-radius:6px; border:1px solid var(--accent); margin-bottom: 8px;">
+            <div style="display:flex; justify-content:space-between; font-weight:700; color:#fff;">
+              <span>Back: ${currentRunner}</span>
+              <span style="color:var(--accent);">Active hold</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.8rem;">
+              <span>Stake: $${stake.toFixed(2)}</span>
+              <span>Potential Return: $${(odds * stake).toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+      } else {
+        const liability = stake * (odds - 1);
+        holdings.innerHTML = `
+          <div style="background: rgba(255, 0, 127, 0.05); padding:10px; border-radius:6px; border:1px solid var(--lay); margin-bottom: 8px;">
+            <div style="display:flex; justify-content:space-between; font-weight:700; color:#fff;">
+              <span>Lay: ${currentRunner}</span>
+              <span style="color:var(--lay);">Liability Active</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.8rem;">
+              <span>Risk: $${liability.toFixed(2)}</span>
+              <span>Reward limit: $${stake.toFixed(2)}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      alert("Trade Contract executed on decentralized peer checkout!");
+    }
+  </script>
+</body>
+</html>

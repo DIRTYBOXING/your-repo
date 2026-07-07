@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Partner with Data Fight Central — Promote free, sell PPV securely
+    </title>
+    <meta
+      name="description"
+      content="Data Fight Central — free promotion for combat sports promoters. Sell PPV securely with DRM, watermarking, and Stripe Connect payouts. Download licence and statutory declaration."
+    />
+    <meta
+      name="keywords"
+      content="combat sports, PPV, fight promotion, live stream, DRM, watermarking, Stripe Connect, pilot licence, promoter onboarding"
+    />
+    <meta
+      property="og:title"
+      content="Partner with Data Fight Central — Promote free, sell PPV securely"
+    />
+    <meta
+      property="og:description"
+      content="Free promotion for fight promoters. Sell PPV with DRM and direct Stripe payouts. Download licence and stat dec to get started."
+    />
+    <meta
+      property="og:image"
+      content="https://www.datafightcentral.com/icons/Icon-512.png"
+    />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta
+      property="og:image:alt"
+      content="Data Fight Central — Combat Sports Promotion Platform"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://www.datafightcentral.com/promoters.html"
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Partner with Data Fight Central — Promote free, sell PPV securely"
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.datafightcentral.com/icons/Icon-512.png"
+    />
+    <link
+      rel="canonical"
+      href="https://www.datafightcentral.com/promoters.html"
+    />
+    <style>
+      :root {
+        --neon-cyan: #00d9ff;
+        --neon-magenta: #ff00ff;
+        --bg-dark: #0d0d0d;
+        --bg-card: #1a1a2e;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--bg-dark);
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      /* ── Hero ─────────────────────────────────────────────── */
+      .hero {
+        padding: 4rem 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, var(--bg-dark), var(--bg-card));
+      }
+      .hero h1 {
+        font-size: 2.4rem;
+        margin-bottom: 1rem;
+      }
+      .hero .lead {
+        font-size: 1.15rem;
+        color: var(--text-secondary);
+        max-width: 720px;
+        margin: 0 auto 2rem;
+      }
+
+      /* ── Buttons ──────────────────────────────────────────── */
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: opacity 0.2s;
+      }
+      .btn:hover {
+        opacity: 0.85;
+      }
+      .btn-primary {
+        background: var(--neon-cyan);
+        color: var(--bg-dark);
+      }
+      .btn-secondary {
+        background: var(--neon-magenta);
+        color: var(--text-primary);
+      }
+      .btn-outline {
+        border: 2px solid var(--neon-cyan);
+        color: var(--neon-cyan);
+        background: transparent;
+      }
+
+      /* ── Content sections ─────────────────────────────────── */
+      .trust {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .content {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+      }
+      .content h2 {
+        font-size: 1.7rem;
+        margin-bottom: 1rem;
+        color: var(--neon-cyan);
+      }
+      .content ul,
+      .content ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .content li {
+        margin-bottom: 0.5rem;
+      }
+      .content li strong {
+        color: var(--neon-cyan);
+      }
+      .note {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 1rem;
+      }
+
+      /* ── Contact & footer ─────────────────────────────────── */
+      .contact {
+        background: var(--bg-card);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-top: 2rem;
+      }
+      .contact h3 {
+        color: var(--neon-magenta);
+        margin-bottom: 0.5rem;
+      }
+      .contact a {
+        color: var(--neon-cyan);
+        text-decoration: none;
+      }
+      .disclaimer {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        border-top: 1px solid #333;
+        padding-top: 1rem;
+        margin-top: 2rem;
+      }
+      .back-link {
+        text-align: center;
+        margin: 2rem;
+      }
+      .back-link a {
+        color: var(--neon-cyan);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .profile-card {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1.25rem;
+        border-radius: 10px;
+        border: 1px solid #2a3150;
+        background: #141b31;
+      }
+      .profile-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.35rem;
+      }
+      .role-badge {
+        display: inline-block;
+        margin-left: 0.5rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: #00d9ff;
+        color: #061018;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .profile-meta {
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
+      }
+      .secondary-roles {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 0.9rem;
+      }
+      .cta-help {
+        color: var(--text-secondary);
+        font-size: 0.82rem;
+        margin-top: 0.45rem;
+      }
+
+      .dfc-fuzzy {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 62px;
+        height: 62px;
+        border-radius: 31px;
+        background: #ff5a5f;
+        color: #111827;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        border: 0;
+        cursor: pointer;
+        z-index: 9999;
+        font-weight: 700;
+      }
+      .dfc-fuzzy:focus {
+        outline: 3px solid rgba(255, 90, 95, 0.35);
+      }
+      .dfc-fuzzy-actions {
+        position: fixed;
+        right: 20px;
+        bottom: 92px;
+        background: #101729;
+        border: 1px solid #2a3c65;
+        border-radius: 10px;
+        padding: 10px;
+        width: 250px;
+        z-index: 9998;
+      }
+      .dfc-fuzzy-actions[hidden] {
+        display: none;
+      }
+      .dfc-fuzzy-actions button {
+        width: 100%;
+        text-align: left;
+        border: 0;
+        background: #1a243f;
+        color: #fff;
+        border-radius: 7px;
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+      .dfc-fuzzy-actions button:last-child {
+        margin-bottom: 0;
+      }
+
+      @media (max-width: 600px) {
+        .hero h1 {
+          font-size: 1.6rem;
+        }
+        .cta-row {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- HERO                                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="hero">
+      <h1>Partner with Data Fight Central</h1>
+      <p class="lead">
+        Free promotion for every combat sports event. If you want to sell paid
+        access (PPV) through DFC, complete a short rights declaration and
+        one-page pilot licence — we handle production, DRM, watermarking, and
+        promoter payouts via Stripe Connect.
+      </p>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/blueprint.html"
+          >View DFC Blueprint</a
+        >
+        <a class="btn btn-primary" href="/downloads/pilot_licence.html"
+          >Download Pilot Licence</a
+        >
+        <a
+          class="btn btn-secondary"
+          href="/downloads/statutory_declaration.html"
+          >Download Statutory Declaration</a
+        >
+        <a class="btn btn-outline" href="/downloads/pilot_spec.html"
+          >View Pilot Spec</a
+        >
+        <a
+          class="btn btn-outline"
+          href="/downloads/stripe_onboarding_guide.html"
+          >Stripe Onboarding Guide</a
+        >
+      </div>
+
+      <p class="trust">
+        DFC does <strong>not</strong> hold promoter funds — payouts route
+        directly to your Stripe Connect account. We require a signed licence
+        before any public PPV sale.
+      </p>
+    </section>
+
+    <section class="profile-card" aria-label="Promoter profile summary card">
+      <div class="profile-title">
+        MonBet Promotions <span class="role-badge">Promoter</span>
+      </div>
+      <div class="profile-meta">Brisbane, Australia • Independent combat promoter</div>
+      <div class="secondary-roles">Secondary roles: Sponsor, Gym Partner</div>
+      <div class="cta-row" style="justify-content: flex-start; margin-bottom: 0.2rem">
+        <button class="btn btn-primary" type="button" aria-label="Message">Message</button>
+        <button class="btn btn-outline" type="button" aria-label="Book / Onboard">Book / Onboard</button>
+        <button class="btn btn-secondary" type="button" id="sell-ppv-btn" aria-label="Sell PPV">Sell PPV</button>
+        <button class="btn btn-outline" type="button" aria-label="View Posters">View Posters</button>
+      </div>
+      <div class="cta-help">Message to request booking, onboarding, or sponsorship support.</div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- REQUIREMENTS                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="content">
+      <h2>What we require before public PPV sales</h2>
+      <ul>
+        <li>
+          <strong>Signed one-page Pilot Licence</strong> granting DFC the right
+          to stream and sell the event.
+        </li>
+        <li>
+          <strong>Witnessed Statutory Declaration</strong> from an authorised
+          promoter representative confirming rights, with supporting documents
+          attached.
+        </li>
+        <li>
+          <strong>Stripe Connect Express onboarding</strong> so you receive
+          payouts directly — DFC does not hold promoter funds.
+        </li>
+        <li>
+          <strong>Technical test pass</strong> — DRM and forensic watermarking
+          verified 72 hours before event.
+        </li>
+      </ul>
+      <p class="note">
+        Download the templates above, get the Stat Dec witnessed by a JP or
+        solicitor, then book a tech call to finalise.
+      </p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- HOW TO                                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="content">
+      <h2>How to sign and submit</h2>
+      <ol>
+        <li>
+          Download the <strong>Pilot Licence</strong> and
+          <strong>Statutory Declaration</strong> — use your browser's "Print /
+          Save as PDF" button on each page.
+        </li>
+        <li>
+          Get the Statutory Declaration witnessed by a JP or solicitor
+          (Queensland); scan and email to
+          <strong>ops@datafightcentral.com</strong>.
+        </li>
+        <li>
+          Complete <strong>Stripe Connect</strong> onboarding (Express) — takes
+          5–10 minutes.
+        </li>
+        <li>
+          Schedule the <strong>72-hour technical test window</strong> with the
+          DFC production team.
+        </li>
+        <li>
+          Once the licence is signed and the tech test passes, your event goes
+          live on DFC.
+        </li>
+      </ol>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- WHAT DFC PROVIDES                                              -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="content">
+      <h2>What DFC provides</h2>
+      <ul>
+        <li>
+          <strong>Production support</strong> — multi-camera encoding and CDN
+          delivery
+        </li>
+        <li>
+          <strong>DRM-protected player</strong> — Widevine, FairPlay, PlayReady
+        </li>
+        <li>
+          <strong>Forensic watermarking</strong> — server-side, per-viewer
+          unique marks
+        </li>
+        <li>
+          <strong>Paywall &amp; PPV checkout</strong> — Stripe-powered, promoter
+          paid directly
+        </li>
+        <li>
+          <strong>Daily reporting</strong> — sales, views, conversion metrics
+        </li>
+        <li>
+          <strong>Anti-piracy enforcement</strong> — monitoring, takedowns,
+          geoblocking
+        </li>
+        <li>
+          <strong>30-day VOD</strong> — highlights package included in pilot
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- DOWNLOADABLE DOCUMENTS                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="content">
+      <h2>Downloadable documents</h2>
+      <div class="cta-row" style="justify-content: flex-start">
+        <a class="btn btn-primary" href="/downloads/pilot_licence.html"
+          >Pilot Licence</a
+        >
+        <a class="btn btn-primary" href="/downloads/statutory_declaration.html"
+          >Statutory Declaration</a
+        >
+        <a class="btn btn-primary" href="/downloads/pilot_spec.html"
+          >Pilot Spec</a
+        >
+        <a
+          class="btn btn-primary"
+          href="/downloads/stripe_onboarding_guide.html"
+          >Stripe Onboarding Guide</a
+        >
+      </div>
+      <p class="note">
+        Each document opens as a printable page. Use "Print / Save as PDF" in
+        your browser to create a PDF copy.
+      </p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- CONTACT                                                        -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <section class="content">
+      <div class="contact">
+        <h3>Contact</h3>
+        <p>
+          <strong>Onboarding / Ops:</strong>
+          <a href="mailto:ops@datafightcentral.com">ops@datafightcentral.com</a>
+        </p>
+        <p>
+          <strong>Legal / Takedown:</strong>
+          <a href="mailto:legal@datafightcentral.com"
+            >legal@datafightcentral.com</a
+          >
+        </p>
+        <p>
+          <strong>General:</strong>
+          <a href="mailto:info@datafightcentral.com"
+            >info@datafightcentral.com</a
+          >
+          | <strong>Phone:</strong> 0450 113 139
+        </p>
+      </div>
+
+      <p class="disclaimer">
+        This page provides onboarding materials and templates for promoters.
+        <strong>This is not legal advice.</strong> A statutory declaration is
+        evidence of a promoter's claim of rights but does
+        <strong>not</strong> itself transfer copyright or licence rights. DFC
+        requires a signed Pilot Licence before any public PPV sale. Promoters
+        should seek independent legal advice if unsure.
+      </p>
+    </section>
+
+    <div class="back-link">
+      <a href="/">Back to Data Fight Central</a>
+    </div>
+
+    <button id="dfc-fuzzy" class="dfc-fuzzy" aria-label="DFC Help" title="Help">Help</button>
+    <div id="dfc-fuzzy-actions" class="dfc-fuzzy-actions" hidden>
+      <button id="shakura-action" type="button">Shakura</button>
+      <button id="sell-ai-action" type="button">Sell with AI</button>
+      <button id="report-action" type="button">Report issue</button>
+      <button id="tour-action" type="button">How to use DFC</button>
+    </div>
+
+    <!-- JSON-LD for SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Partner with Data Fight Central",
+        "description": "Free promotion for combat sports promoters. Sell PPV securely with DRM, watermarking, and Stripe Connect payouts.",
+        "url": "https://www.datafightcentral.com/promoters.html",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Data Fight Central",
+          "url": "https://www.datafightcentral.com",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "info@datafightcentral.com",
+            "telephone": "+61450113139",
+            "contactType": "sales"
+          }
+        }
+      }
+    </script>
+    <script>
+      globalThis.DFC = globalThis.DFC || {};
+      globalThis.DFC.currentPage = 'event';
+      globalThis.DFC.currentUserRole = 'Promoter';
+      globalThis.DFC.eventId = 999;
+      globalThis.DFC.eventTitle = 'UFC 999';
+
+      const fuzzyButton = document.getElementById('dfc-fuzzy');
+      const fuzzyActions = document.getElementById('dfc-fuzzy-actions');
+      const sellPpvButton = document.getElementById('sell-ppv-btn');
+
+      fuzzyButton.addEventListener('click', () => {
+        fuzzyActions.hidden = !fuzzyActions.hidden;
+      });
+
+      sellPpvButton.addEventListener('click', () => {
+        globalThis.open('/templates/ai-sales-modal.html', '_blank', 'noopener,noreferrer');
+      });
+
+      document.getElementById('shakura-action').addEventListener('click', async () => {
+        const response = await fetch('/api/shakura/welcome');
+        const data = await response.json();
+        alert(data.text);
+        fuzzyActions.hidden = true;
+      });
+
+      document.getElementById('sell-ai-action').addEventListener('click', () => {
+        globalThis.open('/templates/ai-sales-modal.html', '_blank', 'noopener,noreferrer');
+        fuzzyActions.hidden = true;
+      });
+
+      document.getElementById('report-action').addEventListener('click', () => {
+        globalThis.location.href = 'mailto:security@datafightcentral.com?subject=DFC%20Issue%20Report';
+      });
+
+      document.getElementById('tour-action').addEventListener('click', () => {
+        alert('Need help? Click Shakura for guidance, Sell with AI for PPV setup, or Report issue for security/legal workflows.');
+        fuzzyActions.hidden = true;
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === '?' || event.key.toLowerCase() === 'h') {
+          fuzzyActions.hidden = false;
+          fuzzyButton.focus();
+        }
+      });
+    </script>
+  </body>
+</html>

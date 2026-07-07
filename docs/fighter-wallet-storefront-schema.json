@@ -1,0 +1,30 @@
+{
+  "fighter_wallet_storefront": {
+    "wallet_id": "string",
+    "fighter_uid": "string",
+    "fiat_balance_cents": 0,
+    "blockchain_token_balance": 0.0,
+    "currency_code": "AUD | USD | EUR",
+    "stripe_connect_state": "connected | pending | unlinked",
+    "storefront_inventory": [
+      {
+        "sku_id": "string",
+        "name": "string",
+        "price_cents": 0,
+        "stock_level": 0,
+        "image_url": "string"
+      }
+    ],
+    "ledger_transactions": [
+      {
+        "transaction_id": "string",
+        "order_id": "string",
+        "description": "string",
+        "amount_cents": 0,
+        "type": "credit | debit",
+        "source_category": "ppv_split | merchandise_checkout | ticket_gate_split",
+        "timestamp_utc": "string"
+      }
+    ]
+  }
+}

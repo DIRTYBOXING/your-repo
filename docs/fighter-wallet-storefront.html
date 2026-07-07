@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DFC Direct-to-Profile Wallet Ledger & Merchant Storefront — unified digital wallets, transaction ledgers, split payout balances, and direct merchandise storefront tools." />
+  <title>Fighter Wallet & Storefront | Data Fight Central</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f; --yellow:#ffd700;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #151130 0%, var(--bg) 60%);
+      line-height:1.55;
+    }
+    .wrap{max-width:1140px;margin:0 auto;padding:28px 18px 42px}
+    h1,h2,h3{line-height:1.2;margin:0 0 10px}
+    p{margin:0 0 12px;color:var(--muted)}
+    .hero{
+      border:1px solid var(--line);background:linear-gradient(180deg,#0a0d24,#050814);
+      border-radius:16px;padding:24px;box-shadow:0 0 0 1px rgba(58,160,255,.14),0 20px 40px rgba(0,0,0,.35);
+    }
+    .kicker{color:var(--neon2);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 10px;border-radius:999px;border:1px solid #274d86;background:#0f2144;color:#d9ecff;font-size:.78rem;font-weight:700}
+    .chip.ok{border-color:#1c6b53;background:#103529;color:#bff6df}
+    .grid{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(12,minmax(0,1fr))}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+
+    /* Wallet Interface */
+    .wallet-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    @media(min-width: 860px) {
+      .wallet-layout {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+
+    .wallet-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      background: linear-gradient(135deg, #0f1c3f, #050a1b);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    .wallet-glow {
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 250px; height: 250px;
+      border-radius: 50%;
+      background: var(--neon);
+      filter: blur(80px);
+      opacity: 0.15;
+    }
+    .balance-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .balance-value {
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--ink);
+      margin: 8px 0 20px;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .ledger-table th, .ledger-table td {
+      text-align: left;
+      padding: 10px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .ledger-table th {
+      color: var(--neon2);
+      text-transform: uppercase;
+      font-size: 0.76rem;
+    }
+    .credit { color: var(--ok); font-weight: 700; }
+    .debit { color: var(--magenta); font-weight: 700; }
+
+    /* Storefront Grid */
+    .store-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .product-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #020408;
+      padding: 12px;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .product-card:hover {
+      border-color: var(--neon);
+    }
+    .product-image {
+      height: 120px;
+      background: #070b15;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border: 1px solid rgba(255,255,255,0.03);
+      margin-bottom: 10px;
+    }
+    .product-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+    }
+    .product-price {
+      color: var(--yellow);
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    .btn {
+      display: inline-block; padding: 10px 14px; border-radius: 10px;
+      border: 1px solid #2f5ea8; background: linear-gradient(180deg,#1a4fa0,#143b79);
+      color: #eaf4ff; text-decoration: none; font-weight: 700; width: 100%; text-align: center;
+      cursor: pointer;
+    }
+    .btn.store-btn {
+      background: linear-gradient(180deg, #10b981, #0c7a56);
+      border-color: #0d8a61;
+    }
+
+    .list{margin:8px 0 0 18px;padding:0}
+    .list li{margin:6px 0;color:#c6d8f4}
+
+    footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--line); color: #7f96bb; font-size: 0.9rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central Commerce</div>
+      <h1>Fighter Wallet & Storefront (Module 24 - Final)</h1>
+      <p>Direct-to-profile ledger payouts, multi-entity split wallets, automated balances updates, and direct merchandise storefronts.</p>
+      <div class="chips">
+        <span class="chip ok">Module 24 Active (Final)</span>
+        <span class="chip">Direct payout Enabled</span>
+        <span class="chip">Storefront Active</span>
+      </div>
+    </section>
+
+    <!-- Wallet Storefront Panel -->
+    <section class="grid">
+      <article class="card span-12">
+        <div class="wallet-layout">
+          <!-- Balance & Ledger Panel -->
+          <div class="wallet-card">
+            <div class="wallet-glow"></div>
+            <div class="balance-label">Total Unified Balance</div>
+            <div class="balance-value" id="wallet-balance">$1,812.50<span> AUD</span></div>
+
+            <h3>Transaction Ledger</h3>
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="ledger-body">
+                <tr>
+                  <td>PPV Ticket Split (Queensland Fight Night 22)</td>
+                  <td class="credit">Credit</td>
+                  <td>+$45.00 AUD</td>
+                  <td>Settled</td>
+                </tr>
+                <tr>
+                  <td>T-Shirt Sale (Dirtyboxer Classic Tee)</td>
+                  <td class="credit">Credit</td>
+                  <td>+$35.00 AUD</td>
+                  <td>Settled</td>
+                </tr>
+                <tr>
+                  <td>Athletic Commission License Transfer</td>
+                  <td class="debit">Debit</td>
+                  <td>-$50.00 AUD</td>
+                  <td>Settled</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Merchant Storefront Panel -->
+          <div class="card" style="margin:0;">
+            <h2>Merchant Storefront</h2>
+            <p>Purchase official merchandise directly from the fighter's profile with instant wallet splits.</p>
+
+            <div class="store-grid">
+              <div class="product-card">
+                <div class="product-image">👕 Black Tee</div>
+                <div class="product-title">Classic Logo Tee</div>
+                <div class="product-price">$35.00 AUD</div>
+                <button class="btn store-btn" onclick="buyProduct('Classic Logo Tee', 35)">Instant Buy</button>
+              </div>
+              <div class="product-card">
+                <div class="product-image">🥊 Fight Gloves</div>
+                <div class="product-title">16oz Pro Sparring Gloves</div>
+                <div class="product-price">$120.00 AUD</div>
+                <button class="btn store-btn" onclick="buyProduct('16oz Pro Sparring Gloves', 120)">Instant Buy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Technical Integration Logic -->
+      <article class="card span-12">
+        <h3>Decentralized Wallet Architecture</h3>
+        <p>This final module represents the full integration capstone of the 24-round operating layer:</p>
+        <ul class="list">
+          <li><strong>Bypassing Third-Parties:</strong> Direct transactions occur cleanly on-profile, saving high listing and processing fees.</li>
+          <li><strong>Autonomous split ledgers:</strong> Interlocks securely with Module 5 (Event Center) and Module 11 (Promoters) to allocate cuts instantly to correct wallets.</li>
+          <li><strong>Global Ingestion:</strong> Connects directly to our centralized data bus, enabling absolute clarity and total compliance.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      Data Fight Central • Module 24 Fighter Wallet & Storefront capstone • 2026
+    </footer>
+  </main>
+
+  <script>
+    let currentBalance = 1812.50;
+
+    function buyProduct(name, price) {
+      // Direct payout and ledger calculations
+      const dCents = price * 100;
+      const fighterShare = price * 0.7; // Generous 70% direct share to fighter is applied!
+      const platformShare = price * 0.3; // 30% split matches the default formula.
+
+      currentBalance += fighterShare;
+      document.getElementById("wallet-balance").innerHTML = `$${currentBalance.toFixed(2)}<span> AUD</span>`;
+
+      // Append clean transaction row
+      const tbody = document.getElementById("ledger-body");
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>Store Order: ${name} (70% Split)</td>
+        <td class="credit">Credit</td>
+        <td>+$${fighterShare.toFixed(2)} AUD</td>
+        <td>Settled</td>
+      `;
+      tbody.prepend(newRow);
+
+      alert(`✅ PURCHASE SECURED!\n\nProduct: ${name}\nTotal: $${price.toFixed(2)} AUD\n\nFighter Cut (70%): +$${fighterShare.toFixed(2)} AUD instantly credited.\nPlatform Cut (30%): +$${platformShare.toFixed(2)} AUD dynamically routed.`);
+    }
+  </script>
+</body>
+</html>

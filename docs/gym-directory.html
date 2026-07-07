@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gym Directory | Data Fight Central</title>
+  <style>
+    :root {
+      --bg: #030712; --card: #0b0f19; --line: #1f2937; --accent: #10b981; --ink: #f3f4f6; --muted: #9ca3af;
+    }
+    body {
+      margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; padding: 40px 5vw;
+    }
+    .wrapper { max-width: 1000px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; border-bottom: 2px solid var(--line); padding-bottom: 15px; margin-bottom: 25px; font-weight: 900; letter-spacing: -0.02em; }
+    p { color: var(--muted); font-size: 1.1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+    .gym-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; position: relative; }
+    .verified-badge { position: absolute; top: 15px; right: 15px; background: rgba(16, 185, 129, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+    .back { text-decoration: none; color: var(--muted); font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px; text-transform: uppercase; }
+    .back:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="index.html" class="back">← Back to Index</a>
+    <h1>Gym Directory & Training Hub</h1>
+    <p>Discover localized athletic academies partnering directly with the DFC humanitarian platform to offer community-led training frameworks and certified Pink Shield counseling environments.</p>
+
+    <div class="grid">
+      <div class="gym-card">
+        <span class="verified-badge">Pink Shield Certified</span>
+        <h3>Brisbane Redirection Gym</h3>
+        <p style="font-size:0.9rem; margin-bottom:12px;">Queensland, Australia</p>
+        <p style="font-size:0.85rem; color:var(--muted);">Focuses on guiding at-risk youths away from localized circles of crime by utilizing structural, high-discipline Muay Thai practices.</p>
+      </div>
+
+      <div class="gym-card">
+        <span class="verified-badge">Pink Shield Certified</span>
+        <h3>Underdog Sanctuary Club</h3>
+        <p style="font-size:0.9rem; margin-bottom:12px;">Melbourne, Australia</p>
+        <p style="font-size:0.85rem; color:var(--muted);">A regional powerhouse for BJJ and boxing, dedicated to mental resilience training, suicide prevention, and physical support circles.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

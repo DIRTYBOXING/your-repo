@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="DFC Global Fighter Locator & Heatmap — geo-linked regional fighter densities, gym ecosystems, and territorial heatmap indexes." />
+  <title>Global Fighter Locator & Heatmap | Data Fight Central</title>
+  <style>
+    :root{
+      --bg:#05070d; --card:#0b1020; --ink:#e9f1ff; --muted:#9db2d1;
+      --line:#1c2a4a; --neon:#3aa0ff; --neon2:#6be6ff; --ok:#2ad39b; --magenta:#ff007f; --yellow:#ffd700;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);
+      background:radial-gradient(1200px 600px at 50% -10%, #15244d 0%, var(--bg) 60%);
+      line-height:1.55;
+    }
+    .wrap{max-width:1140px;margin:0 auto;padding:28px 18px 42px}
+    h1,h2,h3{line-height:1.2;margin:0 0 10px}
+    p{margin:0 0 12px;color:var(--muted)}
+    .hero{
+      border:1px solid var(--line);background:linear-gradient(180deg,#0c1630,#0a1122);
+      border-radius:16px;padding:24px;box-shadow:0 0 0 1px rgba(58,160,255,.14),0 20px 40px rgba(0,0,0,.35);
+    }
+    .kicker{color:var(--neon2);font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:5px 10px;border-radius:999px;border:1px solid #274d86;background:#0f2144;color:#d9ecff;font-size:.78rem;font-weight:700}
+    .chip.ok{border-color:#1c6b53;background:#103529;color:#bff6df}
+    .grid{display:grid;gap:14px;margin-top:18px;grid-template-columns:repeat(12,minmax(0,1fr))}
+    .card{grid-column:span 12;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+
+    /* Heatmap Area */
+    .heatmap-container {
+      position: relative;
+      height: 420px;
+      background: #020408;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 35px rgba(255, 0, 127, 0.08);
+    }
+    .grid-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 30px 30px;
+      background-image:
+        linear-gradient(to right, rgba(28, 42, 74, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(28, 42, 74, 0.2) 1px, transparent 1px);
+    }
+    .heat-canvas {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 2;
+    }
+    .heatmap-controls {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      z-index: 3;
+      display: flex;
+      gap: 8px;
+    }
+    .control-btn {
+      background: rgba(11, 16, 32, 0.9);
+      border: 1px solid var(--line);
+      color: var(--neon2);
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+    .control-btn:hover {
+      border-color: var(--magenta);
+      color: #fff;
+    }
+
+    .list{margin:8px 0 0 18px;padding:0}
+    .list li{margin:6px 0;color:#c6d8f4}
+
+    .heat-legend {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      background: rgba(11, 16, 32, 0.9);
+      border: 1px solid var(--line);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 0;
+    }
+    .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .dot.high { background: var(--magenta); box-shadow: 0 0 8px var(--magenta); }
+    .dot.medium { background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+    .dot.low { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+
+    .market-stat-card {
+      border: 1px solid #1f345d;
+      border-radius: 12px;
+      padding: 14px;
+      background:#0a142a;
+      margin-bottom: 12px;
+    }
+    .market-stat-title {
+      font-weight: 700; color:#eaf4ff; margin-bottom: 4px;
+    }
+    .stat-metric {
+      font-size: 1.80rem; font-weight: 900; color: var(--neon2); margin: 6px 0;
+    }
+
+    @media(min-width:900px){
+      .span-8{grid-column:span 8}
+      .span-6{grid-column:span 6}
+      .span-4{grid-column:span 4}
+      .span-12{grid-column:span 12}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Data Fight Central System</div>
+      <h1>Global Fighter Locator & Heatmap (Module 17)</h1>
+      <p>Tracking the true scale of the global fight economy. Visualizing regional densities of 200M+ combat sports fans, arenas, and local fighters.</p>
+      <div class="chips">
+        <span class="chip ok">Module 17 Active</span>
+        <span class="chip">Heatmap Engine V1</span>
+        <span class="chip">Meta-Ready Data Layers</span>
+      </div>
+    </section>
+
+    <!-- Geographic Heatmap Visualization -->
+    <section class="grid">
+      <article class="card span-12">
+        <h2>Global Athlete Density Map</h2>
+        <div class="heatmap-container">
+          <div class="grid-overlay"></div>
+          <svg class="heat-canvas" viewBox="0 0 1000 420">
+            <!-- Background Map Outline Placeholders -->
+            <path d="M 152 122 Q 220 180 250 250" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="4" />
+            <path d="M 680 150 Q 780 260 850 320" fill="none" stroke="rgba(255, 255, 255, 0.03)" stroke-width="4" />
+
+            <!-- Asia / ONE Championship Heat Zone (Lumpinee Stadium / Tokyo) -->
+            <circle cx="750" cy="180" r="45" fill="rgba(255, 0, 127, 0.15)" />
+            <circle cx="750" cy="180" r="25" fill="rgba(255, 0, 127, 0.25)" />
+            <circle cx="750" cy="180" r="10" fill="var(--magenta)" />
+            <text x="765" y="185" fill="var(--ink)" font-size="11" font-weight="bold">Bangkok Hub (ONE Championship)</text>
+
+            <!-- USA East/West Heat Zone (Las Vegas / Newark) -->
+            <circle cx="340" cy="160" r="35" fill="rgba(255, 215, 0, 0.15)" />
+            <circle cx="340" cy="160" r="18" fill="rgba(255, 215, 0, 0.25)" />
+            <circle cx="340" cy="160" r="8" fill="var(--yellow)" />
+            <text x="355" y="165" fill="var(--ink)" font-size="11" font-weight="bold">Vegas Area (UFC/PFL Grid)</text>
+
+            <!-- Oceania/Australia Heat Zone (Brisbane / Sunshine Coast / Perth) -->
+            <circle cx="840" cy="300" r="40" fill="rgba(0, 219, 255, 0.15)" />
+            <circle cx="840" cy="300" r="22" fill="rgba(0, 219, 255, 0.25)" />
+            <circle cx="840" cy="300" r="9" fill="var(--neon)" />
+            <text x="855" y="305" fill="var(--ink)" font-size="11" font-weight="bold">Brisbane HQ (Eternal/Local MMA)</text>
+
+            <!-- Connections / Routing Lanes -->
+            <path d="M 340 160 Q 545 130 750 180" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" stroke-dasharray="8,8" />
+            <path d="M 750 180 Q 795 240 840 300" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" stroke-dasharray="8,8" />
+          </svg>
+
+          <div class="heat-legend">
+            <div class="legend-item"><span class="dot high"></span> <strong>High Density</strong> (ONE Championship/UFC hubs)</div>
+            <div class="legend-item"><span class="dot medium"></span> <strong>Medium Density</strong> (Regional series hubs)</div>
+            <div class="legend-item"><span class="dot low"></span> <strong>Emerging Clusters</strong> (Local gym networks)</div>
+          </div>
+
+          <div class="heatmap-controls">
+            <button class="control-btn" onclick="alert('Switching to Fan Population Mode...')">👥 Fan Heat</button>
+            <button class="control-btn" onclick="alert('Switching to Active Fighter Roster Mode...')">🥊 Fighter Heat</button>
+            <button class="control-btn" onclick="alert('Recalculating Geo-clustering...')">🔄 Sync Coords</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Unified Geolocation Metrics -->
+    <section class="grid">
+      <article class="card span-4">
+        <div class="market-stat-card">
+          <div class="market-stat-title">Asia Ingestion Density</div>
+          <p>Lumpinee Stadium / Tokyo Arena</p>
+          <div class="stat-metric">82,400+</div>
+          <p class="small" style="color: var(--ok);">● Active Fighter Nodes</p>
+        </div>
+      </article>
+      <article class="card span-4">
+        <div class="market-stat-card">
+          <div class="market-stat-title">USA Ingestion Density</div>
+          <p>T-Mobile Arena / Prudential Center</p>
+          <div class="stat-metric">95,100+</div>
+          <p class="small" style="color: var(--ok);">● Active Fighter Nodes</p>
+        </div>
+      </article>
+      <article class="card span-4">
+        <div class="market-stat-card">
+          <div class="market-stat-title">Oceania Ingestion Density</div>
+          <p>Brisbane HQ / RAC Arena Perth</p>
+          <div class="stat-metric">22,800+</div>
+          <p class="small" style="color: var(--ok);">● Active Fighter Nodes</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- Integration Architecture Mapping -->
+    <section class="grid">
+      <article class="card span-12">
+        <h3>13-Lane Combat OS Integration Boundary</h3>
+        <p>This locator connects across your entire database schema and open GIS infrastructure:</p>
+        <ul class="list">
+          <li><strong>Geofenced Licensing:</strong> Calculates the geofence bounding boxes matching the stream locations inside `event-center-schema.json`.</li>
+          <li><strong>Fighter Location Bindings:</strong> Resolves and tracks geographical coordinates of active gyms securely without storing private home addresses.</li>
+          <li><strong>Economic Distribution:</strong> Feeds regional pay-per-view storefront conversions directly into promoter split allocations.</li>
+        </ul>
+      </article>
+    </section>
+
+    <footer>
+      Data Fight Central • Module 17 Global Locator & Spatial Mapping • 2026
+    </footer>
+  </main>
+</body>
+</html>

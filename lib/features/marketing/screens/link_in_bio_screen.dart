@@ -1,13 +1,50 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/services/experiment_analytics_service.dart';
 
 /// Link-in-Bio Screen — Smart link page for DFC.
 /// Shows primary DFC links + social icons + copy to clipboard.
-class LinkInBioScreen extends StatelessWidget {
+class LinkInBioScreen extends StatefulWidget {
   const LinkInBioScreen({super.key});
+
+  @override
+  State<LinkInBioScreen> createState() => _LinkInBioScreenState();
+}
+
+class _LinkInBioScreenState extends State<LinkInBioScreen> {
+  late final String _experimentSessionId;
+  String _experimentVariant = 'variant_a';
+
+  @override
+  void initState() {
+    super.initState();
+    _experimentSessionId =
+        'linkinbio_${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(99999)}';
+    _initExperiment();
+  }
+
+  void _initExperiment() {
+    final analytics = ExperimentAnalyticsService();
+    _experimentVariant = analytics.assignVariant(
+      experimentId: ExperimentAnalyticsService.widgetExperimentId,
+      sessionId: _experimentSessionId,
+    );
+    analytics.seedExperiment();
+    analytics.recordAssignment(
+      variant: _experimentVariant,
+      sessionId: _experimentSessionId,
+    );
+    analytics.recordImpression(
+      variant: _experimentVariant,
+      sessionId: _experimentSessionId,
+      promoterId: 'link_in_bio',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +115,7 @@ class LinkInBioScreen extends StatelessWidget {
                     (s) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: GestureDetector(
-                        onTap: () => _copyUrl(context, s.url),
+                        onTap: () => _onLinkTapped(context, s.url),
                         child: Container(
                           width: 44,
                           height: 44,
@@ -138,7 +175,7 @@ class LinkInBioScreen extends StatelessWidget {
         color: AppTheme.cardBackground,
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
-          onTap: () => _copyUrl(context, link.url),
+          onTap: () => _onLinkTapped(context, link.url),
           borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -185,7 +222,7 @@ class LinkInBioScreen extends StatelessWidget {
     );
   }
 
-  static void _copyUrl(BuildContext context, String url) {
+  void _onLinkTapped(BuildContext context, String url) {
     Clipboard.setData(ClipboardData(text: url));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -193,6 +230,13 @@ class LinkInBioScreen extends StatelessWidget {
         backgroundColor: AppTheme.neonGreen,
         duration: const Duration(seconds: 1),
       ),
+    );
+    // Track link click for experiment
+    ExperimentAnalyticsService().recordClick(
+      variant: _experimentVariant,
+      sessionId: _experimentSessionId,
+      promoterId: 'link_in_bio',
+      refCode: url,
     );
   }
 }
@@ -276,7 +320,7 @@ class _BioLink {
   final String url;
   final IconData icon;
   final Color color;
-  _BioLink({
+  const _BioLink({
     required this.label,
     required this.subtitle,
     required this.url,
@@ -289,5 +333,5 @@ class _SocialIcon {
   final IconData icon;
   final String url;
   final Color color;
-  _SocialIcon({required this.icon, required this.url, required this.color});
+  const _SocialIcon({required this.icon, required this.url, required this.color});
 }

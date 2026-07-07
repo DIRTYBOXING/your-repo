@@ -1,10 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'dart:async';
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/services/auth_service.dart';
+import '../../../shared/services/experiment_analytics_service.dart';
 import '../models/ppv_storefront_models.dart';
 import '../services/ppv_storefront_service.dart';
 
@@ -32,12 +36,30 @@ class _PpvHeroStorefrontScreenState extends State<PpvHeroStorefrontScreen> {
   int _selectedTierIndex = 0;
   bool _isCheckingOut = false;
   String? _lastOrderId;
+  late final String _experimentSessionId;
+  String _experimentVariant = 'variant_a';
 
   @override
   void initState() {
     super.initState();
     _storefrontService = PpvStorefrontService();
+    _experimentSessionId =
+        'ppv_storefront_${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(99999)}';
+    _initExperiment();
     _loadEvent();
+  }
+
+  void _initExperiment() {
+    final analytics = ExperimentAnalyticsService();
+    _experimentVariant = analytics.assignVariant(
+      experimentId: ExperimentAnalyticsService.widgetExperimentId,
+      sessionId: _experimentSessionId,
+    );
+    analytics.seedExperiment();
+    analytics.recordAssignment(
+      variant: _experimentVariant,
+      sessionId: _experimentSessionId,
+    );
   }
 
   Future<void> _loadEvent() async {
@@ -167,12 +189,32 @@ class _PpvHeroStorefrontScreenState extends State<PpvHeroStorefrontScreen> {
   Future<void> _handleCheckout() async {
     if (_currentEvent == null) return;
 
+    final analytics = ExperimentAnalyticsService();
+    final tier = _currentEvent!.pricingTiers[_selectedTierIndex];
+
+    // Track experiment click
+    unawaited(
+      analytics.recordClick(
+        variant: _experimentVariant,
+        sessionId: _experimentSessionId,
+        skuId: tier.id,
+      ),
+    );
+
     setState(() => _isCheckingOut = true);
 
     try {
       final auth = context.read<AuthService>();
       final userId = auth.currentUser?.uid ?? 'guest_operator';
-      final tier = _currentEvent!.pricingTiers[_selectedTierIndex];
+
+      // Track checkout initiated
+      unawaited(
+        analytics.recordCheckoutInitiated(
+          variant: _experimentVariant,
+          sessionId: _experimentSessionId,
+          skuId: tier.id,
+        ),
+      );
 
       final order = await _storefrontService.createOrder(
         eventId: _currentEvent!.id,
@@ -185,6 +227,16 @@ class _PpvHeroStorefrontScreenState extends State<PpvHeroStorefrontScreen> {
       setState(() {
         _lastOrderId = order['orderId']?.toString();
       });
+
+      // Track payment intent created
+      unawaited(
+        analytics.recordPaymentIntentCreated(
+          variant: _experimentVariant,
+          sessionId: _experimentSessionId,
+          skuId: tier.id,
+          extra: {'orderId': order['orderId']?.toString()},
+        ),
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

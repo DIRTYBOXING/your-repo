@@ -8,6 +8,16 @@ DataFightCentral is building a production-grade operating system for combat spor
 - Supports fighters, gyms, promoters, creators, and fans with real platform infrastructure
 - Uses strict quality/security/reliability controls to deliver trustworthy outcomes at scale
 
+### Why DFC Exists
+
+DFC exists to connect people the right way — not through chaos, exploitation, or empty engagement loops.
+
+- For **humanity**: build digital systems that guide people toward safety, purpose, and opportunity.
+- For **combat sports**: turn fragmented attention into trusted infrastructure for fighters, gyms, creators, and fans.
+- For **technology**: prove that governance, reliability, and measurable outcomes can coexist with speed and innovation.
+
+This mission is lived, not theoretical: transform pain into purpose, and purpose into systems that help others step out of darkness into direction.
+
 ### Architecture pillars
 
 - **Google (runtime):** Firebase + GCP backend, data plane, and cloud AI services

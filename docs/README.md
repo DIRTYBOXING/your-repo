@@ -76,6 +76,10 @@ https://github.com/sponsors/DIRTYBOXING
 - Partner onboarding: `docs/launch/DFC_PARTNER_ONBOARDING.md`
 - Contributor quickstart: `docs/launch/DFC_CONTRIBUTOR_QUICKSTART.md`
 - Public roadmap: `docs/launch/DFC_PUBLIC_ROADMAP.md`
+- Partner case studies: `docs/launch/DFC_PARTNER_CASE_STUDIES.md`
+- Grant evidence room: `docs/launch/evidence/README.md`
+- 90-day pilot template: `docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER.md`
+- Outreach tracker template: `docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv`
 
 Direct repository links:
 
@@ -88,6 +92,10 @@ Direct repository links:
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_PARTNER_ONBOARDING.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_CONTRIBUTOR_QUICKSTART.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_PUBLIC_ROADMAP.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_PARTNER_CASE_STUDIES.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/evidence/README.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv
 
 ---
 

@@ -131,6 +131,36 @@ Pilot structure:
 
 **Why this works:** low-friction entry with measurable upside.
 
+## Slide 10A — Sponsor Outcomes (KPI Examples)
+
+Use this slide to anchor commercial conversations in measurable outcomes.
+
+### Awareness outcomes
+- Qualified reach during event-week windows
+- Lift in branded impressions from creator amplification
+- Share-of-voice improvement in combat category windows
+
+### Engagement outcomes
+- CTR lift from sponsor modules and co-branded placements
+- Higher watch-time/session depth on sponsored experiences
+- Improved save/share rates for creator-led assets
+
+### Conversion outcomes
+- Attributed visits to landing pages and offers
+- Conversion rate on attributed traffic
+- Incremental revenue or CPA improvements versus prior baseline
+
+### Sample KPI benchmark frame (editable)
+- Reach: 200k+ event-week impressions
+- CTR: 1.2%+
+- Attributed visits: 5,000+
+- Conversion rate: 2.5%+
+
+### Reporting promise
+- Weekly sponsor snapshot
+- Mid-pilot optimization actions
+- End-of-pilot business review with expansion recommendation
+
 ---
 
 ## Slide 11 — Partnership Roadmap

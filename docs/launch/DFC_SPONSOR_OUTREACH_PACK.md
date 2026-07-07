@@ -2,131 +2,178 @@
 
 ## Purpose
 
-Turn DFC sponsor assets into booked calls and paid pilot conversations using a repeatable outreach system.
+Turn DFC sponsor assets into booked meetings and paid pilots using a compact, repeatable outreach system.
 
-## ICP (Ideal Sponsor Profiles)
+Includes:
 
-### Tier 1 (Fastest close potential)
-- Combat-adjacent consumer brands (supplements, apparel, training tools)
-- Sports media and engagement apps
-- Regional event sponsors testing digital expansion
+- prioritized outreach channels
+- three cold email templates
+- three DM scripts
+- 30/60/90 pilot proposal template
+- follow-up cadence
+- KPI targets
+- simple tracking schema for scale
 
-### Tier 2 (High value, longer cycle)
-- National lifestyle brands targeting 18–44 audiences
-- Financial services and telecom partners with sports budgets
-- Tech platforms looking for creator-led vertical campaigns
+## Outreach channels and expected attributes
 
-## Offer
+| Channel | Speed to Contact | Personalization Level | Best Use Case | Expected Response Rate |
+| --- | --- | --- | --- | --- |
+| Email | Fast | High | Decision makers, formal proposals | 5-15% |
+| LinkedIn DM | Medium | High | Senior marketing/product contacts | 3-10% |
+| Twitter/X DM | Fast | Low | Creators, community managers | 1-6% |
+| Warm Intro | Slow | Very High | Executive sponsorship, enterprise deals | 20-50% |
+| In-App Contact | Fast | Medium | Existing users, creators, partners | 8-20% |
 
-### 90-Day Sponsor Pilot
-- Audience/cohort targeting aligned to event windows
-- Defined KPI baseline and target uplift
-- Weekly optimization + reporting cadence
-- Expansion pathway into annual tier
+## Cold email sequence (3-touch)
 
-## Core CTA
+Guidance:
 
-- Primary: Book a 30-minute partner fit call
-- Secondary: Request the Sponsor Pitch Deck + Tier Matrix
+- personalize 2-3 tokens (`[Company]`, `[Recent Campaign]`, `[Event]`)
+- keep subject short and outcome-focused
+- include one clear CTA
 
-## Outreach sequence (4-touch, 14 days)
+### Email 1 — Intro + value
 
-### Touch 1 (Day 1) — Email
-**Subject:** A measurable combat audience pilot for {{BrandName}}
+**Subject:** Sponsor opportunity for [Event/Month] — measurable event-week outcomes
 
-Hi {{FirstName}},
+Hi **[Name]**,
 
-I’m reaching out from Data Fight Central (DFC), a combat sports platform built to convert event-week attention into measurable sponsor outcomes.
+I’m **[Your Name]**, founder of **Data Fight Central** — the combat sports OS that unifies discovery, creator distribution, and PPV conversion. We help brands reach high-intent fight audiences during event windows with measurable outcomes.
 
-For {{BrandName}}, we see strong fit in {{AudienceWindow}} with a 90-day pilot focused on:
-- qualified reach
-- engagement quality
-- attributed actions
+**Why this matters:** our pilot model is designed to drive attributable conversion lift and stronger event-week engagement.
 
-If useful, I can share a one-page plan specific to your objectives.
+I’d love 15 minutes to show a short sponsor playbook and a 90-day pilot with guaranteed inventory and clear measurement. Are you available **[two date options]**?
 
 Best,  
-{{YourName}}
+**[Your Name]**
 
-### Touch 2 (Day 3) — LinkedIn DM
-Hi {{FirstName}} — sent a short note about a combat audience pilot model with measurable event-window outcomes. Happy to share a one-page plan for {{BrandName}} if relevant.
+**CTA:** Book 15-minute demo
 
-### Touch 3 (Day 7) — Value follow-up
-**Subject:** Example KPI framework for {{BrandName}} x DFC
+### Email 2 — Social proof + pilot offer (Day 3-5)
 
-Hi {{FirstName}},
+**Subject:** Quick pilot idea for [Brand] at [Event]
 
-Sharing the KPI frame we use in sponsor pilots:
-- Reach quality (qualified impressions)
-- Engagement quality (CTR + depth)
-- Attributed outcomes (visits/conversions)
-- Weekly optimization notes
+Hi **[Name]**,
 
-If you’re open, I can walk you through a tailored version in 20–30 minutes.
+Following up — we’ve built a sponsor pilot that combines event-week placement, creator amplification, and a measurable dashboard.
 
-### Touch 4 (Day 14) — Close-out with option
-**Subject:** Close the loop? ({{BrandName}} x DFC)
+**Pilot offer:** 8-week activation with guaranteed placements and a performance review. No long-term commitment required.
 
-Hi {{FirstName}},
+If you’re open, I’ll send a one-page pilot brief with KPI targets and timeline.
 
-Closing the loop for now. If this is useful in a later quarter, we can hold a slot for a 90-day pilot around your target event window.
+Thanks,  
+**[Your Name]**
 
-Happy to reconnect anytime.
+### Email 3 — Final nudge (Day 10-14)
 
-## Discovery call agenda (30 min)
+**Subject:** Last note — sponsor pilot for [Event]
 
-1. Partner goals and campaign constraints (5 min)
-2. Audience and event-window fit (7 min)
-3. Pilot structure and KPI plan (10 min)
-4. Commercial path and next steps (8 min)
+Hi **[Name]**,
 
-## Qualification checklist (BANT-light)
+I don’t want to clog your inbox. If now isn’t right, I’ll check back before **[next event window]**. If timing works, I can send the pilot brief and a sample dashboard.
 
-- Budget owner identified
-- Campaign timing window defined
-- KPI priorities agreed
-- Brand safety requirements known
-- Decision timeline confirmed
+Appreciate your time,  
+**[Your Name]**
 
-## Follow-up deliverables (within 24h)
+## DM scripts (short outreach)
 
-- Customized one-page pilot plan
-- Proposed inventory mix
-- KPI baseline and target assumptions
-- Reporting cadence and owners
+### LinkedIn DM — first touch
 
-## Weekly execution cadence (for active pilots)
+Hi **[Name]**, I’m **[Your Name]** at Data Fight Central. We help brands convert combat fans during event windows with creator-led amplification and measurable dashboards. Open to a quick 10-minute call for [Event]?
 
-- Monday: performance snapshot
-- Wednesday: creative/placement optimization
-- Friday: sponsor summary + next actions
+### LinkedIn DM — follow-up
 
-## Rejection handling templates
+Thanks for connecting, **[Name]**. I can send a one-page pilot brief (placements, creator support, KPI targets). Prefer email or should I share it here?
 
-### “No budget right now”
-Understood — can we align on the next planning window and send a compact pilot proposal two weeks before budgeting begins?
+### Twitter/X DM — creator/community contact
 
-### “Need proof first”
-Makes sense — we can start with a lower-risk pilot scope and provide weekly reporting with explicit success thresholds.
+Hey **[Handle]**, love your fight coverage. We run creator amplification pilots that pay creators and drive event-week conversions. Want the short pilot brief?
 
-### “Already have agency support”
-Great — DFC can operate as a vertical channel partner under your current agency workflow.
+### In-app message (existing DFC partners)
 
-## Packaging links
+**Subject:** Sponsor Pilot Opportunity — Event Week  
+**Body:** Short intro + CTA button: **Request pilot brief** (links to sponsor deck and pilot form).
+
+## 30/60/90 pilot proposal template
+
+Use exact numbers where possible.
+
+**Title:** DFC 90-Day Sponsor Pilot — [Brand] — [Event Window]  
+**Objective:** Drive measurable event-week conversions and creator amplification.
+
+**Scope:**
+
+- **Duration:** 8 weeks (2 weeks pre-event, event week, 5 weeks post)
+- **Deliverables:** homepage/event module, 3 creator co-posts, 1 landing-page integration, weekly dashboard access
+- **Measurement:** reach, CTR, attributed visits, conversion rate, incremental revenue
+
+**KPI targets (starter baseline):**
+
+- Reach: 200k unique impressions (event week)
+- CTR: 1.2%
+- Attributed visits: 5,000
+- Conversion rate: 2.5% (on attributed visits)
+
+**Pricing example:** $45,000 (50% upfront, 50% net-30), includes creative coordination and reporting.
+
+**Success criteria:** Meet/exceed 80% of KPI targets OR show positive ROI signal in attribution model.
+
+**Governance:** Brand safety review, campaign sign-off, weekly check-ins, final business review.
+
+**Next steps:** Sign LOI -> Kickoff call -> Creative assets due by [date].
+
+## Outreach cadence and follow-up
+
+- **Day 0:** Email 1 + LinkedIn connection request
+- **Day 3-5:** Email 2 + LinkedIn DM follow-up
+- **Day 10-14:** Email 3 + Twitter/X DM (if public contact)
+- **No response:** move to nurture list; re-engage 6-8 weeks before next event
+- **Positive response:** send pilot brief within 24 hours; schedule demo within 3 business days
+
+## Tracking schema (CRM or spreadsheet)
+
+Minimum columns:
+
+- Company
+- Contact Name
+- Role
+- Channel
+- Date First Contact
+- Template Used
+- Response (Y/N)
+- Meeting Date
+- Pilot Status (Proposed / Signed / Running / Completed)
+- Pilot Start
+- Pilot End
+- Budget
+- KPI Targets (Reach; CTR; Attributed Visits; Conversion)
+- Actuals
+- Notes / Next Steps
+
+**Reporting cadence:** weekly pipeline review + post-pilot business review.
+
+## Quick personalization tokens and subject line bank
+
+**Tokens:** `[Name]`, `[Company]`, `[Recent Campaign]`, `[Event]`, `[Mutual Connection]`, `[Relevant Metric]`
+
+**Subject line bank:**
+
+- Sponsor opportunity for [Event] — measurable outcomes
+- Quick pilot idea for [Brand] at [Event]
+- 8-week sponsor pilot — guaranteed placements + measurement
+- [Mutual Connection] suggested I reach out
+
+## KPI targets for outreach engine
+
+- Positive reply rate: 8-15%
+- Meeting booking rate: 3-8%
+- Pilot conversion from meetings: 15-30%
+- Time-to-proposal: <24h after positive reply
+
+## Related assets
 
 - Sponsor pitch deck: `docs/launch/DFC_SPONSOR_PITCH_DECK.md`
 - Sponsor tier matrix: `docs/launch/DFC_SPONSOR_TIER_MATRIX.md`
 - Public launch page: `docs/launch/DFC_PUBLIC_LAUNCH_PAGE.md`
-
-## Owner model
-
-- Outreach owner: Partnerships lead
-- Data owner: Performance/reporting lead
-- Close owner: Founder or commercial lead
-
-## KPI targets for outreach engine
-
-- Positive reply rate: 8–15%
-- Call booking rate: 3–8%
-- Pilot conversion from calls: 15–30%
-- Time-to-proposal: <24h after call
+- Pilot one-pager template: `docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER.md`
+- Outreach tracker template: `docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv`

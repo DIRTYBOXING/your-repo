@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/admin/screens/admin_console_screen.dart';
-import '../../features/admin/screens/economy_control_room_screen.dart';
+import '../config/economy_control_room_screen.dart';
 import '../../features/admin/screens/google_ecosystem_hub_screen.dart';
 import '../../features/analytics/screens/performance_lab_screen.dart';
 import '../../features/astrohealth/screens/astro_health_monitor_screen.dart';

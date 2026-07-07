@@ -1,10 +1,16 @@
 {
   "version": 1,
-  "generated": "2026-07-06T03:06:22.913Z",
+  "generated": "2026-07-07T02:46:39.656Z",
   "actions": {
     "actions/checkout": [
       {
         "version": "v4",
+        "sha": "34e114876b0b11c390a56381ad16ebd13914f8d5",
+        "integrity": "sha256-5251829f363b759378b315371864d0080d182ad7a7fe5c54bca83d7b0afb3016",
+        "dependencies": []
+      },
+      {
+        "version": "34e114876b0b11c390a56381ad16ebd13914f8d5",
         "sha": "34e114876b0b11c390a56381ad16ebd13914f8d5",
         "integrity": "sha256-5251829f363b759378b315371864d0080d182ad7a7fe5c54bca83d7b0afb3016",
         "dependencies": []
@@ -51,6 +57,32 @@
         "version": "v4",
         "sha": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
         "integrity": "sha256-30dfdaccd01921c2fd144f068d188da3b0b37a5cf427a9ed56fe81a32c6d14b2",
+        "dependencies": []
+      }
+    ],
+    "SonarSource/sonarqube-scan-action": [
+      {
+        "version": "7006c4492b2e0ee0f816d36501671557c97f5995",
+        "sha": "7006c4492b2e0ee0f816d36501671557c97f5995",
+        "integrity": "sha256-5327b1c62d0d43b61af3f3f9584682244388f4febbaabc90f1231205f40bf6b5",
+        "dependencies": []
+      },
+      {
+        "version": "v5",
+        "sha": "2f77a1ec69fb1d595b06f35ab27e97605bdef703",
+        "integrity": "sha256-6170218a68d4259bc8434f3f62937d38dadaedea5e8069adcce1b504992129f2",
+        "dependencies": [
+          {
+            "ref": "actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809",
+            "sha": "0400d5f644dc74513175e3cd8d07132dd4860809",
+            "integrity": "sha256-38b1dddc9919f32b88160521ed3b6acaf47f1d68eec468dcfcb7147dff31d68f"
+          }
+        ]
+      },
+      {
+        "version": "fd88b7d7ccbaefd23d8f36f73b59db7a3d246602",
+        "sha": "fd88b7d7ccbaefd23d8f36f73b59db7a3d246602",
+        "integrity": "sha256-4935cb2764d964b239c64b287b6ebe895e63f8837a9156412657615169f40cf6",
         "dependencies": []
       }
     ],
@@ -191,6 +223,14 @@
         "dependencies": []
       }
     ],
+    "actions-ecosystem/action-add-labels": [
+      {
+        "version": "v1",
+        "sha": "18f1af5e3544586314bbe15c0273249c770b2daf",
+        "integrity": "sha256-02f51959c17374306bb272ba47ed7a88ab22e9ef31b45ede22677c867e3e894c",
+        "dependencies": []
+      }
+    ],
     "dart-lang/setup-dart": [
       {
         "version": "v1",
@@ -272,20 +312,6 @@
             "ref": "LoveToKnow/slackify-markdown-action@698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
             "sha": "698a1d4d0ff1794152a93c03ee8ca5e03a310d4e",
             "integrity": "sha256-2cf5351361efbb7883d0a928d5de43720c4eb50dae7473eda7e7afb1e77dbba3"
-          }
-        ]
-      }
-    ],
-    "SonarSource/sonarqube-scan-action": [
-      {
-        "version": "v5",
-        "sha": "2f77a1ec69fb1d595b06f35ab27e97605bdef703",
-        "integrity": "sha256-6170218a68d4259bc8434f3f62937d38dadaedea5e8069adcce1b504992129f2",
-        "dependencies": [
-          {
-            "ref": "actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809",
-            "sha": "0400d5f644dc74513175e3cd8d07132dd4860809",
-            "integrity": "sha256-38b1dddc9919f32b88160521ed3b6acaf47f1d68eec468dcfcb7147dff31d68f"
           }
         ]
       }

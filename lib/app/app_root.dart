@@ -63,8 +63,6 @@ import '../features/settings/services/settings_service.dart';
 import '../features/promoter/services/promoter_service.dart';
 import '../shared/services/neural_mesh_engine.dart';
 // PPV Services
-import '../features/ppv/services/ppv_service.dart';
-import '../features/ppv/services/ppv_payment_service.dart';
 import '../features/ppv/services/ppv_access_service.dart';
 import '../features/ppv/services/ppv_notification_service.dart';
 import '../features/ppv/services/judge_score_service.dart';

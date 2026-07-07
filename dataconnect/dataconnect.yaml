@@ -1,0 +1,10 @@
+specVersion: "v1alpha"
+serviceId: "datafightcentral"
+location: "us-central1"
+schema:
+  source: "schema"
+  datasource:
+    postgresql:
+      database: "fdcdb_production"
+connectorDirs:
+  - "connector"

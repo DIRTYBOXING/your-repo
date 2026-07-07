@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
 
 class PpvStreamingScreen extends StatelessWidget {
@@ -8,16 +9,36 @@ class PpvStreamingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Initialize MUX Video Player or AWS IVS Player here using the streamUrl
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Stack(
           children: [
-            const Center(
-              child: Text(
-                "STREAM VIDEO PLAYER",
-                style: TextStyle(color: AppColors.neonRed),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.play_circle_fill,
+                    size: 64,
+                    color: AppColors.neonRed,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "MUX / AWS STREAMPAY LIVE STREAM PLAYING",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Event ID: $eventId",
+                    style: const TextStyle(color: Colors.white54, fontSize: 12),
+                  ),
+                ],
               ),
             ),
             Positioned(

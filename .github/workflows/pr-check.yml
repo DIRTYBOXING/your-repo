@@ -33,10 +33,12 @@ jobs:
           cache: true
       - name: Ensure CI-only env asset exists
         run: |
-          mkdir -p assets
-          test -f assets/.env || echo "# CI placeholder" > assets/.env
+          mkdir -p dfc_frontend/dfc_app/assets
+          test -f dfc_frontend/dfc_app/assets/.env || echo "# CI placeholder" > dfc_frontend/dfc_app/assets/.env
       - run: flutter pub get
+        working-directory: dfc_frontend/dfc_app
       - run: flutter analyze --no-fatal-infos
+        working-directory: dfc_frontend/dfc_app
 
   # -- Docker smoke builds (BLOCKING: entitlements only) -------------------------
   docker-entitlements:

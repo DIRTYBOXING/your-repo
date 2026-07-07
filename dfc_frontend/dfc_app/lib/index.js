@@ -1,32 +1,25 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 
-admin.initializeApp();
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 
-export const getDashboard = functions
-  .region("australia-southeast1")
-  .https.onCall(async (data, context) => {
-    const uid = context.auth?.uid;
-    if (!uid) {
-      throw new functions.https.HttpsError(
-        "unauthenticated",
-        "User must be authenticated."
-      );
-    }
-    
-    const doc = await admin
-      .firestore()
-      .collection("dashboards")
-      .doc(uid)
-      .get();
+exports.getDashboard = functions.region("australia-southeast1").https.onCall(async (data, context) => {
+  const uid = context && context.auth ? context.auth.uid : null;
+  if (!uid) {
+    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated.");
+  }
 
-    const base = (doc.exists ? doc.data() : {}) as any;
+  const doc = await admin.firestore().collection("dashboards").doc(uid).get();
 
-    return {
-      upcomingEventTitle: base.upcomingEventTitle ?? "DFC 2: REDEMPTION",
-      daysOut: base.daysOut ?? 14,
-      weight: base.weight ?? 74.5,
-      readiness: base.readiness ?? 88,
-      tokens: base.tokens ?? 2400,
-    };
-  });
+  const base = doc.exists ? doc.data() : {};
+
+  return {
+    upcomingEventTitle: base.upcomingEventTitle || "DFC 2: REDEMPTION",
+    daysOut: typeof base.daysOut === "number" ? base.daysOut : 14,
+    weight: typeof base.weight === "number" ? base.weight : 74.5,
+    readiness: typeof base.readiness === "number" ? base.readiness : 88,
+    tokens: typeof base.tokens === "number" ? base.tokens : 2400,
+  };
+});

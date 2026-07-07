@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /ppv_events/{eventId}/metrics/{doc} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /ppv_events/{eventId}/entitlement_logs/{logId} {
+      allow create: if request.auth != null && request.auth.token.operator == true;
+      allow read: if request.auth != null && request.auth.token.operator == true;
+    }
+    match /ppv_events/{eventId}/incidents/{incId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.operator == true;
+    }
+  }
+}

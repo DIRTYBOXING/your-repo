@@ -1,0 +1,38 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GCR
+        if: github.event_name == 'push' && secrets.GCP_SA_KEY != ''
+        uses: docker/login-action@v3
+        with:
+          registry: gcr.io
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }}
+      - name: Build and push image
+        if: github.event_name == 'push' && secrets.GCP_SA_KEY != ''
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            gcr.io/datafightcentral/backend:latest
+            gcr.io/datafightcentral/backend:${{ github.sha }}
+      - name: Build only for pull request validation
+        if: github.event_name == 'pull_request'
+        run: docker build . --file Dockerfile --tag backend-pr:${{ github.sha }}
+      - name: Skip publish notice
+        if: github.event_name == 'push' && secrets.GCP_SA_KEY == ''
+        run: echo "::notice::GCP_SA_KEY missing — image build ran but publish was skipped"

@@ -24,14 +24,14 @@ class LeaderboardScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.04),
+                        color: Colors.white.withValues(alpha: 0.04),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha: 0.08),
                         ),
                       ),
                       child: Icon(
                         Icons.arrow_back,
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                         size: 20,
                       ),
                     ),
@@ -119,10 +119,10 @@ class LeaderboardScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isTop ? color.withOpacity(0.05) : const Color(0xFF111827),
+        color: isTop ? color.withValues(alpha: 0.05) : const Color(0xFF111827),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isTop ? color.withOpacity(0.3) : Colors.white10,
+          color: isTop ? color.withValues(alpha: 0.3) : Colors.white10,
         ),
       ),
       child: Row(
@@ -131,7 +131,7 @@ class LeaderboardScreen extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: Center(

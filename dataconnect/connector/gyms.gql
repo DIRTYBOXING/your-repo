@@ -1,0 +1,32 @@
+# Query for the Discovery Map
+query ListGyms @auth(level: PUBLIC) {
+  gyms {
+    id
+    name
+    city
+    latitude
+    longitude
+  }
+}
+
+# Specific gym details
+query GetGym($id: UUID!) @auth(level: PUBLIC) {
+  gym(id: $id) {
+    id
+    name
+    address
+    city
+    website
+  }
+}
+
+# Search gyms by city
+query SearchGyms($city: String!) @auth(level: PUBLIC) {
+  gyms(where: { city: { eq: $city } }) {
+    id
+    name
+    city
+    latitude
+    longitude
+  }
+}

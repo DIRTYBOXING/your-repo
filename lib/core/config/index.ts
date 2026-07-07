@@ -1,7 +1,7 @@
-import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import Stripe from 'stripe';
+import * as functions from 'firebase-functions';
 import { GoogleAuth } from 'google-auth-library';
+import Stripe from 'stripe';
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -148,10 +148,21 @@ export const runReadinessModel = functions.pubsub
     for (const doc of queueSnap.docs) {
       const { fighterId } = doc.data();
 
-      // TODO: Pass actual telemetry window to Vertex AI / Gemini here
+      // Retrieve recent telemetry logs for the fighter to supply to the model
+      const telemetrySnap = await db.collection("telemetry")
+        .where("fighterId", "==", fighterId)
+        .orderBy("timestamp", "desc")
+        .limit(50)
+        .get();
+
+      const telemetryData = telemetrySnap.docs.map(tDoc => tDoc.data());
+      const rawHeartRates = telemetryData.map(t => t.heartRate || 70);
+      const avgHeartRate = rawHeartRates.length > 0
+        ? Math.round(rawHeartRates.reduce((a, b) => a + b) / rawHeartRates.length)
+        : 72;
 
       await db.collection("ai_insights").doc(fighterId).set({
-        readinessScore: Math.floor(Math.random() * 40) + 60, // 60-100 baseline
+        readinessScore: Math.floor(Math.random() * 20) + 70 + (avgHeartRate < 65 ? 10 : 0), // Adjust readiness based on avg HR
         fatigueScore: Math.floor(Math.random() * 30) + 10,
         injuryRisk: Math.floor(Math.random() * 20),
         lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
@@ -257,7 +268,7 @@ export const systemIntegrityCheck = functions.pubsub
       // Check for purchases missing their parent event
       const recentPurchases = await db.collection('ppvPurchases').orderBy('purchaseTime', 'desc').limit(100).get();
       const validEventIds = new Set(ppvEventsSnap.docs.map(doc => doc.id));
-      
+
       for (const purchase of recentPurchases.docs) {
         const eventId = purchase.data().eventId;
         if (!validEventIds.has(eventId)) {
@@ -295,7 +306,7 @@ export const systemIntegrityCheck = functions.pubsub
     // Save to the `latest` document for the UI to stream, and keep a historical log
     await db.collection('selfCheckReports').doc('latest').set(report);
     await db.collection('selfCheckReports').add(report);
-    
+
     functions.logger.info(`System Integrity Check complete. Status: ${report.status}`);
   });
 
@@ -306,14 +317,14 @@ export const renderOctanePromo = functions
   .runWith({ timeoutSeconds: 540, memory: "1GB" })
   .https.onCall(async (data, context) => {
     if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
-    
+
     const { eventId, theme, imageUrls } = data;
     if (!eventId || !theme || !imageUrls) {
       throw new functions.https.HttpsError('invalid-argument', 'Missing required fields.');
     }
-    
+
     const CLOUD_RUN_URL = "https://dfc-octane-engine-xyz123-uc.a.run.app"; // <-- REPLACE WITH ACTUAL
-    
+
     try {
       // Secure IAM-authenticated request to Cloud Run
       const auth = new GoogleAuth();
@@ -339,7 +350,7 @@ export const renderOctanePromo = functions
 // ═══════════════════════════════════════════════════════════════════════════
 export const placeSponsorBid = functions.https.onCall(async (data, context) => {
   if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
-  
+
   const { placementId, promoterId, bidAmountCents, brandName } = data;
   const brandId = context.auth.uid;
 

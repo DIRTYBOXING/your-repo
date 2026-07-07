@@ -1,0 +1,10 @@
+# Get user profile details
+query GetUser($id: UUID!) @auth(level: PUBLIC) {
+  user(id: $id) {
+    id
+    name
+    email
+    displayName
+    avatarUrl
+  }
+}

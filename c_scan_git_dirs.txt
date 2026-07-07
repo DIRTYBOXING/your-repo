@@ -1,0 +1,36 @@
+C:\$Recycle.Bin\S-1-5-21-2200293813-2105415053-3671110982-1001\$RV03PQ2\.git
+C:\Csrc\flutter\.git
+C:\Csrc\flutter\flutter\.git
+C:\C_DFC_BACKUP_2026\dev\datafightcentral\.git
+C:\DFC-Docker\dfc cleaner\.cache\pre-commit\repouigsc5hl\.git
+C:\DFC-Docker\dfc cleaner\.cache\pre-commit\repoxmcsd3zj\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\copilot-worktree-2026-05-07t08-49-09\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\data-fight-central\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\data-fight-central-1\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\data-fight-central-2\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\data-fight-central-3\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\data-fight-central-worktrees\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\datafightcentral\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\dfc-identity-service\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\microsoft-vs-code2026\.git
+C:\DFC-Docker\dfc cleaner\.gemini\history\my-project\.git
+C:\Users\User\.codex\.tmp\plugins\.git
+C:\Users\User\.gemini\antigravity\scratch\datafightcentral\.git
+C:\Users\User\.gemini\config\plugins\dak\.git
+C:\Users\User\.gemini\history\antigravity-ide\.git
+C:\Users\User\.gemini\history\atlas-backend\.git
+C:\Users\User\.gemini\history\copilot-worktree-2026-05-17t11-57-30\.git
+C:\Users\User\.gemini\history\data-fight-central\.git
+C:\Users\User\.gemini\history\data-fight-central-1\.git
+C:\Users\User\.gemini\history\data-fight-central-2\.git
+C:\Users\User\.gemini\history\data-fight-central-safe\.git
+C:\Users\User\.gemini\history\data-fight-central-safe-bridge\.git
+C:\Users\User\.gemini\history\data-fight-central-safe-bridge-1\.git
+C:\Users\User\.gemini\history\datafightcentral\.git
+C:\Users\User\.gemini\history\dfc-app\.git
+C:\Users\User\.gemini\history\flagstaff\.git
+C:\Users\User\.gemini\history\microsoft-vs-code-insiders\.git
+C:\Users\User\.gemini\history\microsoft-vs-code2026\.git
+C:\Users\User\.vscode\agent-plugins\github.com\github\awesome-copilot\ref_marketplace\.git
+C:\Users\User\.vscode\agent-plugins\github.com\github\copilot-plugins\.git
+C:\Users\User\.vscode\agent-plugins\github.com\SonarSource\sonarqube-agent-plugins\ref_2.0.0\.git

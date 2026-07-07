@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_colors.dart';
 import '../services/economy_service.dart';
 
@@ -50,13 +51,14 @@ class _FighterEconomyDashboardState extends State<FighterEconomyDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    if (_loading)
+    if (_loading) {
       return const Scaffold(
         backgroundColor: AppColors.bg,
         body: Center(
           child: CircularProgressIndicator(color: AppColors.neonCyan),
         ),
       );
+    }
 
     final currentBalance = (_balance?['balanceCents'] ?? 0) / 100.0;
 
@@ -124,7 +126,25 @@ class _FighterEconomyDashboardState extends State<FighterEconomyDashboard> {
               'No transactions found.',
               style: TextStyle(color: Colors.white38),
             ),
-          // TODO: Map over _events and display custom ListTile widgets
+          ..._events
+              .map(
+                (event) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(event['title'] ?? 'Transaction'),
+                  subtitle: Text(event['date'] ?? 'Recent'),
+                  trailing: Text(
+                    '\$${event['amount'] ?? '0.00'}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color:
+                          (event['amount']?.toString().startsWith('-') ?? false)
+                          ? Colors.redAccent
+                          : Colors.greenAccent,
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
         ],
       ),
     );

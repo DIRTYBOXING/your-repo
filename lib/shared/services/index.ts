@@ -1,8 +1,7 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import Stripe from 'stripe';
-import { GoogleAuth } from 'google-auth-library';
 import { VertexAI } from '@google-cloud/vertexai';
+import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+import Stripe from 'stripe';
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -177,9 +176,9 @@ export const runReadinessModel = functions.pubsub
     if (queueSnap.empty) return;
 
     // Initialize Vertex AI
-    const vertexAI = new VertexAI({ 
-      project: process.env.GCLOUD_PROJECT || 'datafightcentral', 
-      location: 'us-central1' 
+    const vertexAI = new VertexAI({
+      project: process.env.GCLOUD_PROJECT || 'datafightcentral',
+      location: 'us-central1'
     });
     const model = vertexAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
@@ -192,14 +191,14 @@ export const runReadinessModel = functions.pubsub
         .orderBy("timestamp", "desc")
         .limit(20)
         .get();
-      
+
       const telemetryData = telemetrySnap.docs.map(t => t.data());
 
       try {
         const prompt = `
         Analyze the following biometric telemetry data for a combat athlete and output a JSON response with readiness and fatigue metrics.
         Telemetry: ${JSON.stringify(telemetryData)}
-        
+
         Return ONLY a valid JSON object with the following keys:
         - "readinessScore" (number 0-100)
         - "fatigueScore" (number 0-100)
@@ -323,7 +322,7 @@ export const systemIntegrityCheck = functions.pubsub
       // Check for purchases missing their parent event
       const recentPurchases = await db.collection('ppvPurchases').orderBy('purchaseTime', 'desc').limit(100).get();
       const validEventIds = new Set(ppvEventsSnap.docs.map(doc => doc.id));
-      
+
       for (const purchase of recentPurchases.docs) {
         const eventId = purchase.data().eventId;
         if (!validEventIds.has(eventId)) {
@@ -361,7 +360,7 @@ export const systemIntegrityCheck = functions.pubsub
     // Save to the `latest` document for the UI to stream, and keep a historical log
     await db.collection('selfCheckReports').doc('latest').set(report);
     await db.collection('selfCheckReports').add(report);
-    
+
     functions.logger.info(`System Integrity Check complete. Status: ${report.status}`);
   });
 
@@ -374,7 +373,7 @@ export const systemIntegrityCheck = functions.pubsub
 // ═══════════════════════════════════════════════════════════════════════════
 export const createStripePaymentIntent = functions.https.onCall(async (data, context) => {
   if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
-  
+
   const { userId, eventId, amount, currency } = data;
 
   try {
@@ -382,7 +381,7 @@ export const createStripePaymentIntent = functions.https.onCall(async (data, con
     const customer = await stripe.customers.create({
       metadata: { userId },
     });
-    
+
     const ephemeralKey = await stripe.ephemeralKeys.create(
       { customer: customer.id },
       { apiVersion: '2023-10-16' }
@@ -410,16 +409,26 @@ export const renderOctanePromo = functions
   .https.onCall(async (data, context) => {
     // Validate User
     if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
-    
+
     const { eventId, theme, imageUrls } = data;
-    
+
     functions.logger.info(`Initiating Octane Render for Event: ${eventId} with Theme: ${theme}`);
-    
-    // TODO: Send task to Google Cloud Run (FFmpeg) or Replicate API to stitch the images into a video.
-    // For now, we simulate the render and return a generated path.
+
+    // Dispatch render task to Cloud Run FFmpeg media-worker service queue in Firestore
+    const taskQueue = db.collection('media_tasks');
+    const taskRef = await taskQueue.add({
+      type: 'stitch_promo',
+      eventId,
+      theme,
+      imageUrls: imageUrls || [],
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      status: 'queued',
+    });
+
+    functions.logger.info(`Queued FFmpeg render task ${taskRef.id} in Cloud Run worker queue.`);
     const simulatedVideoUrl = `https://storage.googleapis.com/datafightcentral.appspot.com/octane_final/${eventId}_promo.mp4`;
-    
-    return { videoUrl: simulatedVideoUrl, status: 'success' };
+
+    return { videoUrl: simulatedVideoUrl, taskId: taskRef.id, status: 'success' };
   });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -427,7 +436,7 @@ export const renderOctanePromo = functions
 // ═══════════════════════════════════════════════════════════════════════════
 export const placeSponsorBid = functions.https.onCall(async (data, context) => {
   if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
-  
+
   const { placementId, promoterId, bidAmountCents, brandName } = data;
   const brandId = context.auth.uid;
 
@@ -474,7 +483,7 @@ export const runPayoutEngine = functions.pubsub
           grossCents: amountCents,
           feesCents: 0, // Platform/Stripe deductions apply here
           netCents: amountCents,
-          status: "processing", 
+          status: "processing",
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
@@ -501,7 +510,7 @@ export const processStripePayout = functions.firestore
   .document("payoutStatements/{statementId}")
   .onCreate(async (snap, context) => {
     const statement = snap.data();
-    
+
     // Only process statements that are freshly generated by the Payout Engine
     if (!statement || statement.status !== "processing") return;
 

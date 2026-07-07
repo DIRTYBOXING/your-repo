@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../core/theme/app_colors.dart';
 
 class WebsiteHero extends StatelessWidget {
@@ -40,18 +41,46 @@ class WebsiteHero extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () => context.go('/login'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.neonCyan,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-              textStyle: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () => context.go('/login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.neonCyan,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 20,
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                child: const Text('ENTER PLATFORM'),
               ),
-            ),
-            child: const Text('ENTER PLATFORM'),
+              const SizedBox(width: 20),
+              OutlinedButton(
+                onPressed: () => context.go('/only-fit'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.neonMagenta,
+                  side: const BorderSide(
+                    color: AppColors.neonMagenta,
+                    width: 2,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 20,
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                child: const Text('ONLYFIT SHOWROOM'),
+              ),
+            ],
           ),
         ],
       ),

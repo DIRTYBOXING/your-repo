@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/theme/design_tokens.dart';
@@ -179,8 +178,9 @@ class _WomensHavenScreenState extends State<WomensHavenScreen> {
               icon: const Icon(Icons.backspace_outlined, color: Colors.white54),
               onPressed: () {
                 HapticFeedback.lightImpact();
-                if (_pin.isNotEmpty)
+                if (_pin.isNotEmpty) {
                   setState(() => _pin = _pin.substring(0, _pin.length - 1));
+                }
               },
             );
           }
@@ -285,7 +285,7 @@ class _WomensHavenScreenState extends State<WomensHavenScreen> {
           HapticFeedback.heavyImpact();
           Future.delayed(
             const Duration(milliseconds: 120),
-            () => HapticFeedback.lightImpact(),
+            HapticFeedback.lightImpact,
           );
         },
         child: Container(

@@ -207,7 +207,7 @@ class SeedSocialData {
 
     try {
       for (var postData in initialPosts) {
-        DocumentReference docRef = postsRef.doc();
+        final DocumentReference docRef = postsRef.doc();
         batch.set(docRef, postData);
       }
 

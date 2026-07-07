@@ -61,13 +61,19 @@ async function refresh(force = false) {
   const db = _getDb();
   if (!db) return; // No Firestore — flags remain empty (default false)
 
-  const snap = await db.collection("feature_flags").get();
-  const fresh = {};
-  for (const doc of snap.docs) {
-    fresh[doc.id] = { ...doc.data(), name: doc.id };
+  try {
+    const snap = await db.collection("feature_flags").get();
+    const fresh = {};
+    for (const doc of snap.docs) {
+      fresh[doc.id] = { ...doc.data(), name: doc.id };
+    }
+    _flagCache = fresh;
+    _cacheExpiry = Date.now() + CACHE_TTL_MS;
+  } catch (_) {
+    // In test/CI environments without ADC or project id, fail-open to cached/default flags.
+    // Keep cache short-lived so production recovers once connectivity/auth is available again.
+    _cacheExpiry = Date.now() + 5_000;
   }
-  _flagCache = fresh;
-  _cacheExpiry = Date.now() + CACHE_TTL_MS;
 }
 
 /**

@@ -43,16 +43,18 @@ jobs:
 
       - name: Ensure CI-only env asset exists
         run: |
-          mkdir -p assets
-          test -f assets/.env || echo "# CI placeholder" > assets/.env
+          mkdir -p dfc_frontend/dfc_app/assets
+          test -f dfc_frontend/dfc_app/assets/.env || echo "# CI placeholder" > dfc_frontend/dfc_app/assets/.env
 
       - name: Flutter pub get
         run: flutter pub get
+        working-directory: dfc_frontend/dfc_app
 
       - name: Flutter build web (release)
         run: |
           flutter build web --release \
             --dart-define=USE_FIREBASE_EMULATOR=false
+        working-directory: dfc_frontend/dfc_app
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -69,7 +71,7 @@ jobs:
         run: node ./node_modules/playwright/cli.js install --with-deps chromium
 
       - name: Serve Flutter web
-        run: python3 -m http.server 8088 --directory build/web &
+        run: python3 -m http.server 8088 --directory dfc_frontend/dfc_app/build/web &
         # Give server time to start
       - run: sleep 3
 

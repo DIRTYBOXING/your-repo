@@ -187,7 +187,6 @@ class _FeedScreenState extends State<FeedScreen> {
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: null, // Implement link handling if schema provides external URLs
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(

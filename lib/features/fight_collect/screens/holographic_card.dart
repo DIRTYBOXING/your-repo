@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../core/theme/design_tokens.dart';
 import '../models/collectible_model.dart';
 
 class HolographicCard extends StatefulWidget {

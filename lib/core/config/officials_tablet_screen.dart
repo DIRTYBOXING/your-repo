@@ -224,7 +224,7 @@ class _OfficialsTabletScreenState extends State<OfficialsTabletScreen> {
                 child: Center(
                   child: Text(
                     score.toString(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 72,
                       fontWeight: FontWeight.w900,

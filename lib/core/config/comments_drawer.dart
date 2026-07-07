@@ -9,7 +9,6 @@ class CommentsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.5,
       maxChildSize: 0.9,
       minChildSize: 0.3,
       builder: (_, controller) {

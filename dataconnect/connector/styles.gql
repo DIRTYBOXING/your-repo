@@ -1,0 +1,7 @@
+# List all fighting styles
+query ListStyles @auth(level: PUBLIC) {
+  styles {
+    id
+    description
+  }
+}

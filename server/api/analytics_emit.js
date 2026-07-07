@@ -87,7 +87,6 @@ function createAnalyticsEmitRouter({ audit, ppvCommerceMetrics, forwardToMeta, g
         userId,
         anonymousId,
         source,
-        meta,
         ts,
         dedupeKey,
         email,
@@ -102,11 +101,18 @@ function createAnalyticsEmitRouter({ audit, ppvCommerceMetrics, forwardToMeta, g
         currency,
         orderId,
         offerId,
+        eventKind = "in_source" // "in_source" (internal DFC bout) or "out_source" (external promoter)
       } = req.body || {};
 
       if (!event || !ALLOWED_ANALYTICS_EVENTS.has(event)) {
         return res.status(400).json({
           error: "event required and must be one of: " + [...ALLOWED_ANALYTICS_EVENTS].join(", "),
+        });
+      }
+
+      if (eventKind !== "in_source" && eventKind !== "out_source") {
+        return res.status(400).json({
+          error: "eventKind must be either 'in_source' or 'out_source'"
         });
       }
 
@@ -183,6 +189,9 @@ function createAnalyticsEmitRouter({ audit, ppvCommerceMetrics, forwardToMeta, g
           currency,
           orderId,
           offerId,
+          customData: {
+            eventKind: eventKind // Propagating the fight event scope (in_source vs out_source) to Meta Conversions API
+          }
         }).catch((err) => {
           console.error(
             JSON.stringify({

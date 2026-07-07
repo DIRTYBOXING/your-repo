@@ -768,14 +768,14 @@ function buildUploadSessionResponse(session, { includeParts = false, partNumbers
     signedUrl: session.partsTotal === 1 ? buildSignedUploadUrl(session.key, expiresIn) : null,
     parts: includeParts
       ? requestedPartNumbers.map((partNumber) => ({
-          partNumber,
-          signedUrl: buildSignedUploadUrl(session.key, expiresIn, { partNumber }),
-          expiresIn,
-          headers: {
-            "content-type": session.metadata.contentType,
-            "x-upload-id": session.uploadId,
-          },
-        }))
+        partNumber,
+        signedUrl: buildSignedUploadUrl(session.key, expiresIn, { partNumber }),
+        expiresIn,
+        headers: {
+          "content-type": session.metadata.contentType,
+          "x-upload-id": session.uploadId,
+        },
+      }))
       : undefined,
   };
 }
@@ -1514,6 +1514,19 @@ router.post("/wallet/purchase", requireApiAuth, express.json(), (req, res) => {
     entitlementId: entitlement.id,
   });
 
+  const purchaseId = `purchase_${uuid().replaceAll("-", "")}`;
+  purchaseStore.set(purchaseId, {
+    id: purchaseId,
+    sessionId: debitTx.id,
+    eventId: Number(itemId),
+    userId,
+    amountCents: Number(amountCents),
+    status: "paid",
+    sku: `MICRO-${itemId}`,
+    provider: "wallet",
+    createdAt: new Date().toISOString(),
+  });
+
   const responsePayload = {
     ok: true,
     wallet: { ...wallet },
@@ -1839,6 +1852,23 @@ router.post("/webhook/payment", webhookRateLimiter, express.raw({ type: "applica
     return res.status(400).json({ error: "eventId and userId are required" });
   }
 
+  // Idempotency check: prevent duplicate purchases for the same Stripe session
+  if (payment.sessionId) {
+    const existingPurchase = [...purchaseStore.values()].find(
+      (p) => p.sessionId === payment.sessionId
+    );
+    if (existingPurchase) {
+      const entitlementKey = `${payment.userId}_${payment.eventId}`;
+      const existingEntitlement = entitlementStore.get(entitlementKey);
+      return res.json({
+        ok: true,
+        purchase: existingPurchase,
+        entitlement: existingEntitlement || null,
+        replayed: true,
+      });
+    }
+  }
+
   const purchaseId = `purchase_${uuid().replaceAll("-", "")}`;
   const purchase = {
     id: purchaseId,
@@ -2118,8 +2148,8 @@ router.post("/uploads/sessions/:uploadId/complete", express.json(), (req, res) =
 
   const uploadedParts = Array.isArray(req.body?.uploadedParts)
     ? req.body.uploadedParts
-        .map((value) => Number(value))
-        .filter((value) => Number.isInteger(value) && value >= 1 && value <= session.partsTotal)
+      .map((value) => Number(value))
+      .filter((value) => Number.isInteger(value) && value >= 1 && value <= session.partsTotal)
     : [];
 
   if (session.partsTotal > 1 && uploadedParts.length !== session.partsTotal) {
@@ -2311,17 +2341,17 @@ router.post("/consent", express.json(), async (req, res) => {
 
   const normalizedConsent = typeof incomingConsent === "boolean"
     ? {
-        analytics: incomingConsent,
-        advertising: incomingConsent,
-        functional: true,
-        ts: new Date().toISOString(),
-      }
+      analytics: incomingConsent,
+      advertising: incomingConsent,
+      functional: true,
+      ts: new Date().toISOString(),
+    }
     : {
-        analytics: incomingConsent?.analytics !== false,
-        advertising: incomingConsent?.advertising === true,
-        functional: incomingConsent?.functional !== false,
-        ts: incomingConsent?.ts || new Date().toISOString(),
-      };
+      analytics: incomingConsent?.analytics !== false,
+      advertising: incomingConsent?.advertising === true,
+      functional: incomingConsent?.functional !== false,
+      ts: incomingConsent?.ts || new Date().toISOString(),
+    };
 
   const record = {
     userId: userId || null,

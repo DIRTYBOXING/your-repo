@@ -574,11 +574,8 @@ class _SocialFeedScreenState extends State<SocialFeedScreen>
         } else {
           // Deduplicate before adding
           for (final p in morePosts) {
-            final pId = p is Post
-                ? p.id
-                : (p is Map ? p['id']?.toString() : null);
-            if (pId != null &&
-                !_paginatedPosts.any(
+            final pId = p.id;
+            if (!_paginatedPosts.any(
                   (existing) =>
                       (existing is Post
                           ? existing.id

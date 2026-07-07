@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../../core/constants/image_assets.dart';
 import '../../../shared/widgets/dfc_network_image.dart';
 
@@ -156,9 +158,14 @@ class FacesOfWomenFightersPage extends StatelessWidget {
                   children: p.socialLinks!.entries
                       .map(
                         (entry) => InkWell(
-                          onTap: () {
-                            // ignore: deprecated_member_use
-                            // (in real app, use url_launcher)
+                          onTap: () async {
+                            final url = Uri.parse(entry.value);
+                            if (await canLaunchUrl(url)) {
+                              await launchUrl(
+                                url,
+                                mode: LaunchMode.externalApplication,
+                              );
+                            }
                           },
                           child: Chip(
                             label: Text(

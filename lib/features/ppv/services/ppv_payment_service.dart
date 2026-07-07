@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -32,8 +31,9 @@ class PpvPaymentService {
       final ephemeralKey = response.data['ephemeralKey'];
       final customerId = response.data['customer'];
 
-      if (clientSecret == null)
+      if (clientSecret == null) {
         throw Exception('Failed to retrieve client secret.');
+      }
 
       // 2. Initialize the Payment Sheet
       await Stripe.instance.initPaymentSheet(

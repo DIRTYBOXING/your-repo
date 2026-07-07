@@ -35,11 +35,11 @@ class _FightCollectScreenState extends ConsumerState<FightCollectScreen>
         backgroundColor: DesignTokens.bgPrimary,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Row(
+        title: const Row(
           children: [
-            const Icon(Icons.style, color: DesignTokens.neonGold),
-            const SizedBox(width: 8),
-            const Text(
+            Icon(Icons.style, color: DesignTokens.neonGold),
+            SizedBox(width: 8),
+            Text(
               "COLLECTIBLES",
               style: TextStyle(
                 color: Colors.white,

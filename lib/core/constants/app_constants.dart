@@ -14,9 +14,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
   static const String appDescription =
       'Professional Social Media and PPV Platform for Combat Sports';
-  static const bool webDemoMode = bool.fromEnvironment(
-    'WEB_DEMO_MODE',
-  );
+  static const bool webDemoMode = bool.fromEnvironment('WEB_DEMO_MODE');
   static const bool useFirebaseEmulator = bool.fromEnvironment(
     'USE_FIREBASE_EMULATOR',
   );
@@ -37,22 +35,16 @@ class AppConstants {
     'ENABLE_DRONE_RACING',
   );
 
-  static const bool enableGames = bool.fromEnvironment(
-    'ENABLE_GAMES',
-  );
+  static const bool enableGames = bool.fromEnvironment('ENABLE_GAMES');
 
   static const bool featureShellV2 = bool.fromEnvironment(
     'FEATURE_SHELL_V2',
     defaultValue: true,
   );
 
-  static const bool featurePpvStore = bool.fromEnvironment(
-    'FEATURE_PPV_STORE',
-  );
+  static const bool featurePpvStore = bool.fromEnvironment('FEATURE_PPV_STORE');
 
-  static const bool featurePlaySkin = bool.fromEnvironment(
-    'FEATURE_PLAY_SKIN',
-  );
+  static const bool featurePlaySkin = bool.fromEnvironment('FEATURE_PLAY_SKIN');
 
   static bool get authEnabled => !(kIsWeb && webDemoMode);
 
@@ -323,6 +315,25 @@ class AppConstants {
   // API Endpoints (placeholders)
   static const String baseApiUrl = 'https://api.datafightcentral.com';
   static const String publicWebBaseUrl = 'https://datafightcentral.com';
+  static const String publicRepositoryUrl =
+      'https://github.com/DIRTYBOXING/Data-Fight-Central';
+  static const String publicRepositoryIssuesUrl = '$publicRepositoryUrl/issues';
+  static const String publicRepositoryContributingUrl =
+      '$publicRepositoryUrl/blob/master/CONTRIBUTING.md';
+  static const String sponsorProgramUrl =
+      'https://github.com/sponsors/DIRTYBOXING';
+  static const String launchPageContentUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_PUBLIC_LAUNCH_PAGE.md';
+  static const String sponsorTierMatrixUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_SPONSOR_TIER_MATRIX.md';
+  static const String sponsorPitchDeckUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_SPONSOR_PITCH_DECK.md';
+  static const String sponsorOutreachPackUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_SPONSOR_OUTREACH_PACK.md';
+  static const String grantApplicationPackUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_GRANT_APPLICATION_PACK.md';
+  static const String grantSubmissionCalendarUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_GRANT_SUBMISSION_CALENDAR.md';
   static const String privacyPolicyUrl = '$publicWebBaseUrl/privacy';
   static const String termsOfServiceUrl = '$publicWebBaseUrl/terms';
   static const String supportEmail = 'support@datafightcentral.com';
@@ -331,17 +342,13 @@ class AppConstants {
   // External video platform keys — compile-time --dart-define takes priority,
   // then runtime dotenv (.env file), then empty (fallback/demo mode).
   static String get youtubeApiKey {
-    const compileTime = String.fromEnvironment(
-      'YOUTUBE_API_KEY',
-    );
+    const compileTime = String.fromEnvironment('YOUTUBE_API_KEY');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('YOUTUBE_API_KEY');
   }
 
   static String get streamApiKey {
-    const compileTime = String.fromEnvironment(
-      'STREAM_API_KEY',
-    );
+    const compileTime = String.fromEnvironment('STREAM_API_KEY');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('STREAM_API_KEY');
   }
@@ -350,41 +357,31 @@ class AppConstants {
   static bool get hasStreamApiKey => streamApiKey.isNotEmpty;
 
   static String get operatorFunctionUrl {
-    const compileTime = String.fromEnvironment(
-      'DFC_OPERATOR_FUNCTION_URL',
-    );
+    const compileTime = String.fromEnvironment('DFC_OPERATOR_FUNCTION_URL');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_OPERATOR_FUNCTION_URL');
   }
 
   static String get operatorId {
-    const compileTime = String.fromEnvironment(
-      'DFC_OPERATOR_ID',
-    );
+    const compileTime = String.fromEnvironment('DFC_OPERATOR_ID');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_OPERATOR_ID');
   }
 
   static String get operatorSecret {
-    const compileTime = String.fromEnvironment(
-      'DFC_OPERATOR_SECRET',
-    );
+    const compileTime = String.fromEnvironment('DFC_OPERATOR_SECRET');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_OPERATOR_SECRET');
   }
 
   static String get ppvStorefrontBaseUrl {
-    const compileTime = String.fromEnvironment(
-      'DFC_PPV_STOREFRONT_BASE',
-    );
+    const compileTime = String.fromEnvironment('DFC_PPV_STOREFRONT_BASE');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_PPV_STOREFRONT_BASE');
   }
 
   static bool get ppvStorefrontAutoConfirmSandbox {
-    const compileTime = String.fromEnvironment(
-      'DFC_PPV_AUTO_CONFIRM_SANDBOX',
-    );
+    const compileTime = String.fromEnvironment('DFC_PPV_AUTO_CONFIRM_SANDBOX');
     if (compileTime.isNotEmpty) {
       return compileTime.toLowerCase() == 'true';
     }

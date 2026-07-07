@@ -65,6 +65,26 @@ https://github.com/sponsors/DIRTYBOXING
 
 ---
 
+## ⭐ Launch, Sponsorship & Grant Pack (Public)
+
+- Public launch page content: `docs/launch/DFC_PUBLIC_LAUNCH_PAGE.md`
+- Sponsor tier matrix: `docs/launch/DFC_SPONSOR_TIER_MATRIX.md`
+- Sponsor pitch deck: `docs/launch/DFC_SPONSOR_PITCH_DECK.md`
+- Sponsor outreach pack: `docs/launch/DFC_SPONSOR_OUTREACH_PACK.md`
+- Grant application pack: `docs/launch/DFC_GRANT_APPLICATION_PACK.md`
+- Grant submission calendar: `docs/launch/DFC_GRANT_SUBMISSION_CALENDAR.md`
+
+Direct repository links:
+
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_PUBLIC_LAUNCH_PAGE.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_SPONSOR_TIER_MATRIX.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_SPONSOR_PITCH_DECK.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_SPONSOR_OUTREACH_PACK.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_GRANT_APPLICATION_PACK.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_GRANT_SUBMISSION_CALENDAR.md
+
+---
+
 ## ⭐ Contact
 
 - Partnerships / grants: YOUR_EMAIL  

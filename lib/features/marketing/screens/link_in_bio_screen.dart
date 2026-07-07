@@ -199,6 +199,62 @@ class LinkInBioScreen extends StatelessWidget {
 
 final _primaryLinks = [
   _BioLink(
+    label: 'DFC Public Launch Page',
+    subtitle: 'Mission, product value, and movement narrative',
+    url: AppConstants.launchPageContentUrl,
+    icon: Icons.rocket_launch,
+    color: AppTheme.neonGreen,
+  ),
+  _BioLink(
+    label: 'Sponsor Tier Matrix',
+    subtitle: 'Partnership packages, value, and reporting model',
+    url: AppConstants.sponsorTierMatrixUrl,
+    icon: Icons.handshake,
+    color: AppTheme.neonOrange,
+  ),
+  _BioLink(
+    label: 'Sponsor Pitch Deck',
+    subtitle: '12-slide sponsor narrative for partner decision-makers',
+    url: AppConstants.sponsorPitchDeckUrl,
+    icon: Icons.slideshow,
+    color: AppTheme.neonMagenta,
+  ),
+  _BioLink(
+    label: 'Sponsor Outreach Pack',
+    subtitle: 'Email + DM sequences + pilot call workflow',
+    url: AppConstants.sponsorOutreachPackUrl,
+    icon: Icons.outbound,
+    color: AppTheme.neonCyan,
+  ),
+  _BioLink(
+    label: 'Grant Application Pack',
+    subtitle: 'Google, NVIDIA, Meta, Microsoft application narrative',
+    url: AppConstants.grantApplicationPackUrl,
+    icon: Icons.request_page,
+    color: AppTheme.neonPurple,
+  ),
+  _BioLink(
+    label: 'Grant Submission Calendar',
+    subtitle: 'Owner-driven deadlines and 16-week execution cadence',
+    url: AppConstants.grantSubmissionCalendarUrl,
+    icon: Icons.calendar_month,
+    color: AppTheme.neonGreen,
+  ),
+  _BioLink(
+    label: 'Sponsor DFC',
+    subtitle: 'Support DFC through GitHub Sponsors',
+    url: AppConstants.sponsorProgramUrl,
+    icon: Icons.favorite,
+    color: AppTheme.neonMagenta,
+  ),
+  _BioLink(
+    label: 'Open-Source Repository',
+    subtitle: 'Source code, issues, and contributor pathway',
+    url: AppConstants.publicRepositoryUrl,
+    icon: Icons.code,
+    color: AppTheme.neonCyan,
+  ),
+  _BioLink(
     label: 'DataFightCentral App',
     subtitle: 'The full platform experience',
     url: AppConstants.publicWebBaseUrl,

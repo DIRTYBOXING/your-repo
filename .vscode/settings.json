@@ -37,9 +37,7 @@
   },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "Dart-Code.dart-code",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
+  "editor.codeActionsOnSave": {},
   "eslint.validate": [
     "javascript",
     "typescript"
@@ -239,7 +237,7 @@
   "github.copilot.chat.agent.autoFix": true,
   "github.copilot.chat.githubMcpServer.enabled": true,
   "flutterTools.displaySignalsContextMenu": false,
-  "editor.codeActions.triggerOnFocusChange": true,
+  "editor.codeActions.triggerOnFocusChange": false,
   "i18n-ally.localesPaths": [
     "locales"
   ],
@@ -271,5 +269,21 @@
     "connectionId": "dirtyboxing",
     "projectKey": "DIRTYBOXING_Data-Fight-Central"
   },
+  "todo-tree.general.tags": [
+    "TODO",
+    "FIXME",
+    "BUG",
+    "SECURITY",
+    "PERF"
+  ],
+  "todo-tree.filtering.excludeGlobs": [
+    "**/node_modules/**",
+    "**/.dart_tool/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/.firebase/**"
+  ],
+  "todo-tree.tree.showCountsInTree": true,
+  "todo-tree.highlights.useColourScheme": true,
   "workbench.colorCustomizations": {}
 }

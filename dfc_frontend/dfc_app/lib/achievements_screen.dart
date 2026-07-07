@@ -1,4 +1,4 @@
- no misssing parts fully functional import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'api_service.dart';
 import 'achievement_controller.dart';
 import 'achievement_model.dart';
@@ -25,17 +25,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();Navigator.push(
-      context,
-      PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 500),
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            DestinationScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    );
+    _controller.dispose();
     super.dispose();
   }
 

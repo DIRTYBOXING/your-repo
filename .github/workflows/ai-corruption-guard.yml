@@ -1,0 +1,58 @@
+name: AI Corruption Guard
+
+# =============================================================================
+# Fails fast if any Dart file contains AI-generated plain-text commentary
+# prepended to source code (common failure mode when automation tools
+# mishandle output). Runs before expensive analyze/test jobs.
+# =============================================================================
+
+on:
+  pull_request:
+    paths:
+      - '**.dart'
+  push:
+    branches: [master]
+    paths:
+      - '**.dart'
+
+jobs:
+  corruption-check:
+    name: Detect AI Corruption in Dart
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan Dart files for suspicious first lines
+        shell: bash
+        run: |
+          set -euo pipefail
+          FAILED=0
+
+          echo "Scanning Dart files for AI-injected corruption..."
+
+          # Whitelist of valid Dart first-token patterns (must match the start of the first non-whitespace content)
+          # Anything NOT matching these patterns AND looks like plain English is flagged
+          VALID='^(//|/\*|///|import |export |library |part |class |enum |mixin |abstract |typedef |final |const |var |void |Future|Widget|@|[A-Z])'
+
+          for f in $(git ls-files '*.dart'); do
+            first=$(sed -n '1p' "$f" | sed 's/^[[:space:]]*//')
+
+            if [[ -z "$first" ]]; then
+              continue
+            fi
+
+            if ! echo "$first" | grep -Eq "$VALID"; then
+              if echo "$first" | grep -Eiq '^[a-z]{3,}'; then
+                echo "::error file=$f,line=1::AI-corruption detected: $first"
+                FAILED=$((FAILED + 1))
+              fi
+            fi
+          done
+
+          if [[ $FAILED -gt 0 ]]; then
+            echo "::error::$FAILED file(s) contain AI-generated text prepended to source code. Fix before merging."
+            exit 1
+          fi
+
+          echo "All Dart files pass the first-line integrity check."
+        continue-on-error: false

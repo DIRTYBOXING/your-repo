@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'failure.dart';
-import 'result.dart';
+import '../errors/failure.dart';
+import '../errors/result.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// DFC BASE API CLIENT (BLUE TIER)

@@ -82,10 +82,13 @@ https://github.com/sponsors/DIRTYBOXING
 - Outreach tracker template: `docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv`
 - 20 sponsor email templates: `docs/launch/outreach/DFC_20_SPONSOR_EMAILS.md`
 - 10-slide sponsor outreach deck: `docs/launch/outreach/DFC_10_SLIDE_SPONSOR_OUTREACH_DECK.md`
+- Mobile-first community engagement playbook: `docs/launch/outreach/DFC_MOBILE_FIRST_COMMUNITY_ENGAGEMENT_PLAYBOOK.md`
+- 20 personalized outreach drafts: `docs/launch/outreach_drafts/DFC_20_PERSONALIZED_EMAIL_DRAFTS.md`
 - Google grant draft: `docs/launch/grants/DFC_GOOGLE_CLOUD_GRANT_DRAFT.md`
 - NVIDIA grant draft: `docs/launch/grants/DFC_NVIDIA_INCEPTION_GRANT_DRAFT.md`
 - Microsoft grant draft: `docs/launch/grants/DFC_MICROSOFT_FOUNDERS_HUB_GRANT_DRAFT.md`
 - Good first issues list: `docs/community/DFC_GOOD_FIRST_ISSUES.md`
+- 90-day pilot PDF draft (print-ready HTML): `docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER_PDF_DRAFT.html`
 
 Direct repository links:
 
@@ -104,10 +107,13 @@ Direct repository links:
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/templates/DFC_SPONSOR_OUTREACH_TRACKER_TEMPLATE.csv
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/outreach/DFC_20_SPONSOR_EMAILS.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/outreach/DFC_10_SLIDE_SPONSOR_OUTREACH_DECK.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/outreach/DFC_MOBILE_FIRST_COMMUNITY_ENGAGEMENT_PLAYBOOK.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/outreach_drafts/DFC_20_PERSONALIZED_EMAIL_DRAFTS.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/grants/DFC_GOOGLE_CLOUD_GRANT_DRAFT.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/grants/DFC_NVIDIA_INCEPTION_GRANT_DRAFT.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/grants/DFC_MICROSOFT_FOUNDERS_HUB_GRANT_DRAFT.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/community/DFC_GOOD_FIRST_ISSUES.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/templates/DFC_90_DAY_PILOT_ONE_PAGER_PDF_DRAFT.html
 
 ---
 

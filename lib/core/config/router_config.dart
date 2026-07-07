@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'router_constants.dart';
 export 'router_constants.dart';
 
 // ── Screens that exist at confirmed paths ─────────────────────────────────────
+import '../../features/training/screens/training_master_screen.dart';
+import '../../features/events/screens/events_screen.dart';
+import '../../features/events/screens/ticket_purchase_screen.dart';
+import '../../features/ppv/screens/ppv_library_screen.dart'
+    show PPVLibraryScreen;
+import '../../features/rankings/screens/fighter_rankings_screen.dart';
+import '../../features/maps/screens/find_a_gym_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/coach/screens/website_home_screen.dart';
 import '../../features/coach/screens/neural_coach_screen.dart';
@@ -14,7 +20,6 @@ import '../../features/profile/screens/profile_screen_v2.dart';
 import '../../features/profile/screens/fighter_public_profile_screen.dart';
 import '../../features/feed/screens/feed_screen.dart';
 import '../../shared/widgets/gym_team_hub_screen.dart';
-import '../../features/ppv/services/ppv_storefront_screen.dart';
 import '../../features/ppv/services/ppv_detail_screen.dart';
 import '../../features/ppv/services/ppv_streaming_screen.dart';
 import '../../features/ppv/screens/promoter_dashboard_screen.dart';
@@ -106,7 +111,7 @@ class AppRouter {
       ),
       GoRoute(
         path: '/training-session',
-        builder: (context, state) => const _ComingSoon('Training Session'),
+        builder: (context, state) => const TrainingMasterScreen(),
       ),
       GoRoute(
         path: '/fight-summary',
@@ -153,19 +158,30 @@ class AppRouter {
         path: '/gym-hub',
         builder: (context, state) => const GymTeamHubScreen(),
       ),
+      GoRoute(
+        path: '/find-a-gym',
+        builder: (context, state) => const FindAGymScreen(),
+      ),
+
+      // ── Rankings ─────────────────────────────────────────────────────────────
+      GoRoute(
+        path: '/rankings',
+        builder: (context, state) => const FighterRankingsScreen(),
+      ),
 
       // ── Events & Streaming ───────────────────────────────────────────────────
       GoRoute(
         path: '/event-center',
-        builder: (context, state) => const _ComingSoon('Event Center'),
+        builder: (context, state) => const EventsScreen(),
+      ),
+      GoRoute(
+        path: '/tickets/:eventId',
+        builder: (context, state) =>
+            TicketPurchaseScreen(eventId: state.pathParameters['eventId']!),
       ),
       GoRoute(
         path: '/streaming',
-        builder: (context, state) => const _ComingSoon('Streaming Center'),
-      ),
-      GoRoute(
-        path: '/ppv',
-        builder: (context, state) => const PpvStorefrontScreen(),
+        builder: (context, state) => const PPVLibraryScreen(),
       ),
       GoRoute(
         path: '/ppv-detail/:eventId',
@@ -179,11 +195,12 @@ class AppRouter {
       ),
       GoRoute(
         path: '/replay',
-        builder: (context, state) => const _ComingSoon('Replay Center'),
+        builder: (context, state) => const PPVLibraryScreen(),
       ),
       GoRoute(
         path: '/broadcast',
-        builder: (context, state) => const BroadcastOverlayScreen(eventId: 'live'),
+        builder: (context, state) =>
+            const BroadcastOverlayScreen(eventId: 'live'),
       ),
 
       // ── Promoter & Operations ────────────────────────────────────────────────

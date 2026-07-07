@@ -334,6 +334,12 @@ class AppConstants {
       '$publicRepositoryUrl/blob/master/docs/launch/DFC_GRANT_APPLICATION_PACK.md';
   static const String grantSubmissionCalendarUrl =
       '$publicRepositoryUrl/blob/master/docs/launch/DFC_GRANT_SUBMISSION_CALENDAR.md';
+  static const String partnerOnboardingUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_PARTNER_ONBOARDING.md';
+  static const String contributorQuickstartUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_CONTRIBUTOR_QUICKSTART.md';
+  static const String publicRoadmapUrl =
+      '$publicRepositoryUrl/blob/master/docs/launch/DFC_PUBLIC_ROADMAP.md';
   static const String privacyPolicyUrl = '$publicWebBaseUrl/privacy';
   static const String termsOfServiceUrl = '$publicWebBaseUrl/terms';
   static const String supportEmail = 'support@datafightcentral.com';

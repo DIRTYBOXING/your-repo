@@ -241,6 +241,27 @@ final _primaryLinks = [
     color: AppTheme.neonGreen,
   ),
   _BioLink(
+    label: 'Partner Onboarding',
+    subtitle: 'How partners launch with DFC, assets, timeline, and KPIs',
+    url: AppConstants.partnerOnboardingUrl,
+    icon: Icons.handshake_outlined,
+    color: AppTheme.neonOrange,
+  ),
+  _BioLink(
+    label: 'Contributor Quickstart',
+    subtitle: 'Fast path for developers to clone, run, test, and contribute',
+    url: AppConstants.contributorQuickstartUrl,
+    icon: Icons.integration_instructions,
+    color: AppTheme.neonCyan,
+  ),
+  _BioLink(
+    label: 'DFC Public Roadmap',
+    subtitle: 'Transparent delivery plan for sponsors, contributors, and fans',
+    url: AppConstants.publicRoadmapUrl,
+    icon: Icons.map,
+    color: AppTheme.neonPurple,
+  ),
+  _BioLink(
     label: 'Sponsor DFC',
     subtitle: 'Support DFC through GitHub Sponsors',
     url: AppConstants.sponsorProgramUrl,

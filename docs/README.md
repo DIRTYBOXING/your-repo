@@ -73,6 +73,9 @@ https://github.com/sponsors/DIRTYBOXING
 - Sponsor outreach pack: `docs/launch/DFC_SPONSOR_OUTREACH_PACK.md`
 - Grant application pack: `docs/launch/DFC_GRANT_APPLICATION_PACK.md`
 - Grant submission calendar: `docs/launch/DFC_GRANT_SUBMISSION_CALENDAR.md`
+- Partner onboarding: `docs/launch/DFC_PARTNER_ONBOARDING.md`
+- Contributor quickstart: `docs/launch/DFC_CONTRIBUTOR_QUICKSTART.md`
+- Public roadmap: `docs/launch/DFC_PUBLIC_ROADMAP.md`
 
 Direct repository links:
 
@@ -82,6 +85,9 @@ Direct repository links:
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_SPONSOR_OUTREACH_PACK.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_GRANT_APPLICATION_PACK.md
 - https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_GRANT_SUBMISSION_CALENDAR.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_PARTNER_ONBOARDING.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_CONTRIBUTOR_QUICKSTART.md
+- https://github.com/DIRTYBOXING/Data-Fight-Central/blob/master/docs/launch/DFC_PUBLIC_ROADMAP.md
 
 ---
 

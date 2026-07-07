@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'router_constants.dart';
 export 'router_constants.dart';
 
 // ── Screens that exist at confirmed paths ─────────────────────────────────────
@@ -183,7 +182,8 @@ class AppRouter {
       ),
       GoRoute(
         path: '/broadcast',
-        builder: (context, state) => const BroadcastOverlayScreen(eventId: 'live'),
+        builder: (context, state) =>
+            const BroadcastOverlayScreen(eventId: 'live'),
       ),
 
       // ── Promoter & Operations ────────────────────────────────────────────────

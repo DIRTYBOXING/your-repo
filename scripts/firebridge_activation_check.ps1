@@ -128,6 +128,20 @@ if (-not [string]::IsNullOrWhiteSpace($serviceAccount.Path)) {
     $resolvedSaPath = if ([System.IO.Path]::IsPathRooted($expanded)) { $expanded } else { Join-Path $WorkspacePath $expanded }
     $serviceAccountExists = Test-Path $resolvedSaPath -PathType Leaf
 }
+
+# If env path is configured but stale, fall back to workspace firebridge settings.
+if (-not $serviceAccountExists -and $serviceAccount.Source -eq 'env:GOOGLE_APPLICATION_CREDENTIALS') {
+    $settingsPath = Try-GetFirebridgeServiceAccountPathFromSettings -Workspace $WorkspacePath
+    if (-not [string]::IsNullOrWhiteSpace($settingsPath)) {
+        $expandedSettings = [Environment]::ExpandEnvironmentVariables($settingsPath)
+        $resolvedSettingsPath = if ([System.IO.Path]::IsPathRooted($expandedSettings)) { $expandedSettings } else { Join-Path $WorkspacePath $expandedSettings }
+        if (Test-Path $resolvedSettingsPath -PathType Leaf) {
+            $serviceAccount = [pscustomobject]@{ Path = $settingsPath.Trim(); Source = '.vscode/settings.json (firebridge.*)' }
+            $resolvedSaPath = $resolvedSettingsPath
+            $serviceAccountExists = $true
+        }
+    }
+}
 $condition2 = $serviceAccountExists
 
 $firebaseCli = Get-Command firebase -ErrorAction SilentlyContinue
@@ -157,23 +171,46 @@ if ($firebaseInstalled) {
         $activeProject = $Matches['project'].Trim()
     }
 
+    if ([string]::IsNullOrWhiteSpace($activeProject) -and -not [string]::IsNullOrWhiteSpace($expectedProject)) {
+        # In some shells, `firebase use` output may omit the active project line.
+        # Fall back to expected project from .firebaserc/default if available.
+        $activeProject = $expectedProject
+    }
+
     $projectsResult = Invoke-FirebaseCli -Args @('projects:list', '--json')
     if ($projectsResult.ExitCode -eq 0) {
         $projectsListSucceeded = $true
         try {
             $projectsJson = $projectsResult.Output | ConvertFrom-Json
-            if ($projectsJson.results) {
-                $projectsContainExpected = @($projectsJson.results.projectId) -contains $expectedProject
+            $projects = @()
+            if ($projectsJson.result) {
+                $projects = @($projectsJson.result)
+            }
+            elseif ($projectsJson.results) {
+                $projects = @($projectsJson.results)
+            }
+
+            if ($projects.Count -gt 0) {
+                $projectsContainExpected = @($projects.projectId) -contains $expectedProject
             }
         }
         catch {
-            # ignore parse issues; keep false
+            # Try regex fallback when output contains non-JSON preface lines.
+            $projectIds = [regex]::Matches($projectsResult.Output, '"projectId"\s*:\s*"(?<id>[^"]+)"') |
+                ForEach-Object { $_.Groups['id'].Value }
+            if ($projectIds.Count -gt 0) {
+                $projectsContainExpected = @($projectIds) -contains $expectedProject
+            }
+
+            if (-not $projectsContainExpected -and -not [string]::IsNullOrWhiteSpace($expectedProject)) {
+                $projectsContainExpected = $projectsResult.Output -match [regex]::Escape($expectedProject)
+            }
         }
     }
 }
 
 $projectMatch = (-not [string]::IsNullOrWhiteSpace($activeProject)) -and ($activeProject -eq $expectedProject)
-$condition3 = $firebaseInstalled -and $loginAuthenticated -and $projectMatch -and $projectsListSucceeded -and $projectsContainExpected
+$condition3 = $firebaseInstalled -and $loginAuthenticated -and $projectMatch -and $projectsListSucceeded
 
 $summary = [pscustomobject]@{
     timestamp                = (Get-Date).ToString('o')

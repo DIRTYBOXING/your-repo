@@ -53,6 +53,8 @@ class RouterConfig {
   static const String medicalPath = '/medical';
   static const String legalPath = '/legal';
   static const String financePath = '/finance';
+  static const String promoterReconciliationPath = '/reconciliation';
+  static const String promoterReconciliation = 'promoter-reconciliation';
   static const String sponsorsPath = '/sponsors';
 
   // ── Admin ────────────────────────────────────────────────────────────────
@@ -69,7 +71,7 @@ class RouterConfig {
   static const String githubPartnerPath = '/partners/github';
 
   // ── TikeRocket ────────────────────────────────────────────────────────────
-  static const String tikeRocket        = '/tikerocket';
+  static const String tikeRocket = '/tikerocket';
 
   // ── Social content ───────────────────────────────────────────────────────
   static const String createStoryPath = '/stories/create';
@@ -78,4 +80,13 @@ class RouterConfig {
   // ── Auth ─────────────────────────────────────────────────────────────────
   static const String roleSelection = '/role-selection';
   static const String ppvHub = '/ppv';
+}
+
+// Legacy aliases retained for modules/tests still importing RouteConstants.
+class RouteConstants {
+  RouteConstants._();
+
+  // Historical name kept for compatibility. Used as a GoRouter route name.
+  static const String promoterReconciliationPath =
+      RouterConfig.promoterReconciliation;
 }

@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core_platform_interface/test.dart';
 
 import 'package:datafightcentral/features/social/screens/dfc_feed_screen.dart';
 import 'package:datafightcentral/shared/services/auth_service.dart';
 import 'package:datafightcentral/shared/services/social_service.dart';
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    setupFirebaseCoreMocks();
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp();
+    }
     SocialService.enableDemoModeForTests();
   });
 
-  testWidgets('DFCFeedScreen displays current feed chrome', (WidgetTester tester) async {
+  testWidgets('DFCFeedScreen displays current feed chrome', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       MultiProvider(
         providers: [

@@ -1,0 +1,10 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "tools": [{ "vendor": "npm", "name": "npm sbom", "version": "fallback" }],
+    "component": { "type": "application", "name": "Data-Fight-Central" }
+  },
+  "components": []
+}

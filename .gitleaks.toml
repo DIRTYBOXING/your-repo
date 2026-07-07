@@ -3,15 +3,142 @@ title = "DFC gitleaks config"
 [extend]
 useDefault = true
 
-[allowlist]
-description = "Ignore baseline and known test/docs fixture false positives"
+# ──────────────────────────────────────────────
+# REGEX ALLOWLIST — public/safe patterns
+# ──────────────────────────────────────────────
+
+[[allowlist]]
+description = "Firebase public API key (AIza... — public by design)"
+regexes = [
+  '''AIza[0-9A-Za-z\-_]{35}'''
+]
+
+[[allowlist]]
+description = "Flutter/Dart hex UUIDs and high-entropy identifiers"
+regexes = [
+  '''[a-f0-9]{32}''',
+  '''[a-f0-9]{40}'''
+]
+
+[[allowlist]]
+description = "Base64-encoded public config / JWT headers / placeholder keys"
+regexes = [
+  '''eyJ[a-zA-Z0-9\-_]+\.eyJ[a-zA-Z0-9\-_]+'''
+]
+
+[[allowlist]]
+description = "Google Cloud storage/public-resource URLs"
+regexes = [
+  '''storage\.googleapis\.com'''
+]
+
+[[allowlist]]
+description = "Stripe test/public keys (pk_test_ / sk_test_ in test files)"
+regexes = [
+  '''pk_test_[a-zA-Z0-9]{24,}''',
+  '''sk_test_[a-zA-Z0-9]{24,}'''
+]
+
+# ──────────────────────────────────────────────
+# PATH ALLOWLIST — files and directories
+# ──────────────────────────────────────────────
+
+[[allowlist]]
+description = "Flutter build artifacts and generated code"
+paths = [
+  '''^\.dart_tool/''',
+  '''^build/''',
+  '''^\.metadata$''',
+  '''^ios/Runner\.xcodeproj/''',
+  '''^macos/Runner\.xcodeproj/''',
+  '''^android/''',
+  '''^\.tmp_bootstrap_.*\.js$'''
+]
+
+[[allowlist]]
+description = "Node modules and package lockfiles"
+paths = [
+  '''^node_modules/''',
+  '''^package-lock\.json$'''
+]
+
+[[allowlist]]
+description = "Documentation, runbooks, and markdown"
+paths = [
+  '''^docs/''',
+  '''^ops/docs/''',
+  '''^ops/launch/''',
+  '''^DFC_PLATFORM_OVERVIEW\.md$''',
+  '''^DEVELOPMENT_ROADMAP\.md$''',
+  '''^QUICKSTART_AI_SYSTEM\.md$'''
+]
+
+[[allowlist]]
+description = "Example config files, .env.example, example templates"
+paths = [
+  '''\.env\.example$''',
+  '''\.example\.js$''',
+  '''firebaseConfig\.example\.js$'''
+]
+
+[[allowlist]]
+description = "Test files and fixtures"
+paths = [
+  '''^test/''',
+  '''_test\.cjs$''',
+  '''_test\.js$''',
+  '''_test\.mjs$''',
+  '''_test\.dart$''',
+  '''^ci/smoke-artifacts/'''
+]
+
+[[allowlist]]
+description = "CI workflows (may contain example tokens)"
+paths = [
+  '''^\.github/workflows/'''
+]
+
+[[allowlist]]
+description = "DevOps scripts and deploy helpers"
+paths = [
+  '''^scripts/''',
+  '''^ops/deploy-secrets\.sh$''',
+  '''^ops/alert-policy.*\.json$'''
+]
+
+[[allowlist]]
+description = "Baseline files and SBOM artifacts"
 paths = [
   '''^\.secrets\.baseline$''',
-  '''^chuckya-radar/control_room_test_checklist\.txt$''',
+  '''^sbom-node-root\.json$''',
+  '''^security-artifacts/'''
+]
+
+[[allowlist]]
+description = "Docker compose, serverless config, ops audit"
+paths = [
+  '''^docker-compose\.yml$''',
+  '''^serverless\.yml$''',
+  '''^ops/audit/'''
+]
+
+[[allowlist]]
+description = "Firebase public config, NASA public API key"
+paths = [
+  '''^lib/firebase_options\.dart$''',
+  '''^lib/shared/services/nasa_api_service\.dart$'''
+]
+
+[[allowlist]]
+description = "n8n production config, promoter email manifest"
+paths = [
+  '''^tools/n8n-dfc-content-brain.*\.json$''',
+  '''^tools/promoter_emails/'''
+]
+
+[[allowlist]]
+description = "Firebase functions test data and DRM license exchange"
+paths = [
   '''^functions/auth_count\.json$''',
-  '''^docs/ENV_VARS\.md$''',
-  '''^lib/shared/services/dfc_social_engine\.dart$''',
-  '''^lib/shared/widgets/age_verification_badge\.dart$''',
-  '''^monitoring/health-monitor\.py$''',
-  '''^server/test/ai-sales-ppv\.test\.js$'''
+  '''^functions/drm-license-exchange\.js$'''
 ]

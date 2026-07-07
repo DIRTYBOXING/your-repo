@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/feed_post.dart';
+import 'feed_post.dart';
 
 final mockPosts = [
   FeedPost(

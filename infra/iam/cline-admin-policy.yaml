@@ -1,0 +1,71 @@
+# =============================================================================
+# DFC Cline Admin IAM Policy — Least Privilege
+# =============================================================================
+# Scope: datafightcentral project only
+# This grants Cline exactly the permissions needed for control plane ops:
+#   - View and manage containers (GKE)
+#   - Manage Pub/Sub (telemetry pipeline)
+#   - Manage Cloud Run (overlay service)
+#   - Read IAM roles (audit)
+#   - Read logs (debugging)
+# No broad roles like roles/editor or roles/owner are granted.
+# =============================================================================
+
+# ── Role: Cline Cluster Admin ──────────────────────────────────────────────
+# GKE management: deploy, scale, debug pods.
+# Explicitly excludes service account act-as and IAM admin.
+cluster_admin:
+  - roles/container.admin           # Full GKE cluster management
+  - roles/container.viewer          # Read-only GKE (included in admin, explicit for clarity)
+
+# ── Role: Telemetry Pipeline Operator ───────────────────────────────────────
+# Pub/Sub management for wearable → overlay pipeline.
+telemetry_operator:
+  - roles/pubsub.editor             # Create/manage topics and subscriptions
+  - roles/pubsub.publisher          # Publish messages
+
+# ── Role: Cloud Run Admin ───────────────────────────────────────────────────
+# Deploy and manage overlay services.
+cloudrun_admin:
+  - roles/run.admin                 # Full Cloud Run management
+  - roles/run.invoker               # Invoke Cloud Run services
+
+# ── Role: IAM Auditor (read-only) ───────────────────────────────────────────
+# View roles and policies — no modify.
+iam_auditor:
+  - roles/iam.roleViewer            # View IAM roles
+  - roles/iam.securityReviewer      # Review IAM policies
+
+# ── Role: Log Viewer ────────────────────────────────────────────────────────
+# Debug and monitor.
+log_viewer:
+  - roles/logging.viewer            # Read logs
+  - roles/monitoring.viewer         # Read monitoring data
+
+# ── Service Account: gha-deployer (CI/CD only) ──────────────────────────────
+# Already exists. Scoped to:
+#   - roles/run.invoker (deploy Cloud Run)
+#   - roles/iam.serviceAccountTokenCreator (OIDC for Pub/Sub)
+#   - roles/artifactregistry.writer (push images)
+
+# ── Explicitly NOT Granted ──────────────────────────────────────────────────
+# roles/editor                   # Too broad — GRANTS MODIFY ON ALL RESOURCES
+# roles/owner                    # Full owner — NEVER GRANT TO SERVICE ACCOUNTS
+# roles/iam.securityAdmin        # Can escalate privileges — HUMAN ONLY
+# roles/iam.serviceAccountAdmin  # Can create/delete SAs — HUMAN ONLY
+# roles/storage.admin            # Full storage — scope to specific buckets
+
+# ── How to apply ────────────────────────────────────────────────────────────
+# For a human Cline admin:
+#   gcloud projects add-iam-policy-binding datafightcentral \
+#     --member="user:ausstrainsnetwork@gmail.com" \
+#     --role="roles/container.admin"
+#
+# For a service account:
+#   gcloud projects add-iam-policy-binding datafightcentral \
+#     --member="serviceAccount:cline-admin@datafightcentral.iam.gserviceaccount.com" \
+#     --role="roles/container.admin"
+#
+# Verify:
+#   gcloud projects get-iam-policy datafightcentral --format=json | \
+#     jq '.bindings[] | {role: .role, members: .members}'

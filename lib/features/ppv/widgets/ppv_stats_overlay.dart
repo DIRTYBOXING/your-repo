@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/design_tokens.dart';
-import '../screens/ppv_watch_screen.dart';
+import '../models/fight_stats_model.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// PPV STATS OVERLAY — FIGHT INTELLIGENCE LAYER

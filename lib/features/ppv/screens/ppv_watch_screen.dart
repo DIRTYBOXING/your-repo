@@ -5,6 +5,8 @@ import 'package:chewie/chewie.dart';
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/ppv_model.dart';
 import '../../../shared/services/ppv_service.dart';
+import '../models/fight_stats_model.dart';
+import '../services/live_fight_stats_service.dart';
 import '../widgets/ppv_video_player_hud.dart';
 import '../widgets/ppv_round_timer.dart';
 import '../widgets/ppv_stats_overlay.dart';
@@ -58,6 +60,7 @@ class PPVWatchScreen extends StatefulWidget {
 class _PPVWatchScreenState extends State<PPVWatchScreen>
     with TickerProviderStateMixin {
   final PPVService _ppvService = PPVService();
+  late LiveFightStatsService _liveStatsService;
 
   // ── Video Player ──
   VideoPlayerController? _videoController;
@@ -94,8 +97,24 @@ class _PPVWatchScreenState extends State<PPVWatchScreen>
   @override
   void initState() {
     super.initState();
+    _liveStatsService = LiveFightStatsService();
+    _liveStatsService.addListener(_onLiveStatsUpdate);
     _loadEventAndInitPlayer();
     _initAnimations();
+  }
+
+  void _onLiveStatsUpdate() {
+    // Live stats updated from Firestore
+    // Update round and stats ValueNotifiers
+    if (mounted) {
+      _currentRound.value = _liveStatsService.currentRound;
+      if (_liveStatsService.fighter1Stats != null) {
+        _fighter1Stats.value = _liveStatsService.fighter1Stats!;
+      }
+      if (_liveStatsService.fighter2Stats != null) {
+        _fighter2Stats.value = _liveStatsService.fighter2Stats!;
+      }
+    }
   }
 
   void _initAnimations() {
@@ -117,12 +136,35 @@ class _PPVWatchScreenState extends State<PPVWatchScreen>
     )..repeat(reverse: true);
   }
 
+  @override
+  void dispose() {
+    _liveStatsService.removeListener(_onLiveStatsUpdate);
+    _liveStatsService.dispose();
+    _overlayFadeCtrl.dispose();
+    _roundPulseCtrl.dispose();
+    _videoController?.dispose();
+    _chewieController?.dispose();
+    _currentRound.dispose();
+    _roundTimeRemaining.dispose();
+    _fighter1Stats.dispose();
+    _fighter2Stats.dispose();
+    _selectedCamera.dispose();
+    super.dispose();
+  }
+
   Future<void> _loadEventAndInitPlayer() async {
     try {
       // Priority: Use preloaded event, fetch by ID, then fallback to playbackId
       if (widget.event != null) {
         _event = widget.event;
         _initVideoPlayer();
+        // Initialize live stats if we have event ID (for real fight scenarios)
+        if (widget.eventId != null) {
+          await _liveStatsService.initializeFightStats(
+            widget.eventId!,
+            'live', // Default session ID
+          );
+        }
         if (mounted) {
           setState(() => _loading = false);
         }
@@ -133,13 +175,15 @@ class _PPVWatchScreenState extends State<PPVWatchScreen>
       if (widget.eventId != null) {
         _event = await _ppvService.getPPVEvent(widget.eventId!);
         _initVideoPlayer();
+        // Initialize live stats
+        await _liveStatsService.initializeFightStats(widget.eventId!, 'live');
         if (mounted) {
           setState(() => _loading = false);
         }
         return;
       }
 
-      // If we have a playback ID, minimal load
+      // If we have a playback ID, minimal load (no live stats)
       if (widget.playbackId != null) {
         _initVideoPlayer();
         if (mounted) {

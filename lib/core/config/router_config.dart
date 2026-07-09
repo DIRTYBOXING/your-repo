@@ -1,4 +1,3 @@
-
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -27,6 +26,7 @@ import '../../features/gyms/screens/gym_directory_map_screen.dart';
 import '../../features/sponsorships/screens/google_nvidia_landing_screen.dart';
 import '../../features/ppv/screens/ppv_explore_screen.dart';
 import '../../features/ppv/screens/ppv_door_sales_screen.dart';
+import '../../features/ppv/screens/ppv_watch_screen.dart';
 import '../../features/legacy_root/stripe_connect_onboarding_screen.dart';
 import '../../shared/widgets/gym_team_hub_screen.dart';
 import '../../core/config/medical_safety_screen.dart';
@@ -72,14 +72,8 @@ class AppRouter {
     },
     routes: [
       // ── Real platform entry point ──────────────────────────────────────
-      GoRoute(
-        path: '/',
-        redirect: (_, __) => '/home',
-      ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
-      ),
+      GoRoute(path: '/', redirect: (_, __) => '/home'),
+      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
       // Launchpad kept for direct nav if needed
       GoRoute(
         path: '/launchpad',
@@ -95,10 +89,7 @@ class AppRouter {
       ),
 
       // Auth & Onboarding
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
@@ -158,12 +149,13 @@ class AppRouter {
       GoRoute(
         path: '/fighter-profile',
         builder: (context, state) => FighterProfileScreen(
-          fighter: state.extra as FighterModel? ?? 
+          fighter:
+              state.extra as FighterModel? ??
               FighterModel(
-                id: '', 
-                userId: '', 
-                fullName: 'Unknown Fighter', 
-                gender: FighterGender.male, 
+                id: '',
+                userId: '',
+                fullName: 'Unknown Fighter',
+                gender: FighterGender.male,
                 status: FighterStatus.active,
                 wins: 0,
                 losses: 0,
@@ -246,8 +238,14 @@ class AppRouter {
             PpvStreamingScreen(eventId: state.pathParameters['eventId']!),
       ),
       GoRoute(
+        path: '/ppv/:eventId/watch',
+        builder: (context, state) =>
+            PPVWatchScreen(eventId: state.pathParameters['eventId']!),
+      ),
+      GoRoute(
         path: '/replay',
-        builder: (context, state) => const ComingSoonScreen(title: 'Replay Center'),
+        builder: (context, state) =>
+            const ComingSoonScreen(title: 'Replay Center'),
       ),
       GoRoute(
         path: '/broadcast/:eventId',
@@ -367,9 +365,8 @@ class AppRouter {
       ),
       GoRoute(
         path: '/creator/:id',
-        builder: (context, state) => ShowmakerProfileScreen(
-          creatorId: state.pathParameters['id']!,
-        ),
+        builder: (context, state) =>
+            ShowmakerProfileScreen(creatorId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: '/verify',
@@ -382,9 +379,8 @@ class AppRouter {
       ),
       GoRoute(
         path: RouterConfig.groupDetailPath,
-        builder: (context, state) => GroupDetailScreen(
-          groupId: state.pathParameters['groupId']!,
-        ),
+        builder: (context, state) =>
+            GroupDetailScreen(groupId: state.pathParameters['groupId']!),
       ),
       GoRoute(
         path: RouterConfig.uploadReelPath,

@@ -152,18 +152,33 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: event.isLive
-                ? Colors.red.withValues(alpha: 0.4)
-                : DesignTokens.neonCyan.withValues(alpha: 0.1),
+                ? Colors.red.withValues(alpha: 0.6)
+                : DesignTokens.neonCyan.withValues(alpha: 0.15),
+            width: event.isLive ? 2 : 1,
           ),
           boxShadow: event.isLive
               ? [
+                  // Outer glow
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.25),
+                    blurRadius: 30,
+                    spreadRadius: 4,
+                  ),
+                  // Inner depth
                   BoxShadow(
                     color: Colors.red.withValues(alpha: 0.15),
-                    blurRadius: 20,
-                    spreadRadius: 2,
+                    blurRadius: 12,
+                    spreadRadius: 0,
+                    offset: const Offset(0, 2),
                   ),
                 ]
-              : null,
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    spreadRadius: 0,
+                  ),
+                ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
@@ -187,6 +202,28 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
                   ),
                 ),
               ),
+              // Live glow animation overlay
+              if (event.isLive)
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.3, end: 0.6),
+                  duration: const Duration(milliseconds: 1200),
+                  curve: Curves.easeInOut,
+                  onEnd: () {
+                    // Loop animation
+                    setState(() {});
+                  },
+                  builder: (context, value, child) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: Colors.red.withValues(alpha: value * 0.4),
+                          width: 2,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               // Content
               Padding(
                 padding: const EdgeInsets.all(20),
@@ -227,6 +264,17 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 12),
+                    // Social proof row: purchase count, trending, promoter
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        _buildPurchaseCountBadge(),
+                        _buildTrendingBadge(),
+                        _buildPromoterBadge(),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     // Meta row: date, price, fight count
@@ -280,9 +328,25 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: event.isLive
-                ? Colors.red.withValues(alpha: 0.3)
-                : Colors.white.withValues(alpha: 0.06),
+                ? Colors.red.withValues(alpha: 0.5)
+                : Colors.white.withValues(alpha: 0.08),
+            width: event.isLive ? 1.5 : 1,
           ),
+          boxShadow: event.isLive
+              ? [
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.15),
+                    blurRadius: 16,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 6,
+                    spreadRadius: 0,
+                  ),
+                ],
         ),
         child: Row(
           children: [
@@ -347,7 +411,18 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
+                    // Social proof badges: compact row
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: [
+                        _buildPurchaseCountBadge(compact: true),
+                        _buildTrendingBadge(compact: true),
+                        _buildPromoterBadge(compact: true),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
                     // Bottom: date + price
                     Row(
                       children: [
@@ -721,6 +796,137 @@ class _DFCPPVEventCardState extends State<DFCPPVEventCard>
           );
         }),
       ],
+    );
+  }
+
+  // ── Social Proof Badges ──
+  Widget _buildPurchaseCountBadge({bool compact = false}) {
+    if (event.purchaseCount == null || event.purchaseCount == 0) {
+      return const SizedBox.shrink();
+    }
+
+    final count = event.purchaseCount!;
+    String label;
+    if (count >= 1000) {
+      label = '${(count / 1000).toStringAsFixed(1)}K bought';
+    } else if (count >= 100) {
+      label = '${count ~/ 100 * 100}+ bought';
+    } else {
+      label = '$count bought';
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 6 : 9,
+        vertical: compact ? 3 : 4,
+      ),
+      decoration: BoxDecoration(
+        color: DesignTokens.neonGreen.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(compact ? 6 : 8),
+        border: Border.all(
+          color: DesignTokens.neonGreen.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.people,
+            size: compact ? 9 : 11,
+            color: DesignTokens.neonGreen,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            label,
+            style: TextStyle(
+              color: DesignTokens.neonGreen,
+              fontSize: compact ? 9 : 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTrendingBadge({bool compact = false}) {
+    // Event is trending if: live, high purchase count, or recent presale
+    final isTrending =
+        event.isLive ||
+        (event.purchaseCount ?? 0) > 1000 ||
+        (event.status == PPVStatus.presale &&
+            DateTime.now().difference(event.presaleStart).inDays < 2);
+
+    if (!isTrending) return const SizedBox.shrink();
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 6 : 9,
+        vertical: compact ? 3 : 4,
+      ),
+      decoration: BoxDecoration(
+        color: DesignTokens.neonAmber.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(compact ? 6 : 8),
+        border: Border.all(
+          color: DesignTokens.neonAmber.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.trending_up,
+            size: compact ? 9 : 11,
+            color: DesignTokens.neonAmber,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            'TRENDING',
+            style: TextStyle(
+              color: DesignTokens.neonAmber,
+              fontSize: compact ? 8 : 9,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPromoterBadge({bool compact = false}) {
+    final promoter = event.promotion.toUpperCase();
+    if (promoter.isEmpty || promoter == 'DFC') return const SizedBox.shrink();
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 6 : 9,
+        vertical: compact ? 3 : 4,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.purple.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(compact ? 6 : 8),
+        border: Border.all(color: Colors.purple.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.verified,
+            size: compact ? 9 : 11,
+            color: Colors.purple.shade300,
+          ),
+          const SizedBox(width: 3),
+          Text(
+            promoter,
+            style: TextStyle(
+              color: Colors.purple.shade300,
+              fontSize: compact ? 9 : 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

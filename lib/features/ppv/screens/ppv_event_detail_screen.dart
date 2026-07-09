@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/constants/image_assets.dart';
 import '../../../core/utils/web_route_test_hook.dart';
@@ -325,6 +326,28 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
     _countdownTimer?.cancel();
     _globeMapTimer?.cancel();
     super.dispose();
+  }
+
+  void _shareEvent() {
+    if (_event == null) return;
+    final title = _event!.title;
+    final subtitle = _event!.subtitle ?? '';
+    final text =
+        'Check out $title${subtitle.isNotEmpty ? ' - $subtitle' : ''} on DFC PPV!';
+    Share.share(text, subject: 'Watch $title on Data Fight Central');
+  }
+
+  void _playTrailer() {
+    if (_event?.trailerUrl == null) return;
+    // Launch trailer in browser or video player
+    HapticFeedback.lightImpact();
+    // TODO: Implement trailer playback (YouTube player integration)
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Trailer playback coming soon'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   // Real lat/lng coordinates for Google Maps satellite view
@@ -1086,6 +1109,106 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  // Action buttons row: Share + Trailer
+                  Row(
+                    children: [
+                      // Share button
+                      Expanded(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: _shareEvent,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.12),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.share,
+                                    size: 14,
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'SHARE',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // Trailer button (if available)
+                      if (_event?.trailerUrl != null)
+                        Expanded(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: _playTrailer,
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: DesignTokens.neonCyan.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: DesignTokens.neonCyan.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.play_circle,
+                                      size: 14,
+                                      color: DesignTokens.neonCyan,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'TRAILER',
+                                      style: TextStyle(
+                                        color: DesignTokens.neonCyan,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -1357,66 +1480,111 @@ class _PPVEventDetailScreenState extends State<PPVEventDetailScreen>
   Widget _buildCountdown() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
           colors: [
-            DesignTokens.neonRed.withValues(alpha: 0.15),
-            DesignTokens.neonMagenta.withValues(alpha: 0.08),
+            DesignTokens.neonRed.withValues(alpha: 0.12),
+            DesignTokens.neonMagenta.withValues(alpha: 0.06),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: DesignTokens.neonRed.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedBuilder(
-                animation: _pulse,
-                builder: (_, _) => Icon(
-                  Icons.access_time_filled,
-                  color: DesignTokens.neonRed.withValues(alpha: _pulse.value),
-                  size: 18,
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'EVENT STARTS IN',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2,
-                ),
-              ),
-            ],
+        border: Border.all(
+          color: DesignTokens.neonRed.withValues(alpha: 0.35),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: DesignTokens.neonRed.withValues(alpha: 0.15),
+            blurRadius: 20,
+            spreadRadius: 2,
           ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildTimeUnit(
-                _countdown.inDays.toString().padLeft(2, '0'),
-                'DAYS',
-              ),
-              _buildTimeSeparator(),
-              _buildTimeUnit(
-                (_countdown.inHours % 24).toString().padLeft(2, '0'),
-                'HRS',
-              ),
-              _buildTimeSeparator(),
-              _buildTimeUnit(
-                (_countdown.inMinutes % 60).toString().padLeft(2, '0'),
-                'MIN',
-              ),
-              _buildTimeSeparator(),
-              _buildTimeUnit(
-                (_countdown.inSeconds % 60).toString().padLeft(2, '0'),
-                'SEC',
-              ),
-            ],
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0.3, end: 0.7),
+              duration: const Duration(milliseconds: 1500),
+              curve: Curves.easeInOut,
+              onEnd: () {
+                // Loop animation
+                setState(() {});
+              },
+              builder: (context, value, child) {
+                return Container(
+                  margin: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: DesignTokens.neonRed.withValues(
+                        alpha: value * 0.3,
+                      ),
+                      width: 1,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedBuilder(
+                      animation: _pulse,
+                      builder: (_, _) => Icon(
+                        Icons.access_time_filled,
+                        color: DesignTokens.neonRed.withValues(
+                          alpha: _pulse.value,
+                        ),
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'EVENT STARTS IN',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildTimeUnit(
+                      _countdown.inDays.toString().padLeft(2, '0'),
+                      'DAYS',
+                    ),
+                    _buildTimeSeparator(),
+                    _buildTimeUnit(
+                      (_countdown.inHours % 24).toString().padLeft(2, '0'),
+                      'HRS',
+                    ),
+                    _buildTimeSeparator(),
+                    _buildTimeUnit(
+                      (_countdown.inMinutes % 60).toString().padLeft(2, '0'),
+                      'MIN',
+                    ),
+                    _buildTimeSeparator(),
+                    _buildTimeUnit(
+                      (_countdown.inSeconds % 60).toString().padLeft(2, '0'),
+                      'SEC',
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -99,6 +99,14 @@ class _HomeScreenState extends State<HomeScreen> {
       accent: DesignTokens.neonMagenta,
     ),
     _ShellQuickAction(
+      label: 'Viral Arena',
+      hint: 'Trending clips & social discovery',
+      icon: Icons.trending_up_rounded,
+      tabIndex: -1, // Not a main tab
+      accent: DesignTokens.neonRed,
+      routePath: app_router.RouterConfig.viralClipsFeedPath,
+    ),
+    _ShellQuickAction(
       label: 'Mission Control',
       hint: 'Operate feed, clips, and promo jobs',
       icon: Icons.rocket_launch_rounded,

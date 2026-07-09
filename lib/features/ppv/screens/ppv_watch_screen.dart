@@ -254,6 +254,24 @@ class _PPVWatchScreenState extends State<PPVWatchScreen>
     // TODO: Implement actual camera switching in video stream
   }
 
+  String? _getVideoUrl() {
+    // Try to get from Mux playback ID first
+    if (widget.playbackId != null) {
+      return 'https://stream.mux.com/${widget.playbackId}.m3u8';
+    }
+
+    // Try from event
+    if (_event?.muxPlaybackId != null) {
+      return 'https://stream.mux.com/${_event!.muxPlaybackId}.m3u8';
+    }
+
+    if (_event?.streamUrl != null) {
+      return _event!.streamUrl;
+    }
+
+    return null;
+  }
+
   @override
   void dispose() {
     _videoController?.dispose();
@@ -414,10 +432,17 @@ class _PPVWatchScreenState extends State<PPVWatchScreen>
                     child: PPVReplayToolbar(
                       event: _event,
                       currentRound: _currentRound,
+                      videoUrl: _getVideoUrl(),
+                      fighter1Name: _event?.fightCard.isNotEmpty ?? false
+                          ? _event!.fightCard.first.fighter1Name
+                          : null,
+                      fighter2Name: _event?.fightCard.isNotEmpty ?? false
+                          ? _event!.fightCard.first.fighter2Name
+                          : null,
                       onClipCreated: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('✨ Clip saved! Ready to share.'),
+                            content: Text('✨ Clip editor opened!'),
                             duration: Duration(seconds: 2),
                           ),
                         );

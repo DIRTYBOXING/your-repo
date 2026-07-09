@@ -3,6 +3,9 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/design_tokens.dart';
 import '../../../shared/models/ppv_model.dart';
+import '../screens/ppv_clip_editor_screen.dart';
+import '../screens/ppv_clip_share_dialog.dart';
+import '../services/ppv_clip_export_service.dart';
 
 /// ═══════════════════════════════════════════════════════════════════════════
 /// PPV REPLAY TOOLBAR — SOCIAL ENGINE
@@ -22,11 +25,21 @@ class PPVReplayToolbar extends StatefulWidget {
   final ValueNotifier<int> currentRound;
   final VoidCallback onClipCreated;
 
+  /// Video URL for clip editor
+  final String? videoUrl;
+
+  /// Fighter names for clip watermark
+  final String? fighter1Name;
+  final String? fighter2Name;
+
   const PPVReplayToolbar({
     super.key,
     this.event,
     required this.currentRound,
     required this.onClipCreated,
+    this.videoUrl,
+    this.fighter1Name,
+    this.fighter2Name,
   });
 
   @override
@@ -82,10 +95,7 @@ class _PPVReplayToolbarState extends State<PPVReplayToolbar> {
                       child: _buildActionButton(
                         icon: Icons.bookmark_add,
                         label: 'Clip Moment',
-                        onTap: () {
-                          widget.onClipCreated();
-                          // TODO: Implement clip creation
-                        },
+                        onTap: _openClipEditor,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -213,5 +223,48 @@ class _PPVReplayToolbarState extends State<PPVReplayToolbar> {
         'Check out Round ${widget.currentRound.value} of ${widget.event!.title} on DFC! #Combat #PPV #DFC';
 
     Share.share(text, subject: '${widget.event!.title} - Amazing moment!');
+  }
+
+  void _openClipEditor() {
+    if (widget.event == null || widget.videoUrl == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Clip editor not available for this event'),
+        ),
+      );
+      return;
+    }
+
+    widget.onClipCreated();
+
+    // Launch clip editor
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PPVClipEditorScreen(
+          event: widget.event!,
+          videoUrl: widget.videoUrl!,
+          fighter1Name: widget.fighter1Name ?? 'Fighter 1',
+          fighter2Name: widget.fighter2Name ?? 'Fighter 2',
+          currentRound: widget.currentRound.value,
+          onClipExported: _onClipExported,
+        ),
+      ),
+    );
+  }
+
+  void _onClipExported(PPVClipExportService.ExportedClip clip) {
+    // Show share dialog
+    showDialog(
+      context: context,
+      builder: (context) => PPVClipShareDialog(
+        clip: clip,
+        userId: 'current_user_id', // TODO: Get from auth
+        eventTitle: widget.event?.title ?? 'Fight Event',
+        onShareComplete: (platform) {
+          debugPrint('✅ Clip shared to $platform');
+        },
+      ),
+    );
   }
 }

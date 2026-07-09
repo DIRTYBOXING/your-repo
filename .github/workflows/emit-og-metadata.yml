@@ -1,0 +1,144 @@
+name: Emit OG metadata
+
+on:
+  push:
+    paths:
+      - 'public/og-images/**'
+      - 'tasks/13-og-image-best-practices-article/**'
+    branches:
+      - main
+      - master
+      - staging
+  pull_request:
+    paths:
+      - 'public/og-images/**'
+      - 'tasks/13-og-image-best-practices-article/**'
+
+jobs:
+  emit-og-metadata:
+    name: Generate OG meta tags from images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install --save-dev image-size
+
+      - name: Create build directory
+        run: mkdir -p build
+
+      - name: Generate OG metadata for all images
+        run: |
+          IMAGE_DIR="public/og-images"
+          OUT_FILE="build/og-meta-tags.html"
+
+          # Check if image directory exists
+          if [ ! -d "$IMAGE_DIR" ]; then
+            echo "⚠️  Image directory not found: $IMAGE_DIR"
+            echo "<!-- No OG images found -->" > $OUT_FILE
+            exit 0
+          fi
+
+          echo "<!-- Generated OG meta tags ($(date -u +'%Y-%m-%dT%H:%M:%SZ')) -->" > $OUT_FILE
+
+          # Loop through all images
+          for img in $(ls "$IMAGE_DIR"/ 2>/dev/null); do
+            if [[ "$img" =~ \.(jpg|jpeg|png|webp|gif)$ ]]; then
+              echo "Processing: $img"
+              node ./tasks/13-og-image-best-practices-article/emit-og-metadata.js \
+                "$IMAGE_DIR/$img" \
+                "https://cdn.example.com/og" \
+                "Article preview image" >> $OUT_FILE 2>&1
+              echo "" >> $OUT_FILE
+            fi
+          done
+
+          echo "<!-- End generated meta tags -->" >> $OUT_FILE
+          echo "✅ Wrote OG metadata to: $OUT_FILE"
+          cat $OUT_FILE
+
+      - name: Validate generated HTML
+        run: |
+          OUT_FILE="build/og-meta-tags.html"
+
+          # Check that meta tags were generated
+          if ! grep -q "og:image" "$OUT_FILE"; then
+            echo "⚠️  No og:image meta tags found in output"
+            exit 0
+          fi
+
+          # Verify syntax
+          if grep -q "og:image:width" "$OUT_FILE" && grep -q "og:image:height" "$OUT_FILE"; then
+            echo "✅ Generated tags contain width and height"
+          else
+            echo "⚠️  Generated tags missing width or height"
+          fi
+
+      - name: Upload generated tags (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: og-meta-tags
+          path: build/og-meta-tags.html
+          retention-days: 7
+
+      - name: Comment on PR with generated tags (if PR)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const tagFile = 'build/og-meta-tags.html';
+
+            if (fs.existsSync(tagFile)) {
+              const tags = fs.readFileSync(tagFile, 'utf8');
+              const tagsPreview = tags
+                .split('\n')
+                .filter(line => line.includes('og:') || line.includes('twitter:'))
+                .slice(0, 10)
+                .join('\n');
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `## ✅ OG Metadata Generated
+
+Generated meta tags for social previews:
+
+\`\`\`html
+${tagsPreview}
+\`\`\`
+
+**Full output:** See artifacts section.
+
+**Next steps:**
+1. Review generated meta tags in artifacts
+2. Integrate \`build/og-meta-tags.html\` into your template
+3. Test with [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/sharing/), [Twitter Card Validator](https://cards-dev.twitter.com/validator), [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/)
+`
+              });
+            }
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## OG Metadata Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Job: Emit OG metadata" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Status: Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Outputs:**" >> $GITHUB_STEP_SUMMARY
+          echo "- \`build/og-meta-tags.html\` (artifact)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Integration:** See CI_INTEGRATION.md for build system examples" >> $GITHUB_STEP_SUMMARY

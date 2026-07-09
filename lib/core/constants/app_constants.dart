@@ -12,7 +12,7 @@ class AppConstants {
   // ─── PLATFORM OWNERSHIP ───────────────────────────────────────────────────
   /// Head Pilot & Platform Owner — full superadmin access
   static const String ownerEmail = 'owner@datafightcentral.com';
-  static const String ownerRole  = 'superadmin';
+  static const String ownerRole = 'superadmin';
   static const String platformName = 'Data Fight Central';
 
   // App Information
@@ -20,9 +20,7 @@ class AppConstants {
   static const String appVersion = '1.0.0';
   static const String appDescription =
       'Professional Social Media and PPV Platform for Combat Sports';
-  static const bool webDemoMode = bool.fromEnvironment(
-    'WEB_DEMO_MODE',
-  );
+  static const bool webDemoMode = bool.fromEnvironment('WEB_DEMO_MODE');
   static const bool useFirebaseEmulator = bool.fromEnvironment(
     'USE_FIREBASE_EMULATOR',
   );
@@ -43,22 +41,35 @@ class AppConstants {
     'ENABLE_DRONE_RACING',
   );
 
-  static const bool enableGames = bool.fromEnvironment(
-    'ENABLE_GAMES',
-  );
+  static const bool enableGames = bool.fromEnvironment('ENABLE_GAMES');
 
   static const bool featureShellV2 = bool.fromEnvironment(
     'FEATURE_SHELL_V2',
     defaultValue: true,
   );
 
-  static const bool featurePpvStore = bool.fromEnvironment(
-    'FEATURE_PPV_STORE',
+  static const bool featurePpvStore = bool.fromEnvironment('FEATURE_PPV_STORE');
+
+  static const bool featurePlaySkin = bool.fromEnvironment('FEATURE_PLAY_SKIN');
+
+  /// Phase 2B: Creator Dashboard live Firestore mode (default: false)
+  /// When true, enables real-time stream subscriptions to Firestore
+  /// collections for creator dashboards. Must be explicitly enabled per
+  /// deployment stage (canary, staging, prod).
+  static const bool creatorDashboardLiveMode = bool.fromEnvironment(
+    'CREATOR_DASHBOARD_LIVE_MODE',
+    defaultValue: false,
   );
 
-  static const bool featurePlaySkin = bool.fromEnvironment(
-    'FEATURE_PLAY_SKIN',
-  );
+  /// Allowlist of creator IDs permitted to use live Firestore mode
+  /// during canary rollout. Empty list = feature disabled for all creators.
+  /// Add creator IDs here to enable for internal QA and canary cohorts.
+  static const List<String> creatorLiveAllowlist = <String>[
+    'hero_creator_test_001', // ← Hero creator for Phase 2B testing
+    // Add internal QA creator IDs here during canary rollout:
+    // 'internal_creator_qa_001',
+    // 'internal_creator_qa_002',
+  ];
 
   static bool get authEnabled => !(kIsWeb && webDemoMode);
 
@@ -338,17 +349,13 @@ class AppConstants {
   // External video platform keys — compile-time --dart-define takes priority,
   // then runtime dotenv (.env file), then empty (fallback/demo mode).
   static String get youtubeApiKey {
-    const compileTime = String.fromEnvironment(
-      'YOUTUBE_API_KEY',
-    );
+    const compileTime = String.fromEnvironment('YOUTUBE_API_KEY');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('YOUTUBE_API_KEY');
   }
 
   static String get streamApiKey {
-    const compileTime = String.fromEnvironment(
-      'STREAM_API_KEY',
-    );
+    const compileTime = String.fromEnvironment('STREAM_API_KEY');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('STREAM_API_KEY');
   }
@@ -357,41 +364,31 @@ class AppConstants {
   static bool get hasStreamApiKey => streamApiKey.isNotEmpty;
 
   static String get operatorFunctionUrl {
-    const compileTime = String.fromEnvironment(
-      'DFC_OPERATOR_FUNCTION_URL',
-    );
+    const compileTime = String.fromEnvironment('DFC_OPERATOR_FUNCTION_URL');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_OPERATOR_FUNCTION_URL');
   }
 
   static String get operatorId {
-    const compileTime = String.fromEnvironment(
-      'DFC_OPERATOR_ID',
-    );
+    const compileTime = String.fromEnvironment('DFC_OPERATOR_ID');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_OPERATOR_ID');
   }
 
   static String get operatorSecret {
-    const compileTime = String.fromEnvironment(
-      'DFC_OPERATOR_SECRET',
-    );
+    const compileTime = String.fromEnvironment('DFC_OPERATOR_SECRET');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_OPERATOR_SECRET');
   }
 
   static String get ppvStorefrontBaseUrl {
-    const compileTime = String.fromEnvironment(
-      'DFC_PPV_STOREFRONT_BASE',
-    );
+    const compileTime = String.fromEnvironment('DFC_PPV_STOREFRONT_BASE');
     if (compileTime.isNotEmpty) return compileTime;
     return _dotenvGet('DFC_PPV_STOREFRONT_BASE');
   }
 
   static bool get ppvStorefrontAutoConfirmSandbox {
-    const compileTime = String.fromEnvironment(
-      'DFC_PPV_AUTO_CONFIRM_SANDBOX',
-    );
+    const compileTime = String.fromEnvironment('DFC_PPV_AUTO_CONFIRM_SANDBOX');
     if (compileTime.isNotEmpty) {
       return compileTime.toLowerCase() == 'true';
     }

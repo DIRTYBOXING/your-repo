@@ -1,10 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import 'creator_firestore_adapter.dart';
+
 /// Creator ranking system
 /// Calculates and manages creator ranks based on earnings, clips, engagement
 class CreatorRankService extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final CreatorFirestoreAdapter _adapter;
+
+  CreatorRankService() {
+    _adapter = CreatorFirestoreAdapter();
+  }
 
   /// Get global rank for a creator
   Future<int> getCreatorRank(String creatorId) async {
@@ -23,15 +30,23 @@ class CreatorRankService extends ChangeNotifier {
     }
   }
 
+  /// Subscribe to ranking stream (Phase 2B)
+  Stream<Map<String, dynamic>?> getRankingStream(String creatorId) {
+    return _adapter.rankingStream(creatorId);
+  }
+
   /// Get top creators (leaderboard)
+  /// Note: Requires a cloud function or backend service to maintain leaderboard
   Future<List<Map<String, dynamic>>> getTopCreators({
     int limit = 50,
     String sortBy = 'earnings', // earnings, followers, trendingScore
   }) async {
     try {
+      // Fetch from leaderboard collection (maintained by backend service)
       final snapshot = await _firestore
-          .collectionGroup('ranking')
-          .where('globalRanking', isEqualTo: true)
+          .collection('creator_leaderboards')
+          .doc('global')
+          .collection('rankings')
           .orderBy(sortBy, descending: true)
           .limit(limit)
           .get();
@@ -74,13 +89,14 @@ class CreatorRankService extends ChangeNotifier {
     }
   }
 
-  /// Calculate trending score for a creator
+  /// Calculate trending score for a creator (Phase 2B — uses real Firestore clips)
   Future<double> calculateTrendingScore(String creatorId) async {
     try {
-      // Fetch recent clips
+      // Fetch recent clips from creator's clips collection
       final clipsSnapshot = await _firestore
-          .collectionGroup('social_clips')
-          .where('creatorId', isEqualTo: creatorId)
+          .collection('creator_dashboards')
+          .doc(creatorId)
+          .collection('clips')
           .orderBy('createdAt', descending: true)
           .limit(10)
           .get();

@@ -2,23 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/clip_analytics_model.dart';
+import 'creator_firestore_adapter.dart';
 
 /// Deep dive analytics for individual clips
 class CreatorAnalyticsService extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final CreatorFirestoreAdapter _adapter;
+
+  CreatorAnalyticsService() {
+    _adapter = CreatorFirestoreAdapter();
+  }
 
   /// Get detailed analytics for a single clip
-  Future<ClipAnalytics?> getClipAnalytics(String clipId) async {
+  Future<ClipAnalytics?> getClipAnalytics(
+    String creatorId,
+    String clipId,
+  ) async {
     try {
-      final snapshot = await _firestore
-          .collectionGroup('social_clips')
-          .where('id', isEqualTo: clipId)
-          .limit(1)
+      final doc = await _firestore
+          .collection('creator_dashboards')
+          .doc(creatorId)
+          .collection('clips')
+          .doc(clipId)
           .get();
 
-      if (snapshot.docs.isEmpty) return null;
-
-      return ClipAnalytics.fromFirestore(snapshot.docs.first.data());
+      if (!doc.exists) return null;
+      return ClipAnalytics.fromFirestore(doc.data() ?? {});
     } catch (e) {
       debugPrint('❌ Error getting clip analytics: $e');
       return null;
@@ -29,8 +38,9 @@ class CreatorAnalyticsService extends ChangeNotifier {
   Future<List<ClipAnalytics>> getCreatorClips(String creatorId) async {
     try {
       final snapshot = await _firestore
-          .collectionGroup('social_clips')
-          .where('creatorId', isEqualTo: creatorId)
+          .collection('creator_dashboards')
+          .doc(creatorId)
+          .collection('clips')
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -50,8 +60,9 @@ class CreatorAnalyticsService extends ChangeNotifier {
   ) async {
     try {
       final snapshot = await _firestore
-          .collectionGroup('social_clips')
-          .where('creatorId', isEqualTo: creatorId)
+          .collection('creator_dashboards')
+          .doc(creatorId)
+          .collection('clips')
           .where('clipType', isEqualTo: clipType)
           .orderBy('createdAt', descending: true)
           .get();
@@ -69,8 +80,9 @@ class CreatorAnalyticsService extends ChangeNotifier {
   Future<List<ClipAnalytics>> getTrendingClips(String creatorId) async {
     try {
       final snapshot = await _firestore
-          .collectionGroup('social_clips')
-          .where('creatorId', isEqualTo: creatorId)
+          .collection('creator_dashboards')
+          .doc(creatorId)
+          .collection('clips')
           .where('isTrending', isEqualTo: true)
           .orderBy('trendingScore', descending: true)
           .get();
@@ -84,10 +96,18 @@ class CreatorAnalyticsService extends ChangeNotifier {
     }
   }
 
+  /// Subscribe to clips stream (Phase 2B)
+  Stream<List<ClipAnalytics>> getClipsStream(String creatorId) {
+    return _adapter.clipsStream(creatorId);
+  }
+
   /// Calculate engagement trend for a clip over time
-  Future<Map<String, dynamic>> getClipEngagementTrend(String clipId) async {
+  Future<Map<String, dynamic>> getClipEngagementTrend(
+    String creatorId,
+    String clipId,
+  ) async {
     try {
-      final clip = await getClipAnalytics(clipId);
+      final clip = await getClipAnalytics(creatorId, clipId);
       if (clip == null) return {};
 
       // Return engagement metrics

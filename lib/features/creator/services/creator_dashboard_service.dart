@@ -4,11 +4,28 @@ import 'package:flutter/foundation.dart';
 import '../models/creator_profile_model.dart';
 import '../models/creator_earnings_model.dart';
 import '../models/clip_analytics_model.dart';
+import 'creator_firestore_adapter.dart';
 
 /// Aggregates all dashboard data for a creator
 /// Combines profile, earnings, clips, and analytics into one view
+/// Supports both mock and live Firestore modes
 class CreatorDashboardService extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final CreatorFirestoreAdapter _adapter;
+
+  // Stream subscriptions (for cleanup)
+  Stream<CreatorProfile?>? _profileSubscription;
+  Stream<CreatorEarnings?>? _earningsSubscription;
+  Stream<List<ClipAnalytics>>? _clipsSubscription;
+
+  bool _isLiveMode = false;
+  String _currentCreatorId = '';
+
+  bool get isLiveMode => _isLiveMode;
+
+  CreatorDashboardService() {
+    _adapter = CreatorFirestoreAdapter();
+  }
 
   CreatorProfile? _profile;
   CreatorEarnings? _currentMonthEarnings;
@@ -187,5 +204,126 @@ class CreatorDashboardService extends ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  /// ───────────────────────────────────────────────────────────────────────
+  /// PHASE 2B — LIVE FIRESTORE MODE
+  /// ───────────────────────────────────────────────────────────────────────
+
+  /// Subscribe to live Firestore streams (Phase 2B)
+  Future<void> subscribeToLiveStreams(String creatorId) async {
+    try {
+      _currentCreatorId = creatorId;
+      debugPrint('📡 Subscribing to live streams for $creatorId...');
+
+      // Check if creator exists in Firestore
+      final exists = await _adapter.creatorExists(creatorId);
+      if (!exists) {
+        debugPrint('⚠️ Creator not found in Firestore: $creatorId');
+        _isLiveMode = false;
+        return;
+      }
+
+      final now = DateTime.now();
+
+      // Subscribe to profile updates
+      _profileSubscription = _adapter.profileStream(creatorId);
+      _profileSubscription!.listen(
+        (profile) {
+          _profile = profile;
+          notifyListeners();
+          debugPrint('✅ Profile updated from Firestore');
+        },
+        onError: (e) {
+          debugPrint('❌ Profile stream error: $e');
+          _adapter.logListenerHealth(
+            creatorId: creatorId,
+            status: 'error',
+            errorMessage: 'Profile stream: $e',
+          );
+        },
+      );
+
+      // Subscribe to earnings updates
+      _earningsSubscription = _adapter.earningsStream(
+        creatorId,
+        now.month,
+        now.year,
+      );
+      _earningsSubscription!.listen(
+        (earnings) {
+          _currentMonthEarnings = earnings;
+          notifyListeners();
+          debugPrint('✅ Earnings updated from Firestore');
+        },
+        onError: (e) {
+          debugPrint('❌ Earnings stream error: $e');
+          _adapter.logListenerHealth(
+            creatorId: creatorId,
+            status: 'error',
+            errorMessage: 'Earnings stream: $e',
+          );
+        },
+      );
+
+      // Subscribe to clips updates
+      _clipsSubscription = _adapter.clipsStream(creatorId);
+      _clipsSubscription!.listen(
+        (clips) {
+          _recentClips = clips;
+          if (_recentClips.isNotEmpty) {
+            _topTrendingClip = _recentClips.reduce(
+              (a, b) => a.trendingScore > b.trendingScore ? a : b,
+            );
+          }
+          notifyListeners();
+          debugPrint('✅ Clips updated from Firestore (${clips.length} clips)');
+        },
+        onError: (e) {
+          debugPrint('❌ Clips stream error: $e');
+          _adapter.logListenerHealth(
+            creatorId: creatorId,
+            status: 'error',
+            errorMessage: 'Clips stream: $e',
+          );
+        },
+      );
+
+      _isLiveMode = true;
+      await _adapter.logListenerHealth(
+        creatorId: creatorId,
+        status: 'connected',
+      );
+      debugPrint('✅ Live streams activated for $creatorId');
+    } catch (e) {
+      debugPrint('❌ Error subscribing to live streams: $e');
+      _isLiveMode = false;
+      _adapter.logListenerHealth(
+        creatorId: creatorId,
+        status: 'disconnected',
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  /// Force live mode (for dev testing)
+  Future<void> forceLiveMode(String creatorId) async {
+    await subscribeToLiveStreams(creatorId);
+  }
+
+  /// Detect if Firestore has data and switch to live mode automatically
+  Future<bool> tryAutoSwitchToLive(String creatorId) async {
+    try {
+      final exists = await _adapter.creatorExists(creatorId);
+      if (exists) {
+        debugPrint('🔄 Auto-switching to live Firestore mode...');
+        await subscribeToLiveStreams(creatorId);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('❌ Auto-switch failed: $e');
+      return false;
+    }
   }
 }

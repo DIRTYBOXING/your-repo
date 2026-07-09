@@ -264,4 +264,10 @@ class CreatorHeroSeeder {
       rethrow;
     }
   }
+
+  /// Alias for seedHeroCreatorToFirestore()
+  /// Seeds hero creator to Firestore (Phase 2B)
+  static Future<void> seedHeroCreator({FirebaseFirestore? firestore}) async {
+    await seedHeroCreatorToFirestore(firestore ?? FirebaseFirestore.instance);
+  }
 }

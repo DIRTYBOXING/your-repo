@@ -10,6 +10,7 @@ import '../services/creator_dashboard_service.dart';
 import '../services/creator_insights_engine.dart';
 import '../services/creator_rank_service.dart';
 import '../../core/utils/creator_hero_seeder.dart';
+import '../../core/constants/app_constants.dart';
 
 /// Central controller for the Creator Dashboard
 /// Manages state, orchestrates service calls, handles UI interactions
@@ -30,6 +31,8 @@ class CreatorDashboardController extends ChangeNotifier {
   String _selectedTab = 'overview';
   bool _isLoading = false;
   String? _error;
+  bool _isLiveMode = false;
+  String _currentCreatorId = '';
 
   // Getters
   CreatorProfile? get profile => _profile;
@@ -41,6 +44,8 @@ class CreatorDashboardController extends ChangeNotifier {
   String get selectedTab => _selectedTab;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isInLiveMode => _isLiveMode;
+  String get currentCreatorId => _currentCreatorId;
 
   CreatorDashboardController(
     this._dashboardService,
@@ -99,39 +104,31 @@ class CreatorDashboardController extends ChangeNotifier {
   }
 
   /// Initialize dashboard for a creator
+  /// Checks feature flag and creator allowlist to determine live vs mock mode
   Future<void> initializeDashboard(String creatorId) async {
     try {
       _isLoading = true;
       _error = null;
+      _currentCreatorId = creatorId;
       notifyListeners();
 
-      // For Phase 2A: Use hero creator mock if requested
-      if (creatorId == CreatorHeroSeeder.heroCreatorId) {
-        await loadHeroCreator();
-        return;
+      // Check if live mode is enabled and creator is in allowlist
+      final isLiveEligible =
+          AppConstants.creatorDashboardLiveMode &&
+          AppConstants.creatorLiveAllowlist.contains(creatorId);
+
+      if (isLiveEligible) {
+        // Attempt live Firestore mode
+        await autoDetectLiveMode(creatorId);
+      } else {
+        // For Phase 2A: Use hero creator mock if requested
+        if (creatorId == CreatorHeroSeeder.heroCreatorId) {
+          await loadHeroCreator();
+        } else {
+          // Standard mock mode
+          await loadHeroCreator();
+        }
       }
-
-      // Load profile
-      await _dashboardService.initializeDashboard(creatorId);
-      _profile = _dashboardService.profile;
-      _currentMonthEarnings = _dashboardService.currentMonthEarnings;
-      _recentClips = _dashboardService.recentClips;
-
-      // Load insights
-      _insights = await _insightsEngine.getInsights(creatorId);
-
-      // Load badge progress
-      final totalClips = _recentClips.length;
-      final badgeMap = await _badgeService.getBadgeProgress(
-        creatorId,
-        totalClips,
-      );
-      _badgeProgress = badgeMap.entries
-          .map((e) => {'badge': e.key, ...e.value as Map<String, dynamic>})
-          .toList();
-
-      // Load rank
-      _creatorRank = await _rankService.getCreatorRank(creatorId);
 
       _isLoading = false;
       notifyListeners();
@@ -282,6 +279,50 @@ class CreatorDashboardController extends ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  /// ───────────────────────────────────────────────────────────────────────
+  /// PHASE 2B — LIVE FIRESTORE MODE
+  /// ───────────────────────────────────────────────────────────────────────
+
+  /// Force live Firestore mode (dev testing)
+  /// Switches from mock data to live stream subscriptions
+  Future<void> forceLiveMode(String creatorId) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _dashboardService.forceLiveMode(creatorId);
+      debugPrint('✅ Live mode activated for $creatorId');
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to activate live mode: $e';
+      _isLoading = false;
+      debugPrint('❌ $_error');
+      notifyListeners();
+    }
+  }
+
+  /// Auto-detect and switch to live mode if data exists in Firestore
+  /// Falls back to mock if no live data found
+  Future<void> autoDetectLiveMode(String creatorId) async {
+    try {
+      final switched = await _dashboardService.tryAutoSwitchToLive(creatorId);
+      if (switched) {
+        debugPrint('🔄 Automatically switched to live Firestore mode');
+      } else {
+        debugPrint('ℹ️ No live data found, using mock data');
+      }
+      notifyListeners();
+    } catch (e) {
+      debugPrint('⚠️ Auto-detect failed: $e');
+      // Silently fall back to mock mode
+    }
+  }
+
+  /// Check if currently in live mode
+  bool isInLiveMode() => _dashboardService.isLiveMode;
 
   @override
   void dispose() {

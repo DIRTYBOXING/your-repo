@@ -111,6 +111,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               }
             },
           ),
+          const SizedBox(height: 8),
+          ListTile(
+            leading: const Icon(
+              Icons.trending_up,
+              color: AppColors.neonRed,
+            ),
+            title: const Text(
+              'Creator Dashboard',
+              style: TextStyle(color: Colors.white),
+            ),
+            subtitle: const Text(
+              'Manage clips & earnings',
+              style: TextStyle(color: Colors.white54, fontSize: 12),
+            ),
+            trailing: const Icon(Icons.chevron_right, color: Colors.white54),
+            onTap: () {
+              context.push('/creator/dashboard');
+            },
+          ),
         ],
       ),
     );

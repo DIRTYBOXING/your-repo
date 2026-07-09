@@ -114,6 +114,14 @@ class _HomeScreenState extends State<HomeScreen> {
       accent: DesignTokens.neonCyan,
       routePath: app_router.RouterConfig.missionControlPath,
     ),
+    _ShellQuickAction(
+      label: 'Creator Dashboard',
+      hint: 'Manage your clips and earnings',
+      icon: Icons.trending_up_rounded,
+      tabIndex: -1, // Not a main tab
+      accent: DesignTokens.neonRed,
+      routePath: app_router.RouterConfig.creatorDashboardPath,
+    ),
   ];
 
   late int _selectedIndex;

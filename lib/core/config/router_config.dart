@@ -51,6 +51,11 @@ import '../../features/legacy_root/sponsorship_system_screen.dart';
 import '../../features/fight_card/screens/fight_card_builder_screen.dart';
 import '../../features/spotlight/screens/whos_who_screen.dart';
 import '../../features/creator/screens/showmaker_profile_screen.dart';
+import '../../features/creator/screens/creator_dashboard_screen.dart';
+import '../../features/creator/screens/clip_analytics_detail_screen.dart';
+import '../../features/creator/screens/earnings_history_screen.dart';
+import '../../features/creator/screens/creator_rank_screen.dart';
+import '../../features/creator/screens/creator_insights_screen.dart';
 import '../../features/verification/screens/kyc_verification_screen.dart';
 import '../../shared/widgets/coming_soon_screen.dart';
 import '../../features/wallet/screens/digital_wallet_screen.dart';
@@ -404,6 +409,42 @@ class AppRouter {
         path: RouterConfig.fightWirePath,
         builder: (context, state) => const FightWirePostScreen(),
       ),
+
+      // ── Creator Dashboard (Tier 7 Phase 2A) ──────────────────────
+      GoRoute(
+        path: '/creator/dashboard',
+        builder: (context, state) {
+          final creatorId = state.uri.queryParameters['creatorId'] ?? 'hero_creator_test_001';
+          return CreatorDashboardScreen(creatorId: creatorId);
+        },
+      ),
+      GoRoute(
+        path: '/creator/clip/:clipId',
+        builder: (context, state) => ClipAnalyticsDetailScreen(
+          clipId: state.pathParameters['clipId']!,
+        ),
+      ),
+      GoRoute(
+        path: '/creator/earnings',
+        builder: (context, state) {
+          final creatorId = state.uri.queryParameters['creatorId'] ?? 'hero_creator_test_001';
+          return EarningsHistoryScreen(creatorId: creatorId);
+        },
+      ),
+      GoRoute(
+        path: '/creator/rank',
+        builder: (context, state) {
+          final creatorId = state.uri.queryParameters['creatorId'] ?? 'hero_creator_test_001';
+          return CreatorRankScreen(creatorId: creatorId);
+        },
+      ),
+      GoRoute(
+        path: '/creator/insights',
+        builder: (context, state) {
+          final creatorId = state.uri.queryParameters['creatorId'] ?? 'hero_creator_test_001';
+          return CreatorInsightsScreen(creatorId: creatorId);
+        },
+      ),
     ],
   );
 }
@@ -435,4 +476,10 @@ class RouterConfig {
   static const String bodyMonitorPath = '/body-monitor';
   static const String ppvStorePath = '/ppv';
   static const String missionControlPath = '/cockpit';
+  static const String creatorDashboardPath = '/creator/dashboard';
+  static const String creatorClipPath = '/creator/clip';
+  static const String creatorEarningsPath = '/creator/earnings';
+  static const String creatorRankPath = '/creator/rank';
+  static const String creatorInsightsPath = '/creator/insights';
+  static const String viralClipsFeedPath = '/viral-arena';
 }

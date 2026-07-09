@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_theme.dart';
@@ -18,13 +18,32 @@ class DFCBottomNav extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onDestinationSelected;
 
-  static const _items = <_NavItem>[
+  static const _baseItems = <_NavItem>[
     _NavItem(Icons.home_outlined, Icons.home, 'Home'),
     _NavItem(Icons.live_tv_outlined, Icons.live_tv, 'Watch'),
     _NavItem(Icons.explore_outlined, Icons.explore, 'Explore'),
     _NavItem(Icons.people_outline, Icons.people, 'Network'),
     _NavItem(Icons.person_outline, Icons.person, 'Profile'),
   ];
+
+  // Dynamic items list based on user role (creator tab shown conditionally)
+  List<_NavItem> get _items {
+    final items = List<_NavItem>.from(_baseItems);
+    // Conditionally add Creator tab if user is a creator
+    // TODO(phase2b): Wire to user.isCreator after Firestore integration
+    // For now, show Creator tab in dev builds only
+    if (kDebugMode) {
+      items.insert(
+        4,
+        const _NavItem(
+          Icons.video_camera_outlined,
+          Icons.video_camera,
+          'Creator',
+        ),
+      );
+    }
+    return items;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +52,7 @@ class DFCBottomNav extends StatelessWidget {
         color: kIsWeb
             ? AppTheme.primaryBackground
             : AppTheme.primaryBackground.withValues(alpha: 0.82),
-        border: const Border(
-          top: BorderSide(color: DesignTokens.neonCyan),
-        ),
+        border: const Border(top: BorderSide(color: DesignTokens.neonCyan)),
         boxShadow: kIsWeb
             ? []
             : [

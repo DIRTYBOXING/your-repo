@@ -71,10 +71,14 @@ import '../shared/services/n8n_service.dart';
 import '../shared/services/user_settings_service.dart';
 import '../shared/services/account_recovery_service.dart';
 import '../shared/services/login_history_service.dart';
+import '../features/creator/services/creator_dashboard_service.dart';
+import '../features/creator/services/creator_analytics_service.dart';
+import '../features/creator/services/creator_insights_engine.dart';
+import '../features/creator/services/creator_badge_service.dart';
+import '../features/creator/services/creator_rank_service.dart';
+import '../features/creator/controllers/creator_dashboard_controller.dart';
 
-const bool _featureProTheme = bool.fromEnvironment(
-  'FEATURE_PRO_THEME',
-);
+const bool _featureProTheme = bool.fromEnvironment('FEATURE_PRO_THEME');
 
 class _RuntimeLaneBannerData {
   const _RuntimeLaneBannerData({
@@ -393,6 +397,28 @@ class _DataFightCentralAppState extends State<DataFightCentralApp> {
         ChangeNotifierProvider(create: (_) => UserSettingsService()),
         ChangeNotifierProvider(create: (_) => AccountRecoveryService()),
         ChangeNotifierProvider(create: (_) => LoginHistoryService()),
+        // ── Creator Dashboard Services (Tier 7) ────────────────────
+        ChangeNotifierProvider(create: (_) => CreatorDashboardService()),
+        ChangeNotifierProvider(create: (_) => CreatorAnalyticsService()),
+        ChangeNotifierProvider(create: (_) => CreatorInsightsEngine()),
+        ChangeNotifierProvider(create: (_) => CreatorBadgeService()),
+        ChangeNotifierProvider(create: (_) => CreatorRankService()),
+        ChangeNotifierProvider(
+          create: (context) {
+            final dashboardService = context.read<CreatorDashboardService>();
+            final analyticsService = context.read<CreatorAnalyticsService>();
+            final insightsEngine = context.read<CreatorInsightsEngine>();
+            final badgeService = context.read<CreatorBadgeService>();
+            final rankService = context.read<CreatorRankService>();
+            return CreatorDashboardController(
+              dashboardService,
+              analyticsService,
+              insightsEngine,
+              badgeService,
+              rankService,
+            );
+          },
+        ),
         // Provider(create: (_) => HydrationService()), // Removed: HydrationService not defined
       ],
       child: Builder(
